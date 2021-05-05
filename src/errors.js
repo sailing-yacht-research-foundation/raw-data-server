@@ -14,6 +14,7 @@ class AuthInvalidError extends Error {
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 var errorHandler = function (err, req, res, next) {
   let { message } = err;
   if (err instanceof AuthNotSetError) {

@@ -1,7 +1,7 @@
 const validateSecret = require('../validateSecret');
 const { AuthNotSetError, AuthInvalidError } = require('../../errors');
 const generateSecret = require('../../utils/generateSecret');
-const { formatDateAuth } = require('../../utils/dateFormatter');
+const generateDateAuthFormat = require('../../utils/generateDateAuthFormat');
 
 describe('Validate Secret middleware', () => {
   let mockRequest;
@@ -41,7 +41,7 @@ describe('Validate Secret middleware', () => {
   test('With Correct Authorization', async () => {
     mockRequest = {
       headers: {
-        Authorization: generateSecret(formatDateAuth()),
+        Authorization: generateSecret(generateDateAuthFormat()),
       },
     };
     validateSecret(mockRequest, mockResponse, nextFunction);

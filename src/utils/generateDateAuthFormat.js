@@ -23,7 +23,7 @@ const DAY = {
   [6]: 'Saturday',
 };
 
-var formatDateAuth = function (inputDate) {
+const generateDateAuthFormat = function (inputDate) {
   let currentDate = inputDate ? new Date(inputDate) : new Date();
   return `${currentDate.getUTCFullYear()} ${String(
     MONTHS[currentDate.getUTCMonth()],
@@ -32,6 +32,4 @@ var formatDateAuth = function (inputDate) {
   ).substring(0, 3)}`;
 };
 
-module.exports = {
-  formatDateAuth,
-};
+module.exports = generateDateAuthFormat;

@@ -1,5 +1,5 @@
 const { AuthNotSetError, AuthInvalidError } = require('../errors');
-const { formatDateAuth } = require('../utils/dateFormatter');
+const generateDateAuthFormat = require('../utils/generateDateAuthFormat');
 const generateSecret = require('../utils/generateSecret');
 
 var validateSecret = function (req, res, next) {
@@ -7,7 +7,7 @@ var validateSecret = function (req, res, next) {
   if (!secret) {
     throw new AuthNotSetError('No Authorization Header');
   }
-  let secretCheck = generateSecret(formatDateAuth());
+  let secretCheck = generateSecret(generateDateAuthFormat());
   if (secretCheck !== secret) {
     throw new AuthInvalidError('No Match');
   }

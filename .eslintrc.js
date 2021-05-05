@@ -1,11 +1,20 @@
 module.exports = {
-  extends: ['prettier', 'standard'],
+  extends: ['eslint:recommended', 'prettier'],
   plugins: ['prettier'],
   rules: {
-    'prettier/prettier': 'error',
-    indent: 'off',
-    'comma-dangle': 'off',
-    semi: 'off',
-    'space-before-function-paren': 'off',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
+  },
+  env: {
+    node: true,
+    jest: true,
+    es6: true,
+  },
+  parserOptions: {
+    ecmaVersion: 2017,
   },
 };
