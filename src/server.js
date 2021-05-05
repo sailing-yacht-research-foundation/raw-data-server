@@ -3,10 +3,8 @@ const express = require('express');
 const api = require('./routes/api');
 const { errorHandler } = require('./errors');
 
-const app = express();
-const port = 3000;
-
-const initApp = async () => {
+function createServer() {
+  const app = express();
   app.use(express.json());
   app.use(
     express.urlencoded({
@@ -18,10 +16,7 @@ const initApp = async () => {
   });
   app.use('/api', api);
   app.use(errorHandler);
+  return app;
+}
 
-  app.listen(port, () => {
-    console.log(`Raw Data Server: listening at PORT:${port}`);
-  });
-};
-
-initApp();
+module.exports = createServer;
