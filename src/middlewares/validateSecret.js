@@ -1,17 +1,13 @@
-var crypto = require('crypto');
-
 const { AuthNotSetError, AuthInvalidError } = require('../errors');
 const { formatDateAuth } = require('../utils/dateFormatter');
+const generateSecret = require('../utils/generateSecret');
 
 var validateSecret = function (req, res, next) {
-  let secret = req.get('Authorization');
+  let secret = req.headers['authorization'] || req.headers['Authorization'];
   if (!secret) {
     throw new AuthNotSetError('No Authorization Header');
   }
-  let secretCheck = crypto
-    .createHash('md5')
-    .update(formatDateAuth())
-    .digest('hex');
+  let secretCheck = generateSecret(formatDateAuth());
   if (secretCheck !== secret) {
     throw new AuthInvalidError('No Match');
   }

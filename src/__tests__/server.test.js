@@ -1,8 +1,8 @@
 const supertest = require('supertest');
-const crypto = require('crypto');
 
 const createServer = require('../server');
 const { formatDateAuth } = require('../utils/dateFormatter');
+const generateSecret = require('../utils/generateSecret');
 
 const app = createServer();
 
@@ -23,7 +23,7 @@ test('GET /api', async () => {
       Authorization: 'randomtoken',
     })
     .expect(403);
-  let secret = crypto.createHash('md5').update(formatDateAuth()).digest('hex');
+  let secret = generateSecret(formatDateAuth());
   await supertest(app)
     .get('/api')
     .set({
