@@ -3,12 +3,13 @@ const multer = require('multer');
 
 const validateSecret = require('../middlewares/validateSecret');
 const parsingJsonFile = require('../middlewares/parsingJsonFile');
+const { TEMPORARY_FOLDER } = require('../constants');
 const { BadRequestError } = require('../errors');
 
 var router = express.Router();
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads');
+    cb(null, TEMPORARY_FOLDER);
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now());
@@ -32,7 +33,7 @@ router.get('/', function (req, res) {
 
 router.post(
   '/upload-file',
-  upload.single('rawData'),
+  upload.single('raw_data'),
   parsingJsonFile,
   function (req, res) {
     res.json({
