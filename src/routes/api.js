@@ -1,20 +1,26 @@
 const express = require('express');
 const multer = require('multer');
+const temp = require('temp').track();
 
 const validateSecret = require('../middlewares/validateSecret');
 const parsingJsonFile = require('../middlewares/parsingJsonFile');
-const { TEMPORARY_FOLDER } = require('../constants');
 const { BadRequestError } = require('../errors');
 
 var router = express.Router();
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, TEMPORARY_FOLDER);
+    temp.mkdir('jsonfile', function (err, dirPath) {
+      if (!err) {
+        cb(null, dirPath);
+      }
+    });
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now());
   },
 });
+
 function fileFilter(req, file, cb) {
   if (file.mimetype !== 'application/json') {
     cb(new BadRequestError('Invalid File Type'));
@@ -22,7 +28,7 @@ function fileFilter(req, file, cb) {
     cb(null, true);
   }
 }
-var upload = multer({ storage, fileFilter });
+const upload = multer({ storage, fileFilter });
 
 router.use(validateSecret);
 router.get('/', function (req, res) {

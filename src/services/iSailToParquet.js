@@ -1,11 +1,11 @@
 const parquet = require('parquetjs-lite');
-const { TEMPORARY_FOLDER } = require('../constants');
+
 const { iSailEvent } = require('../schemas/parquets/iSail');
 
-const iSailEventToParquet = async (events) => {
+const iSailEventToParquet = async (events, filePath) => {
   const iSailEventWriter = await parquet.ParquetWriter.openFile(
     iSailEvent,
-    `${TEMPORARY_FOLDER}/iSailEvent.parquet`,
+    filePath,
   );
 
   for (let i = 0; i < events.length; i++) {

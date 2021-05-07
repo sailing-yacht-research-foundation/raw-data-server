@@ -1,4 +1,4 @@
-const fs = require('fs');
+const temp = require('temp').track();
 const jsonfile = require('jsonfile');
 
 var parsingJsonFile = function (req, res, next) {
@@ -13,11 +13,7 @@ var parsingJsonFile = function (req, res, next) {
       console.error(err);
     })
     .finally(() => {
-      fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.log('error deleting: ', err);
-        }
-      });
+      temp.cleanup();
     });
   next();
 };
