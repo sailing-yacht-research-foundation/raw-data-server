@@ -2,6 +2,10 @@ const parquet = require('parquetjs-lite');
 
 const { iSailEvent } = require('../schemas/parquets/iSail');
 
+/* 
+  Note: Using this https://github.com/Eugene-Mark/bigdata-file-viewer to view the parquet file
+*/
+
 const iSailEventToParquet = async (events, filePath) => {
   const iSailEventWriter = await parquet.ParquetWriter.openFile(
     iSailEvent,

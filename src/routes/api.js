@@ -1,9 +1,9 @@
 const express = require('express');
 const multer = require('multer');
+const jsonfile = require('jsonfile');
 const temp = require('temp').track();
 
 const validateSecret = require('../middlewares/validateSecret');
-const parsingJsonFile = require('../middlewares/parsingJsonFile');
 const { BadRequestError } = require('../errors');
 
 var router = express.Router();
@@ -37,15 +37,25 @@ router.get('/', function (req, res) {
   });
 });
 
-router.post(
-  '/upload-file',
-  upload.single('raw_data'),
-  parsingJsonFile,
-  function (req, res) {
-    res.json({
-      message: `${req.file.originalname} successfully uploaded`,
-    });
-  },
-);
+router.post('/upload-file', upload.single('raw_data'), function (req, res) {
+  if (req.file) {
+    jsonfile
+      .readFile(req.file.path)
+      .then((jsonData) => {
+        // TODO: Save parsed data to database
+        console.dir(jsonData);
+      })
+      .catch((err) => {
+        // TODO: Handle error better
+        console.error(err);
+      })
+      .finally(() => {
+        temp.cleanup();
+      });
+  }
+  res.json({
+    message: `${req.file.originalname} successfully uploaded`,
+  });
+});
 
 module.exports = router;

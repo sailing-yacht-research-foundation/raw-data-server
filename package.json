@@ -7,7 +7,7 @@
     "start": "node src/main.js",
     "dev": "nodemon",
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
-    "test": "jest --coverage"
+    "test": "jest --coverage --runInBand"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
     "dotenv": "^8.5.1",
     "express": "^4.17.1",
     "jsonfile": "^6.1.0",
+    "mock-fs": "^4.14.0",
     "multer": "^1.4.2",
     "parquetjs-lite": "^0.8.7",
     "temp": "^0.9.4"
