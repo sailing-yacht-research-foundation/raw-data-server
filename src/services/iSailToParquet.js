@@ -1,13 +1,14 @@
 const parquet = require('parquetjs-lite');
-const iSailEventSchema = require('../schemas/parquets/iSailEvent');
+const { TEMPORARY_FOLDER } = require('../constants');
+const { iSailEvent } = require('../schemas/parquets/iSail');
 
-const iSailEventToParquet = async (iSailData) => {
+const iSailEventToParquet = async (events) => {
   const iSailEventWriter = await parquet.ParquetWriter.openFile(
-    iSailEventSchema,
-    'tmp/iSailEvent.parquet',
+    iSailEvent,
+    `${TEMPORARY_FOLDER}/iSailEvent.parquet`,
   );
 
-  for (let i = 0; i < iSailData.length; i++) {
+  for (let i = 0; i < events.length; i++) {
     const {
       id,
       original_id,
@@ -21,7 +22,7 @@ const iSailEventToParquet = async (iSailData) => {
       club,
       location,
       url,
-    } = iSailData[i];
+    } = events[i];
 
     await iSailEventWriter.appendRow({
       id,
