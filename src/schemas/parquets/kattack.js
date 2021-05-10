@@ -64,7 +64,6 @@ const kattackDevice = new parquet.ParquetSchema({
   info_html: { type: 'UTF8', optional: true },
   info_html_2: { type: 'UTF8', optional: true },
   js_data_id: { type: 'UTF8', optional: true },
-
   start_timezone_type: { type: 'UTF8', optional: true },
   start_timezone: { type: 'UTF8', optional: true },
   stop_date: { type: 'TIMESTAMP_MILLIS', optional: true },
