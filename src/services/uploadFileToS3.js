@@ -26,7 +26,7 @@ const uploadFileToS3 = async (filePath, s3Path) => {
       return result.Location;
     }
   } catch (error) {
-    console.error(error);
+    return '';
   }
 };
 

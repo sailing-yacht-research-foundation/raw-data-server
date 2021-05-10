@@ -4,7 +4,7 @@ const fs = require('fs');
 const { iSailEventToParquet } = require('../iSailToParquet');
 const TEST_DIR = 'testing-dir';
 
-describe('Validate Secret middleware', () => {
+describe('Storing iSail Data to Parquet', () => {
   beforeEach(function () {
     mock({
       [TEST_DIR]: {},
@@ -12,7 +12,7 @@ describe('Validate Secret middleware', () => {
   });
   afterEach(mock.restore);
 
-  test('Create Parquet', async () => {
+  test('Create iSailEvent Parquet', async () => {
     const fileName = 'iSailEvent.parquet';
     const path = `${TEST_DIR}/${fileName}`;
     expect(fs.existsSync(path)).toEqual(false);
