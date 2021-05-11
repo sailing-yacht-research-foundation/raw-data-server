@@ -3,8 +3,9 @@ const multer = require('multer');
 const jsonfile = require('jsonfile');
 const temp = require('temp').track();
 
-const validateSecret = require('../middlewares/validateSecret');
 const { BadRequestError } = require('../errors');
+const validateSecret = require('../middlewares/validateSecret');
+const saveISailData = require('../services/saveISailData');
 
 var router = express.Router();
 
@@ -42,8 +43,9 @@ router.post('/upload-file', upload.single('raw_data'), function (req, res) {
     jsonfile
       .readFile(req.file.path)
       .then((jsonData) => {
-        // TODO: Save parsed data to database
-        console.dir(jsonData);
+        if (jsonData.iSailEvent) {
+          saveISailData(jsonData);
+        }
       })
       .catch((err) => {
         // TODO: Handle error better
