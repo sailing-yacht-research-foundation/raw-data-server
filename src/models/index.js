@@ -22,5 +22,10 @@ db.sequelize = sequelize;
 
 db.iSailClass = require('./iSailClass.model.js')(sequelize, Sequelize);
 db.iSailEvent = require('./iSailEvent.model.js')(sequelize, Sequelize);
+db.iSailEventParticipant = require('./iSailEventParticipant.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailRace = require('./iSailRace.model.js')(sequelize, Sequelize);
 
 module.exports = db;
