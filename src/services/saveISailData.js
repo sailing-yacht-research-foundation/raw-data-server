@@ -23,32 +23,11 @@ const saveISailData = async (data) => {
     await db.iSailClass.bulkCreate(classData);
   }
   if (data.iSailEvent) {
-    const existEvents = await db.iSailEvent.findAll({
-      where: { id: { [Op.in]: data.iSailEvent.map((row) => row.id) } },
-    });
-    const toRemove = existEvents.map((row) => row.id);
-
-    const eventData = data.iSailEvent
-      .filter((row) => {
-        return !toRemove.includes(row.id);
-      })
-      .map((row) => {
-        return {
-          id: row.id,
-          original_id: row.original_id,
-          name: row.name,
-          start_date: row.start_date,
-          start_timezone_type: row.start_timezone_type,
-          start_timezone: row.start_timezone,
-          stop_date: row.stop_date,
-          stop_timezone_type: row.stop_timezone_type,
-          stop_timezone: row.stop_timezone,
-          club: row.club,
-          location: row.location,
-          url: row.url,
-        };
-      });
-    await db.iSailEvent.bulkCreate(eventData);
+    // This field contains only a single object
+    const existEvent = await db.iSailEvent.findByPk(data.iSailEvent.id);
+    if (!existEvent) {
+      await db.iSailEvent.create(data.iSailEvent);
+    }
   }
   if (data.iSailRace) {
     const existRaces = await db.iSailRace.findAll({
@@ -75,7 +54,6 @@ const saveISailData = async (data) => {
       });
     await db.iSailRace.bulkCreate(raceData);
   }
-
   if (data.iSailEventParticipant) {
     const existParticipants = await db.iSailEventParticipant.findAll({
       where: {
@@ -102,6 +80,16 @@ const saveISailData = async (data) => {
         };
       });
     await db.iSailEventParticipant.bulkCreate(participantData);
+  }
+
+  if (data.iSailEventTracksData) {
+    // This field contains only a single object
+    const existEventTrack = await db.iSailEventTracksData.findByPk(
+      data.iSailEventTracksData.id,
+    );
+    if (!existEventTrack) {
+      await db.iSailEventParticipant.create(data.iSailEventTracksData);
+    }
   }
   return true;
 };
