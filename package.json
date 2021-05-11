@@ -7,7 +7,7 @@
     "start": "node src/main.js",
     "dev": "nodemon",
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
-    "test": "jest --coverage --runInBand"
+    "test": "jest --coverage --runInBand --setupFiles dotenv/config"
   },
   "keywords": [],
   "author": "",

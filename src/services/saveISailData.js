@@ -1,18 +1,15 @@
 const db = require('../models');
 
 const Op = db.Sequelize.Op;
-const { iSailClass, iSailEvent } = db;
 
 const saveISailData = async (data) => {
-  let classData = [];
-  let eventData = [];
   if (data.iSailClass) {
-    const existClasses = await iSailClass.findAll({
+    const existClasses = await db.iSailClass.findAll({
       where: { id: { [Op.in]: data.iSailClass.map((row) => row.id) } },
     });
     const toRemove = existClasses.map((row) => row.id);
 
-    classData = data.iSailClass
+    const classData = data.iSailClass
       .filter((row) => {
         return !toRemove.includes(row.id);
       })
@@ -23,14 +20,15 @@ const saveISailData = async (data) => {
           name: row.name,
         };
       });
+    await db.iSailClass.bulkCreate(classData);
   }
   if (data.iSailEvent) {
-    const existEvents = await iSailEvent.findAll({
+    const existEvents = await db.iSailEvent.findAll({
       where: { id: { [Op.in]: data.iSailEvent.map((row) => row.id) } },
     });
     const toRemove = existEvents.map((row) => row.id);
 
-    eventData = data.iSailEvent
+    const eventData = data.iSailEvent
       .filter((row) => {
         return !toRemove.includes(row.id);
       })
@@ -50,15 +48,7 @@ const saveISailData = async (data) => {
           url: row.url,
         };
       });
-  }
-
-  try {
-    await db.sequelize.transaction(async (t) => {
-      await iSailClass.bulkCreate(classData, { transaction: t });
-      await iSailEvent.bulkCreate(eventData, { transaction: t });
-    });
-  } catch (err) {
-    console.error(err);
+    await db.iSailEvent.bulkCreate(eventData);
   }
   return true;
 };

@@ -1,21 +1,12 @@
-const mock = require('mock-fs');
 const fs = require('fs');
+const { TEMPORARY_FOLDER } = require('../../constants');
 
 const { iSailEventToParquet } = require('../iSailToParquet');
-const TEST_DIR = 'testing-dir';
 
 describe('Storing iSail Data to Parquet', () => {
-  beforeEach(function () {
-    mock({
-      [TEST_DIR]: {},
-    });
-  });
-  afterEach(mock.restore);
-
   test('Create iSailEvent Parquet', async () => {
-    const fileName = 'iSailEvent.parquet';
-    const path = `${TEST_DIR}/${fileName}`;
-    expect(fs.existsSync(path)).toEqual(false);
+    const fileName = 'testing.parquet';
+    const path = `${TEMPORARY_FOLDER}/${fileName}`;
     await iSailEventToParquet(
       [
         {
@@ -37,5 +28,6 @@ describe('Storing iSail Data to Parquet', () => {
     );
 
     expect(fs.existsSync(path)).toEqual(true);
+    fs.unlinkSync(path);
   });
 });
