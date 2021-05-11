@@ -1,5 +1,5 @@
 const validateSecret = require('../validateSecret');
-const { AuthNotSetError, AuthInvalidError } = require('../../errors');
+const { BadRequestError, AuthInvalidError } = require('../../errors');
 const generateSecret = require('../../utils/generateSecret');
 const generateDateAuthFormat = require('../../utils/generateDateAuthFormat');
 
@@ -21,7 +21,7 @@ describe('Validate Secret middleware', () => {
     try {
       validateSecret(mockRequest, mockResponse, nextFunction);
     } catch (error) {
-      expect(error).toBeInstanceOf(AuthNotSetError);
+      expect(error).toBeInstanceOf(BadRequestError);
     }
   });
 
