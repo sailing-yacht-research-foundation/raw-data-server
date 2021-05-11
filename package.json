@@ -20,7 +20,9 @@
     "jsonfile": "^6.1.0",
     "mock-fs": "^4.14.0",
     "multer": "^1.4.2",
+    "mysql2": "^2.2.5",
     "parquetjs-lite": "^0.8.7",
+    "sequelize": "^6.6.2",
     "temp": "^0.9.4"
   },
   "devDependencies": {
