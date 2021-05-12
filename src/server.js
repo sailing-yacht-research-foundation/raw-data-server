@@ -1,6 +1,6 @@
 const express = require('express');
 
-const api = require('./routes/api');
+const apiV1 = require('./routes/api-v1');
 const db = require('./models');
 const { errorHandler } = require('./errors');
 
@@ -17,7 +17,7 @@ function createServer() {
   app.get('/', (req, res) => {
     res.send('SYRF - Raw Data Server');
   });
-  app.use('/api', api);
+  app.use('/api/v1', apiV1);
   app.use(errorHandler);
   return app;
 }
