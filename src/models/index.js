@@ -31,5 +31,7 @@ db.iSailEventTracksData = require('./iSailEventTracksData.model.js')(
   Sequelize,
 );
 db.iSailRace = require('./iSailRace.model.js')(sequelize, Sequelize);
+db.iSailTrack = require('./iSailTrack.model.js')(sequelize, Sequelize);
+db.iSailPosition = require('./iSailPosition.model.js')(sequelize, Sequelize);
 
 module.exports = db;

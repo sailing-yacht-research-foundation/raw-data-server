@@ -18,6 +18,12 @@ describe('Storing iSail data to DB', () => {
     await db.iSailEventTracksData.destroy({
       truncate: true,
     });
+    await db.iSailPosition.destroy({
+      truncate: true,
+    });
+    await db.iSailTrack.destroy({
+      truncate: true,
+    });
     await db.sequelize.close();
   });
   it('should save iSail Classes correctly', async () => {
@@ -129,5 +135,58 @@ describe('Storing iSail data to DB', () => {
       },
     });
     expect(spy).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Positions correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailPosition, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailPosition, 'bulkCreate');
+    await saveISailData({
+      iSailPosition: [
+        {
+          id: '5966a9eb-c2fa-4d1b-a2c3-a62414cee7a7',
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          track_data: 'd2ebc1c0-0381-4cdd-aaac-4408baccc030',
+          track: 'feff0d0e-0027-44ba-a81f-59603600f60d',
+          original_track_id: 329,
+          participant: '19f155ca-c71c-4efd-aad9-f3b5dc197baf',
+          original_participant_id: 43,
+          class: '42574d0c-3781-4d72-9ad8-1f41814924d0',
+          original_class_id: 15,
+          time: 1429635466000,
+          speed: '0',
+          heading: '0',
+          distance: '0',
+          lon: '4.639784',
+          lat: '52.19545',
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Tracks correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailTrack, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailTrack, 'bulkCreate');
+    await saveISailData({
+      iSailTrack: [
+        {
+          id: 'feff0d0e-0027-44ba-a81f-59603600f60d',
+          original_id: 329,
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          track_data: 'd2ebc1c0-0381-4cdd-aaac-4408baccc030',
+          participant: '19f155ca-c71c-4efd-aad9-f3b5dc197baf',
+          original_participant_id: 43,
+          class: '42574d0c-3781-4d72-9ad8-1f41814924d0',
+          original_class_id: 15,
+          original_user_id: 45,
+          user_name: 'Nico Overbeeke',
+          start_time: 1429635466,
+          stop_time: 1429642828,
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
   });
 });

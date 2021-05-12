@@ -81,7 +81,6 @@ const saveISailData = async (data) => {
       });
     await db.iSailEventParticipant.bulkCreate(participantData);
   }
-
   if (data.iSailEventTracksData) {
     // This field contains only a single object
     const existEventTrack = await db.iSailEventTracksData.findByPk(
@@ -90,6 +89,67 @@ const saveISailData = async (data) => {
     if (!existEventTrack) {
       await db.iSailEventTracksData.create(data.iSailEventTracksData);
     }
+  }
+  if (data.iSailTrack) {
+    const existTracks = await db.iSailTrack.findAll({
+      where: { id: { [Op.in]: data.iSailTrack.map((row) => row.id) } },
+    });
+    const toRemove = existTracks.map((row) => row.id);
+
+    const trackData = data.iSailTrack
+      .filter((row) => {
+        return !toRemove.includes(row.id);
+      })
+      .map((row) => {
+        return {
+          id: row.id,
+          original_id: row.original_id,
+          event: row.event,
+          original_event_id: row.original_event_id,
+          track_data: row.track_data,
+          participant: row.participant,
+          original_participant_id: row.original_participant_id,
+          class: row.class,
+          original_class_id: row.original_class_id,
+          original_user_id: row.original_user_id,
+          user_name: row.user_name,
+          start_time: row.start_time,
+          stop_time: row.stop_time,
+        };
+      });
+    await db.iSailTrack.bulkCreate(trackData);
+  }
+  if (data.iSailPosition) {
+    const existPositions = await db.iSailPosition.findAll({
+      where: { id: { [Op.in]: data.iSailPosition.map((row) => row.id) } },
+    });
+    const toRemove = existPositions.map((row) => row.id);
+
+    const positionData = data.iSailPosition
+      .filter((row) => {
+        return !toRemove.includes(row.id);
+      })
+      .map((row) => {
+        return {
+          id: row.id,
+          event: row.event,
+          original_event_id: row.original_event_id,
+          track_data: row.track_data,
+          track: row.track,
+          original_track_id: row.original_track_id,
+          participant: row.participant,
+          original_participant_id: row.original_participant_id,
+          class: row.class,
+          original_class_id: row.original_class_id,
+          time: row.time,
+          speed: row.speed,
+          heading: row.heading,
+          distance: row.distance,
+          lon: row.lon,
+          lat: row.lat,
+        };
+      });
+    await db.iSailPosition.bulkCreate(positionData);
   }
   return true;
 };
