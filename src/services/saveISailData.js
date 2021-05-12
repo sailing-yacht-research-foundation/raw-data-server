@@ -88,7 +88,7 @@ const saveISailData = async (data) => {
       data.iSailEventTracksData.id,
     );
     if (!existEventTrack) {
-      await db.iSailEventParticipant.create(data.iSailEventTracksData);
+      await db.iSailEventTracksData.create(data.iSailEventTracksData);
     }
   }
   return true;
