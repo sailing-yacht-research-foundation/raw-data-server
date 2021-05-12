@@ -2,6 +2,9 @@ const db = require('../../models');
 const saveISailData = require('../saveISailData');
 
 describe('Storing iSail data to DB', () => {
+  beforeAll(async () => {
+    await db.sequelize.sync();
+  });
   afterAll(async () => {
     await db.iSailClass.destroy({
       truncate: true,
@@ -22,6 +25,21 @@ describe('Storing iSail data to DB', () => {
       truncate: true,
     });
     await db.iSailTrack.destroy({
+      truncate: true,
+    });
+    await db.iSailMark.destroy({
+      truncate: true,
+    });
+    await db.iSailStartline.destroy({
+      truncate: true,
+    });
+    await db.iSailCourseMark.destroy({
+      truncate: true,
+    });
+    await db.iSailRounding.destroy({
+      truncate: true,
+    });
+    await db.iSailResult.destroy({
       truncate: true,
     });
     await db.sequelize.close();
@@ -183,6 +201,125 @@ describe('Storing iSail data to DB', () => {
           user_name: 'Nico Overbeeke',
           start_time: 1429635466,
           stop_time: 1429642828,
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Marks correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailMark, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailMark, 'bulkCreate');
+    await saveISailData({
+      iSailMark: [
+        {
+          id: 'feff0d0e-0027-44ba-a81f-59603600f60e',
+          original_id: 111,
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          race: 'c3f5b5af-9fd8-4cef-bc8b-8e702ad57e71',
+          original_race_id: 21,
+          name: 'Test',
+          lon: '4.639784',
+          lat: '52.19545',
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Startline correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailStartline, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailStartline, 'bulkCreate');
+    await saveISailData({
+      iSailStartline: [
+        {
+          id: 'feff0d0e-0027-44ba-a81f-59603600f60e',
+          original_id: 111,
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          race: 'c3f5b5af-9fd8-4cef-bc8b-8e702ad57e71',
+          original_race_id: 21,
+          name: 'Test',
+          lon: '4.639784',
+          lat: '52.19545',
+          lon1: '4.639784',
+          lat1: '52.19545',
+          lon2: '4.639784',
+          lat2: '52.19545',
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Course Marks correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailCourseMark, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
+    await saveISailData({
+      iSailCourseMark: [
+        {
+          id: 'feff0d0e-0027-44ba-a81f-59603600f60f',
+          original_id: 329,
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          race: 'c3f5b5af-9fd8-4cef-bc8b-8e702ad57e71',
+          original_race_id: 21,
+          position: '5966a9eb-c2fa-4d1b-a2c3-a62414cee7a7',
+          mark: 'feff0d0e-0027-44ba-a81f-59603600f60e',
+          original_mark_id: 111,
+          startline: 'test',
+          original_startline_id: 'test-ori',
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Rounding correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailRounding, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailRounding, 'bulkCreate');
+    await saveISailData({
+      iSailRounding: [
+        {
+          id: 'aeff0d0e-0027-44ba-a81f-59603600f60e',
+          original_id: 22,
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          track: 'feff0d0e-0027-44ba-a81f-59603600f60d',
+          original_track_id: 329,
+          course_mark: 'feff0d0e-0027-44ba-a81f-59603600f60f',
+          original_course_mark_id: 329,
+          time: 1429635072,
+          time_since_last_mark: 1429635072,
+          distance_since_last_mark: 1,
+          rst: 1,
+          rsd: 1,
+          max_speed: 22,
+        },
+      ],
+    });
+    expect(spyFindAll).toHaveBeenCalledTimes(1);
+    expect(spyCreate).toHaveBeenCalledTimes(1);
+  });
+  it('should save iSail Result correctly', async () => {
+    const spyFindAll = jest.spyOn(db.iSailResult, 'findAll');
+    const spyCreate = jest.spyOn(db.iSailResult, 'bulkCreate');
+    await saveISailData({
+      iSailResult: [
+        {
+          id: 'aeff0d0e-0027-44ba-a81f-59603600f60e',
+          original_id: 22,
+          event: 'd451063e-b576-4b23-8638-457e68cb6c26',
+          original_event_id: 13,
+          race: 'c3f5b5af-9fd8-4cef-bc8b-8e702ad57e71',
+          original_race_id: 21,
+          name: 'Test',
+          points: 100,
+          time: 1429635072,
+          finaled: '1',
+          participant: '19f155ca-c71c-4efd-aad9-f3b5dc197baf',
+          original_participant_id: 43,
         },
       ],
     });

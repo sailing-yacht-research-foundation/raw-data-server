@@ -20,18 +20,37 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.iSailClass = require('./iSailClass.model.js')(sequelize, Sequelize);
-db.iSailEvent = require('./iSailEvent.model.js')(sequelize, Sequelize);
-db.iSailEventParticipant = require('./iSailEventParticipant.model.js')(
+// === iSail ===
+db.iSailClass = require('./iSail/iSailClass.model.js')(sequelize, Sequelize);
+db.iSailEvent = require('./iSail/iSailEvent.model.js')(sequelize, Sequelize);
+db.iSailEventParticipant = require('./iSail/iSailEventParticipant.model.js')(
   sequelize,
   Sequelize,
 );
-db.iSailEventTracksData = require('./iSailEventTracksData.model.js')(
+db.iSailEventTracksData = require('./iSail/iSailEventTracksData.model.js')(
   sequelize,
   Sequelize,
 );
-db.iSailRace = require('./iSailRace.model.js')(sequelize, Sequelize);
-db.iSailTrack = require('./iSailTrack.model.js')(sequelize, Sequelize);
-db.iSailPosition = require('./iSailPosition.model.js')(sequelize, Sequelize);
+db.iSailRace = require('./iSail/iSailRace.model.js')(sequelize, Sequelize);
+db.iSailTrack = require('./iSail/iSailTrack.model.js')(sequelize, Sequelize);
+db.iSailPosition = require('./iSail/iSailPosition.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailMark = require('./iSail/iSailMark.model.js')(sequelize, Sequelize);
+db.iSailStartline = require('./iSail/iSailStartline.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailCourseMark = require('./iSail/iSailCourseMark.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailRounding = require('./iSail/iSailRounding.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailResult = require('./iSail/iSailResult.model.js')(sequelize, Sequelize);
+// === End of iSail ===
 
 module.exports = db;
