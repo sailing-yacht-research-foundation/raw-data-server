@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const path = require('path');
 const uploadFileToS3 = require('../uploadFileToS3');
 
 jest.mock('aws-sdk', () => {
@@ -22,7 +23,7 @@ describe('Uploading files to S3', () => {
       Location: 'jest-bucket-test.parquet',
     });
     const actual = await uploadFileToS3(
-      'tmp/test.parquet',
+      path.resolve(__dirname, '../../test-files/test.parquet'),
       'online-bucket/test.parquet',
     );
     expect(actual).toEqual('jest-bucket-test.parquet');
@@ -33,9 +34,10 @@ describe('Uploading files to S3', () => {
       throw new Error();
     });
     const actual = await uploadFileToS3(
-      'tmp/test.parquet',
+      path.resolve(__dirname, '../../test-files/test.parquet'),
       'online-bucket/test.parquet',
     );
+
     expect(actual).toEqual('');
   });
 });

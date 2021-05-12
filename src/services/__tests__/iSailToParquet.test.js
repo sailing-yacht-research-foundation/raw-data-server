@@ -1,12 +1,17 @@
 const fs = require('fs');
-const { TEMPORARY_FOLDER } = require('../../constants');
+const temp = require('temp').track();
 
 const { iSailEventToParquet } = require('../iSailToParquet');
 
 describe('Storing iSail Data to Parquet', () => {
+  let dirPath = '';
+  beforeAll(async () => {
+    dirPath = await temp.mkdir('rds-parquet');
+  });
+
   test('Create iSailEvent Parquet', async () => {
     const fileName = 'testing.parquet';
-    const path = `${TEMPORARY_FOLDER}/${fileName}`;
+    const path = `${dirPath}/${fileName}`;
     await iSailEventToParquet(
       [
         {
@@ -28,6 +33,6 @@ describe('Storing iSail Data to Parquet', () => {
     );
 
     expect(fs.existsSync(path)).toEqual(true);
-    fs.unlinkSync(path);
+    temp.cleanup();
   });
 });
