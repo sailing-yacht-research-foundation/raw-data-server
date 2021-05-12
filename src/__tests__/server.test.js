@@ -1,8 +1,12 @@
 const supertest = require('supertest');
+const path = require('path');
 
 const createServer = require('../server');
 const generateDateAuthFormat = require('../utils/generateDateAuthFormat');
 const generateSecret = require('../utils/generateSecret');
+const saveISailData = require('../services/saveISailData');
+
+jest.mock('../services/saveISailData', () => jest.fn());
 
 describe('Test Endpoints', () => {
   let app;
@@ -10,6 +14,7 @@ describe('Test Endpoints', () => {
     app = createServer();
   });
   afterAll(async () => {
+    jest.resetAllMocks();
     await app.close();
   });
   test('GET /', async (done) => {
@@ -40,5 +45,30 @@ describe('Test Endpoints', () => {
       .then(() => {
         done();
       });
+  });
+
+  test('POST /api/upload-file', async () => {
+    let secret = generateSecret(generateDateAuthFormat());
+    const badFile = await supertest(app)
+      .post('/api/upload-file')
+      .set({
+        Authorization: secret,
+      })
+      .attach('raw_data', path.resolve(__dirname, '../test-files/text.txt'));
+    expect(badFile.status).toBe(400);
+
+    const noFile = await supertest(app).post('/api/upload-file').set({
+      Authorization: secret,
+    });
+    expect(noFile.status).toBe(400);
+
+    const response = await supertest(app)
+      .post('/api/upload-file')
+      .set({
+        Authorization: secret,
+      })
+      .attach('raw_data', path.resolve(__dirname, '../test-files/iSail.json'));
+    expect(response.status).toBe(200);
+    expect(saveISailData).toHaveBeenCalledTimes(1);
   });
 });

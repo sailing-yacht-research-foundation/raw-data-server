@@ -38,26 +38,31 @@ router.get('/', function (req, res) {
   });
 });
 
-router.post('/upload-file', upload.single('raw_data'), function (req, res) {
-  if (req.file) {
-    jsonfile
-      .readFile(req.file.path)
-      .then((jsonData) => {
+router.post(
+  '/upload-file',
+  upload.single('raw_data'),
+  async function (req, res) {
+    if (!req.file) {
+      res.status(400).json({
+        message: 'No File Uploaded',
+      });
+    } else {
+      try {
+        const jsonData = await jsonfile.readFile(req.file.path);
         if (jsonData.iSailEvent) {
           saveISailData(jsonData);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         // TODO: Handle error better
         console.error(err);
-      })
-      .finally(() => {
+      } finally {
         temp.cleanup();
+      }
+      res.json({
+        message: `File successfully uploaded`,
       });
-  }
-  res.json({
-    message: `${req.file.originalname} successfully uploaded`,
-  });
-});
+    }
+  },
+);
 
 module.exports = router;
