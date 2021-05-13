@@ -177,48 +177,8 @@ const iSailCombined = new parquet.ParquetSchema({
   club: { type: 'UTF8', optional: true },
   location: { type: 'UTF8', optional: true },
   url: { type: 'UTF8', optional: true },
-  participants: {
-    type: 'LIST',
-    fields: {
-      list: {
-        repeated: true,
-        fields: {
-          element: {
-            fields: {
-              id: { type: 'UTF8' },
-              original_id: { type: 'UTF8', optional: true },
-              class: { type: 'UTF8', optional: true },
-              original_class_id: { type: 'UTF8', optional: true },
-              class_name: { type: 'UTF8', optional: true },
-              sail_no: { type: 'UTF8', optional: true },
-              name: { type: 'UTF8', optional: true },
-            },
-          },
-        },
-      },
-    },
-  },
-  races: {
-    type: 'LIST',
-    fields: {
-      list: {
-        repeated: true,
-        fields: {
-          element: {
-            fields: {
-              id: { type: 'UTF8' },
-              original_id: { type: 'UTF8', optional: true },
-              name: { type: 'UTF8', optional: true },
-              start: { type: 'TIMESTAMP_MILLIS', optional: true },
-              stop: { type: 'TIMESTAMP_MILLIS', optional: true },
-              wind_direction: { type: 'UTF8', optional: true },
-              url: { type: 'UTF8', optional: true },
-            },
-          },
-        },
-      },
-    },
-  },
+  participants: { type: 'UTF8', optional: true },
+  races: { type: 'UTF8', optional: true },
 });
 
 module.exports = {

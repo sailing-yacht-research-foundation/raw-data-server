@@ -78,7 +78,9 @@ const iSailRaceToParquet = async (data, filePath) => {
 };
 
 const iSailCombinedToParquet = async (data, filePath) => {
-  const writer = await parquet.ParquetWriter.openFile(iSailCombined, filePath);
+  const writer = await parquet.ParquetWriter.openFile(iSailCombined, filePath, {
+    useDataPageV2: false,
+  });
 
   for (let i = 0; i < data.length; i++) {
     const {
@@ -111,47 +113,8 @@ const iSailCombinedToParquet = async (data, filePath) => {
       club,
       location,
       url,
-      participants: {
-        list: participants.map((row) => {
-          const {
-            id,
-            original_id,
-            class: participantClass,
-            original_class_id,
-            class_name,
-            sail_no,
-            name,
-          } = row;
-          return {
-            element: {
-              id,
-              original_id,
-              class: participantClass,
-              original_class_id,
-              class_name,
-              sail_no,
-              name,
-            },
-          };
-        }),
-      },
-      races: {
-        list: races.map((row) => {
-          const { id, original_id, name, start, stop, wind_direction, url } =
-            row;
-          return {
-            element: {
-              id,
-              original_id,
-              name,
-              start,
-              stop,
-              wind_direction,
-              url,
-            },
-          };
-        }),
-      },
+      participants: JSON.stringify(participants),
+      races: JSON.stringify(races),
     });
   }
   writer.close();
