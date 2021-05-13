@@ -164,6 +164,63 @@ const iSailStartline = new parquet.ParquetSchema({
   lat_2: { type: 'UTF8', optional: true },
 });
 
+const iSailCombined = new parquet.ParquetSchema({
+  event_id: { type: 'UTF8' },
+  original_event_id: { type: 'UTF8' },
+  name: { type: 'UTF8', optional: true },
+  start_date: { type: 'TIMESTAMP_MILLIS', optional: true },
+  start_timezone_type: { type: 'UTF8', optional: true },
+  start_timezone: { type: 'UTF8', optional: true },
+  stop_date: { type: 'TIMESTAMP_MILLIS', optional: true },
+  stop_timezone_type: { type: 'UTF8', optional: true },
+  stop_timezone: { type: 'UTF8', optional: true },
+  club: { type: 'UTF8', optional: true },
+  location: { type: 'UTF8', optional: true },
+  url: { type: 'UTF8', optional: true },
+  participants: {
+    type: 'LIST',
+    fields: {
+      list: {
+        repeated: true,
+        fields: {
+          element: {
+            fields: {
+              id: { type: 'UTF8' },
+              original_id: { type: 'UTF8', optional: true },
+              class: { type: 'UTF8', optional: true },
+              original_class_id: { type: 'UTF8', optional: true },
+              class_name: { type: 'UTF8', optional: true },
+              sail_no: { type: 'UTF8', optional: true },
+              name: { type: 'UTF8', optional: true },
+            },
+          },
+        },
+      },
+    },
+  },
+  races: {
+    type: 'LIST',
+    fields: {
+      list: {
+        repeated: true,
+        fields: {
+          element: {
+            fields: {
+              id: { type: 'UTF8' },
+              original_id: { type: 'UTF8', optional: true },
+              name: { type: 'UTF8', optional: true },
+              start: { type: 'TIMESTAMP_MILLIS', optional: true },
+              stop: { type: 'TIMESTAMP_MILLIS', optional: true },
+              wind_direction: { type: 'UTF8', optional: true },
+              url: { type: 'UTF8', optional: true },
+            },
+          },
+        },
+      },
+    },
+  },
+});
+
 module.exports = {
   iSailClass,
   iSailEvent,
@@ -177,4 +234,5 @@ module.exports = {
   iSailResult,
   iSailRounding,
   iSailStartline,
+  iSailCombined,
 };
