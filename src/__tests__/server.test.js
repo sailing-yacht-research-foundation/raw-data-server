@@ -27,17 +27,17 @@ describe('Test Endpoints', () => {
       });
   });
 
-  test('GET /api', async (done) => {
-    await supertest(app).get('/api').expect(400);
+  test('GET /api/v1', async (done) => {
+    await supertest(app).get('/api/v1').expect(400);
     await supertest(app)
-      .get('/api')
+      .get('/api/v1')
       .set({
         Authorization: 'randomtoken',
       })
       .expect(403);
     let secret = generateSecret(generateDateAuthFormat());
     await supertest(app)
-      .get('/api')
+      .get('/api/v1')
       .set({
         Authorization: secret,
       })
@@ -47,23 +47,23 @@ describe('Test Endpoints', () => {
       });
   });
 
-  test('POST /api/upload-file', async () => {
+  test('POST /api/v1/upload-file', async () => {
     let secret = generateSecret(generateDateAuthFormat());
     const badFile = await supertest(app)
-      .post('/api/upload-file')
+      .post('/api/v1/upload-file')
       .set({
         Authorization: secret,
       })
       .attach('raw_data', path.resolve(__dirname, '../test-files/text.txt'));
     expect(badFile.status).toBe(400);
 
-    const noFile = await supertest(app).post('/api/upload-file').set({
+    const noFile = await supertest(app).post('/api/v1/upload-file').set({
       Authorization: secret,
     });
     expect(noFile.status).toBe(400);
 
     const response = await supertest(app)
-      .post('/api/upload-file')
+      .post('/api/v1/upload-file')
       .set({
         Authorization: secret,
       })

@@ -1,7 +1,7 @@
 const fs = require('fs');
 const temp = require('temp').track();
 
-const { iSailEventToParquet } = require('../iSailToParquet');
+const iSailToParquet = require('../iSailToParquet');
 
 describe('Storing iSail Data to Parquet', () => {
   let dirPath = '';
@@ -9,10 +9,10 @@ describe('Storing iSail Data to Parquet', () => {
     dirPath = await temp.mkdir('rds-parquet');
   });
 
-  test('Create iSailEvent Parquet', async () => {
-    const fileName = 'testing.parquet';
+  test('Create iSail Parquet', async () => {
+    const fileName = 'iSail.parquet';
     const path = `${dirPath}/${fileName}`;
-    await iSailEventToParquet(
+    await iSailToParquet(
       [
         {
           id: 'd451063e-b576-4b23-8638-457e68cb6c26',
