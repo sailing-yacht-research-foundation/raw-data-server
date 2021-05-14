@@ -11,16 +11,7 @@ const processISailData = async () => {
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-
-  let dirPath = await temp.mkdir('rds-isail');
-
-  //   const racePath = `${dirPath}/iSailRaces.parquet`;
-  //   const iSailRaces = await db.iSailRace.findAll({ raw: true });
-  //   await iSailRaceToParquet(iSailRaces, racePath);
-  //   await uploadFileToS3(
-  //     racePath,
-  //     `iSail_races/year=${currentYear}/month=${currentMonth}/isail_races_${fullDateFormat}.parquet`,
-  //   );
+  const dirPath = await temp.mkdir('rds-isail');
 
   const combinedPath = `${dirPath}/iSailCombined.parquet`;
   const iSailEvents = await db.iSailEvent.findAll({ raw: true });
@@ -41,6 +32,10 @@ const processISailData = async () => {
     where: { event: { [Op.in]: queryEventList } },
     raw: true,
   });
+  const iSailRoundings = await db.iSailRounding.findAll({
+    where: { event: { [Op.in]: queryEventList } },
+    raw: true,
+  });
   const iSailRaces = await db.iSailRace.findAll({
     where: { event: { [Op.in]: queryEventList } },
     raw: true,
@@ -50,7 +45,15 @@ const processISailData = async () => {
     where: { race: { [Op.in]: queryRaceList } },
     raw: true,
   });
+  const iSailStartlines = await db.iSailStartline.findAll({
+    where: { race: { [Op.in]: queryRaceList } },
+    raw: true,
+  });
   const iSailCourseMarks = await db.iSailCourseMark.findAll({
+    where: { race: { [Op.in]: queryRaceList } },
+    raw: true,
+  });
+  const iSailResults = await db.iSailResult.findAll({
     where: { race: { [Op.in]: queryRaceList } },
     raw: true,
   });
@@ -97,49 +100,6 @@ const processISailData = async () => {
             name: participant.name,
           };
         }),
-      races: iSailRaces
-        .filter((race) => {
-          return race.event === row.id;
-        })
-        .map((race) => {
-          return {
-            id: race.id,
-            original_id: race.original_id,
-            name: race.name,
-            start: race.start,
-            stop: race.stop,
-            wind_direction: race.wind_direction,
-            url: race.url,
-            marks: iSailMarks
-              .filter((mark) => {
-                return mark.race === race.id;
-              })
-              .map((mark) => {
-                return {
-                  id: mark.id,
-                  original_id: mark.original_id,
-                  name: mark.name,
-                  lon: mark.lon,
-                  lat: mark.lat,
-                };
-              }),
-            courseMarks: iSailCourseMarks
-              .filter((courseMark) => {
-                return courseMark.race === race.id;
-              })
-              .map((courseMark) => {
-                return {
-                  id: courseMark.id,
-                  original_id: courseMark.original_id,
-                  position: courseMark.position,
-                  mark: courseMark.mark,
-                  original_mark_id: courseMark.original_mark_id,
-                  startline: courseMark.startline,
-                  original_startline_id: courseMark.original_startline_id,
-                };
-              }),
-          };
-        }),
       trackData: iSailEventTracksData.find((trackData) => {
         return trackData.event === row.id;
       }),
@@ -176,6 +136,100 @@ const processISailData = async () => {
             distance: pos.distance,
             lon: pos.lon,
             lat: pos.lat,
+          };
+        }),
+      roundings: iSailRoundings
+        .filter((rounding) => {
+          return rounding.event === row.id;
+        })
+        .map((rounding) => {
+          return {
+            id: rounding.id,
+            original_id: rounding.original_id,
+            track: rounding.track,
+            original_track_id: rounding.original_track_id,
+            course_mark: rounding.course_mark,
+            original_course_mark_id: rounding.original_course_mark_id,
+            time: rounding.time,
+            time_since_last_mark: rounding.time_since_last_mark,
+            distance_since_last_mark: rounding.distance_since_last_mark,
+            rst: rounding.rst,
+            rsd: rounding.rsd,
+            max_speed: rounding.max_speed,
+          };
+        }),
+      races: iSailRaces
+        .filter((race) => {
+          return race.event === row.id;
+        })
+        .map((race) => {
+          return {
+            id: race.id,
+            original_id: race.original_id,
+            name: race.name,
+            start: race.start,
+            stop: race.stop,
+            wind_direction: race.wind_direction,
+            url: race.url,
+            marks: iSailMarks
+              .filter((mark) => {
+                return mark.race === race.id;
+              })
+              .map((mark) => {
+                return {
+                  id: mark.id,
+                  original_id: mark.original_id,
+                  name: mark.name,
+                  lon: mark.lon,
+                  lat: mark.lat,
+                };
+              }),
+            startlines: iSailStartlines
+              .filter((startline) => {
+                return startline.race === race.id;
+              })
+              .map((startline) => {
+                return {
+                  id: startline.id,
+                  original_id: startline.original_id,
+                  name: startline.name,
+                  lon_1: startline.lon1,
+                  lon_2: startline.lon2,
+                  lat_1: startline.lat1,
+                  lat_2: startline.lat2,
+                };
+              }),
+            courseMarks: iSailCourseMarks
+              .filter((courseMark) => {
+                return courseMark.race === race.id;
+              })
+              .map((courseMark) => {
+                return {
+                  id: courseMark.id,
+                  original_id: courseMark.original_id,
+                  position: courseMark.position,
+                  mark: courseMark.mark,
+                  original_mark_id: courseMark.original_mark_id,
+                  startline: courseMark.startline,
+                  original_startline_id: courseMark.original_startline_id,
+                };
+              }),
+            results: iSailResults
+              .filter((result) => {
+                return result.race === race.id;
+              })
+              .map((result) => {
+                return {
+                  id: result.id,
+                  original_id: result.original_id,
+                  name: result.name,
+                  points: result.points,
+                  time: result.time,
+                  finaled: result.finaled,
+                  participant: result.participant,
+                  original_participant_id: result.original_participant_id,
+                };
+              }),
           };
         }),
     };

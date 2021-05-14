@@ -178,7 +178,6 @@ const iSailCombined = new parquet.ParquetSchema({
   location: { type: 'UTF8', optional: true },
   url: { type: 'UTF8', optional: true },
   participants: { type: 'UTF8', optional: true },
-  races: { type: 'UTF8', optional: true },
   trackData: {
     fields: {
       id: { type: 'UTF8' },
@@ -193,6 +192,8 @@ const iSailCombined = new parquet.ParquetSchema({
   },
   tracks: { type: 'UTF8', optional: true },
   positions: { type: 'UTF8', optional: true },
+  roundings: { type: 'UTF8', optional: true },
+  races: { type: 'UTF8', optional: true },
 });
 
 module.exports = {
