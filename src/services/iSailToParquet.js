@@ -98,8 +98,10 @@ const iSailCombinedToParquet = async (data, filePath) => {
       url,
       participants,
       races,
+      trackData,
+      tracks,
+      positions,
     } = data[i];
-
     await writer.appendRow({
       event_id: id,
       original_event_id: original_id,
@@ -115,6 +117,19 @@ const iSailCombinedToParquet = async (data, filePath) => {
       url,
       participants: JSON.stringify(participants),
       races: JSON.stringify(races),
+      trackData: trackData
+        ? {
+            id: trackData.id,
+            min_lon: trackData.min_lon,
+            max_lon: trackData.max_lon,
+            min_lat: trackData.min_lat,
+            max_lat: trackData.max_lat,
+            start_time: trackData.start_time,
+            stop_time: trackData.stop_time,
+          }
+        : null,
+      tracks: JSON.stringify(tracks),
+      positions: JSON.stringify(positions),
     });
   }
   writer.close();

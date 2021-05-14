@@ -179,6 +179,20 @@ const iSailCombined = new parquet.ParquetSchema({
   url: { type: 'UTF8', optional: true },
   participants: { type: 'UTF8', optional: true },
   races: { type: 'UTF8', optional: true },
+  trackData: {
+    fields: {
+      id: { type: 'UTF8' },
+      min_lon: { type: 'UTF8', optional: true },
+      max_lon: { type: 'UTF8', optional: true },
+      min_lat: { type: 'UTF8', optional: true },
+      max_lat: { type: 'UTF8', optional: true },
+      start_time: { type: 'TIMESTAMP_MILLIS', optional: true },
+      stop_time: { type: 'TIMESTAMP_MILLIS', optional: true },
+    },
+    optional: true,
+  },
+  tracks: { type: 'UTF8', optional: true },
+  positions: { type: 'UTF8', optional: true },
 });
 
 module.exports = {
