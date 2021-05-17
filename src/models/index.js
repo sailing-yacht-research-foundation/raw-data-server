@@ -53,4 +53,27 @@ db.iSailRounding = require('./iSail/iSailRounding.model.js')(
 db.iSailResult = require('./iSail/iSailResult.model.js')(sequelize, Sequelize);
 // === End of iSail ===
 
+// === Kattack ===
+db.kattackYachtClub = require('./kattack/kattackYachtClub.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackRace = require('./kattack/kattackRace.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackDevice = require('./kattack/kattackDevice.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackPosition = require('./kattack/kattackPosition.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackWaypoint = require('./kattack/kattackWaypoint.model.js')(
+  sequelize,
+  Sequelize,
+);
+// === End of Kattack ===
+
 module.exports = db;
