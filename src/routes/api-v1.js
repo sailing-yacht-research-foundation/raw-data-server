@@ -6,6 +6,7 @@ const temp = require('temp').track();
 const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
 const saveISailData = require('../services/saveISailData');
+const saveKattackData = require('../services/saveKattackData');
 
 var router = express.Router();
 
@@ -51,6 +52,9 @@ router.post(
         const jsonData = await jsonfile.readFile(req.file.path);
         if (jsonData.iSailEvent) {
           saveISailData(jsonData);
+        }
+        if (jsonData.kattackRace) {
+          saveKattackData(jsonData);
         }
       } catch (err) {
         // TODO: Handle error better

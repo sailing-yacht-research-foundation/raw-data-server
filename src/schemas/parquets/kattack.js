@@ -119,10 +119,20 @@ const kattackRace = new parquet.ParquetSchema({
   url: { type: 'UTF8' },
   leaderboard_data: { type: 'UTF8', optional: true },
 });
+
+const kattackCombined = new parquet.ParquetSchema({
+  yachtClubs: { type: 'UTF8', optional: true },
+  races: { type: 'UTF8', optional: true },
+  devices: { type: 'UTF8', optional: true },
+  positions: { type: 'UTF8', optional: true },
+  waypoints: { type: 'UTF8', optional: true },
+});
+
 module.exports = {
   kattackYachtClub,
   kattackWaypoint,
   kattackPosition,
   kattackDevice,
   kattackRace,
+  kattackCombined,
 };
