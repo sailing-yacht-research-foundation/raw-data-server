@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  rawdataserver:
-    image: rawdataserver
+  raw-data-server:
+    image: raw-data-server
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -12,30 +12,31 @@ services:
       AWS_S3_ACCESS_KEY_ID:
       AWS_S3_SECRET_ACCESS_KEY:
       AWS_S3_BUCKET:
-      DB_HOST: test_db
+      DB_HOST: rds-db
       DB_PORT: 3306
       DB_USER: user
       DB_PASSWORD: password
-      DB_NAME: test_db
+      DB_NAME: rawdata
     ports:
       - 3030:3030
     volumes:
       - .:/usr/src/app
     links:
-      - test_db
-  test_db:
+      - rds-db
+  rds-db:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: 'test_db'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_DATABASE: rawdata
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
     ports:
       - 3306:3306
     expose:
       - 3306
     volumes:
-      - my-db:/var/lib/mysql
+      - ./scripts:/docker-entrypoint-initdb.d
+      - rds-db:/var/lib/rds
 volumes:
-  my-db:
+  rds-db:

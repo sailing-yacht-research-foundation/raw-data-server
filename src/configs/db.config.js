@@ -5,7 +5,7 @@ module.exports = {
   PASSWORD: process.env.DB_PASSWORD || 'database_password',
   DB:
     process.env.NODE_ENV === 'test'
-      ? 'test-db'
+      ? 'test_db'
       : process.env.DB_NAME || 'database_name',
   dialect: 'mysql',
   pool: {
