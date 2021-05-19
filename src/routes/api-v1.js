@@ -7,6 +7,7 @@ const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
 const saveISailData = require('../services/saveISailData');
 const saveKattackData = require('../services/saveKattackData');
+const saveGeoracingData = require('../services/saveGeoracingData');
 
 var router = express.Router();
 
@@ -55,6 +56,9 @@ router.post(
         }
         if (jsonData.kattackRace) {
           saveKattackData(jsonData);
+        }
+        if (jsonData.georacingEvent) {
+          saveGeoracingData(jsonData);
         }
       } catch (err) {
         // TODO: Handle error better

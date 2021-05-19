@@ -244,6 +244,21 @@ const georacingEvent = new parquet.ParquetSchema({
   end_time: { type: 'UTF8', optional: true },
 });
 
+const georacingCombined = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  original_id: { type: 'UTF8' },
+  name: { type: 'UTF8', optional: true },
+  short_name: { type: 'UTF8', optional: true },
+  time_zone: { type: 'UTF8', optional: true },
+  description_en: { type: 'UTF8', optional: true },
+  description_fr: { type: 'UTF8', optional: true },
+  short_description: { type: 'UTF8', optional: true },
+  start_time: { type: 'UTF8', optional: true },
+  end_time: { type: 'UTF8', optional: true },
+  races: { type: 'UTF8', optional: true },
+  actors: { type: 'UTF8', optional: true },
+});
+
 module.exports = {
   georacingLine,
   georacingGroundPlace,
@@ -257,4 +272,5 @@ module.exports = {
   georacingWeather,
   georacingRace,
   georacingEvent,
+  georacingCombined,
 };

@@ -10,7 +10,7 @@ const processKattackData = async () => {
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-isail');
+  const dirPath = await temp.mkdir('rds-kattack');
 
   const combinedPath = `${dirPath}/kattackCombined.parquet`;
   const yachtClubs = await db.kattackYachtClub.findAll({ raw: true });
