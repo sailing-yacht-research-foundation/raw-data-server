@@ -76,4 +76,53 @@ db.kattackWaypoint = require('./kattack/kattackWaypoint.model.js')(
 );
 // === End of Kattack ===
 
+// === Georacing ===
+db.georacingEvent = require('./georacing/georacingEvent.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingRace = require('./georacing/georacingRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingActor = require('./georacing/georacingActor.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingWeather = require('./georacing/georacingWeather.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingCourse = require('./georacing/georacingCourse.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingCourseObject = require('./georacing/georacingCourseObject.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingCourseElement = require('./georacing/georacingCourseElement.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingGroundPlace = require('./georacing/georacingGroundPlace.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingPosition = require('./georacing/georacingPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingLine = require('./georacing/georacingLine.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingSplittime = require('./georacing/georacingSplittime.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingSplittimeObject =
+  require('./georacing/georacingSplittimeObject.model')(sequelize, Sequelize);
+// === End of Georacing ===
+
 module.exports = db;
