@@ -77,10 +77,10 @@ const processISailData = async () => {
       event_id,
       original_event_id,
       name,
-      start_date: new Date(start_date),
+      start_date,
       start_timezone_type,
       start_timezone,
-      stop_date: new Date(stop_date),
+      stop_date,
       stop_timezone_type,
       stop_timezone,
       club,
@@ -250,7 +250,7 @@ const processISailData = async () => {
     combinedPath,
     `iSail/year=${currentYear}/month=${currentMonth}/isail_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  // temp.cleanup();
   return fileUrl;
 };
 
