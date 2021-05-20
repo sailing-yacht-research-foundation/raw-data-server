@@ -3,6 +3,7 @@ const express = require('express');
 const apiV1 = require('./routes/api-v1');
 const db = require('./models');
 const { errorHandler } = require('./errors');
+const processISailData = require('./services/processISailData');
 
 function createServer() {
   const app = express();
@@ -14,8 +15,10 @@ function createServer() {
       extended: true,
     }),
   );
-  app.get('/', (req, res) => {
-    res.send('SYRF - Raw Data Server');
+  app.get('/', async (req, res) => {
+    const fileUrl = await processISailData();
+    res.json({ fileUrl });
+    // res.send('SYRF - Raw Data Server');
   });
   app.use('/api/v1', apiV1);
   app.use(errorHandler);

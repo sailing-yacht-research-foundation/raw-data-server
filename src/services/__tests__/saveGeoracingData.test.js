@@ -15,6 +15,9 @@ describe('Storing georacing data to DB', () => {
     await db.georacingActor.destroy({
       truncate: true,
     });
+    await db.georacingGroundPlace.destroy({
+      truncate: true,
+    });
     await db.sequelize.close();
   });
   it('should save georacing events correctly', async () => {
@@ -218,5 +221,6 @@ describe('Storing georacing data to DB', () => {
     expect(spyFindAll).toHaveBeenCalledTimes(1);
     expect(spyCreate).toHaveBeenCalledTimes(1);
   });
-  // TODO: Add other georacing data. Currently only these collections have values in the SYRF dev database
+  // TODO: Add other georacing data.
+  // Currently only these collections have values in the SYRF dev database
 });
