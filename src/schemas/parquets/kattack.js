@@ -66,7 +66,7 @@ const kattackDevice = new parquet.ParquetSchema({
   js_data_id: { type: 'UTF8', optional: true },
   start_timezone_type: { type: 'UTF8', optional: true },
   start_timezone: { type: 'UTF8', optional: true },
-  stop_date: { type: 'TIMESTAMP_MILLIS', optional: true },
+  stop_date: { type: 'UTF8', optional: true },
   stop_timezone_type: { type: 'UTF8', optional: true },
   stop_timezone: { type: 'UTF8', optional: true },
   club: { type: 'UTF8', optional: true },

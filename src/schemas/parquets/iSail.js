@@ -10,10 +10,10 @@ const iSailEvent = new parquet.ParquetSchema({
   id: { type: 'UTF8' },
   original_id: { type: 'UTF8' },
   name: { type: 'UTF8', optional: true },
-  start_date: { type: 'TIMESTAMP_MILLIS', optional: true },
+  start_date: { type: 'UTF8', optional: true },
   start_timezone_type: { type: 'UTF8', optional: true },
   start_timezone: { type: 'UTF8', optional: true },
-  stop_date: { type: 'TIMESTAMP_MILLIS', optional: true },
+  stop_date: { type: 'UTF8', optional: true },
   stop_timezone_type: { type: 'UTF8', optional: true },
   stop_timezone: { type: 'UTF8', optional: true },
   club: { type: 'UTF8', optional: true },
@@ -41,8 +41,8 @@ const iSailEventTracksData = new parquet.ParquetSchema({
   max_lon: { type: 'UTF8', optional: true },
   min_lat: { type: 'UTF8', optional: true },
   max_lat: { type: 'UTF8', optional: true },
-  start_time: { type: 'TIMESTAMP_MILLIS', optional: true },
-  stop_time: { type: 'TIMESTAMP_MILLIS', optional: true },
+  start_time: { type: 'UTF8', optional: true },
+  stop_time: { type: 'UTF8', optional: true },
 });
 
 const iSailTrack = new parquet.ParquetSchema({
@@ -57,8 +57,8 @@ const iSailTrack = new parquet.ParquetSchema({
   original_class_id: { type: 'UTF8', optional: true },
   original_user_id: { type: 'UTF8', optional: true },
   user_name: { type: 'UTF8', optional: true },
-  start_time: { type: 'TIMESTAMP_MILLIS', optional: true },
-  stop_time: { type: 'TIMESTAMP_MILLIS', optional: true },
+  start_time: { type: 'UTF8', optional: true },
+  stop_time: { type: 'UTF8', optional: true },
 });
 
 const iSailRace = new parquet.ParquetSchema({
@@ -67,8 +67,8 @@ const iSailRace = new parquet.ParquetSchema({
   event: { type: 'UTF8' },
   original_event_id: { type: 'UTF8' },
   name: { type: 'UTF8', optional: true },
-  start: { type: 'TIMESTAMP_MILLIS', optional: true },
-  stop: { type: 'TIMESTAMP_MILLIS', optional: true },
+  start: { type: 'UTF8', optional: true },
+  stop: { type: 'UTF8', optional: true },
   wind_direction: { type: 'UTF8', optional: true },
   url: { type: 'UTF8', optional: true },
 });
