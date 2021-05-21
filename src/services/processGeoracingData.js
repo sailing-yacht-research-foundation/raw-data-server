@@ -235,7 +235,7 @@ const processGeoracingData = async () => {
     parquetPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
   );
-  // temp.cleanup();
+  temp.cleanup();
   return fileUrl;
 };
 
