@@ -2,9 +2,10 @@ const temp = require('temp').track();
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
+const { georacingCombined } = require('../schemas/parquets/georacing');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const georacingToParquet = require('./georacingToParquet');
 const uploadFileToS3 = require('./uploadFileToS3');
+const writeToParquet = require('./writeToParquet');
 
 const processGeoracingData = async () => {
   const currentDate = new Date();
@@ -130,7 +131,7 @@ const processGeoracingData = async () => {
       actors: eventActors.get(id) || [],
     };
   });
-  await georacingToParquet(data, parquetPath);
+  await writeToParquet(data, georacingCombined, parquetPath);
   const fileUrl = await uploadFileToS3(
     parquetPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
