@@ -3,8 +3,9 @@ const express = require('express');
 const apiV1 = require('./routes/api-v1');
 const db = require('./models');
 const { errorHandler } = require('./errors');
-const processISailData = require('./services/processISailData');
+// const processISailData = require('./services/processISailData');
 const readParquet = require('./services/readParquet');
+const processGeoracingData = require('./services/processGeoracingData');
 
 function createServer() {
   const app = express();
@@ -20,7 +21,7 @@ function createServer() {
     res.send('SYRF - Raw Data Server');
   });
   app.get('/test-write', async (req, res) => {
-    const fileUrl = await processISailData();
+    const fileUrl = await processGeoracingData();
     res.json({ fileUrl });
     // res.send('SYRF - Raw Data Server');
   });

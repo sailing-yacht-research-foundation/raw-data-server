@@ -17,7 +17,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       actor_original_id: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       splittime: {
         type: Sequelize.UUID,

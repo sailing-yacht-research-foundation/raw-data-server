@@ -7,6 +7,148 @@ const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
 const writeToParquet = require('./writeToParquet');
 
+const getEvents = async () => {
+  const events = await db.georacingEvent.findAll({ raw: true });
+  return events;
+};
+const getRaces = async (eventList) => {
+  const races = await db.georacingRace.findAll({
+    where: { event: { [Op.in]: eventList } },
+    raw: true,
+  });
+  const raceMap = new Map();
+  const raceIDs = [];
+  races.forEach((row) => {
+    raceIDs.push(row.id);
+    let currentList = raceMap.get(row.event);
+    raceMap.set(row.event, [...(currentList || []), row]);
+  });
+  return { raceIDs, raceMap };
+};
+const getWeathers = async (raceList) => {
+  const weathers = await db.georacingWeather.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  weathers.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getCourses = async (raceList) => {
+  const courses = await db.georacingCourse.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  courses.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getCourseObjects = async (raceList) => {
+  const courseObjects = await db.georacingCourseObject.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  courseObjects.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getCourseElements = async (raceList) => {
+  const courseElements = await db.georacingCourseElement.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  courseElements.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getGroundPlace = async (raceList) => {
+  const groundPlaces = await db.georacingGroundPlace.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  groundPlaces.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getLines = async (raceList) => {
+  const lines = await db.georacingLine.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  lines.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+
+const getActors = async (eventList) => {
+  const actors = await db.georacingActor.findAll({
+    where: { event: { [Op.in]: eventList } },
+    raw: true,
+  });
+  const result = new Map();
+  actors.forEach((row) => {
+    let currentList = result.get(row.event);
+    result.set(row.event, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getPositions = async (eventList) => {
+  const positions = await db.georacingPosition.findAll({
+    where: { event: { [Op.in]: eventList } },
+    raw: true,
+  });
+  const result = new Map();
+  positions.forEach((row) => {
+    let currentList = result.get(row.event);
+    result.set(row.event, [...(currentList || []), row]);
+  });
+  return result;
+};
+const getSplittime = async (eventList) => {
+  const splittimes = await db.georacingSplittime.findAll({
+    where: { event: { [Op.in]: eventList } },
+    raw: true,
+  });
+  const splittimeMap = new Map();
+  const splittimeIDs = [];
+  splittimes.forEach((row) => {
+    splittimeIDs.push(row.id);
+    let currentList = splittimeMap.get(row.event);
+    splittimeMap.set(row.event, [...(currentList || []), row]);
+  });
+  return { splittimeIDs, splittimeMap };
+};
+const getSplittimeObjects = async (splittimeList) => {
+  const objects = await db.georacingSplittimeObject.findAll({
+    where: { splittime: { [Op.in]: splittimeList } },
+    raw: true,
+  });
+  const result = new Map();
+  objects.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
+
 const processGeoracingData = async () => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
@@ -15,98 +157,30 @@ const processGeoracingData = async () => {
   const dirPath = await temp.mkdir('rds-georacing');
 
   const parquetPath = `${dirPath}/georacing.parquet`;
-  const events = await db.georacingEvent.findAll({ raw: true });
-  const queryEventList = events.map((row) => row.id);
-  const races = await db.georacingRace.findAll({
-    where: { event: { [Op.in]: queryEventList } },
-    raw: true,
-  });
-  const eventRaces = new Map();
-  races.forEach((race) => {
-    let currentList = eventRaces.get(race.event);
-    let newData = {
-      id: race.id,
-      original_id: race.original_id,
-      name: race.name,
-      short_name: race.short_name,
-      short_description: race.short_description,
-      time_zone: race.time_zone,
-      available_time: race.available_time,
-      start_time: race.start_time,
-      end_time: race.end_time,
-      url: race.url,
-      player_version: race.player_version,
-    };
-    let newList = [newData];
-    if (currentList) {
-      newList = [...currentList, newData];
-    }
-    eventRaces.set(race.event, newList);
-  });
+  const events = await getEvents();
+  if (events.length === 0) {
+    return '';
+  }
+  const eventList = events.map((row) => row.id);
 
-  const actors = await db.georacingActor.findAll({
-    where: { event: { [Op.in]: queryEventList } },
-    raw: true,
-  });
-  const eventActors = new Map();
-  actors.forEach((actor) => {
-    let currentList = eventActors.get(actor.event);
-    let newData = {
-      id: actor.id,
-      original_id: actor.ioriginal_idd,
-      race: actor.race,
-      race_original_id: actor.race_original_id,
-      tracker_id: actor.tracker_id,
-      tracker2_id: actor.tracker2_id,
-      id_provider_actor: actor.id_provider_actor,
-      team_id: actor.team_id,
-      profile_id: actor.profile_id,
-      start_number: actor.start_number,
-      first_name: actor.first_name,
-      middle_name: actor.middle_name,
-      last_name: actor.last_name,
-      name: actor.name,
-      big_name: actor.big_name,
-      short_name: actor.short_name,
-      members: actor.members,
-      active: actor.active,
-      visible: actor.visible,
-      orientation_angle: actor.orientation_angle,
-      start_time: actor.start_time,
-      has_penality: actor.has_penality,
-      sponsor_url: actor.sponsor_url,
-      start_order: actor.start_order,
-      rating: actor.rating,
-      penality: actor.penality,
-      penality_time: actor.penality_time,
-      capital1: actor.capital1,
-      capital2: actor.capital2,
-      is_security: actor.is_security,
-      full_name: actor.full_name,
-      categories: actor.categories,
-      categories_name: actor.categories_name,
-      all_info: actor.all_info,
-      nationality: actor.nationality,
-      model: actor.model,
-      size: actor.size,
-      team: actor.team,
-      type: actor.type,
-      orientation_mode: actor.orientation_mode,
-      id_provider_tracker: actor.id_provider_tracker,
-      id_provider_tracker2: actor.id_provider_tracker2,
-      states: actor.states,
-      person: actor.person,
-    };
-    let newList = [newData];
-    if (currentList) {
-      newList = [...currentList, newData];
-    }
-    eventActors.set(actor.event, newList);
-  });
+  const actors = await getActors(eventList);
+  const positions = await getPositions(eventList);
+
+  const { splittimeIDs, splittimeMap } = await getSplittime(eventList);
+  const splittimeObjects = await getSplittimeObjects(splittimeIDs);
+
+  const { raceIDs, raceMap } = await getRaces(eventList);
+  const weathers = await getWeathers(raceIDs);
+  const courses = await getCourses(raceIDs);
+  const courseObjects = await getCourseObjects(raceIDs);
+  const courseElements = await getCourseElements(raceIDs);
+  const groundPlaces = await getGroundPlace(raceIDs);
+  const lines = await getLines(raceIDs);
+
   const data = events.map((row) => {
     const {
-      id,
-      original_id,
+      id: event_id,
+      original_id: original_event_id,
       name,
       short_name,
       time_zone,
@@ -116,9 +190,32 @@ const processGeoracingData = async () => {
       start_time,
       end_time,
     } = row;
+
+    const eventRaces = raceMap.get(event_id);
+    const finalRaces = eventRaces
+      ? eventRaces.map((row) => {
+          return Object.assign({}, row, {
+            weathers: JSON.stringify(weathers.get(row.id)),
+            courses: JSON.stringify(courses.get(row.id)),
+            course_objects: JSON.stringify(courseObjects.get(row.id)),
+            course_elements: JSON.stringify(courseElements.get(row.id)),
+            ground_places: JSON.stringify(groundPlaces.get(row.id)),
+            lines: JSON.stringify(lines.get(row.id)),
+          });
+        })
+      : [];
+    const eventSplittimes = splittimeMap.get(event_id);
+    const finalSplittimes = eventSplittimes
+      ? eventSplittimes.map((row) => {
+          return Object.assign({}, row, {
+            objects: JSON.stringify(splittimeObjects.get(row.id)),
+          });
+        })
+      : [];
+
     return {
-      id,
-      original_id,
+      event_id,
+      original_event_id,
       name,
       short_name,
       time_zone,
@@ -127,8 +224,10 @@ const processGeoracingData = async () => {
       short_description,
       start_time,
       end_time,
-      races: eventRaces.get(id) || [],
-      actors: eventActors.get(id) || [],
+      races: finalRaces,
+      splittimes: finalSplittimes,
+      actors: actors.get(event_id),
+      positions: positions.get(event_id),
     };
   });
   await writeToParquet(data, georacingCombined, parquetPath);
@@ -136,7 +235,7 @@ const processGeoracingData = async () => {
     parquetPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  // temp.cleanup();
   return fileUrl;
 };
 
