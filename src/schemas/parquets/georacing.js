@@ -108,7 +108,7 @@ const georacingSplittimeObject = new parquet.ParquetSchema({
   id: { type: 'UTF8' },
   original_id: { type: 'UTF8' },
   actor: { type: 'UTF8' },
-  actor_original_id: { type: 'UTF8' },
+  actor_original_id: { type: 'UTF8', optional: true },
   splittime: { type: 'UTF8' },
   splittime_original_id: { type: 'UTF8' },
   capital: { type: 'UTF8', optional: true },

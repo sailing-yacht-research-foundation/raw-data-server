@@ -97,7 +97,6 @@ const getLines = async (raceList) => {
   });
   return result;
 };
-
 const getActors = async (eventList) => {
   const actors = await db.georacingActor.findAll({
     where: { event: { [Op.in]: eventList } },
@@ -143,8 +142,8 @@ const getSplittimeObjects = async (splittimeList) => {
   });
   const result = new Map();
   objects.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
+    let currentList = result.get(row.splittime);
+    result.set(row.splittime, [...(currentList || []), row]);
   });
   return result;
 };
@@ -239,4 +238,18 @@ const processGeoracingData = async () => {
   return fileUrl;
 };
 
-module.exports = processGeoracingData;
+module.exports = {
+  getEvents,
+  getRaces,
+  getActors,
+  getWeathers,
+  getCourses,
+  getCourseObjects,
+  getCourseElements,
+  getGroundPlace,
+  getLines,
+  getPositions,
+  getSplittime,
+  getSplittimeObjects,
+  processGeoracingData,
+};
