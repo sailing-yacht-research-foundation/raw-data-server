@@ -1,45 +1,57 @@
 module.exports = (sequelize, Sequelize) => {
-  const georacingPosition = sequelize.define(
-    'GeoracingPositions',
+  const tractracEvent = sequelize.define(
+    'TracTracEvent',
     {
       id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
       },
-      trackable_type: {
+      original_id: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      external_website: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      trackable_id: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      trackable_original_id: {
+      country: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      race: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      race_original_id: {
+      city: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      event: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      event_original_id: {
+      start: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      timestamp: {
+      end: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      lon: {
+      type: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      web_url: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      sap_url: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      sap_event_url: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      sap_leaderboard_name: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
@@ -47,52 +59,15 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      offset: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      r: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      cl: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      d: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      lg: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      lt: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      al: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      s: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      h: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      dtnm: {
+      lon: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
     },
     {
-      tableName: 'GeoracingPositions',
+      tableName: 'TracTracEvents',
       timestamps: false,
     },
   );
-
-  return georacingPosition;
+  return tractracEvent;
 };

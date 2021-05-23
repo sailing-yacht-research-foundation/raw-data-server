@@ -125,4 +125,51 @@ db.georacingSplittimeObject =
   require('./georacing/georacingSplittimeObject.model')(sequelize, Sequelize);
 // === End of Georacing ===
 
+// === TracTrac ===
+db.sailorEmail = require('./tractrac/sailorEmail.model')(sequelize, Sequelize);
+db.tractracClass = require('./tractrac/tractracClass.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracCompetitor = require('./tractrac/tractracCompetitor.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracCompetitorPassing =
+  require('./tractrac/tractracCompetitorPassing.model')(sequelize, Sequelize);
+db.tractracCompetitorPosition =
+  require('./tractrac/tractracCompetitorPosition.model')(sequelize, Sequelize);
+db.tractracCompetitorResult =
+  require('./tractrac/tractracCompetitorResult.model')(sequelize, Sequelize);
+db.tractracControl = require('./tractrac/tractracControl.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracControlPoint = require('./tractrac/tractracControlPoint.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracControlPointPosition =
+  require('./tractrac/tractracControlPointPosition.model')(
+    sequelize,
+    Sequelize,
+  );
+db.tractracEvent = require('./tractrac/tractracEvent.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracRace = require('./tractrac/tractracRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracRaceClass = require('./tractrac/tractracRaceClass.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracRoute = require('./tractrac/tractracRace.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of TracTrac ===
+
 module.exports = db;

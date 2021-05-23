@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const georacingCourseElement = sequelize.define(
-    'georacingCourseElements',
+    'GeoracingCourseElements',
     {
       id: {
         type: Sequelize.UUID,
@@ -85,7 +85,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'georacingCourseElements',
+      tableName: 'GeoracingCourseElements',
       timestamps: false,
     },
   );

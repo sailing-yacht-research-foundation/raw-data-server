@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const kattackYachtClub = sequelize.define(
-    'KattackYachtClub',
+  const tractracClass = sequelize.define(
+    'TracTracClass',
     {
       id: {
         type: Sequelize.UUID,
@@ -9,22 +9,17 @@ module.exports = (sequelize, Sequelize) => {
       },
       original_id: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
       name: {
         type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      external_url: {
-        type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
-      tableName: 'KattackYachtClubs',
+      tableName: 'TracTracClasses',
       timestamps: false,
     },
   );
-
-  return kattackYachtClub;
+  return tractracClass;
 };

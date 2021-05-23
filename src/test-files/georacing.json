@@ -1,5 +1,5 @@
 {
-  "georacingEvent": [
+  "GeoracingEvent": [
     {
       "id": "8fd17e9c-bce2-45ea-9c63-1eca69963e18",
       "original_id": "101898",
@@ -25,7 +25,7 @@
       "end_time": "2021-02-03T00:00:00Z"
     }
   ],
-  "georacingRace": [
+  "GeoracingRace": [
     {
       "id": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "original_id": "97711",
@@ -42,7 +42,7 @@
       "player_version": "3"
     }
   ],
-  "georacingActor": [
+  "GeoracingActor": [
     {
       "id": "e56312ed-fb0a-4dbe-ba6c-0dfab853022a",
       "original_id": null,
@@ -140,7 +140,7 @@
       "person": null
     }
   ],
-  "georacingWeather": [
+  "GeoracingWeather": [
     {
       "id": "weather1",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
@@ -154,7 +154,7 @@
       "time": "123"
     }
   ],
-  "georacingCourse": [
+  "GeoracingCourse": [
     {
       "id": "course1",
       "original_id": "course1",
@@ -167,7 +167,7 @@
       "course_type": "asd"
     }
   ],
-  "georacingCourseObject": [
+  "GeoracingCourseObject": [
     {
       "id": "obj1",
       "original_id": "obj1",
@@ -194,7 +194,7 @@
       "headline_orientation": "1"
     }
   ],
-  "georacingCourseElement": [
+  "GeoracingCourseElement": [
     {
       "id": "element1",
       "original_id": "element1",
@@ -218,7 +218,7 @@
       "altitude": "1"
     }
   ],
-  "georacingGroundPlace": [
+  "GeoracingGroundPlace": [
     {
       "id": "810008e9-b933-44a5-9485-9d7306981125",
       "original_id": "1000",
@@ -246,7 +246,7 @@
       "zoom_max": null
     }
   ],
-  "georacingPosition": [
+  "GeoracingPosition": [
     {
       "id": "pos1",
       "trackable_type": "1",
@@ -271,7 +271,7 @@
       "dtnm": "1"
     }
   ],
-  "georacingLine": [
+  "GeoracingLine": [
     {
       "id": "line1",
       "original_id": "line1",
@@ -285,7 +285,7 @@
       "points": "1"
     }
   ],
-  "georacingSplittime": [
+  "GeoracingSplittime": [
     {
       "id": "spt1",
       "original_id": "spt1",
@@ -301,7 +301,7 @@
       "role": "1"
     }
   ],
-  "georacingSplittimeObject": [
+  "GeoracingSplittimeObject": [
     {
       "id": "spo1",
       "original_id": "spo1",

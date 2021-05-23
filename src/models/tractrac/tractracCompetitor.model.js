@@ -1,21 +1,13 @@
 module.exports = (sequelize, Sequelize) => {
-  const georacingPosition = sequelize.define(
-    'GeoracingPositions',
+  const tractracCompetitor = sequelize.define(
+    'TracTracCompetitor',
     {
       id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
       },
-      trackable_type: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      trackable_id: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      trackable_original_id: {
+      original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
@@ -27,72 +19,103 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      event: {
+      class: {
         type: Sequelize.UUID,
         allowNull: false,
       },
-      event_original_id: {
+      class_original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      timestamp: {
-        type: Sequelize.TEXT,
+      classrace_id: {
+        type: Sequelize.UUID,
         allowNull: false,
       },
-      lon: {
+      class_name: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      lat: {
+      description: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      offset: {
+      handicap: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      r: {
+      handicap_distance: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      cl: {
+      start_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      d: {
+      finish_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      lg: {
+      stop_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      lt: {
+      status_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      al: {
+      status_full: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      s: {
+      status_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      h: {
+      first_name: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      dtnm: {
+      last_name: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      name: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      short_name: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      name_alias: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      short_alias: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      nationality: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      non_competing: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      handicap_tod: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      handicap_tot: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
     },
     {
-      tableName: 'GeoracingPositions',
+      tableName: 'TracTracCompetitors',
       timestamps: false,
     },
   );
-
-  return georacingPosition;
+  return tractracCompetitor;
 };

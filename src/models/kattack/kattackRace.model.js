@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const kattackRace = sequelize.define(
-    'kattackRace',
+    'KattackRace',
     {
       id: {
         type: Sequelize.UUID,
@@ -173,7 +173,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'kattackRaces',
+      tableName: 'KattackRaces',
       timestamps: false,
     },
   );

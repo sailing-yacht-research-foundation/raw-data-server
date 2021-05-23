@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const georacingLine = sequelize.define(
-    'GeoracingLines',
+  const tractracControl = sequelize.define(
+    'TracTracControl',
     {
       id: {
         type: Sequelize.UUID,
@@ -23,32 +23,19 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      type: {
-        type: Sequelize.TEXT,
-        allowNull: true,
+      route: {
+        type: Sequelize.UUID,
+        allowNull: false,
       },
-      close: {
+      route_original_id: {
         type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      percent_factor: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      stroke_dasharray: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      points: {
-        type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
-      tableName: 'GeoracingLines',
+      tableName: 'TracTracControls',
       timestamps: false,
     },
   );
-
-  return georacingLine;
+  return tractracControl;
 };

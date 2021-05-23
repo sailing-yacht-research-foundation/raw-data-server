@@ -1,15 +1,11 @@
 module.exports = (sequelize, Sequelize) => {
-  const georacingSplittime = sequelize.define(
-    'GeoracingSplittimes',
+  const tractracCompetitorResult = sequelize.define(
+    'TracTracCompetitorResult',
     {
       id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
-      },
-      original_id: {
-        type: Sequelize.TEXT,
-        allowNull: false,
       },
       race: {
         type: Sequelize.UUID,
@@ -19,44 +15,47 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      event: {
+      competitor: {
         type: Sequelize.UUID,
         allowNull: false,
       },
-      event_original_id: {
+      competitor_original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      name: {
+      time_elapsed: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      short_name: {
+      start_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      splittimes_visible: {
+      stop_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      hide_on_timeline: {
+      finish_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      lap_number: {
+      status: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      role: {
+      team_name: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      team_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
     },
     {
-      tableName: 'GeoracingSplittimes',
+      tableName: 'TracTracCompetitorResults',
       timestamps: false,
     },
   );
-
-  return georacingSplittime;
+  return tractracCompetitorResult;
 };

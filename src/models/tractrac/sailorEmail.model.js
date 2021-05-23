@@ -1,30 +1,29 @@
 module.exports = (sequelize, Sequelize) => {
-  const kattackYachtClub = sequelize.define(
-    'KattackYachtClub',
+  const sailorEmail = sequelize.define(
+    'SailorEmail',
     {
       id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
       },
-      original_id: {
+      email: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      country: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      name: {
+      source: {
         type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      external_url: {
-        type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {
-      tableName: 'KattackYachtClubs',
+      tableName: 'SailorEmails',
       timestamps: false,
     },
   );
-
-  return kattackYachtClub;
+  return sailorEmail;
 };

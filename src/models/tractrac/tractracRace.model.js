@@ -1,43 +1,51 @@
 module.exports = (sequelize, Sequelize) => {
-  const georacingPosition = sequelize.define(
-    'GeoracingPositions',
+  const tractracRace = sequelize.define(
+    'TracTracRace',
     {
       id: {
         type: Sequelize.UUID,
         allowNull: false,
         primaryKey: true,
       },
-      trackable_type: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      trackable_id: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      trackable_original_id: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      race: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      race_original_id: {
+      original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
       event: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
       },
       event_original_id: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      timestamp: {
+      name: {
         type: Sequelize.TEXT,
         allowNull: false,
+      },
+      url: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      tracking_start: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      tracking_stop: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      race_start: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      race_end: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      status: {
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       lon: {
         type: Sequelize.TEXT,
@@ -47,52 +55,19 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      offset: {
+      calculated_start_time: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      r: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      cl: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      d: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      lg: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      lt: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      al: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      s: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      h: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      dtnm: {
+      race_handicap: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
     },
     {
-      tableName: 'GeoracingPositions',
+      tableName: 'TracTracRaces',
       timestamps: false,
     },
   );
-
-  return georacingPosition;
+  return tractracRace;
 };

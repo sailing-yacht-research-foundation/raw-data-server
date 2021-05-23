@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const kattackWaypoint = sequelize.define(
-    'kattackWaypoint',
+    'KattackWaypoint',
     {
       id: {
         type: Sequelize.UUID,
@@ -49,7 +49,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'kattackWaypoints',
+      tableName: 'KattackWaypoints',
       timestamps: false,
     },
   );

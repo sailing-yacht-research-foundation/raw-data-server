@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
   const georacingSplittimeObject = sequelize.define(
-    'georacingSplittimeObjects',
+    'GeoracingSplittimeObjects',
     {
       id: {
         type: Sequelize.UUID,
@@ -93,7 +93,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'georacingSplittimeObjects',
+      tableName: 'GeoracingSplittimeObjects',
       timestamps: false,
     },
   );

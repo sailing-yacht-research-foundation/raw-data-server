@@ -1,5 +1,5 @@
 {
-  "kattackYachtClub": [
+  "KattackYachtClub": [
     {
       "id": "edeafea7-11c3-4504-af53-edd6e13288e8",
       "original_id": "95b47b7f-75ab-4d8f-b2d5-4b86c72aab0c",
@@ -13,7 +13,7 @@
       "external_url": "http://www.stonybrookschool.org"
     }
   ],
-  "kattackRace": [
+  "KattackRace": [
     {
       "id": "79722f12-5f07-43a1-a327-08459673802d",
       "original_id": "1010",
@@ -103,7 +103,7 @@
       "leaderboard_data": null
     }
   ],
-  "kattackDevice": [
+  "KattackDevice": [
     {
       "id": "14c6f1b7-2695-4a00-959c-def363521ede",
       "original_id": "0-2417009.1^1091",
@@ -134,7 +134,7 @@
       "js_data_id": "10065"
     }
   ],
-  "kattackPosition": [
+  "KattackPosition": [
     {
       "id": "0709682c-c506-479c-a415-deef7e5c809a",
       "device": "14c6f1b7-2695-4a00-959c-def363521ede",
@@ -150,7 +150,7 @@
       "epoch_offset_sec": 1400159252
     }
   ],
-  "kattackWaypoint": [
+  "KattackWaypoint": [
     {
       "id": "938b53cf-77ff-4598-91c5-bce3117d5ec9",
       "original_id": "163",
