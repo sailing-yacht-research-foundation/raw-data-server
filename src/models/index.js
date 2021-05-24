@@ -172,4 +172,36 @@ db.tractracRoute = require('./tractrac/tractracRoute.model')(
 );
 // === End of TracTrac ===
 
+// === Yellowbrick ===
+db.yellowbrickCourseNode = require('./yellowbrick/yellowbrickCourseNode.model')(
+  sequelize,
+  Sequelize,
+);
+db.yellowbrickLeaderboardTeam =
+  require('./yellowbrick/yellowbrickLeaderboardTeam.model')(
+    sequelize,
+    Sequelize,
+  );
+db.yellowbrickPoi = require('./yellowbrick/yellowbrickPoi.model')(
+  sequelize,
+  Sequelize,
+);
+db.yellowbrickPosition = require('./yellowbrick/yellowbrickPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.yellowbrickRace = require('./yellowbrick/yellowbrickRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.yellowbrickTag = require('./yellowbrick/yellowbrickTag.model')(
+  sequelize,
+  Sequelize,
+);
+db.yellowbrickTeam = require('./yellowbrick/yellowbrickTeam.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Yellowbrick ===
+
 module.exports = db;
