@@ -8,7 +8,46 @@ describe('Storing trac trac data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
+    await db.tractracEvent.destroy({
+      truncate: true,
+    });
+    await db.tractracRace.destroy({
+      truncate: true,
+    });
     await db.tractracClass.destroy({
+      truncate: true,
+    });
+    await db.tractracRaceClass.destroy({
+      truncate: true,
+    });
+    await db.tractracClass.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitor.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitorPassing.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitorPosition.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitorResult.destroy({
+      truncate: true,
+    });
+    await db.tractracControl.destroy({
+      truncate: true,
+    });
+    await db.tractracControlPoint.destroy({
+      truncate: true,
+    });
+    await db.tractracControlPointPosition.destroy({
+      truncate: true,
+    });
+    await db.tractracRoute.destroy({
+      truncate: true,
+    });
+    await db.sailorEmail.destroy({
       truncate: true,
     });
     await db.sequelize.close();
