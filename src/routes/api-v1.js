@@ -8,6 +8,7 @@ const validateSecret = require('../middlewares/validateSecret');
 const saveISailData = require('../services/saveISailData');
 const saveKattackData = require('../services/saveKattackData');
 const saveGeoracingData = require('../services/saveGeoracingData');
+const saveTracTracData = require('../services/saveTracTracData');
 
 var router = express.Router();
 
@@ -54,11 +55,14 @@ router.post(
         if (jsonData.iSailEvent) {
           saveISailData(jsonData);
         }
-        if (jsonData.kattackRace) {
+        if (jsonData.KattackRace) {
           saveKattackData(jsonData);
         }
-        if (jsonData.georacingEvent) {
+        if (jsonData.GeoracingEvent) {
           saveGeoracingData(jsonData);
+        }
+        if (jsonData.TracTracRace) {
+          saveTracTracData(jsonData);
         }
       } catch (err) {
         // TODO: Handle error better

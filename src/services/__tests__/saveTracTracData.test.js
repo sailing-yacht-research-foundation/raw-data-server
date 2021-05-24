@@ -1,0 +1,104 @@
+const db = require('../../models');
+const saveTracTracData = require('../saveTracTracData');
+
+const jsonData = require('../../test-files/tractrac.json');
+
+describe('Storing trac trac data to DB', () => {
+  beforeAll(async () => {
+    await db.sequelize.sync();
+  });
+  afterAll(async () => {
+    await db.tractracClass.destroy({
+      truncate: true,
+    });
+    await db.sequelize.close();
+  });
+  it('should not save anything when empty data', async () => {
+    const createEmail = jest.spyOn(db.sailorEmail, 'bulkCreate');
+    const createClass = jest.spyOn(db.tractracClass, 'bulkCreate');
+    const createRaceClass = jest.spyOn(db.tractracRaceClass, 'bulkCreate');
+    const createEvent = jest.spyOn(db.tractracEvent, 'bulkCreate');
+    const createRace = jest.spyOn(db.tractracRace, 'bulkCreate');
+    const createCompetitor = jest.spyOn(db.tractracCompetitor, 'bulkCreate');
+    const createCompetitorPassing = jest.spyOn(
+      db.tractracCompetitorPassing,
+      'bulkCreate',
+    );
+    const createCompetitorPosition = jest.spyOn(
+      db.tractracCompetitorPosition,
+      'bulkCreate',
+    );
+    const createCompetitorResult = jest.spyOn(
+      db.tractracCompetitorResult,
+      'bulkCreate',
+    );
+    const createControl = jest.spyOn(db.tractracControl, 'bulkCreate');
+    const createControlPoint = jest.spyOn(
+      db.tractracControlPoint,
+      'bulkCreate',
+    );
+    const createControlPointPosition = jest.spyOn(
+      db.tractracControlPointPosition,
+      'bulkCreate',
+    );
+    const createRoute = jest.spyOn(db.tractracRoute, 'bulkCreate');
+    await saveTracTracData({});
+    expect(createEmail).toHaveBeenCalledTimes(0);
+    expect(createClass).toHaveBeenCalledTimes(0);
+    expect(createRaceClass).toHaveBeenCalledTimes(0);
+    expect(createEvent).toHaveBeenCalledTimes(0);
+    expect(createRace).toHaveBeenCalledTimes(0);
+    expect(createCompetitor).toHaveBeenCalledTimes(0);
+    expect(createCompetitorPassing).toHaveBeenCalledTimes(0);
+    expect(createCompetitorPosition).toHaveBeenCalledTimes(0);
+    expect(createCompetitorResult).toHaveBeenCalledTimes(0);
+    expect(createControl).toHaveBeenCalledTimes(0);
+    expect(createControlPoint).toHaveBeenCalledTimes(0);
+    expect(createControlPointPosition).toHaveBeenCalledTimes(0);
+    expect(createRoute).toHaveBeenCalledTimes(0);
+  });
+  it('should save trac trac data correctly', async () => {
+    const createEmail = jest.spyOn(db.sailorEmail, 'bulkCreate');
+    const createClass = jest.spyOn(db.tractracClass, 'bulkCreate');
+    const createRaceClass = jest.spyOn(db.tractracRaceClass, 'bulkCreate');
+    const createEvent = jest.spyOn(db.tractracEvent, 'bulkCreate');
+    const createRace = jest.spyOn(db.tractracRace, 'bulkCreate');
+    const createCompetitor = jest.spyOn(db.tractracCompetitor, 'bulkCreate');
+    const createCompetitorPassing = jest.spyOn(
+      db.tractracCompetitorPassing,
+      'bulkCreate',
+    );
+    const createCompetitorPosition = jest.spyOn(
+      db.tractracCompetitorPosition,
+      'bulkCreate',
+    );
+    const createCompetitorResult = jest.spyOn(
+      db.tractracCompetitorResult,
+      'bulkCreate',
+    );
+    const createControl = jest.spyOn(db.tractracControl, 'bulkCreate');
+    const createControlPoint = jest.spyOn(
+      db.tractracControlPoint,
+      'bulkCreate',
+    );
+    const createControlPointPosition = jest.spyOn(
+      db.tractracControlPointPosition,
+      'bulkCreate',
+    );
+    const createRoute = jest.spyOn(db.tractracRoute, 'bulkCreate');
+    await saveTracTracData(jsonData);
+    expect(createEmail).toHaveBeenCalledTimes(1);
+    expect(createClass).toHaveBeenCalledTimes(1);
+    expect(createRaceClass).toHaveBeenCalledTimes(1);
+    expect(createEvent).toHaveBeenCalledTimes(1);
+    expect(createRace).toHaveBeenCalledTimes(1);
+    expect(createCompetitor).toHaveBeenCalledTimes(1);
+    expect(createCompetitorPassing).toHaveBeenCalledTimes(1);
+    expect(createCompetitorPosition).toHaveBeenCalledTimes(1);
+    expect(createCompetitorResult).toHaveBeenCalledTimes(1);
+    expect(createControl).toHaveBeenCalledTimes(1);
+    expect(createControlPoint).toHaveBeenCalledTimes(1);
+    expect(createControlPointPosition).toHaveBeenCalledTimes(1);
+    expect(createRoute).toHaveBeenCalledTimes(1);
+  });
+});
