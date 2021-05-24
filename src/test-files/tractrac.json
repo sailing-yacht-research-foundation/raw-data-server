@@ -14,6 +14,46 @@
       "id": "ae89539f-e142-4756-866c-18b0749e266d",
       "original_id": "7eb89360-d8c2-0132-c3e1-10bf48d758ce",
       "name": "Knarr"
+    },
+    {
+      "id": "3cdfc6e4-f511-44af-8138-710ea62f4492",
+      "original_id": "a1cafc70-d267-0132-bdd7-10bf48d758ce",
+      "name": "Passive"
+    },
+    {
+      "id": "4779fcb2-79d5-4cb8-a044-935bd2a1bd63",
+      "original_id": "ac13bda0-11ed-0132-360f-10bf48d758ce",
+      "name": "Opti Nye-C"
+    },
+    {
+      "id": "e4548a98-1efe-406f-b391-943712224371",
+      "original_id": "add54db0-e043-0131-9c76-10bf48d758ce",
+      "name": "Albin"
+    },
+    {
+      "id": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "name": "Opti A"
+    },
+    {
+      "id": "8f628030-ea25-4642-8d9d-ea043e0b5ed5",
+      "original_id": "e0970570-cdbd-0132-b901-10bf48d758ce",
+      "name": "Opti B"
+    },
+    {
+      "id": "31d9fc36-fdab-4c70-a8e4-2f6e92c7bb2c",
+      "original_id": "e6068fd0-cdbd-0132-b902-10bf48d758ce",
+      "name": "Opti C"
+    },
+    {
+      "id": "eabbf368-9fc9-4df9-b46a-5bd4f9ac3c63",
+      "original_id": "408e0400-8e75-0139-07a6-60a44ce903c3",
+      "name": "class"
+    },
+    {
+      "id": "ce7932c3-d628-458a-9312-78bd28e057a1",
+      "original_id": "f72aa260-9135-0139-1bc9-60a44ce903c3",
+      "name": "class"
     }
   ],
   "TracTracRaceClass": [

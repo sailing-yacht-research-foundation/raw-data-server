@@ -166,7 +166,7 @@ db.tractracRaceClass = require('./tractrac/tractracRaceClass.model')(
   sequelize,
   Sequelize,
 );
-db.tractracRoute = require('./tractrac/tractracRace.model')(
+db.tractracRoute = require('./tractrac/tractracRoute.model')(
   sequelize,
   Sequelize,
 );
