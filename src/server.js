@@ -1,13 +1,11 @@
 const express = require('express');
 
 const apiV1 = require('./routes/api-v1');
-const db = require('./models');
 const { errorHandler } = require('./errors');
 
 function createServer() {
   const app = express();
   app.use(express.json());
-  db.sequelize.sync();
 
   app.use(
     express.urlencoded({
