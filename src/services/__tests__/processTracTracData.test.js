@@ -38,9 +38,9 @@ describe('Processing non-existent trac trac Data from DB to Parquet', () => {
 });
 
 describe('Processing exist Trac Trac Data from DB to Parquet', () => {
-  const raceID1 = ['022e3341-0740-4714-b7e8-5bfcf9651b6f'];
-  const raceID2 = ['b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d'];
-  const raceID3 = ['263befab-00e9-47aa-8762-af035ace951b'];
+  const raceID1 = '022e3341-0740-4714-b7e8-5bfcf9651b6f';
+  const raceID2 = 'b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d';
+  const raceID3 = '263befab-00e9-47aa-8762-af035ace951b';
   beforeAll(async () => {
     await saveTracTracData(jsonData);
   });
@@ -104,67 +104,77 @@ describe('Processing exist Trac Trac Data from DB to Parquet', () => {
   });
   it('should get routes correctly', async () => {
     const routes = await getRoutes([raceID1]);
-    expect(routes.length).toEqual(1);
+    expect(routes.size).toEqual(1);
 
     const secondRoutes = await getRoutes([raceID1, raceID2]);
-    expect(secondRoutes.length).toEqual(2);
+    expect(secondRoutes.size).toEqual(2);
   });
   it('should get race classes correctly', async () => {
     const result1 = await getRaceClasses([raceID1]);
-    expect(result1.length).toEqual(9);
+    expect(result1.size).toEqual(1);
+    expect(result1.get(raceID1).length).toEqual(9);
 
     const result2 = await getRaceClasses([raceID2]);
-    expect(result2.length).toEqual(9);
+    expect(result2.size).toEqual(1);
+    expect(result2.get(raceID2).length).toEqual(9);
   });
   it('should get race competitors correctly', async () => {
     const result1 = await getCompetitors([raceID1]);
-    expect(result1.length).toEqual(3);
+    expect(result1.size).toEqual(1);
+    expect(result1.get(raceID1).length).toEqual(3);
 
     const result2 = await getCompetitors([raceID2]);
-    expect(result2.length).toEqual(2);
+    expect(result2.size).toEqual(1);
+    expect(result2.get(raceID2).length).toEqual(2);
   });
   it('should get race competitor results correctly', async () => {
     const result1 = await getCompetitorResults([raceID1]);
-    expect(result1.length).toEqual(0);
+    expect(result1.size).toEqual(0);
 
     const result2 = await getCompetitorResults([raceID2]);
-    expect(result2.length).toEqual(2);
+    expect(result2.size).toEqual(1);
+    expect(result2.get(raceID2).length).toEqual(2);
   });
   it('should get race competitor passings correctly', async () => {
     const result1 = await getCompetitorPassings([raceID1]);
-    expect(result1.length).toEqual(0);
+    expect(result1.size).toEqual(0);
 
     const result2 = await getCompetitorPassings([raceID3]);
-    expect(result2.length).toEqual(3);
+    expect(result2.size).toEqual(1);
+    expect(result2.get(raceID3).length).toEqual(3);
   });
   it('should get race competitor positions correctly', async () => {
     const result1 = await getCompetitorPositions([raceID1]);
-    expect(result1.length).toEqual(0);
+    expect(result1.size).toEqual(0);
 
     const result2 = await getCompetitorPositions([raceID2]);
-    expect(result2.length).toEqual(14);
+    expect(result2.size).toEqual(1);
+    expect(result2.get(raceID2).length).toEqual(14);
   });
 
   it('should get race controls correctly', async () => {
     const result1 = await getControls([raceID1]);
-    expect(result1.length).toEqual(4);
+    expect(result1.size).toEqual(1);
+    expect(result1.get(raceID1).length).toEqual(4);
 
     const result2 = await getControls([raceID2]);
-    expect(result2.length).toEqual(0);
+    expect(result2.size).toEqual(0);
   });
   it('should get race control points correctly', async () => {
     const result1 = await getControlPoints([raceID1]);
-    expect(result1.length).toEqual(5);
+    expect(result1.size).toEqual(1);
+    expect(result1.get(raceID1).length).toEqual(5);
 
     const result2 = await getControlPoints([raceID2]);
-    expect(result2.length).toEqual(0);
+    expect(result2.size).toEqual(0);
   });
   it('should get race control point positions correctly', async () => {
     const result1 = await getControlPointPositions([raceID1]);
-    expect(result1.length).toEqual(3);
+    expect(result1.size).toEqual(1);
+    expect(result1.get(raceID1).length).toEqual(3);
 
     const result2 = await getControlPointPositions([raceID2]);
-    expect(result2.length).toEqual(0);
+    expect(result2.size).toEqual(0);
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {

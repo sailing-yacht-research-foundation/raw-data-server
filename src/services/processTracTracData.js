@@ -32,64 +32,108 @@ const getRaceClasses = async (raceList) => {
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return classes;
+  const result = new Map();
+  classes.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getRoutes = async (raceList) => {
   const routes = await db.tractracRoute.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return routes;
+  const result = new Map();
+  routes.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getControls = async (raceList) => {
   const controls = await db.tractracControl.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return controls;
+  const result = new Map();
+  controls.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getControlPoints = async (raceList) => {
   const controlPoints = await db.tractracControlPoint.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return controlPoints;
+  const result = new Map();
+  controlPoints.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getControlPointPositions = async (raceList) => {
   const cpp = await db.tractracControlPointPosition.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return cpp;
+  const result = new Map();
+  cpp.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
-
 const getCompetitors = async (raceList) => {
   const competitors = await db.tractracCompetitor.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return competitors;
+  const result = new Map();
+  competitors.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getCompetitorPassings = async (raceList) => {
   const passings = await db.tractracCompetitorPassing.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return passings;
+  const result = new Map();
+  passings.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getCompetitorResults = async (raceList) => {
   const results = await db.tractracCompetitorResult.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return results;
+  const mapResult = new Map();
+  results.forEach((row) => {
+    let currentList = mapResult.get(row.race);
+    mapResult.set(row.race, [...(currentList || []), row]);
+  });
+  return mapResult;
 };
 const getCompetitorPositions = async (raceList) => {
   const positions = await db.tractracCompetitorPosition.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return positions;
+  const result = new Map();
+  positions.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 
 const processTracTracData = async () => {
@@ -139,6 +183,8 @@ const processTracTracData = async () => {
       race_handicap,
     } = row;
 
+    const raceClasses = classes.get(race_id);
+
     return {
       race_id,
       original_race_id,
@@ -156,24 +202,26 @@ const processTracTracData = async () => {
       lat,
       calculated_start_time,
       race_handicap,
-      routes,
-      classes: classes.map((row) => {
-        const { id, boat_class } = row;
-        const classData = mapClass.get(boat_class);
-        return {
-          id,
-          boat_class,
-          original_boat_class_id: classData.original_id,
-          name: classData.name,
-        };
-      }),
-      controls,
-      controlPoints,
-      controlPointPositions,
-      competitors,
-      competitorPassings,
-      competitorResults,
-      competitorPositions,
+      routes: routes.get(race_id),
+      classes: raceClasses
+        ? raceClasses.map((row) => {
+            const { id, boat_class } = row;
+            const classData = mapClass.get(boat_class);
+            return {
+              id,
+              boat_class,
+              original_boat_class_id: classData.original_id,
+              name: classData.name,
+            };
+          })
+        : [],
+      controls: controls.get(race_id),
+      controlPoints: controlPoints.get(race_id),
+      controlPointPositions: controlPointPositions.get(race_id),
+      competitors: competitors.get(race_id),
+      competitorPassings: competitorPassings.get(race_id),
+      competitorResults: competitorResults.get(race_id),
+      competitorPositions: competitorPositions.get(race_id),
     };
   });
   await writeToParquet(data, tractracCombined, parquetPath);
