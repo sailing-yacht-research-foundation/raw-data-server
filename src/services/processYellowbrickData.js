@@ -16,42 +16,72 @@ const getCourseNodes = async (raceList) => {
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return courseNodes;
+  const result = new Map();
+  courseNodes.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getLeaderboardTeams = async (raceList) => {
   const leaderboardTeams = await db.yellowbrickLeaderboardTeam.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return leaderboardTeams;
+  const result = new Map();
+  leaderboardTeams.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getPois = async (raceList) => {
   const pois = await db.yellowbrickPoi.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return pois;
+  const result = new Map();
+  pois.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getPositions = async (raceList) => {
   const positions = await db.yellowbrickPosition.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return positions;
+  const result = new Map();
+  positions.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getTags = async (raceList) => {
   const tags = await db.yellowbrickTag.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return tags;
+  const result = new Map();
+  tags.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 const getTeams = async (raceList) => {
   const teams = await db.yellowbrickTeam.findAll({
     where: { race: { [Op.in]: raceList } },
     raw: true,
   });
-  return teams;
+  const result = new Map();
+  teams.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
 };
 
 const processYellowbrickData = async () => {
@@ -122,12 +152,12 @@ const processYellowbrickData = async () => {
       distance,
       url,
       race_handicap,
-      tags,
-      teams,
-      positions,
-      pois,
-      leaderboardTeams,
-      courseNodes,
+      tags: tags.get(race_id),
+      teams: teams.get(race_id),
+      positions: positions.get(race_id),
+      pois: pois.get(race_id),
+      leaderboardTeams: leaderboardTeams.get(race_id),
+      courseNodes: courseNodes.get(race_id),
     };
   });
   await writeToParquet(data, yellowbrickCombined, parquetPath);
