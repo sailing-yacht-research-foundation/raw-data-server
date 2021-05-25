@@ -175,17 +175,14 @@ describe('Processing exist Kwindoo Data from DB to Parquet', () => {
     const case2 = await getWaypoints([regatta2]);
     expect(case2.size).toEqual(0);
   });
+  it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
+    const mockS3UploadResultPath =
+      'https://awsbucket.com/thebucket/kwindoo/result.parquet';
+    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
 
-  getVideoStreams,
-    getWaypoints,
-    it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-      const mockS3UploadResultPath =
-        'https://awsbucket.com/thebucket/kwindoo/result.parquet';
-      uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
-
-      const fileUrl = await processKwindooData();
-      expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-      expect(writeToParquet).toHaveBeenCalledTimes(1);
-      expect(fileUrl).toEqual(mockS3UploadResultPath);
-    });
+    const fileUrl = await processKwindooData();
+    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
+    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(fileUrl).toEqual(mockS3UploadResultPath);
+  });
 });

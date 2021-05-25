@@ -2,7 +2,7 @@ const temp = require('temp').track();
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { yellowbrickCombined } = require('../schemas/parquets/yellowbrick');
+const { kwindooCombined } = require('../schemas/parquets/kwindoo');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
 const writeToParquet = require('./writeToParquet');
@@ -232,7 +232,7 @@ const processKwindooData = async () => {
       waypoints: waypoints.get(regatta_id),
     };
   });
-  await writeToParquet(data, yellowbrickCombined, parquetPath);
+  await writeToParquet(data, kwindooCombined, parquetPath);
   const fileUrl = await uploadFileToS3(
     parquetPath,
     `kwindoo/year=${currentYear}/month=${currentMonth}/kwindoo_${fullDateFormat}.parquet`,
