@@ -236,6 +236,29 @@
       "boat_type_name": "Default monohull",
       "boat_type_alias": "monohull",
       "class": ""
+    },
+    {
+      "id": "b5445088-67f4-4987-8ba1-8fabfe7fee23",
+      "original_id": "46003",
+      "regatta": "89405c05-8967-49cf-a1a2-05e9d1b2973f",
+      "regatta_original_id": "19829",
+      "race": "a1f04085-faea-47cc-b2fa-179fce4de254",
+      "race_original_id": "24220",
+      "first_name": "A",
+      "last_name": "B",
+      "email": "andersbarne@outlook.com",
+      "boat_name": "",
+      "sail_number": "",
+      "race_number": "",
+      "handycap": "",
+      "helmsman": "",
+      "owner_name": "",
+      "homeport": "",
+      "registry_number": "",
+      "not_racer": "0",
+      "boat_type_name": "Default monohull",
+      "boat_type_alias": "monohull",
+      "class": ""
     }
   ],
   "KwindooComment": [
@@ -356,8 +379,8 @@
     {
       "id": "97a80d41-209e-44ba-bdf7-0ff979e10d4a",
       "original_id": "test",
-      "regatta": "efe26138-6744-40c7-a64e-82f89464589a",
-      "regatta_original_id": "21572",
+      "regatta": "89405c05-8967-49cf-a1a2-05e9d1b2973f",
+      "regatta_original_id": "19829",
       "race": "963bd404-6864-4adf-aa71-63eea46b746c",
       "race_original_id": "26120",
       "name": "test",
