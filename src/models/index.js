@@ -246,4 +246,35 @@ db.kwindooWaypoint = require('./kwindoo/kwindooWaypoint.model')(
   Sequelize,
 );
 // === End of Kwindoo ===
+
+// === Bluewater ===
+db.bluewaterRace = require('./bluewater/bluewaterRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterBoat = require('./bluewater/bluewaterBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterBoatHandicap = require('./bluewater/bluewaterBoatHandicap.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterBoatSocialMedia =
+  require('./bluewater/bluewaterBoatSocialMedia.model')(sequelize, Sequelize);
+db.bluewaterCrew = require('./bluewater/bluewaterCrew.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterCrewSocialMedia =
+  require('./bluewater/bluewaterCrewSocialMedia.model')(sequelize, Sequelize);
+db.bluewaterMap = require('./bluewater/bluewaterMap.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterPosition = require('./bluewater/bluewaterPosition.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Bluewater ===
 module.exports = db;
