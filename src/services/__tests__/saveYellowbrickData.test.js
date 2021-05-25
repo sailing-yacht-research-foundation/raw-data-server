@@ -32,7 +32,7 @@ describe('Storing yellowbrick data to DB', () => {
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {
-    const createRace = jest.spyOn(db.sailorEmail, 'bulkCreate');
+    const createRace = jest.spyOn(db.yellowbrickRace, 'bulkCreate');
     const createCourseNode = jest.spyOn(db.yellowbrickCourseNode, 'bulkCreate');
     const createLeaderboardTeam = jest.spyOn(
       db.yellowbrickLeaderboardTeam,

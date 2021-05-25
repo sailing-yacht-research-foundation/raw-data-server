@@ -204,4 +204,46 @@ db.yellowbrickTeam = require('./yellowbrick/yellowbrickTeam.model')(
 );
 // === End of Yellowbrick ===
 
+// === Kwindoo ===
+db.kwindooBoat = require('./kwindoo/kwindooBoat.model')(sequelize, Sequelize);
+db.kwindooRace = require('./kwindoo/kwindooRace.model')(sequelize, Sequelize);
+db.kwindooRegatta = require('./kwindoo/kwindooRegatta.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooRegattaOwner = require('./kwindoo/kwindooRegattaOwner.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooComment = require('./kwindoo/kwindooComment.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooHomeportLocation = require('./kwindoo/kwindooHomeportLocation.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooMarker = require('./kwindoo/kwindooMarker.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooMIA = require('./kwindoo/kwindooMIA.model')(sequelize, Sequelize);
+db.kwindooPOI = require('./kwindoo/kwindooPOI.model')(sequelize, Sequelize);
+db.kwindooPosition = require('./kwindoo/kwindooPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooRunningGroup = require('./kwindoo/kwindooRunningGroup.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooVideoStream = require('./kwindoo/kwindooVideoStream.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooWaypoint = require('./kwindoo/kwindooWaypoint.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Kwindoo ===
 module.exports = db;

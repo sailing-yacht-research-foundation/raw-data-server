@@ -10,6 +10,7 @@ const saveKattackData = require('../services/saveKattackData');
 const saveGeoracingData = require('../services/saveGeoracingData');
 const saveTracTracData = require('../services/saveTracTracData');
 const saveYellowbrickData = require('../services/saveYellowbrickData');
+const saveKwindooData = require('../services/saveKwindooData');
 
 var router = express.Router();
 
@@ -67,6 +68,9 @@ router.post(
         }
         if (jsonData.YellowbrickRace) {
           saveYellowbrickData(jsonData);
+        }
+        if (jsonData.KwindooRace) {
+          saveKwindooData(jsonData);
         }
       } catch (err) {
         // TODO: Handle error better
