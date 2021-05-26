@@ -1,7 +1,7 @@
 var parquet = require('parquetjs-lite');
 
 const kwindooCombined = new parquet.ParquetSchema({
-  id: { type: 'UTF8' },
+  regatta_id: { type: 'UTF8' },
   original_id: { type: 'UTF8' },
   owner: { type: 'UTF8' },
   owner_original_id: { type: 'UTF8' },

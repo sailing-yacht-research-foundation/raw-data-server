@@ -1,0 +1,227 @@
+{
+  "BluewaterRace": [
+    {
+      "name": "2021 ORCV Melbourne to Port Fairy Race",
+      "referral_url": "https://race.bluewatertracks.com/2021-orcv-melbourne-to-port-fairy-race",
+      "start_time": "2021-04-01T19:30:00.000Z",
+      "timezone_location": "Australia/Melbourne",
+      "timezone_offset": "660",
+      "finish_timezone_location": "Australia/Melbourne",
+      "finish_timezone_offset": "660",
+      "track_time_start": "2021-03-28T19:00:00.000Z",
+      "track_time_finish": "2021-04-07T02:00:00.000Z",
+      "account_name": "Ocean Racing Club Victoria",
+      "account_website": "www.orcv.org.au",
+      "calculation": "firstovertheline",
+      "slug": "2021-orcv-melbourne-to-port-fairy-race",
+      "original_id": "605b1b069dbcc81862098de5",
+      "id": "74314800-9ccb-4f52-a37f-82e01b2afe80"
+    }
+  ],
+  "BluewaterBoat": [
+    {
+      "original_id": "5631641c671f0c130e6f09b6",
+      "id": "4bcb53b4-058f-4c2b-a41c-5b607730765e",
+      "name": "ALIEN",
+      "mmsi": "1",
+      "skipper": "Justin Brenan",
+      "sail_no": "R880",
+      "design": "Lidgard 36",
+      "length": "10.9",
+      "width": "3.5",
+      "units": "meters",
+      "draft": "2.5",
+      "type": "monohull",
+      "bio": "Alien was built in Hobart in 1996 and with southern ocean racing in mind. Under her former owner, Mike Welsh, Alien competed successfully in the Sydney Hobart, coming second in its division in 1999, before being modified for bay racing. Justin Brenan purchased ALIEN 2008 and, with ocean racing in mind, restored the designer’s original stability by adding 250 kg additional ballast.",
+      "country_name": "Australia",
+      "country_code": "au",
+      "finish_time": "2021-04-03T04:11:33.000Z",
+      "status": "Racing",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "message": ""
+    },
+    {
+      "original_id": "6035c44f11b48d1038952a10",
+      "id": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+      "name": "FOXY LADY",
+      "mmsi": "",
+      "skipper": "Geoff Perks",
+      "sail_no": "B126",
+      "design": "X 382 Cruiser",
+      "length": "11.5",
+      "width": "3.7",
+      "units": "meters",
+      "draft": "2.1",
+      "type": "monohull",
+      "bio": "I I love to sail. I have been involved in boats for thirty years. Looking forward to the King Iland race.",
+      "country_name": "Australia",
+      "country_code": "AU",
+      "finish_time": "2021-04-03T03:29:28.000Z",
+      "status": "Racing",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "message": ""
+    }
+  ],
+  "BluewaterBoatHandicap": [
+    {
+      "id": "59c53de2-f09d-42d9-85aa-3cbf083b5b82",
+      "name": "AMS",
+      "rating": "0.894",
+      "division": "1",
+      "original_id": "56316d82671f0c130e6f09c8",
+      "boat": "4bcb53b4-058f-4c2b-a41c-5b607730765e",
+      "boat_original_id": "5631641c671f0c130e6f09b6"
+    },
+    {
+      "id": "e479fbab-af81-4441-8d74-a88bfcc0538d",
+      "name": "PHS",
+      "rating": "0.867",
+      "division": "1",
+      "original_id": "56316da0671f0c130e6f09ca",
+      "boat": "4bcb53b4-058f-4c2b-a41c-5b607730765e",
+      "boat_original_id": "5631641c671f0c130e6f09b6"
+    }
+  ],
+  "BluewaterBoatSocialMedia": [
+    {
+      "boat": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "icon": "fa-facebook-square",
+      "url": "https://www.facebook.com/MoorooducBoatBuilder/",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "id": "fdb96e4a-15ff-4d2c-aaa9-17eac13af362"
+    }
+  ],
+  "BluewaterCrew": [
+    {
+      "first_name": "Geoff",
+      "last_name": "Perks",
+      "image_url": "2021/3/T60417a3211b48d1038952ae2.jpg",
+      "bio": "I I love to sail. I have been involved in boats for thirty years. Looking forward to the King Iland race.",
+      "country_code": "",
+      "country_name": "",
+      "boat": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "id": "83483370-a007-4eea-a613-4cf9505b78ac",
+      "role": "Crew"
+    },
+    {
+      "first_name": "Katherine",
+      "last_name": "Perks",
+      "image_url": "2021/2/T6038986411b48d1038952a4c.jpg",
+      "bio": "I I love to sail. I have been involved in boats for thirty years. Looking forward to the King Iland race.",
+      "country_code": "au",
+      "country_name": "Australia",
+      "boat": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "id": "28bddbeb-ccf8-4e8e-b1c5-ad062cb22eab",
+      "role": "Crew"
+    },
+    {
+      "first_name": "Brendan",
+      "last_name": "Boyle",
+      "image_url": "2016/12/T585e0547545ef330303ee439.jpg",
+      "bio": "I I love to sail. I have been involved in boats for thirty years. Looking forward to the King Iland race.",
+      "country_code": "au",
+      "country_name": "Australia",
+      "boat": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "id": "3a2f9249-084b-4d95-b639-fcc7d1336d6c",
+      "role": "Crew"
+    }
+  ],
+  "BluewaterCrewSocialMedia": [
+    {
+      "crew": "3a2f9249-084b-4d95-b639-fcc7d1336d6c",
+      "url": "@ocean_tag",
+      "id": "f9dd4833-a829-4356-85ff-8e6a23df1a9c"
+    }
+  ],
+  "BluewaterMap": [
+    {
+      "id": "05c7c040-2f47-4f5a-acc7-fb56a453a669",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "center_lon": "143,544442772706",
+      "center_lat": "-38,6599150818921",
+      "start_line": "[[144.66552,-38.27238],[144.66968,-38.27559]]",
+      "finish_line": "[[142.25052,-38.37828],[142.25686,-38.38221]]",
+      "course": "[[144.6673,-38.27385],[144.66083,-38.27748],[144.64799,-38.28112],[144.61862,-38.30334],[143.53991,-38.90318],[142.26086,-38.37936],[142.25383,-38.38031]]",
+      "regions": "[]"
+    }
+  ],
+  "BluewaterPosition": [
+    {
+      "geometry_type": "Point",
+      "coordinate_0": "144.955695",
+      "coordinate_1": "-38.007426",
+      "coordinate_2": "6.4",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "boat_name": "FOXY LADY",
+      "cog": "247",
+      "date": "2021-04-01T10:52:45.000Z",
+      "device_id": "300434061307490",
+      "sog": "5.9",
+      "source": "InReach",
+      "id": "84af80e2-8580-40c1-9289-a876c6fe7616"
+    },
+    {
+      "geometry_type": "Point",
+      "coordinate_0": "144.947841",
+      "coordinate_1": "-38.016043",
+      "coordinate_2": "8.43",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "boat_name": "FOXY LADY",
+      "cog": "135",
+      "date": "2021-04-01T11:02:45.000Z",
+      "device_id": "300434061307490",
+      "sog": "5.9",
+      "source": "InReach",
+      "id": "7ee1f4c8-1144-4113-add5-64f4006156b4"
+    },
+    {
+      "geometry_type": "Point",
+      "coordinate_0": "144.930933",
+      "coordinate_1": "-38.025463",
+      "coordinate_2": "8.43",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "boat_name": "FOXY LADY",
+      "cog": "247",
+      "date": "2021-04-01T11:12:45.000Z",
+      "device_id": "300434061307490",
+      "sog": "5.9",
+      "source": "InReach",
+      "id": "76297ed9-660c-493b-ae50-b75331f932fb"
+    },
+    {
+      "geometry_type": "Point",
+      "coordinate_0": "144.914001",
+      "coordinate_1": "-38.035055",
+      "coordinate_2": "42.96",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "race_original_id": "605b1b069dbcc81862098de5",
+      "boat_original_id": "6035c44f11b48d1038952a10",
+      "boat_name": "FOXY LADY",
+      "cog": "225",
+      "date": "2021-04-01T11:22:45.000Z",
+      "device_id": "300434061307490",
+      "sog": "5.9",
+      "source": "InReach",
+      "id": "3530e59a-82aa-4e9d-a952-2638d2a1b067"
+    }
+  ]
+}
