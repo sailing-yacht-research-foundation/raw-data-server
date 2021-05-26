@@ -277,4 +277,23 @@ db.bluewaterPosition = require('./bluewater/bluewaterPosition.model')(
   Sequelize,
 );
 // === End of Bluewater ===
+
+// === Yacht Bot ===
+db.yachtBotRace = require('./yachtbot/yachtBotRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.yachtBotBuoy = require('./yachtbot/yachtBotBuoy.model')(
+  sequelize,
+  Sequelize,
+);
+db.yachtBotYacht = require('./yachtbot/yachtBotYacht.model')(
+  sequelize,
+  Sequelize,
+);
+db.yachtBotPosition = require('./yachtbot/yachtBotPosition.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Yacht Bot ===
 module.exports = db;
