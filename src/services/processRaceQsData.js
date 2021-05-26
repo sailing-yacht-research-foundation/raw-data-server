@@ -137,7 +137,7 @@ const processRaceQsData = async () => {
       event_original_id,
       regatta,
       regatta_original_id,
-      regatta_data: mapRegatta.get(event_id),
+      regatta_data: mapRegatta.get(regatta),
       name,
       content,
       from,

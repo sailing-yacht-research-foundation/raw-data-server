@@ -322,4 +322,31 @@ db.raceQsWaypoint = require('./raceQs/raceQsWaypoint.model')(
   Sequelize,
 );
 // === End of RaceQs ===
+
+// === Metasail ===
+db.metasailEvent = require('./metasail/metasailEvent.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailRace = require('./metasail/metasailRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailBoat = require('./metasail/metasailBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailBuoy = require('./metasail/metasailBuoy.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailGate = require('./metasail/metasailGate.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailPosition = require('./metasail/metasailPosition.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Metasail ===
 module.exports = db;

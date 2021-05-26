@@ -13,6 +13,8 @@ const saveYellowbrickData = require('../services/saveYellowbrickData');
 const saveKwindooData = require('../services/saveKwindooData');
 const saveBluewaterData = require('../services/saveBluewaterData');
 const saveYachtBotData = require('../services/saveYachtBotData');
+const saveRaceQsData = require('../services/saveRaceQsData');
+const saveMetasailData = require('../services/saveMetasailData');
 
 var router = express.Router();
 
@@ -79,6 +81,12 @@ router.post(
         }
         if (jsonData.YachtBotRace) {
           saveYachtBotData(jsonData);
+        }
+        if (jsonData.RaceQsEvent) {
+          saveRaceQsData(jsonData);
+        }
+        if (jsonData.MetasailRace) {
+          saveMetasailData(jsonData);
         }
       } catch (err) {
         // TODO: Handle error better

@@ -205,7 +205,7 @@ const processKwindooData = async () => {
       original_id,
       owner,
       owner_original_id,
-      owner_data: mapOwner.get(owner),
+      owner_data: owner ? mapOwner.get(owner) : null,
       name,
       timezone,
       public: publicRecord,

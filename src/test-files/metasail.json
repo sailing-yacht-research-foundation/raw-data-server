@@ -1,0 +1,193 @@
+{
+  "MetasailEvent": [
+    {
+      "id": "acb704f8-5400-4cda-aec3-d1240e8e7348",
+      "original_id": "159",
+      "name": "Spi Ouest France 2020",
+      "external_website": "https://evenements.ouest-france.fr/spi/",
+      "url": "https://www.metasail.it/past/159",
+      "category_text": "DIAM 24, MACH 6.5, OPEN 7.5",
+      "start": "1600992000",
+      "end": "1601312399"
+    }
+  ],
+  "MetasailRace": [
+    {
+      "id": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "original_id": "10386",
+      "event": "acb704f8-5400-4cda-aec3-d1240e8e7348",
+      "event_original_id": "159",
+      "name": "Spi Ouest France 2020 DIAM 24 suite R 7 (race id: 10386)",
+      "start": "1601509483653",
+      "stop": "1601509489420",
+      "url": "http://app.metasail.it/(S(bw42cieypqnejmnbfbuw1xmh))/ViewRecordedRace2018New.aspx?idgara=10386&token=5DUA",
+      "stats": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<ArrayOfStatisticheDato xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://meteda.it/\" />",
+      "passing": "[]"
+    },
+    {
+      "id": "6ebfaa8c-ac86-408d-a6c9-1713e3a5f674",
+      "original_id": "10372",
+      "event": "acb704f8-5400-4cda-aec3-d1240e8e7348",
+      "event_original_id": "159",
+      "name": "Spi Ouest France 2020 DIAM 24 R 7 (race id: 10372)",
+      "start": "1601206184330",
+      "stop": "1601209053680",
+      "url": "http://app.metasail.it/(S(fbvabbdmnqziazyetedr511u))/ViewRecordedRace2018New.aspx?idgara=10372&token=E3P4",
+      "stats": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<ArrayOfStatisticheDato xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://meteda.it/\" />",
+      "passing": "[1601199336,1601199852,1601200173,1601200680,1601200989,1601201025]"
+    },
+    {
+      "id": "5e1120a5-481d-40cb-bb53-8d59c68acc71",
+      "original_id": "10366",
+      "event": "acb704f8-5400-4cda-aec3-d1240e8e7348",
+      "event_original_id": "159",
+      "name": "Spi Ouest France 2020 DIAM 24 R 6 (race id: 10366)",
+      "start": "1601203171670",
+      "stop": "1601206184347",
+      "url": "http://app.metasail.it/(S(wokixqcdrggbl3mwaxmehqmh))/ViewRecordedRace2018New.aspx?idgara=10366&token=YOTK",
+      "stats": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<ArrayOfStatisticheDato xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://meteda.it/\" />",
+      "passing": "[1601196207,1601196723,1601197068,1601197563,1601197908,1601197947]"
+    }
+  ],
+  "MetasailBoat": [
+    {
+      "id": "49f80ff0-a93d-4fe6-a66f-67948db1ef20",
+      "original_id": "8",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "serial": "H0979",
+      "name": "Arrivee",
+      "description": "Arrivee",
+      "sail_number": "-",
+      "is_dummy": ""
+    },
+    {
+      "id": "055fa87d-ab4d-4a41-a6cf-66c12083d069",
+      "original_id": "9",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "serial": "H0960",
+      "name": "CAPMAR",
+      "description": "CAPMAR",
+      "sail_number": "-",
+      "is_dummy": ""
+    }
+  ],
+  "MetasailBuoy": [
+    {
+      "id": "a0c16326-1574-435f-91c3-4a6f5fab6626",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "original_id": "H0398",
+      "name": "COMITE' DE COURSE",
+      "initials": "",
+      "description": "COMITE' DE COURSE",
+      "lat": "0",
+      "lon": "0",
+      "lat_m": "0",
+      "lon_m": "0"
+    },
+    {
+      "id": "7cf65bb1-1095-4e4c-858f-3b4ffb3fe893",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "original_id": "H0945",
+      "name": "PIN",
+      "initials": "",
+      "description": "PIN",
+      "lat": "0",
+      "lon": "0",
+      "lat_m": "0",
+      "lon_m": "0"
+    }
+  ],
+  "MetasailGate": [
+    {
+      "id": "bc7aa0d8-d0f1-4063-8454-34d08c52d6f9",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "buoy_1": "a0c16326-1574-435f-91c3-4a6f5fab6626",
+      "buoy_1_original_id": "H0398",
+      "buoy_2": "7cf65bb1-1095-4e4c-858f-3b4ffb3fe893",
+      "buoy_2_original_id": "H0945"
+    },
+    {
+      "id": "c740a088-9f4b-4dab-9140-852498b2c4bb",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "buoy_1": "688b857d-5ee6-4812-b763-123d33705884",
+      "buoy_1_original_id": "H0966",
+      "buoy_2": "74563523-251a-4fc4-8df6-649c3d74be5c",
+      "buoy_2_original_id": "H0968"
+    },
+    {
+      "id": "69237c76-6e32-433d-aac1-41e3ab66241e",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "buoy_1": "5711bd8a-992f-48f5-9467-c3b7ef9446a6",
+      "buoy_1_original_id": "H0990",
+      "buoy_2": "1eb86b0c-bf3d-4efd-9afe-b04863393f51",
+      "buoy_2_original_id": "H0988"
+    }
+  ],
+  "MetasailPosition": [
+    {
+      "id": "f413fce7-e6ff-4ef4-bf81-02630be459ef",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "event": "acb704f8-5400-4cda-aec3-d1240e8e7348",
+      "event_original_id": "159",
+      "boat": "055fa87d-ab4d-4a41-a6cf-66c12083d069",
+      "boat_original_id": "H0960",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1601200800",
+      "lon": "-3.049395",
+      "lat": "47.52574",
+      "speed": "17.6 kn",
+      "lon_metri_const": "496281.741003956",
+      "lat_metri_const": "5263591.31609731",
+      "rank": "-1",
+      "distance_to_first_boat": "",
+      "wind_state": "-1",
+      "wind_direction": "-999",
+      "slope_rank_line": "-999",
+      "end_time_difference": "-999",
+      "begin_date_time": "",
+      "crt_race_segment": "0",
+      "apply_wind": "0",
+      "vmc": "0",
+      "vmg": "0",
+      "orientation": "177"
+    },
+    {
+      "id": "57ba1a7e-c291-4831-95a7-08ebaa6f9a73",
+      "race": "1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d",
+      "race_original_id": "10386",
+      "event": "acb704f8-5400-4cda-aec3-d1240e8e7348",
+      "event_original_id": "159",
+      "boat": "055fa87d-ab4d-4a41-a6cf-66c12083d069",
+      "boat_original_id": "H0960",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1601200803",
+      "lon": "-3.049021",
+      "lat": "47.52575",
+      "speed": "18.4 kn",
+      "lon_metri_const": "496309.901014279",
+      "lat_metri_const": "5263592.14623179",
+      "rank": "-1",
+      "distance_to_first_boat": "",
+      "wind_state": "-1",
+      "wind_direction": "-999",
+      "slope_rank_line": "-999",
+      "end_time_difference": "-999",
+      "begin_date_time": "",
+      "crt_race_segment": "0",
+      "apply_wind": "0",
+      "vmc": "0",
+      "vmg": "0",
+      "orientation": "175"
+    }
+  ]
+}
