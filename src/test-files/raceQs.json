@@ -1,0 +1,255 @@
+{
+  "RaceQsRegatta": [
+    {
+      "id": "3e6aa52c-2c19-4957-97e2-1535ab9df744",
+      "original_id": "58873",
+      "club_original_id": "",
+      "name": "2017 MYC Summer / Fall - Tues",
+      "url": "58873",
+      "content": "<h1 style=\"text-align:center\"><strong><span style=\"font-size:48px\"><span style=\"color:#fc3b30\">2017 MYC Summer / Fall - Tues</span></span></strong></h1>",
+      "attach1": "",
+      "attach2": "",
+      "attach3": "",
+      "attach4": "",
+      "type": "admin",
+      "administrator": "",
+      "updated_at": "",
+      "contactor_name": "Andy Zangle",
+      "contactor_email": "andrew.zangle@gmail.com"
+    }
+  ],
+  "RaceQsEvent": [
+    {
+      "id": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "original_id": "62880",
+      "regatta": "3e6aa52c-2c19-4957-97e2-1535ab9df744",
+      "regatta_original_id": "58873",
+      "name": "",
+      "content": "",
+      "from": "1506464100000",
+      "till": "1506478500000",
+      "tz": "-04:00",
+      "lat1": "40.563219",
+      "lon1": "-74.170277",
+      "lat2": "40.963219",
+      "lon2": "-73.770277",
+      "updated_at": "",
+      "url": "https://raceqs.com/tv-beta/tv.htm#eventId=62880"
+    }
+  ],
+  "RaceQsDivision": [
+    {
+      "id": "da55450d-fcfd-48d5-9523-811cfdea1aeb",
+      "original_id": "47879",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "regatta": "3e6aa52c-2c19-4957-97e2-1535ab9df744",
+      "regatta_original_id": "58873",
+      "name": "MYC J24",
+      "avatar": "J24"
+    }
+  ],
+  "RaceQsParticipant": [
+    {
+      "id": "4717492d-5e42-4b67-82e5-89f5f7cc1a99",
+      "original_id": "11315",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "boat": "10",
+      "start": "2017-09-26T18:27:16-04:00",
+      "finish": "2019-07-23T21:11:15-04:00"
+    },
+    {
+      "id": "f6570df3-19ec-4751-b969-3f10a91def76",
+      "original_id": "11460",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "boat": "Boat 2",
+      "start": "2017-09-26T18:19:20-04:00",
+      "finish": "2018-09-04T20:27:27-04:00"
+    },
+    {
+      "id": "13051815-bdc2-47a4-983e-a8432c72d694",
+      "original_id": "12486",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "boat": "HHg",
+      "start": "2017-09-26T18:07:04.949-04:00",
+      "finish": "2018-07-25T20:30:50-04:00"
+    },
+    {
+      "id": "0ed3bef2-8a2c-4986-a2ea-720e296f3390",
+      "original_id": "1046693",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "boat": "Boat 7",
+      "start": "2017-09-26T18:20:00-04:00",
+      "finish": "2017-09-26T19:18:33-04:00"
+    },
+    {
+      "id": "9d5e66d7-1199-4920-8fa4-9f9c23e22129",
+      "original_id": "1058847",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "boat": "Boat4",
+      "start": "2017-09-26T18:11:31-04:00",
+      "finish": "2017-09-26T19:21:01-04:00"
+    }
+  ],
+  "RaceQsPosition": [
+    {
+      "id": "d416276c-171d-46ef-8b26-abcc1484d65b",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "participant": "4717492d-5e42-4b67-82e5-89f5f7cc1a99",
+      "participant_original_id": "11315",
+      "time": "15064650047",
+      "lat": "40.701689",
+      "lon": "-74.036270",
+      "roll": "25",
+      "pitch": "12",
+      "heading": "260",
+      "sow": "",
+      "wind_angle": "",
+      "wind_speed": ""
+    },
+    {
+      "id": "e9d91645-d0c3-4d9f-bc72-d1dc94681825",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "participant": "4717492d-5e42-4b67-82e5-89f5f7cc1a99",
+      "participant_original_id": "11315",
+      "time": "15064650057",
+      "lat": "40.701770",
+      "lon": "-74.036253",
+      "roll": "24",
+      "pitch": "12",
+      "heading": "255",
+      "sow": "",
+      "wind_angle": "",
+      "wind_speed": ""
+    },
+    {
+      "id": "1fde823e-680f-4853-9742-1edc3e1d8dab",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "participant": "4717492d-5e42-4b67-82e5-89f5f7cc1a99",
+      "participant_original_id": "11315",
+      "time": "15064650067",
+      "lat": "40.701802",
+      "lon": "-74.036252",
+      "roll": "20",
+      "pitch": "9",
+      "heading": "247",
+      "sow": "",
+      "wind_angle": "",
+      "wind_speed": ""
+    }
+  ],
+  "RaceQsStart": [
+    {
+      "id": "2cb726cd-c36d-458b-b033-c6c05b62ef74",
+      "original_id": "60080",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "division": "da55450d-fcfd-48d5-9523-811cfdea1aeb",
+      "division_original_id": "47879",
+      "from": "1506465000000",
+      "type": "One Design",
+      "wind": "314",
+      "min_duration": "-14400000"
+    }
+  ],
+  "RaceQsRoute": [
+    {
+      "id": "412b9525-bcbe-4794-96c7-3559df3d7667",
+      "original_id": "347140",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "start": "2cb726cd-c36d-458b-b033-c6c05b62ef74",
+      "start_original_id": "60080",
+      "waypoint": "8be14fcf-180b-421a-ba4c-8675de7a1815",
+      "waypoint_original_id": "153754",
+      "sqk": "0",
+      "wind_direction": "314",
+      "wind_speed": "",
+      "current_direction": "",
+      "current_speed": ""
+    },
+    {
+      "id": "47372d11-5cdf-4bdf-8992-143182133fef",
+      "original_id": "347141",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "start": "2cb726cd-c36d-458b-b033-c6c05b62ef74",
+      "start_original_id": "60080",
+      "waypoint": "f5864df9-cbd1-43c4-8396-bd78f74e8883",
+      "waypoint_original_id": "153755",
+      "sqk": "1",
+      "wind_direction": "",
+      "wind_speed": "",
+      "current_direction": "",
+      "current_speed": ""
+    }
+  ],
+  "RaceQsWaypoint": [
+    {
+      "id": "8be14fcf-180b-421a-ba4c-8675de7a1815",
+      "original_id": "153754",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "regatta": "3e6aa52c-2c19-4957-97e2-1535ab9df744",
+      "regatta_original_id": "58873",
+      "start": "",
+      "finish": "",
+      "lat": "40.70148141955609",
+      "lon": "-74.03725374229138",
+      "lat2": "40.70231418241177",
+      "lon2": "-74.03426659502134",
+      "port_course": "",
+      "port_speed": "",
+      "starboard_course": "",
+      "starboard_speed": "",
+      "wind": "",
+      "tack": "",
+      "type": "Start",
+      "v": "",
+      "start_I": "0",
+      "finish_I": "0",
+      "start_Z": "",
+      "finish_Z": "",
+      "name": "Start/Finish Line 1",
+      "race_type": "",
+      "boat_model": ""
+    },
+    {
+      "id": "f5864df9-cbd1-43c4-8396-bd78f74e8883",
+      "original_id": "153755",
+      "event": "846a774c-fefb-4729-b5bf-8746e2e64f4a",
+      "event_original_id": "62880",
+      "regatta": "3e6aa52c-2c19-4957-97e2-1535ab9df744",
+      "regatta_original_id": "58873",
+      "start": "",
+      "finish": "",
+      "lat": "40.69927104742968",
+      "lon": "-74.03378584390252",
+      "lat2": "",
+      "lon2": "",
+      "port_course": "",
+      "port_speed": "",
+      "starboard_course": "",
+      "starboard_speed": "",
+      "wind": "",
+      "tack": "",
+      "type": "Mark",
+      "v": "",
+      "start_I": "0",
+      "finish_I": "0",
+      "start_Z": "",
+      "finish_Z": "",
+      "name": "Mark 1",
+      "race_type": "",
+      "boat_model": ""
+    }
+  ]
+}

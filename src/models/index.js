@@ -296,4 +296,30 @@ db.yachtBotPosition = require('./yachtbot/yachtBotPosition.model')(
   Sequelize,
 );
 // === End of Yacht Bot ===
+
+// === RaceQs ===
+db.raceQsRegatta = require('./raceQs/raceQsRegatta.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsEvent = require('./raceQs/raceQsEvent.model')(sequelize, Sequelize);
+db.raceQsDivision = require('./raceQs/raceQsDivision.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsParticipant = require('./raceQs/raceQsParticipant.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsPosition = require('./raceQs/raceQsPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsRoute = require('./raceQs/raceQsRoute.model')(sequelize, Sequelize);
+db.raceQsStart = require('./raceQs/raceQsStart.model')(sequelize, Sequelize);
+db.raceQsWaypoint = require('./raceQs/raceQsWaypoint.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of RaceQs ===
 module.exports = db;
