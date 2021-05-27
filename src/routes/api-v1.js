@@ -15,6 +15,7 @@ const saveBluewaterData = require('../services/saveBluewaterData');
 const saveYachtBotData = require('../services/saveYachtBotData');
 const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
+const saveEstelaData = require('../services/saveEstelaData');
 
 var router = express.Router();
 
@@ -87,6 +88,9 @@ router.post(
         }
         if (jsonData.MetasailRace) {
           saveMetasailData(jsonData);
+        }
+        if (jsonData.EstelaRace) {
+          saveEstelaData(jsonData);
         }
       } catch (err) {
         // TODO: Handle error better

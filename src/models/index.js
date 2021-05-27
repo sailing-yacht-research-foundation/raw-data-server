@@ -349,4 +349,17 @@ db.metasailPosition = require('./metasail/metasailPosition.model')(
   Sequelize,
 );
 // === End of Metasail ===
+
+// === Estela ===
+db.estelaBuoy = require('./estela/estelaBuoy.model')(sequelize, Sequelize);
+db.estelaClub = require('./estela/estelaClub.model')(sequelize, Sequelize);
+db.estelaDorsal = require('./estela/estelaDorsal.model')(sequelize, Sequelize);
+db.estelaPlayer = require('./estela/estelaPlayer.model')(sequelize, Sequelize);
+db.estelaPosition = require('./estela/estelaPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.estelaRace = require('./estela/estelaRace.model')(sequelize, Sequelize);
+db.estelaResult = require('./estela/estelaResult.model')(sequelize, Sequelize);
+// === End of Estela ===
 module.exports = db;
