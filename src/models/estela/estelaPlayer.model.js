@@ -10,47 +10,38 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
-        primaryKey: false,
       },
       dorsal: {
         type: Sequelize.UUID,
         allowNull: true,
-        primaryKey: false,
       },
       dorsal_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       class: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       name: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       number: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       committee: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       race: {
         type: Sequelize.UUID,
         allowNull: true,
-        primaryKey: false,
       },
       race_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
     },
     {

@@ -10,32 +10,26 @@ module.exports = (sequelize, Sequelize) => {
       race: {
         type: Sequelize.UUID,
         allowNull: false,
-        primaryKey: false,
       },
       race_original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
-        primaryKey: false,
       },
       dorsal: {
         type: Sequelize.UUID,
         allowNull: true,
-        primaryKey: false,
       },
       dorsal_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       laraval_through_key: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
       timestamp: {
         type: Sequelize.TEXT,
         allowNull: true,
-        primaryKey: false,
       },
     },
     {

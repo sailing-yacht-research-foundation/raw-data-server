@@ -71,12 +71,12 @@ const saveEstelaData = async (data) => {
   if (data.EstelaRace) {
     const existRaces = await db.estelaRace.findAll({
       where: {
-        id: { [Op.in]: data.EstelaPosition.map((row) => row.id) },
+        id: { [Op.in]: data.EstelaRace.map((row) => row.id) },
       },
     });
     const toRemove = existRaces.map((row) => row.id);
 
-    const raceData = data.EstelaPosition.filter((row) => {
+    const raceData = data.EstelaRace.filter((row) => {
       return !toRemove.includes(row.id);
     });
     await db.estelaRace.bulkCreate(raceData);
