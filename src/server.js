@@ -2,6 +2,7 @@ const express = require('express');
 
 const apiV1 = require('./routes/api-v1');
 const { errorHandler } = require('./errors');
+const { processTackTrackerData } = require('./services/processTackTrackerData');
 
 function createServer() {
   const app = express();
@@ -13,6 +14,7 @@ function createServer() {
     }),
   );
   app.get('/', async (req, res) => {
+    await processTackTrackerData();
     res.send('SYRF - Raw Data Server');
   });
 

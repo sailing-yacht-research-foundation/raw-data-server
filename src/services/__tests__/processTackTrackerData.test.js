@@ -1,23 +1,24 @@
 const db = require('../../models');
 const {
   getRaces,
-  getClubs,
-  getBuoys,
-  getDorsals,
-  getPlayers,
+  getRegattas,
+  getBoats,
+  getDefaults,
+  getFinishes,
+  getMarks,
   getPositions,
-  getResults,
-  processEstelaData,
-} = require('../processEstelaData');
-const saveEstelaData = require('../saveEstelaData');
+  getStarts,
+  processTackTrackerData,
+} = require('../processTackTrackerData');
+const saveTackTrackerData = require('../saveTackTrackerData');
 const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
-const jsonData = require('../../test-files/estela.json');
+const jsonData = require('../../test-files/tackTracker.json');
 
 jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
-describe('Processing non-existent Estela Data from DB to Parquet', () => {
+describe('Processing non-existent TackTracker Data from DB to Parquet', () => {
   beforeAll(async () => {
     await db.sequelize.sync();
   });
@@ -27,38 +28,41 @@ describe('Processing non-existent Estela Data from DB to Parquet', () => {
   });
 
   it('should fetch data from db, and return empty string for url', async () => {
-    const fileUrl = await processEstelaData();
+    const fileUrl = await processTackTrackerData();
     expect(fileUrl).toEqual('');
   });
 });
 
-describe('Processing exist Estela Data from DB to Parquet', () => {
-  const raceID1 = 'f6373964-9496-46ba-b907-fa90f8c6fb62';
+describe('Processing exist TackTracker Data from DB to Parquet', () => {
+  const raceID1 = '8e555bca-e34b-4a3a-a552-34206c108563';
   const raceID2 = 'random';
   beforeAll(async () => {
-    await saveEstelaData(jsonData);
+    await saveTackTrackerData(jsonData);
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.estelaRace.destroy({
+    await db.tackTrackerRegatta.destroy({
       truncate: true,
     });
-    await db.estelaClub.destroy({
+    await db.tackTrackerRace.destroy({
       truncate: true,
     });
-    await db.estelaBuoy.destroy({
+    await db.tackTrackerBoat.destroy({
       truncate: true,
     });
-    await db.estelaDorsal.destroy({
+    await db.tackTrackerDefault.destroy({
       truncate: true,
     });
-    await db.estelaResult.destroy({
+    await db.tackTrackerFinish.destroy({
       truncate: true,
     });
-    await db.estelaPlayer.destroy({
+    await db.tackTrackerMark.destroy({
       truncate: true,
     });
-    await db.estelaPosition.destroy({
+    await db.tackTrackerPosition.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerStart.destroy({
       truncate: true,
     });
     await db.sequelize.close();
@@ -67,52 +71,58 @@ describe('Processing exist Estela Data from DB to Parquet', () => {
     const races = await getRaces();
     expect(races.length).toEqual(1);
   });
-  it('should get clubs', async () => {
-    const clubs = await getClubs();
-    expect(clubs.size).toEqual(3);
+  it('should get regattas', async () => {
+    const regattas = await getRegattas();
+    expect(regattas.size).toEqual(1);
   });
-  it('should get buoys', async () => {
-    const case1 = await getBuoys([raceID1]);
+  it('should get boats', async () => {
+    const case1 = await getBoats([raceID1]);
     expect(case1.size).toEqual(1);
     expect(case1.get(raceID1).length).toEqual(2);
-    const case2 = await getBuoys([raceID2]);
+    const case2 = await getBoats([raceID2]);
     expect(case2.size).toEqual(0);
   });
-  it('should get dorsals', async () => {
-    const case1 = await getDorsals([raceID1]);
+  it('should get defaults', async () => {
+    const case1 = await getDefaults([raceID1]);
     expect(case1.size).toEqual(1);
     expect(case1.get(raceID1).length).toEqual(1);
-    const case2 = await getDorsals([raceID2]);
+    const case2 = await getDefaults([raceID2]);
     expect(case2.size).toEqual(0);
   });
-  it('should get players', async () => {
-    const case1 = await getPlayers([raceID1]);
+  it('should get finish', async () => {
+    const case1 = await getFinishes([raceID1]);
     expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(2);
-    const case2 = await getPlayers([raceID2]);
+    expect(case1.get(raceID1).length).toEqual(1);
+    const case2 = await getFinishes([raceID2]);
+    expect(case2.size).toEqual(0);
+  });
+  it('should get marks', async () => {
+    const case1 = await getMarks([raceID1]);
+    expect(case1.size).toEqual(1);
+    expect(case1.get(raceID1).length).toEqual(4);
+    const case2 = await getMarks([raceID2]);
     expect(case2.size).toEqual(0);
   });
   it('should get positions', async () => {
     const case1 = await getPositions([raceID1]);
     expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(2);
+    expect(case1.get(raceID1).length).toEqual(3);
     const case2 = await getPositions([raceID2]);
     expect(case2.size).toEqual(0);
   });
-  it('should get results', async () => {
-    const case1 = await getResults([raceID1]);
+  it('should get starts', async () => {
+    const case1 = await getStarts([raceID1]);
     expect(case1.size).toEqual(1);
     expect(case1.get(raceID1).length).toEqual(1);
-    const case2 = await getResults([raceID2]);
+    const case2 = await getStarts([raceID2]);
     expect(case2.size).toEqual(0);
   });
-
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
     const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/estela/result.parquet';
+      'https://awsbucket.com/thebucket/tackTracker/result.parquet';
     uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
 
-    const fileUrl = await processEstelaData();
+    const fileUrl = await processTackTrackerData();
     expect(uploadFileToS3).toHaveBeenCalledTimes(1);
     expect(writeToParquet).toHaveBeenCalledTimes(1);
     expect(fileUrl).toEqual(mockS3UploadResultPath);

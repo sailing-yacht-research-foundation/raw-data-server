@@ -1,0 +1,156 @@
+{
+  "TackTrackerRegatta": [
+    {
+      "id": "c74a5f2c-4e16-43e4-83bd-d5e53e52d596",
+      "url": "https://tacktracker.com/cloud/regattas/show/1525468984",
+      "original_id": "1525468984"
+    }
+  ],
+  "TackTrackerRace": [
+    {
+      "id": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "original_id": "8500595",
+      "url": "https://tacktracker.com/cloud/regattas/show/1525468984",
+      "regatta": "c74a5f2c-4e16-43e4-83bd-d5e53e52d596",
+      "user": "",
+      "regatta_original_id": "1525468984",
+      "user_original_id": "",
+      "start": "2017-02-18T11:00:00Z",
+      "state": "Complete",
+      "name": "Oxford Blue R1",
+      "type": "YachtRace",
+      "finish_at_start": "",
+      "span": "3600",
+      "course": "\"A B C D A B C D A B C D A B C D\"",
+      "event_notes": "{\"Notes\":{}}",
+      "course_notes": "[{\"Leg\":\"0\",\"Notes\":{}},{\"Leg\":\"12\",\"Notes\":{}}]",
+      "upload_params": "{\"cid\":\"193047150\",\"locked\":\"0\",\"private\":\"0\",\"raceid\":\"8500595\",\"rgid\":\"1525468984\",\"seq\":\"0\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Oxford Blue R1\",\"Comment\":{},\"Message\":{}}"
+    }
+  ],
+  "TackTrackerBoat": [
+    {
+      "id": "03f1f7b8-564b-4e83-a940-3df82d522588",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "details": "1181",
+      "color": "Blue",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "0.903342",
+      "unknown_4": "SmallMono",
+      "unknown_5": "0.903342,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "RS Aero 5 BELTON"
+    },
+    {
+      "id": "7586a6db-3766-479f-a84b-a91cdf25a611",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "details": "402",
+      "color": "Turquoise",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1.02987",
+      "unknown_4": "SmallMono",
+      "unknown_5": "1.02987,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "D_One BROOKS"
+    }
+  ],
+  "TackTrackerDefault": [
+    {
+      "id": "cf84d2ec-83be-4dbd-a125-837d70df7ea3",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "lon": "-1,3569769",
+      "lat": "51,75066096",
+      "color": "Yellow",
+      "trim": "30"
+    }
+  ],
+  "TackTrackerFinish": [
+    {
+      "id": "45b5831f-9346-4861-8ac1-bf4fcb80248e",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "finish_mark_name": "FinishBoat",
+      "finish_mark_lat": "51.75399676",
+      "finish_mark_lon": "-1.35632241",
+      "finish_mark_type": "FinishBoat",
+      "finish_pin_name": "FinishPin",
+      "finish_pin_lat": "51.75319071",
+      "finish_pin_lon": "-1.35685853",
+      "finish_pin_type": "FinishPin"
+    }
+  ],
+  "TackTrackerMark": [
+    {
+      "id": "9c7091a6-824e-4d8d-91d4-7344ccdb3945",
+      "name": "\"D\"",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "lon": "-1.35595916",
+      "lat": "51.75249300",
+      "type": "Rounding"
+    },
+    {
+      "id": "d3621d4a-2a7f-4d83-a65c-11c621d077df",
+      "name": "\"A\"",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "lon": "-1.35889440",
+      "lat": "51.74873543",
+      "type": "Rounding"
+    },
+    {
+      "id": "96571e57-6883-40ad-a2f9-4b1e604eb856",
+      "name": "\"B\"",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "lon": "-1.35153735",
+      "lat": "51.74835004",
+      "type": "Rounding"
+    },
+    {
+      "id": "14e192b1-4805-44a3-97e2-adbdc2dcdc55",
+      "name": "\"C\"",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "lon": "-1.35010367",
+      "lat": "51.75264777",
+      "type": "Rounding"
+    }
+  ],
+  "TackTrackerPosition": [
+    {
+      "id": "651a54c9-788c-43b7-9725-f5456d5130ed",
+      "boat": "03f1f7b8-564b-4e83-a940-3df82d522588",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "time": "2017-02-18T10:41:43Z",
+      "lon": "-1.35020600",
+      "lat": "51.75343100"
+    },
+    {
+      "id": "06102474-80e6-417b-a823-807fbdccf602",
+      "boat": "03f1f7b8-564b-4e83-a940-3df82d522588",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "time": "2017-02-18T10:41:48Z",
+      "lon": "-1.35039500",
+      "lat": "51.75344200"
+    },
+    {
+      "id": "9dc884a2-5e0f-411b-8e82-dc796c7b706f",
+      "boat": "03f1f7b8-564b-4e83-a940-3df82d522588",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "time": "2017-02-18T10:41:53Z",
+      "lon": "-1.35057800",
+      "lat": "51.75345900"
+    }
+  ],
+  "TackTrackerStart": [
+    {
+      "id": "1a9219e8-68c3-4926-8f4f-9c6377d06dbb",
+      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
+      "start_mark_name": "StartBoat",
+      "start_mark_lat": "51.75393664",
+      "start_mark_lon": "-1.35710411",
+      "start_mark_type": "StartBoat",
+      "start_pin_name": "StartPin",
+      "start_pin_lat": "51.75325768",
+      "start_pin_lon": "-1.35353446",
+      "start_pin_type": "StartPin"
+    }
+  ]
+}

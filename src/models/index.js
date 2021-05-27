@@ -362,4 +362,39 @@ db.estelaPosition = require('./estela/estelaPosition.model')(
 db.estelaRace = require('./estela/estelaRace.model')(sequelize, Sequelize);
 db.estelaResult = require('./estela/estelaResult.model')(sequelize, Sequelize);
 // === End of Estela ===
+
+// === TackTracker ===
+db.tackTrackerBoat = require('./tackTracker/tackTrackerBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerDefault = require('./tackTracker/tackTrackerDefault.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerFinish = require('./tackTracker/tackTrackerFinish.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerMark = require('./tackTracker/tackTrackerMark.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerPosition = require('./tackTracker/tackTrackerPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerRace = require('./tackTracker/tackTrackerRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerRegatta = require('./tackTracker/tackTrackerRegatta.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerStart = require('./tackTracker/tackTrackerStart.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of TackTracker ===
 module.exports = db;
