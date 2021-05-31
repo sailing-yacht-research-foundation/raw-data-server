@@ -34,6 +34,8 @@ Server that will be used to transform data to parquet format and perform bulk sa
 - Run `docker-compose down` to terminate
 - Run `docker-compose -f docker-compose.yml run raw-data-server npm run test` to run tests
 
+If you have run docker previously using older version of the app, database structure changes might affect the tests. Please run `docker-compose down` and execute `docker volume rm [volume_name]` on the rds-db volume.
+
 ## API Endpoint
 
 - `/api/v1/upload-file`

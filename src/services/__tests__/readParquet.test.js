@@ -21,6 +21,10 @@ const saveISailData = require('../saveISailData');
 const { processISailData } = require('../processISailData');
 const iSailData = require('../../test-files/iSail.json');
 
+const saveKattackData = require('../saveKattackData');
+const { processKattackData } = require('../processKattackData');
+const kattackData = require('../../test-files/kattack.json');
+
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Basic read parquet functionality', () => {
@@ -37,10 +41,12 @@ describe('Basic read parquet functionality', () => {
 
 describe('Read tracker parquet files', () => {
   beforeAll(async () => {
+    await db.sequelize.sync();
     await saveBluewaterData(bluewaterData);
     await saveEstelaData(estelaData);
     await saveGeoracingData(georacingData);
     await saveISailData(iSailData);
+    await saveKattackData(kattackData);
   });
   afterAll(async () => {
     jest.resetAllMocks();
@@ -165,6 +171,23 @@ describe('Read tracker parquet files', () => {
       truncate: true,
     });
 
+    await db.kattackYachtClub.destroy({
+      truncate: true,
+    });
+    await db.kattackRace.destroy({
+      truncate: true,
+    });
+    await db.kattackDevice.destroy({
+      truncate: true,
+    });
+    await db.kattackPosition.destroy({
+      truncate: true,
+    });
+    await db.kattackWaypoint.destroy({
+      truncate: true,
+    });
+    await db;
+
     await db.sequelize.close();
   });
 
@@ -259,6 +282,31 @@ describe('Read tracker parquet files', () => {
       expect.objectContaining({
         event_id: 'd451063e-b576-4b23-8638-457e68cb6c26',
         name: 'DiZeBra 20150421',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read Kattack parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/kattack-test.parquet',
+    );
+    await processKattackData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        race_id: '79722f12-5f07-43a1-a327-08459673803c',
+        name: 'Rox',
       }),
     );
     fs.unlink(filePath, (err) => {

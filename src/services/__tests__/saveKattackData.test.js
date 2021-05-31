@@ -25,39 +25,38 @@ describe('Storing kattack data to DB', () => {
     });
     await db.sequelize.close();
   });
-  it('should save kattack yacht club correctly', async () => {
-    const spyCreate = jest.spyOn(db.kattackYachtClub, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.kattackYachtClub, 'findAll');
-    await saveKattackData({ KattackYachtClub: jsonData.KattackYachtClub });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
+
+  afterEach(async () => {
+    jest.resetAllMocks();
   });
-  it('should save kattack races correctly', async () => {
-    const spyCreate = jest.spyOn(db.kattackRace, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.kattackRace, 'findAll');
-    await saveKattackData({ KattackRace: jsonData.KattackRace });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
+  it('should not save anything when empty data', async () => {
+    const createYachtClub = jest.spyOn(db.kattackYachtClub, 'bulkCreate');
+    const createRace = jest.spyOn(db.kattackRace, 'bulkCreate');
+    const createDevice = jest.spyOn(db.kattackDevice, 'bulkCreate');
+    const createPosition = jest.spyOn(db.kattackPosition, 'bulkCreate');
+    const createWaypoint = jest.spyOn(db.kattackWaypoint, 'bulkCreate');
+
+    await saveKattackData({});
+
+    expect(createYachtClub).toHaveBeenCalledTimes(0);
+    expect(createRace).toHaveBeenCalledTimes(0);
+    expect(createDevice).toHaveBeenCalledTimes(0);
+    expect(createPosition).toHaveBeenCalledTimes(0);
+    expect(createWaypoint).toHaveBeenCalledTimes(0);
   });
-  it('should save kattack devices correctly', async () => {
-    const spyCreate = jest.spyOn(db.kattackDevice, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.kattackDevice, 'findAll');
-    await saveKattackData({ KattackDevice: jsonData.KattackDevice });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save kattack positions correctly', async () => {
-    const spyCreate = jest.spyOn(db.kattackPosition, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.kattackPosition, 'findAll');
-    await saveKattackData({ KattackPosition: jsonData.KattackPosition });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save kattack waypoints correctly', async () => {
-    const spyCreate = jest.spyOn(db.kattackWaypoint, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.kattackWaypoint, 'findAll');
-    await saveKattackData({ KattackWaypoint: jsonData.KattackWaypoint });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
+  it('should save data correctly', async () => {
+    const createYachtClub = jest.spyOn(db.kattackYachtClub, 'bulkCreate');
+    const createRace = jest.spyOn(db.kattackRace, 'bulkCreate');
+    const createDevice = jest.spyOn(db.kattackDevice, 'bulkCreate');
+    const createPosition = jest.spyOn(db.kattackPosition, 'bulkCreate');
+    const createWaypoint = jest.spyOn(db.kattackWaypoint, 'bulkCreate');
+
+    await saveKattackData(jsonData);
+
+    expect(createYachtClub).toHaveBeenCalledTimes(1);
+    expect(createRace).toHaveBeenCalledTimes(1);
+    expect(createDevice).toHaveBeenCalledTimes(1);
+    expect(createPosition).toHaveBeenCalledTimes(1);
+    expect(createWaypoint).toHaveBeenCalledTimes(1);
   });
 });

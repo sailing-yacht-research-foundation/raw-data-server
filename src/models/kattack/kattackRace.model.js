@@ -124,11 +124,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       is_distance_race: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       is_open_feed: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       speed_filter_kts: {
@@ -136,11 +136,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       is_live: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       has_started: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       lon: {
