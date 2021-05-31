@@ -33,7 +33,7 @@ describe('Processing non-existent Bluewater Data from DB to Parquet', () => {
   });
 });
 
-describe('Processing exist Kwindoo Data from DB to Parquet', () => {
+describe('Processing exist Bluewater Data from DB to Parquet', () => {
   const raceID = '74314800-9ccb-4f52-a37f-82e01b2afe80';
   const crewID = '3a2f9249-084b-4d95-b639-fcc7d1336d6c';
   const boatID = '4bcb53b4-058f-4c2b-a41c-5b607730765e';

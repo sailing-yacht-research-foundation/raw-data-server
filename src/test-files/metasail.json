@@ -59,7 +59,7 @@
       "name": "Arrivee",
       "description": "Arrivee",
       "sail_number": "-",
-      "is_dummy": ""
+      "is_dummy": null
     },
     {
       "id": "055fa87d-ab4d-4a41-a6cf-66c12083d069",
@@ -70,7 +70,7 @@
       "name": "CAPMAR",
       "description": "CAPMAR",
       "sail_number": "-",
-      "is_dummy": ""
+      "is_dummy": null
     }
   ],
   "MetasailBuoy": [

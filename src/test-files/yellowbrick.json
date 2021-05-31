@@ -54,7 +54,7 @@
       "motd": "",
       "associated": "[]",
       "associated2": "[]",
-      "hashtag": "151miglia2017 #Cetilar #lanottepi�bella",
+      "hashtag": "151miglia2017 #Cetilar #lanottepi #bella",
       "start": "1496296800",
       "stop": "1496653200",
       "race_code": "151miglia2017",
@@ -262,8 +262,9 @@
       "id": "test",
       "original_id": "test",
       "race": "e64453b5-4e1f-4ffe-9cdd-3fd1cdea49fd",
+      "race_code": "151miglia2012",
       "nodes": "node",
-      "polygon": "polygon content",
+      "polygon": true,
       "name": "Name should be here"
     }
   ],
@@ -287,7 +288,7 @@
       "type": "automatic",
       "battery": "78",
       "sog_knots": "4",
-      "alert": "f",
+      "alert": false,
       "cog": "34",
       "gps_at": "2012-06-01T14:30:00Z"
     },
@@ -310,7 +311,7 @@
       "type": "automatic",
       "battery": "79",
       "sog_knots": "7.3",
-      "alert": "f",
+      "alert": false,
       "cog": "351",
       "gps_at": "2012-06-01T14:00:00Z"
     },
@@ -333,7 +334,7 @@
       "type": "automatic",
       "battery": "79",
       "sog_knots": "8.1",
-      "alert": "f",
+      "alert": false,
       "cog": "311",
       "gps_at": "2012-06-01T13:30:00Z"
     }

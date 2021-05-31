@@ -60,41 +60,43 @@ router.post(
     } else {
       try {
         const jsonData = await jsonfile.readFile(req.file.path);
-        if (jsonData.iSailEvent) {
-          saveISailData(jsonData);
-        }
-        if (jsonData.KattackRace) {
-          saveKattackData(jsonData);
-        }
-        if (jsonData.GeoracingEvent) {
-          saveGeoracingData(jsonData);
-        }
-        if (jsonData.TracTracRace) {
-          saveTracTracData(jsonData);
-        }
-        if (jsonData.YellowbrickRace) {
-          saveYellowbrickData(jsonData);
-        }
-        if (jsonData.KwindooRace) {
-          saveKwindooData(jsonData);
-        }
-        if (jsonData.BluewaterRace) {
-          saveBluewaterData(jsonData);
-        }
-        if (jsonData.YachtBotRace) {
-          saveYachtBotData(jsonData);
-        }
-        if (jsonData.RaceQsEvent) {
-          saveRaceQsData(jsonData);
-        }
-        if (jsonData.MetasailRace) {
-          saveMetasailData(jsonData);
-        }
-        if (jsonData.EstelaRace) {
-          saveEstelaData(jsonData);
-        }
-        if (jsonData.TackTrackerRace) {
-          saveTackTrackerData(jsonData);
+        switch (true) {
+          case Boolean(jsonData.iSailEvent):
+            saveISailData(jsonData);
+            break;
+          case Boolean(jsonData.KattackRace):
+            saveKattackData(jsonData);
+            break;
+          case Boolean(jsonData.GeoracingEvent):
+            saveGeoracingData(jsonData);
+            break;
+          case Boolean(jsonData.TracTracRace):
+            saveTracTracData(jsonData);
+            break;
+          case Boolean(jsonData.YellowbrickRace):
+            saveYellowbrickData(jsonData);
+            break;
+          case Boolean(jsonData.KwindooRace):
+            saveKwindooData(jsonData);
+            break;
+          case Boolean(jsonData.BluewaterRace):
+            saveBluewaterData(jsonData);
+            break;
+          case Boolean(jsonData.YachtBotRace):
+            saveYachtBotData(jsonData);
+            break;
+          case Boolean(jsonData.RaceQsEvent):
+            saveRaceQsData(jsonData);
+            break;
+          case Boolean(jsonData.MetasailRace):
+            saveMetasailData(jsonData);
+            break;
+          case Boolean(jsonData.EstelaRace):
+            saveEstelaData(jsonData);
+            break;
+          case Boolean(jsonData.TackTrackerRace):
+            saveTackTrackerData(jsonData);
+            break;
         }
       } catch (err) {
         // TODO: Handle error better
