@@ -25,6 +25,34 @@ const saveKattackData = require('../saveKattackData');
 const { processKattackData } = require('../processKattackData');
 const kattackData = require('../../test-files/kattack.json');
 
+const saveKwindooData = require('../saveKwindooData');
+const { processKwindooData } = require('../processKwindooData');
+const kwindooData = require('../../test-files/kwindoo.json');
+
+const saveMetasailData = require('../saveMetasailData');
+const { processMetasailData } = require('../processMetasailData');
+const metasailData = require('../../test-files/metasail.json');
+
+const saveRaceQsData = require('../saveRaceQsData');
+const { processRaceQsData } = require('../processRaceQsData');
+const raceQsData = require('../../test-files/raceQs.json');
+
+const saveTackTrackerData = require('../saveTackTrackerData');
+const { processTackTrackerData } = require('../processTackTrackerData');
+const tackTrackerData = require('../../test-files/tackTracker.json');
+
+const saveTracTracData = require('../saveTracTracData');
+const { processTracTracData } = require('../processTracTracData');
+const tractracData = require('../../test-files/tractrac.json');
+
+const saveYachtBotData = require('../saveYachtBotData');
+const { processYachtBotData } = require('../processYachtBotData');
+const yachtBotData = require('../../test-files/yachtBot.json');
+
+const saveYellowbrickData = require('../saveYellowbrickData');
+const { processYellowbrickData } = require('../processYellowbrickData');
+const yellowbrickData = require('../../test-files/yellowbrick.json');
+
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Basic read parquet functionality', () => {
@@ -47,6 +75,13 @@ describe('Read tracker parquet files', () => {
     await saveGeoracingData(georacingData);
     await saveISailData(iSailData);
     await saveKattackData(kattackData);
+    await saveKwindooData(kwindooData);
+    await saveMetasailData(metasailData);
+    await saveRaceQsData(raceQsData);
+    await saveTackTrackerData(tackTrackerData);
+    await saveTracTracData(tractracData);
+    await saveYachtBotData(yachtBotData);
+    await saveYellowbrickData(yellowbrickData);
   });
   afterAll(async () => {
     jest.resetAllMocks();
@@ -186,7 +221,193 @@ describe('Read tracker parquet files', () => {
     await db.kattackWaypoint.destroy({
       truncate: true,
     });
-    await db;
+
+    await db.kwindooRegattaOwner.destroy({
+      truncate: true,
+    });
+    await db.kwindooRegatta.destroy({
+      truncate: true,
+    });
+    await db.kwindooRace.destroy({
+      truncate: true,
+    });
+    await db.kwindooBoat.destroy({
+      truncate: true,
+    });
+    await db.kwindooComment.destroy({
+      truncate: true,
+    });
+    await db.kwindooHomeportLocation.destroy({
+      truncate: true,
+    });
+    await db.kwindooMarker.destroy({
+      truncate: true,
+    });
+    await db.kwindooMIA.destroy({
+      truncate: true,
+    });
+    await db.kwindooPOI.destroy({
+      truncate: true,
+    });
+    await db.kwindooPosition.destroy({
+      truncate: true,
+    });
+    await db.kwindooRunningGroup.destroy({
+      truncate: true,
+    });
+    await db.kwindooVideoStream.destroy({
+      truncate: true,
+    });
+    await db.kwindooWaypoint.destroy({
+      truncate: true,
+    });
+
+    await db.metasailEvent.destroy({
+      truncate: true,
+    });
+    await db.metasailRace.destroy({
+      truncate: true,
+    });
+    await db.metasailBoat.destroy({
+      truncate: true,
+    });
+    await db.metasailBuoy.destroy({
+      truncate: true,
+    });
+    await db.metasailGate.destroy({
+      truncate: true,
+    });
+    await db.metasailPosition.destroy({
+      truncate: true,
+    });
+
+    await db.raceQsRegatta.destroy({
+      truncate: true,
+    });
+    await db.raceQsEvent.destroy({
+      truncate: true,
+    });
+    await db.raceQsDivision.destroy({
+      truncate: true,
+    });
+    await db.raceQsParticipant.destroy({
+      truncate: true,
+    });
+    await db.raceQsPosition.destroy({
+      truncate: true,
+    });
+    await db.raceQsRoute.destroy({
+      truncate: true,
+    });
+    await db.raceQsStart.destroy({
+      truncate: true,
+    });
+    await db.raceQsWaypoint.destroy({
+      truncate: true,
+    });
+
+    await db.tackTrackerRegatta.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerRace.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerBoat.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerDefault.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerFinish.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerMark.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerPosition.destroy({
+      truncate: true,
+    });
+    await db.tackTrackerStart.destroy({
+      truncate: true,
+    });
+
+    await db.tractracEvent.destroy({
+      truncate: true,
+    });
+    await db.tractracRace.destroy({
+      truncate: true,
+    });
+    await db.tractracClass.destroy({
+      truncate: true,
+    });
+    await db.tractracRaceClass.destroy({
+      truncate: true,
+    });
+    await db.tractracClass.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitor.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitorPassing.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitorPosition.destroy({
+      truncate: true,
+    });
+    await db.tractracCompetitorResult.destroy({
+      truncate: true,
+    });
+    await db.tractracControl.destroy({
+      truncate: true,
+    });
+    await db.tractracControlPoint.destroy({
+      truncate: true,
+    });
+    await db.tractracControlPointPosition.destroy({
+      truncate: true,
+    });
+    await db.tractracRoute.destroy({
+      truncate: true,
+    });
+    await db.sailorEmail.destroy({
+      truncate: true,
+    });
+
+    await db.yachtBotRace.destroy({
+      truncate: true,
+    });
+    await db.yachtBotBuoy.destroy({
+      truncate: true,
+    });
+    await db.yachtBotPosition.destroy({
+      truncate: true,
+    });
+    await db.yachtBotYacht.destroy({
+      truncate: true,
+    });
+
+    await db.yellowbrickRace.destroy({
+      truncate: true,
+    });
+    await db.yellowbrickPosition.destroy({
+      truncate: true,
+    });
+    await db.yellowbrickPoi.destroy({
+      truncate: true,
+    });
+    await db.yellowbrickCourseNode.destroy({
+      truncate: true,
+    });
+    await db.yellowbrickLeaderboardTeam.destroy({
+      truncate: true,
+    });
+    await db.yellowbrickTag.destroy({
+      truncate: true,
+    });
+    await db.yellowbrickTeam.destroy({
+      truncate: true,
+    });
 
     await db.sequelize.close();
   });
@@ -307,6 +528,183 @@ describe('Read tracker parquet files', () => {
       expect.objectContaining({
         race_id: '79722f12-5f07-43a1-a327-08459673803c',
         name: 'Rox',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read Kwindoo parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/kwindoo-test.parquet',
+    );
+    await processKwindooData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(3);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        regatta_id: 'efe26138-6744-40c7-a64e-82f89464589a',
+        name: 'I. Flex Fleet Klasszikus Szóló',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read Metasail parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/metasail-test.parquet',
+    );
+    await processMetasailData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(3);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        race_id: '1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d',
+        name: 'Spi Ouest France 2020 DIAM 24 suite R 7 (race id: 10386)',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read RaceQs parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/raceQs-test.parquet',
+    );
+    await processRaceQsData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event_id: '846a774c-fefb-4729-b5bf-8746e2e64f4a',
+        event_original_id: '62880',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read TackTracker parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/tackTracker-test.parquet',
+    );
+    await processTackTrackerData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        race_id: '8e555bca-e34b-4a3a-a552-34206c108563',
+        race_original_id: '8500595',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read Trac Trac parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/tractrac-test.parquet',
+    );
+    await processTracTracData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(5);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        race_id: '022e3341-0740-4714-b7e8-5bfcf9651b6f',
+        original_race_id: '80b39da0-b465-0131-ba03-10bf48d758ce',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read Yacht Bot parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/yachtBot-test.parquet',
+    );
+    await processYachtBotData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        race_id: '2f052217-bd51-4428-b772-5a0ca8659c77',
+        race_original_id: '362',
+        name: 'Rolex Day 2 - Race 4',
+      }),
+    );
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  });
+
+  it('should read Yellowbrick parquet files successfully', async () => {
+    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
+
+    let filePath = path.resolve(
+      __dirname,
+      '../../test-files/yellowbrick-test.parquet',
+    );
+    await processYellowbrickData(filePath);
+
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(3);
+    expect(processRecord).toHaveBeenCalledWith(
+      expect.objectContaining({
+        race_id: 'e64453b5-4e1f-4ffe-9cdd-3fd1cdea49fd',
+        tz: 'CEST',
+        tz_offset: '7200',
       }),
     );
     fs.unlink(filePath, (err) => {
