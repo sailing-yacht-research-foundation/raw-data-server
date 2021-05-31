@@ -2,14 +2,14 @@ const path = require('path');
 
 const readParquet = require('../readParquet');
 
-describe('Read data from Parquet files', () => {
+describe('Basic read parquet functionality', () => {
   it('should read parquet files successfully', async () => {
     const filePath = path.resolve(
       __dirname,
       '../../test-files/georacing.parquet',
     );
-    const data = await readParquet(filePath);
-    expect(Array.isArray(data)).toEqual(true);
-    expect(data.length).toEqual(2);
+    const processRecord = jest.fn();
+    await readParquet(filePath, processRecord);
+    expect(processRecord).toHaveBeenCalledTimes(2);
   });
 });
