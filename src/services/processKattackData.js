@@ -57,13 +57,17 @@ const getWaypoints = async (raceList) => {
   return result;
 };
 
-const processKattackData = async () => {
+const processKattackData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-kattack');
-  const filePath = `${dirPath}/kattack.parquet`;
+
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-kattack');
+    parquetPath = `${dirPath}/kattack.parquet`;
+  }
 
   const yachtClubs = await getYachtClubs();
   const races = await getRaces();
@@ -171,12 +175,14 @@ const processKattackData = async () => {
       waypoints: JSON.stringify(waypoints.get(race_id)),
     };
   });
-  await writeToParquet(data, kattackCombined, filePath);
+  await writeToParquet(data, kattackCombined, parquetPath);
   const fileUrl = await uploadFileToS3(
-    filePath,
+    parquetPath,
     `kattack/year=${currentYear}/month=${currentMonth}/kattack_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

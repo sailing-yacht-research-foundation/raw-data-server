@@ -8,7 +8,7 @@ const writeToParquet = async (data, schema, filePath) => {
   for (let i = 0; i < data.length; i++) {
     await writer.appendRow(data[i]);
   }
-  writer.close();
+  await writer.close();
 };
 
 module.exports = writeToParquet;

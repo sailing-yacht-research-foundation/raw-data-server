@@ -152,14 +152,18 @@ const getWaypoints = async (regattaList) => {
   return result;
 };
 
-const processKwindooData = async () => {
+const processKwindooData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-kwindoo');
 
-  const parquetPath = `${dirPath}/kwindoo.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-kwindoo');
+    parquetPath = `${dirPath}/kwindoo.parquet`;
+  }
+
   const regattas = await getRegattas();
   if (regattas.length === 0) {
     return '';
@@ -237,7 +241,9 @@ const processKwindooData = async () => {
     parquetPath,
     `kwindoo/year=${currentYear}/month=${currentMonth}/kwindoo_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

@@ -79,14 +79,17 @@ const getResults = async (raceList) => {
   });
   return result;
 };
-const processEstelaData = async () => {
+const processEstelaData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-estela');
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-estela');
+    parquetPath = `${dirPath}/estela.parquet`;
+  }
 
-  const parquetPath = `${dirPath}/estela.parquet`;
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -166,7 +169,9 @@ const processEstelaData = async () => {
     parquetPath,
     `estela/year=${currentYear}/month=${currentMonth}/estela_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

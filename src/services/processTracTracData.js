@@ -136,14 +136,18 @@ const getCompetitorPositions = async (raceList) => {
   return result;
 };
 
-const processTracTracData = async () => {
+const processTracTracData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-tractrac');
 
-  const parquetPath = `${dirPath}/tractrac.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-tractrac');
+    parquetPath = `${dirPath}/tractrac.parquet`;
+  }
+
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -229,7 +233,9 @@ const processTracTracData = async () => {
     parquetPath,
     `tractrac/year=${currentYear}/month=${currentMonth}/tractrac_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

@@ -84,14 +84,18 @@ const getTeams = async (raceList) => {
   return result;
 };
 
-const processYellowbrickData = async () => {
+const processYellowbrickData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-yellowbrick');
 
-  const parquetPath = `${dirPath}/yellowbrick.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-yellowbrick');
+    parquetPath = `${dirPath}/yellowbrick.parquet`;
+  }
+
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -165,7 +169,9 @@ const processYellowbrickData = async () => {
     parquetPath,
     `yellowbrick/year=${currentYear}/month=${currentMonth}/yellowbrick_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

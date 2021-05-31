@@ -47,14 +47,18 @@ const getPositions = async (raceList) => {
   });
   return result;
 };
-const processYachtBotData = async () => {
+const processYachtBotData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-yachtbot');
 
-  const parquetPath = `${dirPath}/yachtbot.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-yachtbot');
+    parquetPath = `${dirPath}/yachtbot.parquet`;
+  }
+
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -96,7 +100,9 @@ const processYachtBotData = async () => {
     parquetPath,
     `yachtbot/year=${currentYear}/month=${currentMonth}/yachtbot_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

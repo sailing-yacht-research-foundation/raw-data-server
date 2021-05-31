@@ -67,14 +67,18 @@ const getPositions = async (raceList) => {
   });
   return result;
 };
-const processMetasailData = async () => {
+const processMetasailData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-metasail');
 
-  const parquetPath = `${dirPath}/metasail.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-metasail');
+    parquetPath = `${dirPath}/metasail.parquet`;
+  }
+
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -124,7 +128,9 @@ const processMetasailData = async () => {
     parquetPath,
     `metasail/year=${currentYear}/month=${currentMonth}/metasail_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

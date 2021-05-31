@@ -148,14 +148,18 @@ const getSplittimeObjects = async (splittimeList) => {
   return result;
 };
 
-const processGeoracingData = async () => {
+const processGeoracingData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-georacing');
 
-  const parquetPath = `${dirPath}/georacing.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-georacing');
+    parquetPath = `${dirPath}/georacing.parquet`;
+  }
+
   const events = await getEvents();
   if (events.length === 0) {
     return '';
@@ -234,7 +238,9 @@ const processGeoracingData = async () => {
     parquetPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

@@ -127,14 +127,17 @@ const getResults = async (eventIDs) => {
   return result;
 };
 
-const processISailData = async () => {
+const processISailData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-isail');
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-isail');
+    parquetPath = `${dirPath}/isail.parquet`;
+  }
 
-  const combinedPath = `${dirPath}/iSailCombined.parquet`;
   const events = await db.iSailEvent.findAll({ raw: true });
   if (events.length === 0) {
     return '';
@@ -180,7 +183,7 @@ const processISailData = async () => {
       location,
       url,
       participants: JSON.stringify(eventParticipants.get(event_id)),
-      trackData: JSON.stringify(eventTrackDatas.get(event_id)),
+      trackData: eventTrackDatas.get(event_id),
       tracks: JSON.stringify(eventTracks.get(event_id)),
       positions: JSON.stringify(positions.get(event_id)),
       roundings: JSON.stringify(roundings.get(event_id)),
@@ -191,12 +194,14 @@ const processISailData = async () => {
       results: JSON.stringify(results.get(event_id)),
     };
   });
-  await writeToParquet(eventData, iSailCombined, combinedPath);
+  await writeToParquet(eventData, iSailCombined, parquetPath);
   const fileUrl = await uploadFileToS3(
-    combinedPath,
+    parquetPath,
     `iSail/year=${currentYear}/month=${currentMonth}/isail_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

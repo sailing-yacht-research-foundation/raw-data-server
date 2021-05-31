@@ -91,14 +91,18 @@ const getStarts = async (raceList) => {
   });
   return result;
 };
-const processTackTrackerData = async () => {
+const processTackTrackerData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-tackTracker');
 
-  const parquetPath = `${dirPath}/tackTracker.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-tackTracker');
+    parquetPath = `${dirPath}/tackTracker.parquet`;
+  }
+
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -168,7 +172,9 @@ const processTackTrackerData = async () => {
     parquetPath,
     `tackTracker/year=${currentYear}/month=${currentMonth}/tackTracker_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 

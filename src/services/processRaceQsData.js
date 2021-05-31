@@ -91,14 +91,18 @@ const getWaypoints = async (eventList) => {
   });
   return result;
 };
-const processRaceQsData = async () => {
+const processRaceQsData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  const dirPath = await temp.mkdir('rds-raceqs');
 
-  const parquetPath = `${dirPath}/raceqs.parquet`;
+  let parquetPath = optionalPath;
+  if (!optionalPath) {
+    const dirPath = await temp.mkdir('rds-raceqs');
+    parquetPath = `${dirPath}/raceqs.parquet`;
+  }
+
   const events = await getEvents();
   if (events.length === 0) {
     return '';
@@ -162,7 +166,9 @@ const processRaceQsData = async () => {
     parquetPath,
     `raceqs/year=${currentYear}/month=${currentMonth}/raceqs_${fullDateFormat}.parquet`,
   );
-  temp.cleanup();
+  if (!optionalPath) {
+    temp.cleanup();
+  }
   return fileUrl;
 };
 
