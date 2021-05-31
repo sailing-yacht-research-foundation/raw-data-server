@@ -1,4 +1,4 @@
-# raw-data-server
+# New Document# raw-data-server
 
 Server that will be used to transform data to parquet format and perform bulk saving into Permanent Storage
 
@@ -17,16 +17,17 @@ Server that will be used to transform data to parquet format and perform bulk sa
 ## Configuration
 
 - Setup all the environment variables before proceeding to the next step.
-  -- `AWS_S3_ACCESS_KEY_ID`: Used to upload file to s3
-  -- `AWS_S3_SECRET_ACCESS_KEY`: Used to upload file to s3
-  -- `AWS_S3_BUCKET`: The s3 Bucket to upload parquet files
-  -- `DB_HOST`: The database Host/IP Address
-  -- `DB_PORT`: Port of the database
-  -- `DB_USER`: User to connect to database
-  -- `DB_PASSWORD`: Password to connect to database
-  -- `DB_NAME`: Database name to connect
 
-- Run `scripts/initdb.sql` to install test database
+  - `AWS_S3_ACCESS_KEY_ID`: Used to upload file to s3
+    - `AWS_S3_SECRET_ACCESS_KEY`: Used to upload file to s3
+    - `AWS_S3_BUCKET`: The s3 Bucket to upload parquet files
+    - `DB_HOST`: The database Host/IP Address
+    - `DB_PORT`: Port of the database
+    - `DB_USER`: User to connect to database
+    - `DB_PASSWORD`: Password to connect to database
+    - `DB_NAME`: Database name to connect
+
+- Run `scripts/initdb.sql` to install test database. This is unnecessary if `docker-compose up` is executed.
 
 ## Usage
 
@@ -39,5 +40,5 @@ If you have run docker previously using older version of the app, database struc
 ## API Endpoint
 
 - `/api/v1/upload-file`
-  -- Set an `Authorization` header containing md5 hash of current date with format: yyyy MMM d, ddd
-  -- Upload the raw json file using multipart form data on `raw_data` field
+  - Set an `Authorization` header containing md5 hash of current date with format: yyyy MMM d, ddd
+  - Upload the raw json file using multipart form data on `raw_data` field
