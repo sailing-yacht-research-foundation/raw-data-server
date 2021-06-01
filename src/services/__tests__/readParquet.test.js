@@ -448,7 +448,7 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(filePath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
         race_id: 'f6373964-9496-46ba-b907-fa90f8c6fb62',
@@ -623,7 +623,7 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(filePath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
         race_id: '8e555bca-e34b-4a3a-a552-34206c108563',

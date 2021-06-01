@@ -25,6 +25,25 @@
       "event_notes": "{\"Notes\":{}}",
       "course_notes": "[{\"Leg\":\"0\",\"Notes\":{}},{\"Leg\":\"12\",\"Notes\":{}}]",
       "upload_params": "{\"cid\":\"193047150\",\"locked\":\"0\",\"private\":\"0\",\"raceid\":\"8500595\",\"rgid\":\"1525468984\",\"seq\":\"0\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Oxford Blue R1\",\"Comment\":{},\"Message\":{}}"
+    },
+    {
+      "id": "8e555bca-e34b-4a3a-a552-34206c108564",
+      "original_id": "8500596",
+      "url": "https://tacktracker.com/cloud/regattas/show/1525468985",
+      "regatta": null,
+      "user": "",
+      "regatta_original_id": null,
+      "user_original_id": "",
+      "start": "2017-02-18T11:00:00Z",
+      "state": "Complete",
+      "name": "Oxford Blue R1",
+      "type": "YachtRace",
+      "finish_at_start": "",
+      "span": "3600",
+      "course": "\"A B C D A B C D A B C D A B C D\"",
+      "event_notes": "{\"Notes\":{}}",
+      "course_notes": "[{\"Leg\":\"0\",\"Notes\":{}},{\"Leg\":\"12\",\"Notes\":{}}]",
+      "upload_params": "{\"cid\":\"193047150\",\"locked\":\"0\",\"private\":\"0\",\"raceid\":\"8500595\",\"rgid\":\"1525468984\",\"seq\":\"0\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Oxford Blue R1\",\"Comment\":{},\"Message\":{}}"
     }
   ],
   "TackTrackerBoat": [

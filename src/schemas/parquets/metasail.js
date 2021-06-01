@@ -16,6 +16,7 @@ const metasailCombined = new parquet.ParquetSchema({
       start: { type: 'UTF8', optional: true },
       end: { type: 'UTF8', optional: true },
     },
+    optional: true,
   },
   name: { type: 'UTF8', optional: true },
   start: { type: 'UTF8', optional: true },

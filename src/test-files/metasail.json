@@ -39,8 +39,8 @@
     {
       "id": "5e1120a5-481d-40cb-bb53-8d59c68acc71",
       "original_id": "10366",
-      "event": "acb704f8-5400-4cda-aec3-d1240e8e7348",
-      "event_original_id": "159",
+      "event": null,
+      "event_original_id": null,
       "name": "Spi Ouest France 2020 DIAM 24 R 6 (race id: 10366)",
       "start": "1601203171670",
       "stop": "1601206184347",

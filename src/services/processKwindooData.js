@@ -209,7 +209,7 @@ const processKwindooData = async (optionalPath) => {
       original_id,
       owner,
       owner_original_id,
-      owner_data: owner ? mapOwner.get(owner) : null,
+      owner_data: mapOwner.get(owner),
       name,
       timezone,
       public: publicRecord,

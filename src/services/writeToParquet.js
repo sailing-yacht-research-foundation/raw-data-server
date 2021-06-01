@@ -6,12 +6,7 @@ const writeToParquet = async (data, schema, filePath) => {
   });
 
   for (let i = 0; i < data.length; i++) {
-    try {
-      await writer.appendRow(data[i]);
-    } catch (error) {
-      console.log(data[i]);
-      console.error(error);
-    }
+    await writer.appendRow(data[i]);
   }
   await writer.close();
 };
