@@ -1,7 +1,7 @@
 const fs = require('fs');
+const parquet = require('parquetjs-lite');
 const temp = require('temp').track();
 
-const { iSailCombined } = require('../../schemas/parquets/iSail');
 const writeToParquet = require('../writeToParquet');
 
 describe('Write data to Parquet files', () => {
@@ -10,36 +10,91 @@ describe('Write data to Parquet files', () => {
     dirPath = await temp.mkdir('rds-parquet');
   });
 
-  test('Create iSail Parquet', async () => {
-    const fileName = 'iSail.parquet';
+  test('Successfully created a parquet', async () => {
+    const fileName = 'test.parquet';
     const path = `${dirPath}/${fileName}`;
-    await writeToParquet(
+    const theSchema = new parquet.ParquetSchema({
+      id: { type: 'UTF8' },
+      name: { type: 'UTF8' },
+    });
+    const writeResult = await writeToParquet(
       [
         {
-          event_id: 'd451063e-b576-4b23-8638-457e68cb6c26',
-          original_event_id: '13',
-          name: 'DiZeBra 20150421',
-          start_date: new Date('2015-04-21 00:00:00.000000'),
-          start_timezone_type: '3',
-          start_timezone: 'Europe/Paris',
-          stop_date: new Date('2015-04-21 00:00:00.000000'),
-          stop_timezone_type: '3',
-          stop_timezone: 'Europe/Paris',
-          club: 'WV Braassemermeer',
-          location: 'Braassemermeer',
-          url: 'http://app.i-sail.com/eventDetails/13',
-          participants: '',
-          races: '',
-          trackData: null,
-          tracks: '',
-          positions: '',
+          id: '1',
+          name: 'Tester',
         },
       ],
-      iSailCombined,
+      theSchema,
       path,
     );
-
+    expect(writeResult).toEqual({ success: true, errorDetail: null });
     expect(fs.existsSync(path)).toEqual(true);
+    temp.cleanup();
+  });
+
+  test('Failed to create a parquet when data-type is incorrect', async () => {
+    const fileName = 'test.parquet';
+    const path = `${dirPath}/${fileName}`;
+    const theSchema = new parquet.ParquetSchema({
+      id: { type: 'UTF8' },
+      name: { type: 'UTF8' },
+      age: { type: 'INT32' },
+    });
+    const secondRecord = {
+      id: '2',
+      name: 'Tester 2',
+      age: 'Twenty',
+    };
+    const writeResult = await writeToParquet(
+      [
+        {
+          id: '1',
+          name: 'Tester',
+          age: 20,
+        },
+        secondRecord,
+      ],
+      theSchema,
+      path,
+    );
+    expect(writeResult).toEqual({
+      success: false,
+      errorDetail: {
+        errorMessage:
+          'Parquet writing fails on data #1, error: invalid value for INT32: Twenty',
+        currentRecord: secondRecord,
+      },
+    });
+    temp.cleanup();
+  });
+
+  test('Failed when writer unable to open the file', async () => {
+    const path = `randomfolder/test.parquet`;
+    const theSchema = new parquet.ParquetSchema({
+      id: { type: 'UTF8' },
+      name: { type: 'UTF8' },
+      age: { type: 'INT32' },
+    });
+    const writeResult = await writeToParquet(
+      [
+        {
+          id: '1',
+          name: 'Tester',
+          age: 20,
+        },
+      ],
+      theSchema,
+      path,
+    );
+    expect(writeResult).toEqual(
+      expect.objectContaining({
+        success: false,
+        errorDetail: {
+          currentRecord: null,
+          errorMessage: expect.stringContaining('ENOENT'),
+        },
+      }),
+    );
     temp.cleanup();
   });
 });
