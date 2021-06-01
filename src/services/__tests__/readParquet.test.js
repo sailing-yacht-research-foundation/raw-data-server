@@ -65,6 +65,21 @@ describe('Basic read parquet functionality', () => {
     await readParquet(filePath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(2);
   });
+
+  it('should return failed when reader is unable to open the file', async () => {
+    const processRecord = jest.fn();
+    const readResult = await readParquet(
+      'randomfolder/test.parquet',
+      processRecord,
+    );
+    expect(processRecord).not.toHaveBeenCalled();
+    expect(readResult).toEqual(
+      expect.objectContaining({
+        success: false,
+        errorMessage: expect.stringContaining('ENOENT'),
+      }),
+    );
+  });
 });
 
 describe('Read tracker parquet files', () => {
