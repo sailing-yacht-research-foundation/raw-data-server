@@ -1,4 +1,4 @@
-# New Document# raw-data-server
+# raw-data-server
 
 Server that will be used to transform data to parquet format and perform bulk saving into Permanent Storage
 
@@ -16,16 +16,13 @@ Server that will be used to transform data to parquet format and perform bulk sa
 
 ## Configuration
 
-- Setup all the environment variables before proceeding to the next step.
+- Setup all the environment variables before proceeding to the next step. Create a new `.env` file and copy the variables from `.env.example` file, then fill in the values.
 
-  - `AWS_S3_ACCESS_KEY_ID`: Used to upload file to s3
-    - `AWS_S3_SECRET_ACCESS_KEY`: Used to upload file to s3
-    - `AWS_S3_BUCKET`: The s3 Bucket to upload parquet files
-    - `DB_HOST`: The database Host/IP Address
-    - `DB_PORT`: Port of the database
-    - `DB_USER`: User to connect to database
-    - `DB_PASSWORD`: Password to connect to database
-    - `DB_NAME`: Database name to connect
+| Variable Name            | Type   | Default | Description                                              |
+| ------------------------ | ------ | ------- | -------------------------------------------------------- |
+| AWS_S3_ACCESS_KEY_ID     | string | N/A     | AWS Access Key to upload file to S3 (Need S3 permission) |
+| AWS_S3_SECRET_ACCESS_KEY | string | N/A     | AWS Secret Key for the associated access key             |
+| AWS_S3_BUCKET            | string | N/A     | AWS S3 bucket name                                       |
 
 - Run `scripts/initdb.sql` to install test database. This is unnecessary if `docker-compose up` is executed.
 

@@ -11,5 +11,5 @@ RUN npm install --production --silent && mv node_modules ../
 COPY . .
 RUN chmod +x ./wait-for-it.sh
 
-EXPOSE 3030
+EXPOSE 3000
 CMD ["npm", "start"]
