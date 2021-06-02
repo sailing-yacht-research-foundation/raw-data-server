@@ -1,0 +1,903 @@
+{
+  "TracTracClass": [
+    {
+      "id": "7355b09e-e1a3-4d61-8857-69eb3cdacdda",
+      "original_id": "06356050-b466-0131-ba0a-10bf48d758ce",
+      "name": "Opti C + B"
+    },
+    {
+      "id": "d01fdc6d-d93c-4477-8e10-7a301dc24ea8",
+      "original_id": "7502b1e0-b46c-0131-ba99-10bf48d758ce",
+      "name": "M28"
+    },
+    {
+      "id": "ae89539f-e142-4756-866c-18b0749e266d",
+      "original_id": "7eb89360-d8c2-0132-c3e1-10bf48d758ce",
+      "name": "Knarr"
+    },
+    {
+      "id": "3cdfc6e4-f511-44af-8138-710ea62f4492",
+      "original_id": "a1cafc70-d267-0132-bdd7-10bf48d758ce",
+      "name": "Passive"
+    },
+    {
+      "id": "4779fcb2-79d5-4cb8-a044-935bd2a1bd63",
+      "original_id": "ac13bda0-11ed-0132-360f-10bf48d758ce",
+      "name": "Opti Nye-C"
+    },
+    {
+      "id": "e4548a98-1efe-406f-b391-943712224371",
+      "original_id": "add54db0-e043-0131-9c76-10bf48d758ce",
+      "name": "Albin"
+    },
+    {
+      "id": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "name": "Opti A"
+    },
+    {
+      "id": "8f628030-ea25-4642-8d9d-ea043e0b5ed5",
+      "original_id": "e0970570-cdbd-0132-b901-10bf48d758ce",
+      "name": "Opti B"
+    },
+    {
+      "id": "31d9fc36-fdab-4c70-a8e4-2f6e92c7bb2c",
+      "original_id": "e6068fd0-cdbd-0132-b902-10bf48d758ce",
+      "name": "Opti C"
+    },
+    {
+      "id": "eabbf368-9fc9-4df9-b46a-5bd4f9ac3c63",
+      "original_id": "408e0400-8e75-0139-07a6-60a44ce903c3",
+      "name": "class"
+    },
+    {
+      "id": "ce7932c3-d628-458a-9312-78bd28e057a1",
+      "original_id": "f72aa260-9135-0139-1bc9-60a44ce903c3",
+      "name": "class"
+    }
+  ],
+  "TracTracRaceClass": [
+    {
+      "id": "2c4b9f54-9b3a-4c98-a079-2b765372068c",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "7355b09e-e1a3-4d61-8857-69eb3cdacdda"
+    },
+    {
+      "id": "2deba1b8-c773-4ed8-a2a5-6c442b501a26",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "d01fdc6d-d93c-4477-8e10-7a301dc24ea8"
+    },
+    {
+      "id": "b3e335b0-f2d5-4266-9d50-aae89f8cea08",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "ae89539f-e142-4756-866c-18b0749e266d"
+    },
+    {
+      "id": "86a4efb9-6dc4-4f70-9916-641121405ac3",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "3cdfc6e4-f511-44af-8138-710ea62f4492"
+    },
+    {
+      "id": "68479651-83b0-427f-aa60-8d26a249c9b0",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "4779fcb2-79d5-4cb8-a044-935bd2a1bd63"
+    },
+    {
+      "id": "18ba392c-cabf-4cb7-be77-cc2efc3bffbe",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "e4548a98-1efe-406f-b391-943712224371"
+    },
+    {
+      "id": "644bb884-7314-4cb9-a1d5-080902e0e307",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "f54da5fa-3156-4efc-a97e-1225e3ddad91"
+    },
+    {
+      "id": "aa027f07-c6b9-4ce2-ab7d-c9b24d5b92ee",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "8f628030-ea25-4642-8d9d-ea043e0b5ed5"
+    },
+    {
+      "id": "d2df1b54-feba-4e6e-88f3-af954ed17830",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "boat_class": "31d9fc36-fdab-4c70-a8e4-2f6e92c7bb2c"
+    },
+    {
+      "id": "5924c58c-3dc6-4da2-9da4-3867efa186e7",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "7355b09e-e1a3-4d61-8857-69eb3cdacdda"
+    },
+    {
+      "id": "bbb81afa-7bdc-4c16-b7a1-eba328978ba3",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "d01fdc6d-d93c-4477-8e10-7a301dc24ea8"
+    },
+    {
+      "id": "d07f2a38-79e0-422a-9f5d-0ac35969646a",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "ae89539f-e142-4756-866c-18b0749e266d"
+    },
+    {
+      "id": "a7159c0c-3d92-4f45-acbd-24064d214288",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "3cdfc6e4-f511-44af-8138-710ea62f4492"
+    },
+    {
+      "id": "bfea35e4-ec1e-4766-9295-e83f4215f5a9",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "4779fcb2-79d5-4cb8-a044-935bd2a1bd63"
+    },
+    {
+      "id": "d83cd7db-0677-474d-88d7-d293da0dda82",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "e4548a98-1efe-406f-b391-943712224371"
+    },
+    {
+      "id": "cfab0b1d-406c-4f95-b7f2-c9018e8d7371",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "f54da5fa-3156-4efc-a97e-1225e3ddad91"
+    },
+    {
+      "id": "f3145f05-7ebc-43b8-9001-fb95f91c4cdf",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "8f628030-ea25-4642-8d9d-ea043e0b5ed5"
+    },
+    {
+      "id": "c6b57943-9268-4b16-95bd-79ebeb9241da",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "boat_class": "31d9fc36-fdab-4c70-a8e4-2f6e92c7bb2c"
+    },
+    {
+      "id": "5f773128-e275-4ce9-8d38-03199dc2717d",
+      "race": "ee621542-9b21-4c73-9288-bef8cb43a507",
+      "boat_class": "ce7932c3-d628-458a-9312-78bd28e057a1"
+    },
+    {
+      "id": "ec52bfb6-455b-407d-a8c6-a9973e83d53e",
+      "race": "d859a1d7-5afb-4c43-93a8-9ee61b9f27b6",
+      "boat_class": "ce7932c3-d628-458a-9312-78bd28e057a1"
+    }
+  ],
+  "TracTracEvent": [
+    {
+      "id": "46bbd3d0-ab02-41ad-8d99-ef41f1883778",
+      "original_id": "dfe6c960-9135-0139-1bc5-60a44ce903c3",
+      "name": "M32 - EUROPEAN SERIES 2",
+      "external_website": "",
+      "country": "ITA",
+      "city": "Yacht Club Sanremo",
+      "start": "2021-05-06 22:00:00",
+      "end": "2021-05-09 21:00:00",
+      "type": "Sailing",
+      "web_url": "https://www.tractrac.com/event-page/event_20210506_MEUROPEANS/2084",
+      "sap_url": "",
+      "sap_event_url": "",
+      "sap_leaderboard_name": "",
+      "lat": "43.796076497573",
+      "lon": "7.781950781250"
+    }
+  ],
+  "TracTracRace": [
+    {
+      "id": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "event": "",
+      "event_original_id": "",
+      "name": "Skovshoved Sejlklub - SUS Momentum Cup 1 - 1",
+      "url": "https://live.tractrac.com/viewer/index.html?target=https://em.club.tractrac.com/events/c189feb0-9d3b-0131-d5a7-10bf48d758ce/races/80b39da0-b465-0131-ba03-10bf48d758ce.json",
+      "tracking_start": "2014-05-03 07:56:36",
+      "tracking_stop": "2014-05-03 08:28:39",
+      "race_start": "",
+      "race_end": "",
+      "status": "HIDDEN",
+      "lon": "12.613875219726538",
+      "lat": "55.76050281622958",
+      "calculated_start_time": "1399103796000",
+      "race_handicap": "NONE"
+    },
+    {
+      "id": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "event": "",
+      "event_original_id": "",
+      "name": "Skovshoved Sejlklub - SUS Momentum Cup 1 - 2",
+      "url": "https://live.tractrac.com/viewer/index.html?target=https://em.club.tractrac.com/events/c189feb0-9d3b-0131-d5a7-10bf48d758ce/races/e4c853a0-b46c-0131-ba9f-10bf48d758ce.json",
+      "tracking_start": "2014-05-03 08:56:30",
+      "tracking_stop": "2014-05-03 09:30:45",
+      "race_start": "",
+      "race_end": "",
+      "status": "HIDDEN",
+      "lon": "12.613875219726538",
+      "lat": "55.76050281622958",
+      "calculated_start_time": "1399107390000",
+      "race_handicap": "NONE"
+    },
+    {
+      "id": "ee621542-9b21-4c73-9288-bef8cb43a507",
+      "original_id": "3eed63e0-9136-0139-1bd0-60a44ce903c3",
+      "event": "46bbd3d0-ab02-41ad-8d99-ef41f1883778",
+      "event_original_id": "dfe6c960-9135-0139-1bc5-60a44ce903c3",
+      "name": "Race 1",
+      "url": "https://live.tractrac.com/viewer/index.html?target=https://em.event.tractrac.com/events/dfe6c960-9135-0139-1bc5-60a44ce903c3/races/3eed63e0-9136-0139-1bd0-60a44ce903c3.json",
+      "tracking_start": "2021-05-08 10:01:00",
+      "tracking_stop": "2021-05-08 10:25:09",
+      "race_start": "2021-05-08 10:06:00",
+      "race_end": "",
+      "status": "UNOFFICIAL",
+      "lon": "",
+      "lat": "",
+      "calculated_start_time": "1620468360000",
+      "race_handicap": "NONE"
+    },
+    {
+      "id": "d859a1d7-5afb-4c43-93a8-9ee61b9f27b6",
+      "original_id": "2b0c1940-9202-0139-223e-60a44ce903c3",
+      "event": "46bbd3d0-ab02-41ad-8d99-ef41f1883778",
+      "event_original_id": "dfe6c960-9135-0139-1bc5-60a44ce903c3",
+      "name": "Race 2 ",
+      "url": "https://live.tractrac.com/viewer/index.html?target=https://em.event.tractrac.com/events/dfe6c960-9135-0139-1bc5-60a44ce903c3/races/2b0c1940-9202-0139-223e-60a44ce903c3.json",
+      "tracking_start": "2021-05-08 10:29:00",
+      "tracking_stop": "2021-05-08 10:51:08",
+      "race_start": "2021-05-08 10:34:00",
+      "race_end": "",
+      "status": "UNOFFICIAL",
+      "lon": "",
+      "lat": "",
+      "calculated_start_time": "1620470040000",
+      "race_handicap": "NONE"
+    },
+    {
+      "id": "263befab-00e9-47aa-8762-af035ace951b",
+      "original_id": "e88fc7f0-b46c-0131-bac4-10bf48d758ce",
+      "event": "",
+      "event_original_id": "",
+      "name": "Skovshoved Sejlklub - SUS Momentum Cup 1 -3",
+      "url": "https://live.tractrac.com/viewer/index.html?target=https://em.club.tractrac.com/events/c189feb0-9d3b-0131-d5a7-10bf48d758ce/races/e88fc7f0-b46c-0131-bac4-10bf48d758ce.json",
+      "tracking_start": "2014-05-03 10:45:19",
+      "tracking_stop": "2014-05-03 11:07:16",
+      "race_start": "",
+      "race_end": "",
+      "status": "HIDDEN",
+      "lon": "12.613875219726538",
+      "lat": "55.76050281622958",
+      "calculated_start_time": "1399113919000",
+      "race_handicap": "NONE"
+    }
+  ],
+  "TracTracCompetitor": [
+    {
+      "id": "5f6fa1ad-0799-44d4-b93f-918a0f8901f8",
+      "original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "race": "263befab-00e9-47aa-8762-af035ace951b",
+      "race_original_id": "e88fc7f0-b46c-0131-bac4-10bf48d758ce",
+      "class": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "class_original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "classrace_id": "17438d74-56bf-49f3-956f-7fa3ec6f5a05",
+      "class_name": "Opti A",
+      "description": "",
+      "handicap": "1.0",
+      "handicap_distance": "0.0",
+      "start_time": "0",
+      "finish_time": "0",
+      "stop_time": "",
+      "status_original_id": "1",
+      "status_full": "Racing",
+      "status_time": "",
+      "first_name": "",
+      "last_name": "Johan Willumsen",
+      "name": "Johan Willumsen",
+      "short_name": "Johan",
+      "name_alias": "",
+      "short_alias": "",
+      "nationality": "DEN",
+      "non_competing": "0",
+      "handicap_tod": "0",
+      "handicap_tot": "1"
+    },
+    {
+      "id": "14279409-964c-4a9f-a4de-0035e22bd019",
+      "original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "class": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "class_original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "classrace_id": "644bb884-7314-4cb9-a1d5-080902e0e307",
+      "class_name": "Opti A",
+      "description": "",
+      "handicap": "1.0",
+      "handicap_distance": "0.0",
+      "start_time": "0",
+      "finish_time": "0",
+      "stop_time": "",
+      "status_original_id": "1",
+      "status_full": "Racing",
+      "status_time": "",
+      "first_name": "",
+      "last_name": "Johan Willumsen",
+      "name": "Johan Willumsen",
+      "short_name": "Johan",
+      "name_alias": "",
+      "short_alias": "",
+      "nationality": "DEN",
+      "non_competing": "0",
+      "handicap_tod": "0",
+      "handicap_tot": "1"
+    },
+    {
+      "id": "45791474-c08f-450c-93b4-c5b7ed47ed34",
+      "original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "class": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "class_original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "classrace_id": "644bb884-7314-4cb9-a1d5-080902e0e307",
+      "class_name": "Opti A",
+      "description": "",
+      "handicap": "1.0",
+      "handicap_distance": "0.0",
+      "start_time": "0",
+      "finish_time": "0",
+      "stop_time": "",
+      "status_original_id": "1",
+      "status_full": "Racing",
+      "status_time": "",
+      "first_name": "",
+      "last_name": "Julius Poder Witzke",
+      "name": "Julius Poder Witzke",
+      "short_name": "Julius",
+      "name_alias": "",
+      "short_alias": "",
+      "nationality": "DEN",
+      "non_competing": "0",
+      "handicap_tod": "0",
+      "handicap_tot": "1"
+    },
+    {
+      "id": "a36569f1-33bc-42f1-a20a-be0b4dbec469",
+      "original_id": "dbce4ee0-b466-0131-ba0f-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "class": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "class_original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "classrace_id": "644bb884-7314-4cb9-a1d5-080902e0e307",
+      "class_name": "Opti A",
+      "description": "",
+      "handicap": "1.0",
+      "handicap_distance": "0.0",
+      "start_time": "0",
+      "finish_time": "0",
+      "stop_time": "",
+      "status_original_id": "1",
+      "status_full": "Racing",
+      "status_time": "",
+      "first_name": "",
+      "last_name": "Tobias Witzke",
+      "name": "Tobias Witzke",
+      "short_name": "Tobias",
+      "name_alias": "",
+      "short_alias": "",
+      "nationality": "DEN",
+      "non_competing": "0",
+      "handicap_tod": "0",
+      "handicap_tot": "1"
+    },
+    {
+      "id": "17d9d534-b2bc-4577-869e-035940651a10",
+      "original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "class": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "class_original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "classrace_id": "cfab0b1d-406c-4f95-b7f2-c9018e8d7371",
+      "class_name": "Opti A",
+      "description": "",
+      "handicap": "1.0",
+      "handicap_distance": "0.0",
+      "start_time": "0",
+      "finish_time": "0",
+      "stop_time": "",
+      "status_original_id": "1",
+      "status_full": "Racing",
+      "status_time": "",
+      "first_name": "",
+      "last_name": "Johan Willumsen",
+      "name": "Johan Willumsen",
+      "short_name": "Johan",
+      "name_alias": "",
+      "short_alias": "",
+      "nationality": "DEN",
+      "non_competing": "0",
+      "handicap_tod": "0",
+      "handicap_tot": "1"
+    },
+    {
+      "id": "b55fb937-076f-4400-b09c-0903af94c934",
+      "original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "class": "f54da5fa-3156-4efc-a97e-1225e3ddad91",
+      "class_original_id": "b9a21770-0c3d-0134-3944-10bf48d758ce",
+      "classrace_id": "cfab0b1d-406c-4f95-b7f2-c9018e8d7371",
+      "class_name": "Opti A",
+      "description": "",
+      "handicap": "1.0",
+      "handicap_distance": "0.0",
+      "start_time": "0",
+      "finish_time": "0",
+      "stop_time": "",
+      "status_original_id": "1",
+      "status_full": "Racing",
+      "status_time": "",
+      "first_name": "",
+      "last_name": "Julius Poder Witzke",
+      "name": "Julius Poder Witzke",
+      "short_name": "Julius",
+      "name_alias": "",
+      "short_alias": "",
+      "nationality": "DEN",
+      "non_competing": "0",
+      "handicap_tod": "0",
+      "handicap_tot": "1"
+    }
+  ],
+  "TracTracCompetitorResult": [
+    {
+      "id": "ef8ba1ef-8a06-4588-ba11-cfb5c795d74b",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "17d9d534-b2bc-4577-869e-035940651a10",
+      "competitor_original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "time_elapsed": "0",
+      "start_time": "0",
+      "stop_time": "",
+      "finish_time": "0",
+      "status": "RACING",
+      "team_name": "d03beb80-b465-0131-ba08-10bf48d758ce",
+      "team_original_id": ""
+    },
+    {
+      "id": "91291665-5b37-4490-b9aa-aada74a62f63",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "time_elapsed": "0",
+      "start_time": "0",
+      "stop_time": "",
+      "finish_time": "0",
+      "status": "RACING",
+      "team_name": "d03beb80-b465-0131-ba08-10bf48d758ce",
+      "team_original_id": ""
+    }
+  ],
+  "TracTracCompetitorPosition": [
+    {
+      "id": "cb108a09-2529-4162-bb0e-1085530b30ad",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.76577",
+      "lon": "12.607028",
+      "height": "70.01000213623047",
+      "speed": "1.7264639139175415",
+      "direction": "58.86558532714844",
+      "m": "38.452362060546875",
+      "timestamp": "1399107559000",
+      "speed_avg": "[0,null]"
+    },
+    {
+      "id": "7e8a4ebe-df57-4cd0-a2c7-848a247d2665",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765773",
+      "lon": "12.60704",
+      "height": "70.01000213623047",
+      "speed": "0.9887648224830627",
+      "direction": "47.700775146484375",
+      "m": "39.27633285522461",
+      "timestamp": "1399107562000",
+      "speed_avg": "[0,null]"
+    },
+    {
+      "id": "2fceee43-bc8e-47c8-8893-578e0140e9dd",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765778",
+      "lon": "12.607045",
+      "height": "70.01000213623047",
+      "speed": "0.7668759226799011",
+      "direction": "59.68055725097656",
+      "m": "39.9153938293457",
+      "timestamp": "1399107565000",
+      "speed_avg": "[0,null]"
+    },
+    {
+      "id": "e300c1ed-9d26-4202-8f92-94a6f3a3c4aa",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765778",
+      "lon": "12.607048",
+      "height": "70.01000213623047",
+      "speed": "0.22597050666809082",
+      "direction": "59.68055725097656",
+      "m": "40.103702545166016",
+      "timestamp": "1399107568000",
+      "speed_avg": "[0,null]"
+    },
+    {
+      "id": "77f41210-c75c-4299-a1ee-4b1de5111d26",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765782",
+      "lon": "12.607052",
+      "height": "70.01000213623047",
+      "speed": "0.613500714302063",
+      "direction": "14.680557250976562",
+      "m": "40.61495590209961",
+      "timestamp": "1399107571000",
+      "speed_avg": "[0,null]"
+    },
+    {
+      "id": "05465d00-025f-415a-8f4a-04ffc6eb91ac",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765782",
+      "lon": "12.607052",
+      "height": "70.01000213623047",
+      "speed": "0",
+      "direction": "45",
+      "m": "40.61495590209961",
+      "timestamp": "1399107574000",
+      "speed_avg": "[-0.01599147357046604,null]"
+    },
+    {
+      "id": "910c9f18-dc1c-48a3-934e-6b99dabf457f",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765782",
+      "lon": "12.607053",
+      "height": "70.01000213623047",
+      "speed": "0.07532349973917007",
+      "direction": "117.442138671875",
+      "m": "40.6777229309082",
+      "timestamp": "1399107577000",
+      "speed_avg": "[-0.03373003751039505,null]"
+    },
+    {
+      "id": "a0077a4f-3d70-4cdd-a6ad-e8f9ed0c3708",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765778",
+      "lon": "12.607058",
+      "height": "70.01000213623047",
+      "speed": "0.6537933945655823",
+      "direction": "127.60242462158203",
+      "m": "41.22255325317383",
+      "timestamp": "1399107580000",
+      "speed_avg": "[-0.05130548030138016,null]"
+    },
+    {
+      "id": "1e3f2334-9801-4c0e-bc14-b8b60a59cd50",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765773",
+      "lon": "12.607082",
+      "height": "70.01000213623047",
+      "speed": "1.927243947982788",
+      "direction": "111.31199645996094",
+      "m": "42.828590393066406",
+      "timestamp": "1399107583000",
+      "speed_avg": "[-0.07546501606702805,null]"
+    },
+    {
+      "id": "9a9dfcae-bf8b-4aa9-8a9f-eec7f0ff3bd7",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765767",
+      "lon": "12.607108",
+      "height": "70.01000213623047",
+      "speed": "2.1161255836486816",
+      "direction": "101.1517105102539",
+      "m": "44.59202575683594",
+      "timestamp": "1399107586000",
+      "speed_avg": "[-0.08968563377857208,null]"
+    },
+    {
+      "id": "deb94eab-6ec5-4c8a-b119-719e02df2b1f",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765767",
+      "lon": "12.607137",
+      "height": "70.01000213623047",
+      "speed": "2.184382200241089",
+      "direction": "97.12406158447266",
+      "m": "46.41234588623047",
+      "timestamp": "1399107589000",
+      "speed_avg": "[-0.11988922208547592,null]"
+    },
+    {
+      "id": "8f86713c-f97c-4f65-a8a5-61c1925bf39b",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765762",
+      "lon": "12.607172",
+      "height": "70.01000213623047",
+      "speed": "2.7196433544158936",
+      "direction": "102.86565399169922",
+      "m": "48.678714752197266",
+      "timestamp": "1399107592000",
+      "speed_avg": "[-0.13648344576358795,null]"
+    },
+    {
+      "id": "c90c8ffb-20f0-4413-bff9-0158a96ffc7e",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765758",
+      "lon": "12.607207",
+      "height": "69.01000213623047",
+      "speed": "2.689945936203003",
+      "direction": "109.77618408203125",
+      "m": "50.92033767700195",
+      "timestamp": "1399107595000",
+      "speed_avg": "[-0.1529628336429596,null]"
+    },
+    {
+      "id": "b90319a6-0d6e-450d-be35-502d0d2d786a",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "competitor": "b55fb937-076f-4400-b09c-0903af94c934",
+      "competitor_original_id": "ad74f400-b466-0131-ba0e-10bf48d758ce",
+      "lat": "55.765752",
+      "lon": "12.607227",
+      "height": "69.01000213623047",
+      "speed": "1.7064777612686157",
+      "direction": "121.31735229492188",
+      "m": "52.34239959716797",
+      "timestamp": "1399107598000",
+      "speed_avg": "[-0.171668142080307,null]"
+    }
+  ],
+  "TracTracCompetitorPassing": [
+    {
+      "id": "1bfc9aa2-8228-4d37-b26c-9bdca9f089ee",
+      "race": "263befab-00e9-47aa-8762-af035ace951b",
+      "race_original_id": "e88fc7f0-b46c-0131-bac4-10bf48d758ce",
+      "competitor": "5f6fa1ad-0799-44d4-b93f-918a0f8901f8",
+      "competitor_original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "control": "33fd37ac-9c19-4182-a84b-184caff4007d",
+      "control_original_id": "692bc3d0-b19e-0131-b75d-10bf48d758ce",
+      "passing_time": "1399114211000",
+      "real_passing_time": "1399114211000",
+      "pos": "5",
+      "time_from_start": "772000"
+    },
+    {
+      "id": "be2e9250-4485-4e4d-9cc6-b2d66b052d69",
+      "race": "263befab-00e9-47aa-8762-af035ace951b",
+      "race_original_id": "e88fc7f0-b46c-0131-bac4-10bf48d758ce",
+      "competitor": "5f6fa1ad-0799-44d4-b93f-918a0f8901f8",
+      "competitor_original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "control": "c63de287-0af2-4df3-9b2c-2be90f0e2325",
+      "control_original_id": "35d17db0-b19e-0131-b75a-10bf48d758ce",
+      "passing_time": "1399114455000",
+      "real_passing_time": "1399114455000",
+      "pos": "4",
+      "time_from_start": "244000"
+    },
+    {
+      "id": "93f4ce8a-a76f-4f06-a45e-ad3b2fa1b233",
+      "race": "263befab-00e9-47aa-8762-af035ace951b",
+      "race_original_id": "e88fc7f0-b46c-0131-bac4-10bf48d758ce",
+      "competitor": "5f6fa1ad-0799-44d4-b93f-918a0f8901f8",
+      "competitor_original_id": "4c6426e0-b466-0131-ba0c-10bf48d758ce",
+      "control": "33fd37ac-9c19-4182-a84b-184caff4007d",
+      "control_original_id": "692bc3d0-b19e-0131-b75d-10bf48d758ce",
+      "passing_time": "1399114983000",
+      "real_passing_time": "1399114983000",
+      "pos": "4",
+      "time_from_start": "772000"
+    }
+  ],
+  "TracTracRoute": [
+    {
+      "id": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "SUS Momentum Cup 1 - 1"
+    },
+    {
+      "id": "cf5553f7-8c40-42b4-b297-b2d824452887",
+      "original_id": "e4a595d0-b46c-0131-ba9e-10bf48d758ce",
+      "race": "b6c5c72d-ec81-4dae-9c7b-a4675d12bb6d",
+      "race_original_id": "e4c853a0-b46c-0131-ba9f-10bf48d758ce",
+      "name": "SUS Momentum Cup 1 - 2"
+    },
+    {
+      "id": "8eea9bc4-2395-489e-82e1-086ea438c261",
+      "original_id": "e8676980-b46c-0131-bac3-10bf48d758ce",
+      "race": "263befab-00e9-47aa-8762-af035ace951b",
+      "race_original_id": "e88fc7f0-b46c-0131-bac4-10bf48d758ce",
+      "name": "SUS Momentum Cup 1 -3"
+    }
+  ],
+  "TracTracControl": [
+    {
+      "id": "33fd37ac-9c19-4182-a84b-184caff4007d",
+      "original_id": "692bc3d0-b19e-0131-b75d-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Linje",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce"
+    },
+    {
+      "id": "c63de287-0af2-4df3-9b2c-2be90f0e2325",
+      "original_id": "35d17db0-b19e-0131-b75a-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Topmærke",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce"
+    },
+    {
+      "id": "101560af-8406-4808-9e6a-a8919bcfd4f7",
+      "original_id": "563de360-11ec-0132-3604-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Mrk 2",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce"
+    },
+    {
+      "id": "00e46748-d35c-43f6-b79e-13e308ad41ec",
+      "original_id": "61e0af80-11ec-0132-3607-10bf48d758ce",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Bundmærke",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce"
+    }
+  ],
+  "TracTracControlPoint": [
+    {
+      "id": "991985b4-80e5-4775-acf4-85548e0d6c80",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Linje",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "control": "33fd37ac-9c19-4182-a84b-184caff4007d",
+      "control_original_id": "692bc3d0-b19e-0131-b75d-10bf48d758ce"
+    },
+    {
+      "id": "3ee4026f-d432-4af7-b1d4-675a83ad20a3",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Linje",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "control": "33fd37ac-9c19-4182-a84b-184caff4007d",
+      "control_original_id": "692bc3d0-b19e-0131-b75d-10bf48d758ce"
+    },
+    {
+      "id": "0793f499-aaa4-4d8f-b787-746ef4f783c3",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Topmærke",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "control": "c63de287-0af2-4df3-9b2c-2be90f0e2325",
+      "control_original_id": "35d17db0-b19e-0131-b75a-10bf48d758ce"
+    },
+    {
+      "id": "21869304-c2c7-41f6-a12c-ccc3ddb1e9c4",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Mrk 2",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "control": "101560af-8406-4808-9e6a-a8919bcfd4f7",
+      "control_original_id": "563de360-11ec-0132-3604-10bf48d758ce"
+    },
+    {
+      "id": "4d5ab899-7176-4ced-ac14-addd6d43a3e7",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "name": "Bundmærke",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "control": "00e46748-d35c-43f6-b79e-13e308ad41ec",
+      "control_original_id": "61e0af80-11ec-0132-3607-10bf48d758ce"
+    }
+  ],
+  "TracTracControlPointPosition": [
+    {
+      "id": "4aa861f4-51b6-4eb0-85c2-e82f09357fba",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "controlpoint": "991985b4-80e5-4775-acf4-85548e0d6c80",
+      "lat": "55.765873",
+      "lon": "12.608037",
+      "height": "86.01000213623047",
+      "speed": "0.5",
+      "direction": "0",
+      "m": "",
+      "timestamp": "1399103796000",
+      "speed_avg": "[null,null]"
+    },
+    {
+      "id": "7531900c-b1d8-4135-869a-03356db01e9c",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "controlpoint": "991985b4-80e5-4775-acf4-85548e0d6c80",
+      "lat": "55.76588",
+      "lon": "12.608037",
+      "height": "86.01000213623047",
+      "speed": "0.10000000149011612",
+      "direction": "0",
+      "m": "",
+      "timestamp": "1399103799000",
+      "speed_avg": "[null,null]"
+    },
+    {
+      "id": "48404af6-cdb2-4789-88c4-650e06e5a367",
+      "race": "022e3341-0740-4714-b7e8-5bfcf9651b6f",
+      "race_original_id": "80b39da0-b465-0131-ba03-10bf48d758ce",
+      "route": "5b94a55f-fddb-412d-abf4-c915cf39e51a",
+      "route_original_id": "5fbbdc40-b465-0131-ba01-10bf48d758ce",
+      "controlpoint": "991985b4-80e5-4775-acf4-85548e0d6c80",
+      "lat": "55.76588",
+      "lon": "12.608037",
+      "height": "86.01000213623047",
+      "speed": "0.30000001192092896",
+      "direction": "0",
+      "m": "",
+      "timestamp": "1399103802000",
+      "speed_avg": "[null,null]"
+    }
+  ],
+  "SailorEmail": [
+    {
+      "id": "a1139ec2-8eee-472d-88ab-2feddda6d336",
+      "email": "boyan.zlatarev@icloud.com",
+      "country": "ESP",
+      "source": "TracTrac"
+    },
+    {
+      "id": "714abb2e-f07b-436c-9d61-f16357140b4f",
+      "email": "tim@boatcaptain.app",
+      "country": "NZL",
+      "source": "TracTrac"
+    }
+  ]
+}

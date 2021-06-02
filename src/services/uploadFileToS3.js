@@ -22,9 +22,7 @@ const uploadFileToS3 = async (filePath, s3Path) => {
         Body: fileContent,
       })
       .promise();
-    if (result) {
-      return result.Location;
-    }
+    return result.Location;
   } catch (error) {
     return '';
   }

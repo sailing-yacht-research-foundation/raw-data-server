@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  raw-data-server:
+    image: raw-data-server
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      AWS_S3_ACCESS_KEY_ID: ${AWS_S3_ACCESS_KEY_ID}
+      AWS_S3_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
+      AWS_S3_BUCKET: ${AWS_S3_BUCKET}
+      DB_HOST: rds-db
+      DB_PORT: 3306
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: rawdata
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - rds-db
+    command: ['./wait-for-it.sh', 'rds-db:3306', '--', 'npm', 'start']
+  rds-db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: rawdata
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+      - rds-db:/var/lib/rds
+volumes:
+  rds-db:

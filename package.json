@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
-    "dev": "nodemon",
+    "dev": "nodemon -L src/main.js",
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
     "test": "jest --coverage --runInBand --setupFiles dotenv/config"
   },

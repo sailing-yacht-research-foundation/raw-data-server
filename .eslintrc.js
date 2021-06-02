@@ -2,6 +2,7 @@ module.exports = {
   extends: ['eslint:recommended', 'prettier'],
   plugins: ['prettier'],
   rules: {
+    'no-fallthrough': 'off',
     'prettier/prettier': [
       'error',
       {

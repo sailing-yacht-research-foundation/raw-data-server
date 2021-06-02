@@ -1,0 +1,155 @@
+{
+  "YachtBotRace": [
+    {
+      "id": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "original_id": "362",
+      "name": "Rolex Day 2 - Race 4",
+      "start_time": "1347990204000",
+      "end_time": "1347994055000",
+      "manual_wind": "",
+      "course_direction": "",
+      "url": "http://www.yacht-bot.com/races/362"
+    },
+    {
+      "id": "22af95d6-8c45-4532-abc2-d2a41f6744b7",
+      "original_id": "370",
+      "name": "Rolex Day 4 - Race 8",
+      "start_time": "1348157100000",
+      "end_time": "1348161113000",
+      "manual_wind": "{\"strength\":\"15\",\"direction\":\"305\"}",
+      "course_direction": "",
+      "url": "http://www.yacht-bot.com/races/370"
+    }
+  ],
+  "YachtBotBuoy": [
+    {
+      "id": "936ed1f2-304e-4bf2-8ae9-2ac9694147be",
+      "original_id": "DC-DK-AAGC",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "name": "Committee Boat",
+      "buoy_type": "committee",
+      "connected_buoy": "ce542274-1cbc-4920-aa07-f4de3a6caf06",
+      "connected_buoy_original_id": "DC-DK-AAGD",
+      "metas": ""
+    },
+    {
+      "id": "ce542274-1cbc-4920-aa07-f4de3a6caf06",
+      "original_id": "DC-DK-AAGD",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "name": "PIN",
+      "buoy_type": "pin",
+      "connected_buoy": "936ed1f2-304e-4bf2-8ae9-2ac9694147be",
+      "connected_buoy_original_id": "DC-DK-AAGC",
+      "metas": ""
+    },
+    {
+      "id": "3bbe1e57-2263-43df-8706-8398e9a01e63",
+      "original_id": "DC-DK-AAGE",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "name": "WM",
+      "buoy_type": "generic",
+      "connected_buoy": "",
+      "connected_buoy_original_id": "",
+      "metas": ""
+    }
+  ],
+  "YachtBotYacht": [
+    {
+      "id": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
+      "original_id": "DC-DK-AAEA",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "name": "Asterix UNO",
+      "boat_number": "",
+      "crew": "{\"type\":\"array\"}",
+      "country": "",
+      "metas": "TRUNCATED"
+    },
+    {
+      "id": "42e39d8c-4ac7-42b0-bec2-5f14cb7386dd",
+      "original_id": "DC-DK-AAEC",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "name": "Barking Mad",
+      "boat_number": "",
+      "crew": "{\"type\":\"array\"}",
+      "country": "",
+      "metas": "TRUNCATED"
+    }
+  ],
+  "YachtBotPosition": [
+    {
+      "id": "7a619026-8469-47a0-bb82-14da86706064",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "yacht_or_buoy": "yacht",
+      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
+      "yacht_original_id": "DC-DK-AAEA",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1347990204000",
+      "lat": "41.8541743333333",
+      "lon": "-87.5495515",
+      "gps_quality": ""
+    },
+    {
+      "id": "65b37dd6-00d4-4ce6-ba4f-223f08a64e94",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "yacht_or_buoy": "yacht",
+      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
+      "yacht_original_id": "DC-DK-AAEA",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1347990204500",
+      "lat": "41.8541715",
+      "lon": "-87.5495773333333",
+      "gps_quality": ""
+    },
+    {
+      "id": "f6d4eba3-53fa-4b64-ab86-51fa304ba42c",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "yacht_or_buoy": "yacht",
+      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
+      "yacht_original_id": "DC-DK-AAEA",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1347990205000",
+      "lat": "41.8541715",
+      "lon": "-87.5496023333333",
+      "gps_quality": ""
+    },
+    {
+      "id": "5d616159-aedb-45f4-b088-705f8b3fc53e",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "yacht_or_buoy": "yacht",
+      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
+      "yacht_original_id": "DC-DK-AAEA",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1347990205500",
+      "lat": "41.8541706666667",
+      "lon": "-87.5496271666667",
+      "gps_quality": ""
+    },
+    {
+      "id": "09347576-bb10-4c85-a9de-3761290c307d",
+      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
+      "race_original_id": "362",
+      "yacht_or_buoy": "yacht",
+      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
+      "yacht_original_id": "DC-DK-AAEA",
+      "buoy": "",
+      "buoy_original_id": "",
+      "time": "1347990206000",
+      "lat": "41.8541708333333",
+      "lon": "-87.5496521666667",
+      "gps_quality": ""
+    }
+  ]
+}
