@@ -35,8 +35,41 @@ resource "aws_ecs_task_definition" "rds_task" {
           "hostPort": 3000
         }
       ],
-      "memory": 512,
-      "cpu": 256
+      "environment": [
+        { "name": "DB_HOST", "value": "localhost" },
+        { "name": "DB_USER", "value": "user" },
+        { "name": "DB_PASSWORD", "value": "password" },
+        { "name": "DB_NAME", "value": "rawdata" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "rawdataserver",
+          "awslogs-region": "us-west-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "memory": 256,
+      "cpu": 128
+    },
+    {
+      "name": "rds-db",
+      "image": "mysql:5.7",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3306,
+          "hostPort": 3306
+        }
+      ],
+      "environment": [
+        { "name": "MYSQL_DATABASE", "value": "rawdata" },
+        { "name": "MYSQL_USER", "value": "user" },
+        { "name": "MYSQL_PASSWORD", "value": "password" },
+        { "name": "MYSQL_ROOT_PASSWORD", "value": "password" }
+      ],
+      "memory": 256,
+      "cpu": 128
     }
   ]
   DEFINITION
@@ -48,7 +81,7 @@ resource "aws_ecs_task_definition" "rds_task" {
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "ecsTaskExecutionRole"
+  name               = "ecsTaskExecutionRoleRawData"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
@@ -71,11 +104,11 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRole_policy" {
 
 
 resource "aws_ecs_service" "rds_service" {
-  name            = "rds-service"                             # Naming our first service
-  cluster         = aws_ecs_cluster.rds_cluster.id             # Referencing our created Cluster
+  name            = "rds-service"                        # Naming our first service
+  cluster         = aws_ecs_cluster.rds_cluster.id       # Referencing our created Cluster
   task_definition = aws_ecs_task_definition.rds_task.arn # Referencing the task our service will spin up
   launch_type     = "FARGATE"
-  desired_count   = 2 # Setting the number of containers we want deployed to 3
+  desired_count   = 1
 
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
@@ -86,6 +119,7 @@ resource "aws_ecs_service" "rds_service" {
   network_configuration {
     subnets          = [aws_default_subnet.default_subnet_b.id, aws_default_subnet.default_subnet_c.id]
     assign_public_ip = true # Providing our containers with public IPs
+    security_groups  = [aws_security_group.service_security_group.id]
   }
 }
 
@@ -99,9 +133,9 @@ resource "aws_security_group" "service_security_group" {
   }
 
   egress {
-    from_port   = 0 # Allowing any incoming port
-    to_port     = 0 # Allowing any outgoing port
-    protocol    = "-1" # Allowing any outgoing protocol 
+    from_port   = 0             # Allowing any incoming port
+    to_port     = 0             # Allowing any outgoing port
+    protocol    = "-1"          # Allowing any outgoing protocol 
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
@@ -128,9 +162,9 @@ resource "aws_security_group" "load_balancer_security_group" {
   }
 
   egress {
-    from_port   = 0 # Allowing any incoming port
-    to_port     = 0 # Allowing any outgoing port
-    protocol    = "-1" # Allowing any outgoing protocol 
+    from_port   = 0             # Allowing any incoming port
+    to_port     = 0             # Allowing any outgoing port
+    protocol    = "-1"          # Allowing any outgoing protocol 
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic out to all IP addresses
   }
 }
@@ -143,7 +177,9 @@ resource "aws_lb_target_group" "target_group" {
   vpc_id      = aws_default_vpc.default_vpc.id
   health_check {
     matcher = "200,301,302"
-    path = "/"
+    path    = "/"
+    timeout = 30
+    interval= 60
   }
 }
 

@@ -31,7 +31,7 @@ Server that will be used to transform data to parquet format and perform bulk sa
 
 Raw data server use dockerized terraform to create instances on the AWS. It's recommended to use aws-vault to generate the temporary credentials using the environment variables.
 
-- Run `aws-vault exec alvinjk --duration=12h -- CMD.EXE` (Omit the `-- CMD.EXE` if not using windows).
+- Run `aws-vault exec [profile] --duration=12h -- CMD.EXE` (Omit the `-- CMD.EXE` if not using windows).
   This will generate `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` to the environment variables that is used by our dockerized terraform.
 - Run `docker-compose -f deployment/docker-compose.yml config` to check the configurations for terraform. It should display your AWS Access Key and Secret Key in the docker compose configurations.
 
