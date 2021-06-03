@@ -2,7 +2,7 @@ require('dotenv').config();
 const db = require('./models');
 
 const createServer = require('./server');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3030;
 
 (async () => {
   try {
