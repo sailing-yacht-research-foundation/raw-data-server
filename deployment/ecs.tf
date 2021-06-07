@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "rds_task" {
       "cpu": 128,
       "mountPoints": [
           {
-              "containerPath": "/var/lib/rds",
+              "containerPath": "/var/lib/mysql",
               "sourceVolume": "rds-storage"
           }
       ]
@@ -91,7 +91,7 @@ resource "aws_ecs_task_definition" "rds_task" {
 
     efs_volume_configuration {
       file_system_id          = aws_efs_file_system.rds_fs.id
-      root_directory          = "/opt/data"
+      root_directory          = "/db"
       transit_encryption      = "ENABLED"
       transit_encryption_port = 2999
       authorization_config {
