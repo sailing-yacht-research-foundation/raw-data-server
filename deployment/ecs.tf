@@ -2,6 +2,12 @@ resource "aws_ecs_cluster" "rds_cluster" {
   name = "Raw-Data-Server-ECS_Cluster"
 }
 
+resource "random_password" "raw_data_server_db_password" {
+  length = 12
+  special = true
+  override_special = "_%@"
+}
+
 resource "aws_ecs_service" "rds_service" {
   name            = "Raw-Data-Server-Service"
   cluster         = aws_ecs_cluster.rds_cluster.id
@@ -12,7 +18,7 @@ resource "aws_ecs_service" "rds_service" {
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
     container_name   = aws_ecs_task_definition.rds_task.family
-    container_port   = 3000
+    container_port   = var.app_container_port
   }
 
   network_configuration {
@@ -32,21 +38,21 @@ resource "aws_ecs_task_definition" "rds_task" {
       "essential": true,
       "portMappings": [
         {
-          "containerPort": 3000,
+          "containerPort": ${var.app_container_port},
           "hostPort": 3000
         }
       ],
       "environment": [
         { "name": "DB_HOST", "value": "localhost" },
-        { "name": "DB_USER", "value": "user" },
-        { "name": "DB_PASSWORD", "value": "password" },
-        { "name": "DB_NAME", "value": "rawdata" }
+        { "name": "DB_USER", "value": "${var.db_username}" },
+        { "name": "DB_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
+        { "name": "DB_NAME", "value": "${var.db_name}" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "rawdataserver",
-          "awslogs-region": "us-west-1",
+          "awslogs-region": "${var.aws_region}",
           "awslogs-stream-prefix": "ecs"
         }
       },
@@ -64,10 +70,10 @@ resource "aws_ecs_task_definition" "rds_task" {
         }
       ],
       "environment": [
-        { "name": "MYSQL_DATABASE", "value": "rawdata" },
-        { "name": "MYSQL_USER", "value": "user" },
-        { "name": "MYSQL_PASSWORD", "value": "password" },
-        { "name": "MYSQL_ROOT_PASSWORD", "value": "password" }
+        { "name": "MYSQL_DATABASE", "value": "${var.db_name}" },
+        { "name": "MYSQL_USER", "value": "${var.db_username}" },
+        { "name": "MYSQL_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
+        { "name": "MYSQL_ROOT_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" }
       ],
       "memory": 256,
       "cpu": 128,

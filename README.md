@@ -43,7 +43,17 @@ Or create a new .env file inside deployment folder with these variables:
 
 And run `docker-compose -f deployment/docker-compose.yml --env-file deployment/.env config`
 
-### Terraform configurations
+If you get an error message: "CannotPullContainerError: inspect image has been retried x time(s)", you will also need to push the docker image to the ECR using the push commands from the AWS console after terraform successfully created the infrastructure.
+The commands should be:
+
+1. Run `aws ecr get-login-password --region [region_name] | docker login --username AWS --password-stdin [aws_account_id].dkr.ecr.us-west-1.amazonaws.com`
+2. Run `docker build -t raw-data-server .` if you haven't built it already
+3. Run `docker tag raw-data-server:latest [aws_account_id].dkr.ecr.us-west-1.amazonaws.com/raw-data-server:latest`
+4. Run `docker push [aws_account_id].dkr.ecr.us-west-1.amazonaws.com/raw-data-server:latest`
+
+If this is the first time run, you will need to run terraform init and apply (commands below)
+
+### Terraform Configurations
 
 AWS requires to use an MFA to perform IAM operation with an assume-role, please add MFA device to the Security Credentials of the access key, and add the serial into the local aws config on the profile.
 
