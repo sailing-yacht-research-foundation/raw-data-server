@@ -17,3 +17,15 @@ variable "app_container_port" {
   default     = 3000
   description = "Container Port"
 }
+
+variable "s3_access_key_id" {
+  type = string
+}
+
+variable "s3_secret_key" {
+  type = string
+}
+
+variable "s3_bucket" {
+  type = string
+}

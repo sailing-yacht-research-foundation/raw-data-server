@@ -8,6 +8,17 @@ resource "random_password" "raw_data_server_db_password" {
   override_special = "_%@"
 }
 
+resource "aws_cloudwatch_log_group" "rds_cw_log_group" {
+  name = "RawDataServer-log"
+
+  retention_in_days = 7
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = false
+  }
+}
+
 resource "aws_ecs_service" "rds_service" {
   name            = "Raw-Data-Server-Service"
   cluster         = aws_ecs_cluster.rds_cluster.id
@@ -46,12 +57,15 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "DB_HOST", "value": "localhost" },
         { "name": "DB_USER", "value": "${var.db_username}" },
         { "name": "DB_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
-        { "name": "DB_NAME", "value": "${var.db_name}" }
+        { "name": "DB_NAME", "value": "${var.db_name}" },
+        { "name": "AWS_S3_ACCESS_KEY_ID", "value": "${var.s3_access_key_id}" },
+        { "name": "AWS_S3_SECRET_ACCESS_KEY", "value": "${var.s3_secret_key}" },
+        { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
-          "awslogs-group": "rawdataserver",
+          "awslogs-group": "${aws_cloudwatch_log_group.rds_cw_log_group.id}",
           "awslogs-region": "${var.aws_region}",
           "awslogs-stream-prefix": "ecs"
         }
