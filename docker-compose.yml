@@ -23,7 +23,8 @@ services:
       - .:/usr/src/app
     depends_on:
       - rds-db
-    command: ['./wait-for-it.sh', 'rds-db:3306', '--', 'npm', 'start']
+    command:
+      ['./wait-for-it.sh', '-t', '120', 'rds-db:3306', '--', 'npm', 'start']
   rds-db:
     image: mysql:5.7
     restart: always
