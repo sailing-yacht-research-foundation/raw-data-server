@@ -21,6 +21,34 @@ resource "aws_default_subnet" "default_subnet_c" {
   availability_zone = "us-west-1c"
 }
 
+
+
+resource "aws_efs_file_system" "rds_fs" {
+  creation_token = "rds_fs"
+
+  tags = {
+    Name = "EFS-RawDataServer"
+  }
+}
+
+resource "aws_efs_mount_target" "mount_1" {
+  file_system_id = aws_efs_file_system.rds_fs.id
+  subnet_id      = aws_default_subnet.default_subnet_b.id
+
+  security_groups  = [aws_security_group.service_security_group.id]
+}
+
+resource "aws_efs_mount_target" "mount_2" {
+  file_system_id = aws_efs_file_system.rds_fs.id
+  subnet_id      = aws_default_subnet.default_subnet_c.id
+
+  security_groups  = [aws_security_group.service_security_group.id]
+}
+
+resource "aws_efs_access_point" "rds_eap" {
+  file_system_id = aws_efs_file_system.rds_fs.id
+}
+
 resource "aws_ecs_task_definition" "rds_task" {
   family                   = "rds-task"
   container_definitions    = <<DEFINITION
@@ -69,7 +97,13 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "MYSQL_ROOT_PASSWORD", "value": "password" }
       ],
       "memory": 256,
-      "cpu": 128
+      "cpu": 128,
+      "mountPoints": [
+          {
+              "containerPath": "/var/lib/rds",
+              "sourceVolume": "rds-storage"
+          }
+      ]
     }
   ]
   DEFINITION
@@ -78,6 +112,21 @@ resource "aws_ecs_task_definition" "rds_task" {
   memory                   = 512         # Specifying the memory our container requires
   cpu                      = 256         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+
+  volume {
+    name = "rds-storage"
+
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.rds_fs.id
+      root_directory          = "/opt/data"
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2999
+      authorization_config {
+        access_point_id = aws_efs_access_point.rds_eap.id
+        iam             = "DISABLED"
+      }
+    }
+  }
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
@@ -132,6 +181,13 @@ resource "aws_security_group" "service_security_group" {
     security_groups = [aws_security_group.load_balancer_security_group.id]
   }
 
+  ingress {
+    from_port = 2049
+    to_port   = 2049
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
@@ -159,6 +215,13 @@ resource "aws_security_group" "load_balancer_security_group" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"] # Allowing traffic in from all sources
+  }
+
+  ingress {
+    from_port = 2049
+    to_port   = 2049
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
