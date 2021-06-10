@@ -1,6 +1,7 @@
 const express = require('express');
 
 const apiV1 = require('./routes/api-v1');
+const testing = require('./routes/testing');
 const { errorHandler } = require('./errors');
 
 function createServer() {
@@ -17,6 +18,7 @@ function createServer() {
   });
 
   app.use('/api/v1', apiV1);
+  app.use('/api/testing', testing);
   app.use(errorHandler);
   return app;
 }
