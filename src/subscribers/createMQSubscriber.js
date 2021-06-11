@@ -9,15 +9,20 @@ const createMQSubscriber = (onConnect, subscriptions = []) => {
   const stompClient = Stomp.create(mqPort, mqHost, mqUser, mqPassword);
   stompClient.on('connect', () => {
     onConnect();
-    subscriptions.forEach((sub) => {
-      const { topic, action } = sub;
-      stompClient.subscribe(topic, (message, header) => {
-        action(message, header);
-      });
-    });
   });
 
-  stompClient.retryInterval(1000).incrementalRetryInterval(1000).connect();
+  stompClient
+    .retryInterval(1000)
+    .incrementalRetryInterval(1000)
+    .setConnectionTimeout(3600000)
+    .connect();
+
+  subscriptions.forEach((sub) => {
+    const { topic, action } = sub;
+    stompClient.subscribe(topic, (message, header) => {
+      action(message, header);
+    });
+  });
 
   return stompClient;
 };

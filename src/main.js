@@ -1,6 +1,7 @@
 require('dotenv').config();
 const db = require('./models');
-const createMQSubscriber = require('./mq');
+const createMQSubscriber = require('./subscribers/createMQSubscriber');
+const { positionSubscriberAction } = require('./subscribers/position');
 
 const createServer = require('./server');
 const port = process.env.PORT || 3000;
@@ -17,9 +18,7 @@ const port = process.env.PORT || 3000;
     const subscriptions = [
       {
         topic: '/topic/rawdata.topic',
-        action: (message, header) => {
-          console.log(message, header);
-        },
+        action: positionSubscriberAction,
       },
     ];
     createMQSubscriber(onConnect, subscriptions);
