@@ -1,11 +1,7 @@
 const Stomp = require('@syrf/transport-library').Stomp;
 
-const mqHost = process.env.MQ_HOST || 'localhost';
-const mqPort = process.env.MQ_PORT || 61613;
-const mqUser = process.env.MQ_USER || 'guest';
-const mqPassword = process.env.MQ_PASSWORD || 'guest';
-
-const createMQSubscriber = (onConnect, subscriptions = []) => {
+const createMQSubscriber = (connDetail, onConnect, subscriptions = []) => {
+  const { mqPort, mqHost, mqUser, mqPassword } = connDetail;
   const stompClient = Stomp.create(mqPort, mqHost, mqUser, mqPassword);
   stompClient.on('connect', () => {
     onConnect();
@@ -14,7 +10,7 @@ const createMQSubscriber = (onConnect, subscriptions = []) => {
   stompClient
     .retryInterval(1000)
     .incrementalRetryInterval(1000)
-    .setConnectionTimeout(3600000)
+    .setConnectionTimeout(3600000) // TODO: Remove this after transport library bugfix implemented
     .connect();
 
   subscriptions.forEach((sub) => {
