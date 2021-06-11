@@ -44,12 +44,10 @@ const getAllPositions = () => {
 };
 
 const positionSubscriberAction = (payload, headers) => {
-  if (headers.isbatch && payload.message[0].position) {
+  if (headers.isbatch) {
     payload.messages.map(savePosition);
   } else {
-    if (payload.position) {
-      savePosition(payload);
-    }
+    savePosition(payload);
   }
 };
 
