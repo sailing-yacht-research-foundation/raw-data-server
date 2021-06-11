@@ -1,11 +1,8 @@
 resource "aws_alb" "application_load_balancer" {
   name               = "Raw-Data-Server-LB"
   load_balancer_type = "application"
-  subnets = [
-    aws_default_subnet.default_subnet_1.id,
-    aws_default_subnet.default_subnet_2.id
-  ]
-  security_groups = [aws_security_group.load_balancer_security_group.id]
+  subnets            = aws_default_subnet.default_subnet.*.id
+  security_groups    = [aws_security_group.load_balancer_security_group.id]
 }
 
 resource "aws_security_group" "load_balancer_security_group" {

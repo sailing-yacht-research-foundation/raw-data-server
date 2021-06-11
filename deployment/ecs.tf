@@ -3,8 +3,8 @@ resource "aws_ecs_cluster" "rds_cluster" {
 }
 
 resource "random_password" "raw_data_server_db_password" {
-  length = 12
-  special = true
+  length           = 12
+  special          = true
   override_special = "_%@"
 }
 
@@ -32,8 +32,14 @@ resource "aws_ecs_service" "rds_service" {
     container_port   = var.app_container_port
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.target_group_db.arn
+    container_name   = "rds-db"
+    container_port   = 3306
+  }
+
   network_configuration {
-    subnets          = [aws_default_subnet.default_subnet_1.id, aws_default_subnet.default_subnet_2.id]
+    subnets          = aws_default_subnet.default_subnet.*.id
     assign_public_ip = true
     security_groups  = [aws_security_group.service_security_group.id]
   }
@@ -134,6 +140,13 @@ resource "aws_security_group" "service_security_group" {
   ingress {
     from_port   = 2049
     to_port     = 2049
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 3306
+    to_port     = 3306
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
