@@ -7,11 +7,7 @@ const createMQSubscriber = (connDetail, onConnect, subscriptions = []) => {
     onConnect();
   });
 
-  stompClient
-    .retryInterval(1000)
-    .incrementalRetryInterval(1000)
-    .setConnectionTimeout(3600000) // TODO: Remove this after transport library bugfix implemented
-    .connect();
+  stompClient.retryInterval(1000).incrementalRetryInterval(1000).connect();
 
   subscriptions.forEach((sub) => {
     const { topic, action } = sub;

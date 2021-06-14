@@ -523,10 +523,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@syrf/transport-library@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@syrf/transport-library/-/transport-library-1.0.6.tgz#0e1c011118c3a61f08a4b5fbe812b048e5f4b1df"
-  integrity sha512-7WE85Jka9+Tg3zq2ThaLXZd5fmCFgPe5m0NPOBAWbSXoYYXEtQHpmoTfCSYxig52Dk4H0aB3mpUefZDtT78TlQ==
+"@syrf/transport-library@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@syrf/transport-library/-/transport-library-1.0.7.tgz#ef85a5faa5a05d6f12ee10cd7d3db8701105f9bc"
+  integrity sha512-SOg8vXulDi1TlsBpf/Tz6L1y4PSKCpxJiZh718oHgduufGe/Ag+6JAk4Bv6ReKY68sUWSJXW3WRkv93DbbMUGg==
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
