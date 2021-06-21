@@ -1,6 +1,11 @@
 variable "aws_region" {
-  default     = "us-west-1"
+  default     = "us-east-1"
   description = "Which region should the resources be deployed into?"
+}
+
+variable "aws_availability_zones" {
+  default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
+  description = "Availability zone list"
 }
 
 variable "db_username" {
@@ -19,13 +24,13 @@ variable "app_container_port" {
 }
 
 variable "s3_access_key_id" {
-  type = string
+  type    = string
 }
 
 variable "s3_secret_key" {
-  type = string
+  type    = string
 }
 
 variable "s3_bucket" {
-  type = string
+  type    = string
 }
