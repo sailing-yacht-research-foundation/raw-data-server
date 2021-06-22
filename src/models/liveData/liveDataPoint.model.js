@@ -43,27 +43,27 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      raceUnitId: {
+      race_unit_id: {
         type: Sequelize.UUID,
         allowNull: false,
       },
-      boatParticipantGroupId: {
+      boat_participant_group_id: {
         type: Sequelize.UUID,
         allowNull: true,
       },
-      boatId: {
+      boat_id: {
         type: Sequelize.UUID,
         allowNull: true,
       },
-      deviceId: {
+      device_id: {
         type: Sequelize.UUID,
         allowNull: true,
       },
-      userId: {
+      user_id: {
         type: Sequelize.UUID,
         allowNull: true,
       },
-      publicId: {
+      public_id: {
         type: Sequelize.TEXT,
         allowNull: true,
       },

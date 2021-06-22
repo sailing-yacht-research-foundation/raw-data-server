@@ -45,12 +45,12 @@ const convertLiveDataToInsertData = (data) => {
     tws,
     twa,
     stw,
-    raceUnitId: raceData.raceUnitId,
-    boatParticipantGroupId: raceData.boatParticipantGroupId,
-    boatId: raceData.boatId,
-    deviceId: raceData.deviceId,
-    userId: raceData.userId,
-    publicId: raceData.publicId,
+    race_unit_id: raceData.raceUnitId,
+    boat_participant_group_id: raceData.boatParticipantGroupId,
+    boat_id: raceData.boatId,
+    device_id: raceData.deviceId,
+    user_id: raceData.userId,
+    public_id: raceData.publicId,
   };
 };
 
