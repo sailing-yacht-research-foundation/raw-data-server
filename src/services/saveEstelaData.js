@@ -68,7 +68,6 @@ const saveEstelaData = async (data) => {
       await db.estelaSuccessfulUrl.create({
         id: uuidv4(),
         url: raceUrl,
-        error: errorMessage,
       });
     }
   }

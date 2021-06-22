@@ -8,27 +8,15 @@ describe('Storing Estela data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.estelaBuoy.destroy({
-      truncate: true,
-    });
-    await db.estelaClub.destroy({
-      truncate: true,
-    });
-    await db.estelaDorsal.destroy({
-      truncate: true,
-    });
-    await db.estelaPlayer.destroy({
-      truncate: true,
-    });
-    await db.estelaPosition.destroy({
-      truncate: true,
-    });
-    await db.estelaRace.destroy({
-      truncate: true,
-    });
-    await db.estelaResult.destroy({
-      truncate: true,
-    });
+    await db.estelaBuoy.destroy({ truncate: true });
+    await db.estelaClub.destroy({ truncate: true });
+    await db.estelaDorsal.destroy({ truncate: true });
+    await db.estelaPlayer.destroy({ truncate: true });
+    await db.estelaPosition.destroy({ truncate: true });
+    await db.estelaRace.destroy({ truncate: true });
+    await db.estelaResult.destroy({ truncate: true });
+    await db.estelaFailedUrl.destroy({ truncate: true });
+    await db.estelaSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {
