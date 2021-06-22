@@ -1,7 +1,7 @@
 require('dotenv').config();
 const db = require('./models');
 const createMQSubscriber = require('./subscribers/createMQSubscriber');
-const { positionSubscriberAction } = require('./subscribers/position');
+const { dataPointSubscriberAction } = require('./subscribers/dataPoint');
 
 const createServer = require('./server');
 const port = process.env.PORT || 3000;
@@ -22,7 +22,7 @@ const mqPassword = process.env.MQ_PASSWORD || 'guest';
     const subscriptions = [
       {
         topic: '/topic/rawdata.topic',
-        action: positionSubscriberAction,
+        action: dataPointSubscriberAction,
       },
     ];
     const stompClient = createMQSubscriber(

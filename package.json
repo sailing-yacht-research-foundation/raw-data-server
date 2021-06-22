@@ -23,7 +23,8 @@
     "mysql2": "^2.2.5",
     "parquetjs-lite": "^0.8.7",
     "sequelize": "^6.6.2",
-    "temp": "^0.9.4"
+    "temp": "^0.9.4",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "eslint": "^7.25.0",

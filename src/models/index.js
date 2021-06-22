@@ -397,4 +397,11 @@ db.tackTrackerStart = require('./tackTracker/tackTrackerStart.model')(
   Sequelize,
 );
 // === End of TackTracker ===
+
+// === Live Data Server ===
+db.liveDataPoint = require('./liveData/liveDataPoint.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Live Data Server ===
 module.exports = db;

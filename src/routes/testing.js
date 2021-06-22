@@ -2,7 +2,7 @@ const express = require('express');
 
 const validateSecret = require('../middlewares/validateSecret');
 const db = require('../models');
-const { getAllPositions } = require('../subscribers/position');
+const { getAllLiveDataPoint } = require('../subscribers/dataPoint');
 
 var router = express.Router();
 router.use(validateSecret);
@@ -17,9 +17,9 @@ router.get('/', async function (req, res) {
   });
 });
 
-router.get('/position', async function (req, res) {
-  const arrayPos = getAllPositions();
-  res.json({ msg: 'position', arrayPos });
+router.get('/data-points', async function (req, res) {
+  const data = getAllLiveDataPoint();
+  res.json({ msg: 'data points', data });
 });
 
 module.exports = router;
