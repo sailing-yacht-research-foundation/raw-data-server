@@ -9,9 +9,9 @@ const saveEstelaData = async (data) => {
   let raceUrl = '';
   try {
     if (data.EstelaRace) {
-      raceUrl = data.EstelaRace.url;
       const existRace = await db.estelaRace.findByPk(data.EstelaRace.id);
       if (!existRace) {
+        raceUrl = data.EstelaRace.url;
         await db.estelaRace.create(data.EstelaRace);
       }
     }
@@ -57,12 +57,20 @@ const saveEstelaData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
-  if (errorMessage && raceUrl) {
-    await db.estelaFailedUrl.create({
-      id: uuidv4(),
-      url: raceUrl,
-      error: errorMessage,
-    });
+  if (raceUrl) {
+    if (errorMessage) {
+      await db.estelaFailedUrl.create({
+        id: uuidv4(),
+        url: raceUrl,
+        error: errorMessage,
+      });
+    } else {
+      await db.estelaSuccessfulUrl.create({
+        id: uuidv4(),
+        url: raceUrl,
+        error: errorMessage,
+      });
+    }
   }
 
   return errorMessage;
