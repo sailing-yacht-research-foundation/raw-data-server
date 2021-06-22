@@ -361,6 +361,10 @@ db.estelaPosition = require('./estela/estelaPosition.model')(
 );
 db.estelaRace = require('./estela/estelaRace.model')(sequelize, Sequelize);
 db.estelaResult = require('./estela/estelaResult.model')(sequelize, Sequelize);
+db.estelaFailedUrl = require('./estela/estelaFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Estela ===
 
 // === TackTracker ===

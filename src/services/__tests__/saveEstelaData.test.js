@@ -49,7 +49,7 @@ describe('Storing Estela data to DB', () => {
     expect(createResult).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createRace = jest.spyOn(db.estelaRace, 'bulkCreate');
+    const createRace = jest.spyOn(db.estelaRace, 'create');
     const createBuoy = jest.spyOn(db.estelaBuoy, 'bulkCreate');
     const createClub = jest.spyOn(db.estelaClub, 'bulkCreate');
     const createPosition = jest.spyOn(db.estelaPosition, 'bulkCreate');

@@ -463,18 +463,18 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(filePath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(2);
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    expect(processRecord).toHaveBeenCalledTimes(1);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
         race_id: 'f6373964-9496-46ba-b907-fa90f8c6fb62',
         race_original_id: '6985',
       }),
     );
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.log('error deleting: ', err);
-      }
-    });
   });
 
   it('should read Georacing parquet files successfully', async () => {

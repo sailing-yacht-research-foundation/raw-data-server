@@ -65,7 +65,7 @@ describe('Processing exist Estela Data from DB to Parquet', () => {
   });
   it('should get races', async () => {
     const races = await getRaces();
-    expect(races.length).toEqual(2);
+    expect(races.length).toEqual(1);
   });
   it('should get clubs', async () => {
     const clubs = await getClubs();
