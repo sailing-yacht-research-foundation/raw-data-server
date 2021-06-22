@@ -55,7 +55,7 @@ const convertLiveDataToInsertData = (data) => {
 };
 
 const dataPointSubscriberAction = async (payload, headers) => {
-  if (headers.isbatch) {
+  if (headers.isbatch === 'true') {
     const data = payload.messages.map(convertLiveDataToInsertData);
     await saveLiveDataPoint(data);
   } else {

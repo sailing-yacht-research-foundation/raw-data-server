@@ -18,7 +18,7 @@ router.get('/', async function (req, res) {
 });
 
 router.get('/data-points', async function (req, res) {
-  const data = getAllLiveDataPoint();
+  const data = await getAllLiveDataPoint();
   res.json({ msg: 'data points', data });
 });
 
