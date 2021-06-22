@@ -1,14 +1,14 @@
 var parquet = require('parquetjs-lite');
 
-const liveData = new parquet.ParquetSchema({
-  race_id: { type: 'UTF8' },
-  // TODO: Update this once Data is ready/available
-  race_data: { type: 'UTF8', optional: true },
+const liveDataSchema = new parquet.ParquetSchema({
+  race_unit_id: { type: 'UTF8' },
+  // TODO: Add details when Data is ready/available
   data_points: {
     repeated: true,
     fields: {
       id: { type: 'UTF8' },
       lat: { type: 'UTF8' },
+      lon: { type: 'UTF8' },
       speed: { type: 'DOUBLE' },
       heading: { type: 'DOUBLE' },
       accuracy: { type: 'DOUBLE' },
@@ -29,5 +29,5 @@ const liveData = new parquet.ParquetSchema({
 });
 
 module.exports = {
-  liveData,
+  liveDataSchema,
 };
