@@ -80,23 +80,6 @@ describe('Basic read parquet functionality', () => {
       }),
     );
   });
-
-  it('should return failed when error thrown from process function ', async () => {
-    const processRecord = () => {
-      throw new Error('test');
-    };
-    const filePath = path.resolve(
-      __dirname,
-      '../../test-files/georacing.parquet',
-    );
-    const readResult = await readParquet(filePath, processRecord);
-    expect(readResult).toEqual(
-      expect.objectContaining({
-        success: false,
-        errorMessage: 'test',
-      }),
-    );
-  });
 });
 
 describe('Read tracker parquet files', () => {
