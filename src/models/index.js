@@ -261,6 +261,14 @@ db.kwindooWaypoint = require('./kwindoo/kwindooWaypoint.model')(
   sequelize,
   Sequelize,
 );
+db.kwindooFailedUrl = require('./kwindoo/kwindooFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooSuccessfulUrl = require('./kwindoo/kwindooSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Kwindoo ===
 
 // === Bluewater ===
