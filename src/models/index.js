@@ -444,5 +444,11 @@ db.tackTrackerStart = require('./tackTracker/tackTrackerStart.model')(
   sequelize,
   Sequelize,
 );
+db.tackTrackerFailedUrl = require('./tackTracker/tackTrackerFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerSuccessfulUrl =
+  require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
 // === End of TackTracker ===
 module.exports = db;
