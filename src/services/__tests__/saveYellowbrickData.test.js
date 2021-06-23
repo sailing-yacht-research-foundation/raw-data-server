@@ -8,27 +8,15 @@ describe('Storing yellowbrick data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.yellowbrickRace.destroy({
-      truncate: true,
-    });
-    await db.yellowbrickCourseNode.destroy({
-      truncate: true,
-    });
-    await db.yellowbrickLeaderboardTeam.destroy({
-      truncate: true,
-    });
-    await db.yellowbrickPoi.destroy({
-      truncate: true,
-    });
-    await db.yellowbrickPosition.destroy({
-      truncate: true,
-    });
-    await db.yellowbrickTag.destroy({
-      truncate: true,
-    });
-    await db.yellowbrickTeam.destroy({
-      truncate: true,
-    });
+    await db.yellowbrickRace.destroy({ truncate: true });
+    await db.yellowbrickCourseNode.destroy({ truncate: true });
+    await db.yellowbrickLeaderboardTeam.destroy({ truncate: true });
+    await db.yellowbrickPoi.destroy({ truncate: true });
+    await db.yellowbrickPosition.destroy({ truncate: true });
+    await db.yellowbrickTag.destroy({ truncate: true });
+    await db.yellowbrickTeam.destroy({ truncate: true });
+    await db.yellowbrickSuccessfulUrl.destroy({ truncate: true });
+    await db.yellowbrickFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {

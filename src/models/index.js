@@ -226,6 +226,12 @@ db.yellowbrickTeam = require('./yellowbrick/yellowbrickTeam.model')(
   sequelize,
   Sequelize,
 );
+db.yellowbrickSuccessfulUrl =
+  require('./yellowbrick/yellowbrickSuccessfulUrl.model')(sequelize, Sequelize);
+db.yellowbrickFailedUrl = require('./yellowbrick/yellowbrickFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Yellowbrick ===
 
 // === Kwindoo ===
