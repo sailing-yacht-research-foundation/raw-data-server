@@ -74,6 +74,14 @@ db.kattackWaypoint = require('./kattack/kattackWaypoint.model.js')(
   sequelize,
   Sequelize,
 );
+db.kattackSuccessfulUrl = require('./kattack/kattackSuccessfulUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackFailedUrl = require('./kattack/kattackFailedUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
 // === End of Kattack ===
 
 // === Georacing ===

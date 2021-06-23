@@ -1,64 +1,85 @@
-const db = require('../models');
+const { v4: uuidv4 } = require('uuid');
 
-const Op = db.Sequelize.Op;
+const db = require('../models');
+const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
 const saveKattackData = async (data) => {
-  if (data.KattackYachtClub) {
-    const existClubs = await db.kattackYachtClub.findAll({
-      where: { id: { [Op.in]: data.KattackYachtClub.map((row) => row.id) } },
-    });
-    const toRemove = existClubs.map((row) => row.id);
-
-    const clubData = data.KattackYachtClub.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.kattackYachtClub.bulkCreate(clubData);
+  const transaction = await db.sequelize.transaction();
+  let errorMessage = '';
+  let raceUrl = [];
+  try {
+    if (data.KattackYachtClub) {
+      await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    if (data.KattackRace) {
+      await db.kattackRace.bulkCreate(data.KattackRace, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+      raceUrl = data.KattackRace.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
+    }
+    if (data.KattackDevice) {
+      await db.kattackDevice.bulkCreate(data.KattackDevice, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    if (data.KattackPosition) {
+      await db.kattackPosition.bulkCreate(data.KattackPosition, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    if (data.KattackWaypoint) {
+      await db.kattackWaypoint.bulkCreate(data.KattackWaypoint, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(error);
   }
-  if (data.KattackRace) {
-    const existRaces = await db.kattackRace.findAll({
-      where: { id: { [Op.in]: data.KattackRace.map((row) => row.id) } },
-    });
-    const toRemove = existRaces.map((row) => row.id);
 
-    const raceData = data.KattackRace.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.kattackRace.bulkCreate(raceData);
+  if (raceUrl.length > 0) {
+    if (errorMessage) {
+      await db.kattackFailedUrl.bulkCreate(
+        raceUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            error: errorMessage,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    } else {
+      await db.kattackSuccessfulUrl.bulkCreate(
+        raceUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            original_id: row.original_id,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    }
   }
-  if (data.KattackDevice) {
-    const existDevices = await db.kattackDevice.findAll({
-      where: { id: { [Op.in]: data.KattackDevice.map((row) => row.id) } },
-    });
-    const toRemove = existDevices.map((row) => row.id);
 
-    const deviceData = data.KattackDevice.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.kattackDevice.bulkCreate(deviceData);
-  }
-  if (data.KattackPosition) {
-    const existPositions = await db.kattackPosition.findAll({
-      where: { id: { [Op.in]: data.KattackPosition.map((row) => row.id) } },
-    });
-    const toRemove = existPositions.map((row) => row.id);
-
-    const positionData = data.KattackPosition.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.kattackPosition.bulkCreate(positionData);
-  }
-  if (data.KattackWaypoint) {
-    const existWaypoints = await db.kattackWaypoint.findAll({
-      where: { id: { [Op.in]: data.KattackWaypoint.map((row) => row.id) } },
-    });
-    const toRemove = existWaypoints.map((row) => row.id);
-
-    const waypointData = data.KattackWaypoint.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.kattackWaypoint.bulkCreate(waypointData);
-  }
-  return true;
+  return errorMessage;
 };
 
 module.exports = saveKattackData;
