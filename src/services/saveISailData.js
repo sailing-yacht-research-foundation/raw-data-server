@@ -9,12 +9,6 @@ const saveISailData = async (data) => {
   let eventUrl = '';
   let originalId = null;
   try {
-    if (data.iSailClass) {
-      await db.iSailClass.bulkCreate(data.iSailClass, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
-    }
     if (data.iSailEvent) {
       // This field contains only a single object
       const existEvent = await db.iSailEvent.findByPk(data.iSailEvent.id);
@@ -23,6 +17,12 @@ const saveISailData = async (data) => {
         originalId = data.iSailEvent.original_id;
         await db.iSailEvent.create(data.iSailEvent);
       }
+    }
+    if (data.iSailClass) {
+      await db.iSailClass.bulkCreate(data.iSailClass, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
     }
     if (data.iSailRace) {
       await db.iSailRace.bulkCreate(data.iSailRace, {

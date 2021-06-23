@@ -372,6 +372,14 @@ db.metasailPosition = require('./metasail/metasailPosition.model')(
   sequelize,
   Sequelize,
 );
+db.metasailFailedUrl = require('./metasail/metasailFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailSuccessfulUrl = require('./metasail/metasailSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Metasail ===
 
 // === Estela ===

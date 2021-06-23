@@ -8,19 +8,19 @@ const saveKattackData = async (data) => {
   let errorMessage = '';
   let raceUrl = [];
   try {
-    if (data.KattackYachtClub) {
-      await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
-    }
     if (data.KattackRace) {
+      raceUrl = data.KattackRace.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
       await db.kattackRace.bulkCreate(data.KattackRace, {
         ignoreDuplicates: true,
         validate: true,
       });
-      raceUrl = data.KattackRace.map((row) => {
-        return { url: row.url, original_id: row.original_id };
+    }
+    if (data.KattackYachtClub) {
+      await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
+        ignoreDuplicates: true,
+        validate: true,
       });
     }
     if (data.KattackDevice) {

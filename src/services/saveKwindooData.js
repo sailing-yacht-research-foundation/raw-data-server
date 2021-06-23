@@ -8,19 +8,19 @@ const saveKwindooData = async (data) => {
   let errorMessage = '';
   let raceUrl = [];
   try {
-    if (data.KwindooBoat) {
-      await db.kwindooBoat.bulkCreate(data.KwindooBoat, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
-    }
     if (data.KwindooRace) {
+      raceUrl = data.KwindooRace.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
       await db.kwindooRace.bulkCreate(data.KwindooRace, {
         ignoreDuplicates: true,
         validate: true,
       });
-      raceUrl = data.KwindooRace.map((row) => {
-        return { url: row.url, original_id: row.original_id };
+    }
+    if (data.KwindooBoat) {
+      await db.kwindooBoat.bulkCreate(data.KwindooBoat, {
+        ignoreDuplicates: true,
+        validate: true,
       });
     }
     if (data.KwindooRegatta) {
@@ -95,7 +95,6 @@ const saveKwindooData = async (data) => {
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
-    console.log(error);
     errorMessage = databaseErrorHandler(error);
   }
 
