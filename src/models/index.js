@@ -51,6 +51,14 @@ db.iSailRounding = require('./iSail/iSailRounding.model.js')(
   Sequelize,
 );
 db.iSailResult = require('./iSail/iSailResult.model.js')(sequelize, Sequelize);
+db.iSailFailedUrl = require('./iSail/iSailFailedUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailSuccessfulUrl = require('./iSail/iSailSuccessfulUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
 // === End of iSail ===
 
 // === Kattack ===
