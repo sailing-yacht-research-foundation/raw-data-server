@@ -7,11 +7,13 @@ const saveEstelaData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = '';
+  let originalID = '';
   try {
     if (data.EstelaRace) {
       const existRace = await db.estelaRace.findByPk(data.EstelaRace.id);
       if (!existRace) {
         raceUrl = data.EstelaRace.url;
+        originalID = data.EstelaRace.original_id;
         await db.estelaRace.create(data.EstelaRace);
       }
     }
@@ -68,6 +70,7 @@ const saveEstelaData = async (data) => {
       await db.estelaSuccessfulUrl.create({
         id: uuidv4(),
         url: raceUrl,
+        original_id: originalID,
       });
     }
   }

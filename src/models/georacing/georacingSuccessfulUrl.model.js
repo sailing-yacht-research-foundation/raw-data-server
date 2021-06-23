@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const estelaSuccessfulUrl = sequelize.define(
-    'EstelaSuccessfulUrl',
+  const georacingSuccessfulUrl = sequelize.define(
+    'GeoracingSuccessfulUrl',
     {
       id: {
         type: Sequelize.UUID,
@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       original_id: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -22,9 +22,9 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'EstelaSuccessfulUrls',
+      tableName: 'GeoracingSuccessfulUrls',
       timestamps: false,
     },
   );
-  return estelaSuccessfulUrl;
+  return georacingSuccessfulUrl;
 };

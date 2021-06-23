@@ -139,6 +139,14 @@ db.georacingSplittime = require('./georacing/georacingSplittime.model')(
 );
 db.georacingSplittimeObject =
   require('./georacing/georacingSplittimeObject.model')(sequelize, Sequelize);
+db.georacingSuccessfulUrl = require('./georacing/georacingSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingFailedUrl = require('./georacing/georacingFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Georacing ===
 
 // === TracTrac ===
