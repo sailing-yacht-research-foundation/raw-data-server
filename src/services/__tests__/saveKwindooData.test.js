@@ -8,45 +8,21 @@ describe('Storing kwindoo data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.kwindooRegattaOwner.destroy({
-      truncate: true,
-    });
-    await db.kwindooRegatta.destroy({
-      truncate: true,
-    });
-    await db.kwindooRace.destroy({
-      truncate: true,
-    });
-    await db.kwindooBoat.destroy({
-      truncate: true,
-    });
-    await db.kwindooComment.destroy({
-      truncate: true,
-    });
-    await db.kwindooHomeportLocation.destroy({
-      truncate: true,
-    });
-    await db.kwindooMarker.destroy({
-      truncate: true,
-    });
-    await db.kwindooMIA.destroy({
-      truncate: true,
-    });
-    await db.kwindooPOI.destroy({
-      truncate: true,
-    });
-    await db.kwindooPosition.destroy({
-      truncate: true,
-    });
-    await db.kwindooRunningGroup.destroy({
-      truncate: true,
-    });
-    await db.kwindooVideoStream.destroy({
-      truncate: true,
-    });
-    await db.kwindooWaypoint.destroy({
-      truncate: true,
-    });
+    await db.kwindooRegattaOwner.destroy({ truncate: true });
+    await db.kwindooRegatta.destroy({ truncate: true });
+    await db.kwindooRace.destroy({ truncate: true });
+    await db.kwindooBoat.destroy({ truncate: true });
+    await db.kwindooComment.destroy({ truncate: true });
+    await db.kwindooHomeportLocation.destroy({ truncate: true });
+    await db.kwindooMarker.destroy({ truncate: true });
+    await db.kwindooMIA.destroy({ truncate: true });
+    await db.kwindooPOI.destroy({ truncate: true });
+    await db.kwindooPosition.destroy({ truncate: true });
+    await db.kwindooRunningGroup.destroy({ truncate: true });
+    await db.kwindooVideoStream.destroy({ truncate: true });
+    await db.kwindooWaypoint.destroy({ truncate: true });
+    await db.kwindooFailedUrl.destroy({ truncate: true });
+    await db.kwindooSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   afterEach(async () => {

@@ -8,24 +8,14 @@ describe('Storing Metasail data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.metasailEvent.destroy({
-      truncate: true,
-    });
-    await db.metasailRace.destroy({
-      truncate: true,
-    });
-    await db.metasailBoat.destroy({
-      truncate: true,
-    });
-    await db.metasailBuoy.destroy({
-      truncate: true,
-    });
-    await db.metasailGate.destroy({
-      truncate: true,
-    });
-    await db.metasailPosition.destroy({
-      truncate: true,
-    });
+    await db.metasailEvent.destroy({ truncate: true });
+    await db.metasailRace.destroy({ truncate: true });
+    await db.metasailBoat.destroy({ truncate: true });
+    await db.metasailBuoy.destroy({ truncate: true });
+    await db.metasailGate.destroy({ truncate: true });
+    await db.metasailPosition.destroy({ truncate: true });
+    await db.metasailFailedUrl.destroy({ truncate: true });
+    await db.metasailSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {

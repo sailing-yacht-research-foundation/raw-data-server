@@ -8,30 +8,16 @@ describe('Storing TackTracker data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.tackTrackerRegatta.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerRace.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerBoat.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerDefault.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerFinish.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerMark.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerPosition.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerStart.destroy({
-      truncate: true,
-    });
+    await db.tackTrackerRegatta.destroy({ truncate: true });
+    await db.tackTrackerRace.destroy({ truncate: true });
+    await db.tackTrackerBoat.destroy({ truncate: true });
+    await db.tackTrackerDefault.destroy({ truncate: true });
+    await db.tackTrackerFinish.destroy({ truncate: true });
+    await db.tackTrackerMark.destroy({ truncate: true });
+    await db.tackTrackerPosition.destroy({ truncate: true });
+    await db.tackTrackerStart.destroy({ truncate: true });
+    await db.tackTrackerFailedUrl.destroy({ truncate: true });
+    await db.tackTrackerSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {

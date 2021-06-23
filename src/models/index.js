@@ -186,6 +186,14 @@ db.tractracRoute = require('./tractrac/tractracRoute.model')(
   sequelize,
   Sequelize,
 );
+db.tractracFailedUrl = require('./tractrac/tractracFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracSuccessfulUrl = require('./tractrac/tractracSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of TracTrac ===
 
 // === Yellowbrick ===
