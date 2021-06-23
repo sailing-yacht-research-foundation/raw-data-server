@@ -345,6 +345,14 @@ db.raceQsWaypoint = require('./raceQs/raceQsWaypoint.model')(
   sequelize,
   Sequelize,
 );
+db.raceQsSuccessfulUrl = require('./raceQs/raceQsSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsFailedUrl = require('./raceQs/raceQsFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of RaceQs ===
 
 // === Metasail ===
