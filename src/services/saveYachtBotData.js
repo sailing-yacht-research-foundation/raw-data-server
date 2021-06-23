@@ -1,62 +1,79 @@
-const db = require('../models');
+const { v4: uuidv4 } = require('uuid');
 
-const Op = db.Sequelize.Op;
+const db = require('../models');
+const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
 const saveYachtBotData = async (data) => {
-  if (data.YachtBotRace) {
-    const existRaces = await db.yachtBotRace.findAll({
-      where: {
-        id: { [Op.in]: data.YachtBotRace.map((row) => row.id) },
-      },
-    });
-    const toRemove = existRaces.map((row) => row.id);
-
-    const raceData = data.YachtBotRace.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yachtBotRace.bulkCreate(raceData);
-  }
-  if (data.YachtBotYacht) {
-    const existYachts = await db.yachtBotYacht.findAll({
-      where: {
-        id: { [Op.in]: data.YachtBotYacht.map((row) => row.id) },
-      },
-    });
-    const toRemove = existYachts.map((row) => row.id);
-
-    const yachtData = data.YachtBotYacht.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yachtBotYacht.bulkCreate(yachtData);
-  }
-  if (data.YachtBotBuoy) {
-    const existBuoys = await db.yachtBotBuoy.findAll({
-      where: {
-        id: { [Op.in]: data.YachtBotBuoy.map((row) => row.id) },
-      },
-    });
-    const toRemove = existBuoys.map((row) => row.id);
-
-    const buoyData = data.YachtBotBuoy.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yachtBotBuoy.bulkCreate(buoyData);
-  }
-  if (data.YachtBotPosition) {
-    const existPositions = await db.yachtBotPosition.findAll({
-      where: {
-        id: { [Op.in]: data.YachtBotPosition.map((row) => row.id) },
-      },
-    });
-    const toRemove = existPositions.map((row) => row.id);
-
-    const positionData = data.YachtBotPosition.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yachtBotPosition.bulkCreate(positionData);
+  const transaction = await db.sequelize.transaction();
+  let errorMessage = '';
+  let raceUrl = [];
+  try {
+    if (data.YachtBotRace) {
+      raceUrl = data.YachtBotRace.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
+      await db.yachtBotRace.bulkCreate(data.YachtBotRace, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    if (data.YachtBotYacht) {
+      await db.yachtBotYacht.bulkCreate(data.YachtBotYacht, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    if (data.YachtBotBuoy) {
+      await db.yachtBotBuoy.bulkCreate(data.YachtBotBuoy, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    if (data.YachtBotPosition) {
+      await db.yachtBotPosition.bulkCreate(data.YachtBotPosition, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(error);
   }
 
-  return true;
+  if (raceUrl.length > 0) {
+    if (errorMessage) {
+      await db.yachtBotFailedUrl.bulkCreate(
+        raceUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            error: errorMessage,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    } else {
+      await db.yachtBotSuccessfulUrl.bulkCreate(
+        raceUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            original_id: row.original_id,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    }
+  }
+
+  return errorMessage;
 };
 
 module.exports = saveYachtBotData;

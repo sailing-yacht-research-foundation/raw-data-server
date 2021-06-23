@@ -8,18 +8,12 @@ describe('Storing YachtBot data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.yachtBotRace.destroy({
-      truncate: true,
-    });
-    await db.yachtBotBuoy.destroy({
-      truncate: true,
-    });
-    await db.yachtBotYacht.destroy({
-      truncate: true,
-    });
-    await db.yachtBotPosition.destroy({
-      truncate: true,
-    });
+    await db.yachtBotRace.destroy.destroy({ truncate: true });
+    await db.yachtBotBuoy.destroy.destroy({ truncate: true });
+    await db.yachtBotYacht.destroy.destroy({ truncate: true });
+    await db.yachtBotPosition.destroy({ truncate: true });
+    await db.yachtBotFailedUrl.destroy({ truncate: true });
+    await db.yachtBotSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {

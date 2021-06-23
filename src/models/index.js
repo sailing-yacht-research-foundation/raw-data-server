@@ -327,6 +327,14 @@ db.yachtBotPosition = require('./yachtbot/yachtBotPosition.model')(
   sequelize,
   Sequelize,
 );
+db.yachtBotSuccessfulUrl = require('./yachtbot/yachtBotSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.yachtBotFailedUrl = require('./yachtbot/yachtBotFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Yacht Bot ===
 
 // === RaceQs ===
