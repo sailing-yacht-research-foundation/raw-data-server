@@ -6,16 +6,16 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const saveEstelaData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = '';
-  let originalID = '';
+  let raceUrl = [];
   try {
     if (data.EstelaRace) {
-      const existRace = await db.estelaRace.findByPk(data.EstelaRace.id);
-      if (!existRace) {
-        raceUrl = data.EstelaRace.url;
-        originalID = data.EstelaRace.original_id;
-        await db.estelaRace.create(data.EstelaRace);
-      }
+      raceUrl = data.EstelaRace.map((row) => {
+        return { original_id: row.original_id, url: row.url };
+      });
+      await db.estelaRace.bulkCreate(data.EstelaRace, {
+        ignoreDuplicates: true,
+        validate: true,
+      });
     }
     if (data.EstelaBuoy) {
       await db.estelaBuoy.bulkCreate(data.EstelaBuoy, {
@@ -56,22 +56,41 @@ const saveEstelaData = async (data) => {
     transaction.commit();
   } catch (error) {
     await transaction.rollback();
+    console.log(error);
     errorMessage = databaseErrorHandler(error);
   }
 
-  if (raceUrl) {
+  if (raceUrl.length > 0) {
     if (errorMessage) {
-      await db.estelaFailedUrl.create({
-        id: uuidv4(),
-        url: raceUrl,
-        error: errorMessage,
-      });
+      await db.estelaFailedUrl.bulkCreate(
+        raceUrl.map((row) => {
+          const { url } = row;
+          return {
+            id: uuidv4(),
+            url,
+            error: errorMessage,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
     } else {
-      await db.estelaSuccessfulUrl.create({
-        id: uuidv4(),
-        url: raceUrl,
-        original_id: originalID,
-      });
+      await db.estelaSuccessfulUrl.bulkCreate(
+        raceUrl.map((row) => {
+          const { url, original_id } = row;
+          return {
+            id: uuidv4(),
+            url,
+            original_id,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
     }
   }
 

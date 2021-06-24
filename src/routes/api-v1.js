@@ -54,6 +54,7 @@ router.post(
   '/upload-file',
   upload.single('raw_data'),
   async function (req, res) {
+    let response = '';
     if (!req.file) {
       res.status(400).json({
         message: 'No File Uploaded',
@@ -93,7 +94,7 @@ router.post(
             saveMetasailData(jsonData);
             break;
           case Boolean(jsonData.EstelaRace):
-            saveEstelaData(jsonData);
+            response = await saveEstelaData(jsonData);
             break;
           case Boolean(jsonData.TackTrackerRace):
             saveTackTrackerData(jsonData);
@@ -107,6 +108,7 @@ router.post(
       }
       res.json({
         message: `File successfully uploaded`,
+        response,
       });
     }
   },

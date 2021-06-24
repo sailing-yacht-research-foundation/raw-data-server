@@ -84,11 +84,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       leg_winds_csv: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT('long'),
         allowNull: true,
       },
       results_csv: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT('long'),
         allowNull: true,
       },
       club: {
