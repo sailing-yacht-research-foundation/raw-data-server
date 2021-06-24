@@ -38,4 +38,20 @@ describe('Storing YachtBot data to DB', () => {
     expect(createYacht).toHaveBeenCalledTimes(1);
     expect(createPosition).toHaveBeenCalledTimes(1);
   });
+  it('should rollback data when one fails to execute', async () => {
+    await db.yachtBotRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.YachtBotRace = [
+      ...invalidData.YachtBotRace,
+      {
+        original_id: '363',
+        url: 'http://www.yacht-bot.com/races/363',
+      },
+    ];
+    const response = await saveYachtBotData(invalidData);
+    const raceCount = await db.yachtBotRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+  });
 });

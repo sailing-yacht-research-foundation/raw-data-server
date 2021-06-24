@@ -48,4 +48,20 @@ describe('Storing Metasail data to DB', () => {
     expect(createBuoy).toHaveBeenCalledTimes(1);
     expect(createGate).toHaveBeenCalledTimes(1);
   });
+  it('should rollback data when one fails to execute', async () => {
+    await db.metasailRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.MetasailRace = [
+      ...invalidData.MetasailRace,
+      {
+        original_id: '10387',
+        url: 'http://app.metasail.it/(S(bw42cieypqnejmnbfbuw1xmh))/ViewRecordedRace2018New.aspx?idgara=10387&token=5DUA',
+      },
+    ];
+    const response = await saveMetasailData(invalidData);
+    const raceCount = await db.metasailRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+  });
 });

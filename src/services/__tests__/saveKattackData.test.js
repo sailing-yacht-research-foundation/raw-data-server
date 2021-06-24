@@ -17,10 +17,6 @@ describe('Storing kattack data to DB', () => {
     await db.kattackFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
-
-  afterEach(async () => {
-    jest.resetAllMocks();
-  });
   it('should not save anything when empty data', async () => {
     const createYachtClub = jest.spyOn(db.kattackYachtClub, 'bulkCreate');
     const createRace = jest.spyOn(db.kattackRace, 'bulkCreate');
@@ -50,5 +46,21 @@ describe('Storing kattack data to DB', () => {
     expect(createDevice).toHaveBeenCalledTimes(1);
     expect(createPosition).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
+  });
+  it('should rollback data when one fails to execute', async () => {
+    await db.kattackRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.KattackRace = [
+      ...invalidData.KattackRace,
+      {
+        original_id: '1011',
+        url: 'http://kws.kattack.com/GEPlayer/GMPosDisplay.aspx?FeedID=1011',
+      },
+    ];
+    const response = await saveKattackData(invalidData);
+    const raceCount = await db.kattackRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

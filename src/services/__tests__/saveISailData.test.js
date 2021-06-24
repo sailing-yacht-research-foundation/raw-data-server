@@ -83,5 +83,22 @@ describe('Storing iSail data to DB', () => {
     expect(createRounding).toHaveBeenCalledTimes(1);
     expect(createStartline).toHaveBeenCalledTimes(1);
     expect(createTrack).toHaveBeenCalledTimes(1);
+    // Save same data
+    await saveISailData(jsonData);
+    expect(createEvent).toHaveBeenCalledTimes(1);
+  });
+  it('should rollback data when one fails to execute', async () => {
+    await db.iSailEvent.destroy({ truncate: true });
+    const initialEventCount = 0;
+    const invalidData = {
+      iSailEvent: {
+        original_id: 14,
+        url: 'http://app.i-sail.com/eventDetails/13',
+      },
+    };
+    const response = await saveISailData(invalidData);
+    const eventCount = await db.iSailEvent.count();
+    expect(eventCount).toEqual(initialEventCount);
+    expect(response).toEqual(expect.stringContaining('cannot be null'));
   });
 });

@@ -58,4 +58,20 @@ describe('Storing TackTracker data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(1);
     expect(createStart).toHaveBeenCalledTimes(1);
   });
+  it('should rollback data when one fails to execute', async () => {
+    await db.tackTrackerRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.TackTrackerRace = [
+      ...invalidData.TackTrackerRace,
+      {
+        original_id: '8500587',
+        url: 'https://tacktracker.com/cloud/regattas/show/asd',
+      },
+    ];
+    const response = await saveTackTrackerData(invalidData);
+    const raceCount = await db.tackTrackerRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+  });
 });

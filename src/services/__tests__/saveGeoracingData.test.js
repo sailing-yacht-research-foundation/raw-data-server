@@ -79,4 +79,21 @@ describe('Storing georacing data to DB', () => {
     expect(createSO).toHaveBeenCalledTimes(1);
     expect(createWeather).toHaveBeenCalledTimes(1);
   });
+  it('should rollback data when one fails to execute', async () => {
+    await db.georacingRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.GeoracingRace = [
+      ...invalidData.GeoracingRace,
+      {
+        original_id: '97712',
+        event: '8fd17e9c-bce2-45ea-9c63-1eca69963e18',
+        url: 'https://tracker2021.qrillpaws.net/iditarod.html',
+      },
+    ];
+    const response = await saveGeoracingData(invalidData);
+    const raceCount = await db.georacingRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+  });
 });

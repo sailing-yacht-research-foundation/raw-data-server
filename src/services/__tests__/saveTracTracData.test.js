@@ -114,4 +114,20 @@ describe('Storing trac trac data to DB', () => {
     expect(createControlPointPosition).toHaveBeenCalledTimes(1);
     expect(createRoute).toHaveBeenCalledTimes(1);
   });
+  it('should rollback data when one fails to execute', async () => {
+    await db.tractracRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.TracTracRace = [
+      ...invalidData.TracTracRace,
+      {
+        original_id: '80b39da0-b465-0131-ba03-10bf48d758cd',
+        url: 'https://live.tractrac.com/viewer/index.html?target=https://em.club.tractrac.com/events/c189feb0-9d3b-0131-d5a7-10bf48d758ce/races/80b39da0-b465-0131-ba03-10bf48d758cd.json',
+      },
+    ];
+    const response = await saveTracTracData(invalidData);
+    const raceCount = await db.tractracRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+  });
 });

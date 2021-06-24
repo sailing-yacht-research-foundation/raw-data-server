@@ -18,6 +18,9 @@ jest.mock('../uploadFileToS3', () => jest.fn());
 describe('Processing non-existent kattack Data from DB to Parquet', () => {
   beforeAll(async () => {
     await db.sequelize.sync();
+    await db.kattackYachtClub.destroy({
+      truncate: true,
+    });
   });
   it('should not get any yacht clubs', async () => {
     const clubs = await getYachtClubs();

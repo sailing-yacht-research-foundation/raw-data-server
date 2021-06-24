@@ -87,4 +87,22 @@ describe('Storing bluewater data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(1);
     expect(createAnnouncement).toHaveBeenCalledTimes(1);
   });
+  it('should rollback data when one fails to execute', async () => {
+    await db.bluewaterRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.BluewaterRace = [
+      ...invalidData.BluewaterRace,
+      {
+        // To trigger error, field id is purposely removed
+        name: '2021 ORCV Melbourne to Port Fairy Race',
+        slug: '2021-orcv-melbourne-to-port-fairy-race',
+        original_id: '605b1b069dbcc81862098de8',
+      },
+    ];
+    const response = await saveBluewaterData(invalidData);
+    const raceCount = await db.bluewaterRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+  });
 });

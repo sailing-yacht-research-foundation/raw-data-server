@@ -52,5 +52,22 @@ describe('Storing Estela data to DB', () => {
     expect(createDorsal).toHaveBeenCalledTimes(1);
     expect(createPlayer).toHaveBeenCalledTimes(1);
     expect(createResult).toHaveBeenCalledTimes(1);
+    await saveEstelaData(jsonData);
+    expect(createRace).toHaveBeenCalledTimes(1);
+  });
+  it('should rollback data when one fails to execute', async () => {
+    await db.estelaRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.EstelaRace = {
+      original_id: '6985',
+      initLon: '3.1180188',
+      initLat: '41.8491494',
+      url: 'https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021',
+    };
+    const response = await saveEstelaData(invalidData);
+    const raceCount = await db.estelaRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('cannot be null'));
   });
 });

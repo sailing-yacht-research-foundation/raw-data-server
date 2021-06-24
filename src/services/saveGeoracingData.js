@@ -9,22 +9,22 @@ const saveGeoracingData = async (data) => {
   let raceUrl = [];
 
   try {
-    if (data.GeoracingEvent) {
-      await db.georacingEvent.bulkCreate(data.GeoracingEvent, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
-    }
     if (data.GeoracingRace) {
       // TODO: Are we going to accept array of race here, or will we be accepting one race per each file
       // Most of the scrapers are currently accepting arrays of race, will update to single object if only one race at a time
       // For better checking
+      raceUrl = data.GeoracingRace.map((row) => {
+        return { original_id: row.original_id, url: row.url };
+      });
       await db.georacingRace.bulkCreate(data.GeoracingRace, {
         ignoreDuplicates: true,
         validate: true,
       });
-      raceUrl = data.GeoracingRace.map((row) => {
-        return { original_id: row.original_id, url: row.url };
+    }
+    if (data.GeoracingEvent) {
+      await db.georacingEvent.bulkCreate(data.GeoracingEvent, {
+        ignoreDuplicates: true,
+        validate: true,
       });
     }
     if (data.GeoracingActor) {
@@ -131,7 +131,7 @@ const saveGeoracingData = async (data) => {
       );
     }
   }
-  return true;
+  return errorMessage;
 };
 
 module.exports = saveGeoracingData;

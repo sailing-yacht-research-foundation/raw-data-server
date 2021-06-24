@@ -25,9 +25,6 @@ describe('Storing kwindoo data to DB', () => {
     await db.kwindooSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
-  afterEach(async () => {
-    jest.resetAllMocks();
-  });
   it('should not save anything when empty data', async () => {
     const createRegattaOwner = jest.spyOn(db.kwindooRegattaOwner, 'bulkCreate');
     const createRegatta = jest.spyOn(db.kwindooRegatta, 'bulkCreate');
@@ -91,5 +88,21 @@ describe('Storing kwindoo data to DB', () => {
     expect(createRunningGroup).toHaveBeenCalledTimes(1);
     expect(createVideoStream).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
+  });
+  it('should rollback data when one fails to execute', async () => {
+    await db.kwindooRace.destroy({ truncate: true });
+    const initialRaceCount = 0;
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.KwindooRace = [
+      ...invalidData.KwindooRace,
+      {
+        original_id: '26121',
+        url: 'https://www.kwindoo.com/tracking/21572-i-flex-fleet-klasszikus-szolo?race_id=26121',
+      },
+    ];
+    const response = await saveKwindooData(invalidData);
+    const raceCount = await db.kwindooRace.count();
+    expect(raceCount).toEqual(initialRaceCount);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });
