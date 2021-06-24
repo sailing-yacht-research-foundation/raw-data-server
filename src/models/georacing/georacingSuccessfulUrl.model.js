@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       original_id: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,

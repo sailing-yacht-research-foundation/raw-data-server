@@ -3,6 +3,7 @@ const multer = require('multer');
 const jsonfile = require('jsonfile');
 const temp = require('temp').track();
 
+const db = require('../models');
 const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
 const saveISailData = require('../services/saveISailData');
@@ -110,5 +111,185 @@ router.post(
     }
   },
 );
+
+router.get('/scraped-url/:tracker', async function (req, res) {
+  const { tracker } = req.params;
+  let urlToGet = (req.query.status || 'BOTH').toLowerCase();
+  let urlList = [];
+  let successModel = null;
+  let failedModel = null;
+  switch (tracker.toLowerCase()) {
+    case 'bluewater':
+      successModel = db.bluewaterSuccessfulUrl;
+      failedModel = db.bluewaterFailedUrl;
+      break;
+    case 'estela':
+      successModel = db.estelaSuccessfulUrl;
+      failedModel = db.estelaFailedUrl;
+      break;
+    case 'georacing':
+      successModel = db.georacingSuccessfulUrl;
+      failedModel = db.georacingFailedUrl;
+      break;
+    case 'isail':
+      successModel = db.iSailSuccessfulUrl;
+      failedModel = db.iSailFailedUrl;
+      break;
+    case 'kattack':
+      successModel = db.kattackSuccessfulUrl;
+      failedModel = db.kattackFailedUrl;
+      break;
+    case 'kwindoo':
+      successModel = db.kwindooSuccessfulUrl;
+      failedModel = db.kwindooFailedUrl;
+      break;
+    case 'metasail':
+      successModel = db.metasailSuccessfulUrl;
+      failedModel = db.metasailFailedUrl;
+      break;
+    case 'raceqs':
+      successModel = db.raceQsSuccessfulUrl;
+      failedModel = db.raceQsFailedUrl;
+      break;
+    case 'tacktracker':
+      successModel = db.tackTrackerSuccessfulUrl;
+      failedModel = db.tackTrackerFailedUrl;
+      break;
+    case 'tractrac':
+      successModel = db.tractracSuccessfulUrl;
+      failedModel = db.tractracFailedUrl;
+      break;
+    case 'yachtbot':
+      successModel = db.yachtBotSuccessfulUrl;
+      failedModel = db.yachtBotFailedUrl;
+      break;
+    case 'yellowbrick':
+      successModel = db.yellowbrickSuccessfulUrl;
+      failedModel = db.yellowbrickFailedUrl;
+      break;
+    default:
+      break;
+  }
+  if (urlToGet === 'success' || urlToGet === 'both') {
+    if (successModel) {
+      let successUrls = await successModel.findAll({
+        attributes: ['url'],
+        raw: true,
+      });
+      urlList = [
+        ...urlList,
+        ...successUrls.map((row) => {
+          return { url: row.url, status: 'success' };
+        }),
+      ];
+    }
+  }
+
+  if (urlToGet === 'failed' || urlToGet === 'both') {
+    if (failedModel) {
+      let failedUrls = await failedModel.findAll({
+        attributes: ['url'],
+        raw: true,
+      });
+      urlList = [
+        ...urlList,
+        ...failedUrls.map((row) => {
+          return { url: row.url, status: 'failed' };
+        }),
+      ];
+    }
+  }
+  res.json({
+    urlList,
+  });
+});
+
+router.post('/check-url', async function (req, res) {
+  const { tracker, url = null, originalId = null } = req.body;
+  let successModel = null;
+  let failedModel = null;
+  let scrapedDetail = null;
+  switch (tracker.toLowerCase()) {
+    case 'bluewater':
+      successModel = db.bluewaterSuccessfulUrl;
+      failedModel = db.bluewaterFailedUrl;
+      break;
+    case 'estela':
+      successModel = db.estelaSuccessfulUrl;
+      failedModel = db.estelaFailedUrl;
+      break;
+    case 'georacing':
+      successModel = db.georacingSuccessfulUrl;
+      failedModel = db.georacingFailedUrl;
+      break;
+    case 'isail':
+      successModel = db.iSailSuccessfulUrl;
+      failedModel = db.iSailFailedUrl;
+      break;
+    case 'kattack':
+      successModel = db.kattackSuccessfulUrl;
+      failedModel = db.kattackFailedUrl;
+      break;
+    case 'kwindoo':
+      successModel = db.kwindooSuccessfulUrl;
+      failedModel = db.kwindooFailedUrl;
+      break;
+    case 'metasail':
+      successModel = db.metasailSuccessfulUrl;
+      failedModel = db.metasailFailedUrl;
+      break;
+    case 'raceqs':
+      successModel = db.raceQsSuccessfulUrl;
+      failedModel = db.raceQsFailedUrl;
+      break;
+    case 'tacktracker':
+      successModel = db.tackTrackerSuccessfulUrl;
+      failedModel = db.tackTrackerFailedUrl;
+      break;
+    case 'tractrac':
+      successModel = db.tractracSuccessfulUrl;
+      failedModel = db.tractracFailedUrl;
+      break;
+    case 'yachtbot':
+      successModel = db.yachtBotSuccessfulUrl;
+      failedModel = db.yachtBotFailedUrl;
+      break;
+    case 'yellowbrick':
+      successModel = db.yellowbrickSuccessfulUrl;
+      failedModel = db.yellowbrickFailedUrl;
+      break;
+    default:
+      break;
+  }
+
+  if (originalId == null && url == null) {
+    res.status(400).json({ message: 'Must specify originalId or url' });
+    return;
+  }
+
+  let whereCondition = url != null ? { url } : { original_id: originalId };
+
+  if (successModel) {
+    let successData = await successModel.findOne({
+      where: whereCondition,
+      raw: true,
+    });
+    if (successData) {
+      scrapedDetail = successData;
+    }
+  }
+
+  if (failedModel && url != null) {
+    // Only for url mode, since failed doesn't have id
+    let failedData = await failedModel.findOne({
+      where: whereCondition,
+      raw: true,
+    });
+    if (failedData) {
+      scrapedDetail = failedData;
+    }
+  }
+  res.json({ scraped: scrapedDetail !== null, scrapedDetail });
+});
 
 module.exports = router;
