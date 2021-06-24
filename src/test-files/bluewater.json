@@ -223,5 +223,13 @@
       "source": "InReach",
       "id": "3530e59a-82aa-4e9d-a952-2638d2a1b067"
     }
+  ],
+  "BluewaterAnnouncement": [
+    {
+      "id": "84af80e2-8580-40c1-9289-a876c6fe7617",
+      "race": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+      "html": "<html></html>",
+      "time": "TIme here"
+    }
   ]
 }

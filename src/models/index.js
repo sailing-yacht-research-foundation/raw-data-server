@@ -322,6 +322,18 @@ db.bluewaterPosition = require('./bluewater/bluewaterPosition.model')(
   sequelize,
   Sequelize,
 );
+db.bluewaterAnnouncement = require('./bluewater/bluewaterAnnouncement.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterFailedUrl = require('./bluewater/bluewaterFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterSuccessfulUrl = require('./bluewater/bluewaterSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Bluewater ===
 
 // === Yacht Bot ===
