@@ -277,7 +277,7 @@ describe('Read tracker parquet files', () => {
         console.log('error deleting: ', err);
       }
     });
-    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
         race_id: 'f6373964-9496-46ba-b907-fa90f8c6fb62',
