@@ -175,13 +175,17 @@ router.get('/scraped-url/:tracker', async function (req, res) {
   if (urlToGet === 'success' || urlToGet === 'both') {
     if (successModel) {
       let successUrls = await successModel.findAll({
-        attributes: ['url'],
+        attributes: ['url', 'original_id'],
         raw: true,
       });
       urlList = [
         ...urlList,
         ...successUrls.map((row) => {
-          return { url: row.url, status: 'success' };
+          return {
+            url: row.url,
+            original_id: row.original_id,
+            status: 'success',
+          };
         }),
       ];
     }
