@@ -4,11 +4,14 @@ Server that will be used to transform data to parquet format and perform bulk sa
 
 ---
 
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [API Endpoint](#api-endpoint)
+- [raw-data-server](#raw-data-server)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Deployment](#deployment)
+    - [Terraform Configurations](#terraform-configurations)
+    - [Terraform Commands](#terraform-commands)
+  - [Usage](#usage)
+  - [API Endpoint](#api-endpoint)
 
 ## Installation
 
@@ -80,6 +83,33 @@ If you have run docker previously using older version of the app, database struc
 
 ## API Endpoint
 
+Set an `Authorization` header containing md5 hash of current date with format: yyyy MMM d, ddd
+
 - `/api/v1/upload-file`
-  - Set an `Authorization` header containing md5 hash of current date with format: yyyy MMM d, ddd
+
+  - Method: POST
   - Upload the raw json file using multipart form data on `raw_data` field
+
+- `/api/v1/scraped-url/{tracker}?status=BOTH`
+
+  - Method: GET
+  - Query:
+    - status (optional): `BOTH` [default] | `SUCCESS` | `FAILED`
+  - Route Parameter:
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK`
+
+- `/api/v1/check-url`
+
+  - Method: POST
+  - Body (application/json):
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK`
+    - url (required if originalId is not provided): URL of the race/event
+    - originalId (required if url is not provided): Original ID of race/event
+
+- `/api/v1/register-failed-url`
+
+  - Method: POST
+  - Body (application/json):
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK`
+    - url (required): URL of the failed scraper
+    - error (required): Error detail

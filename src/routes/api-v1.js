@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const jsonfile = require('jsonfile');
+const { v4: uuidv4 } = require('uuid');
 const temp = require('temp').track();
 
 const db = require('../models');
@@ -18,6 +19,7 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
+const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
 var router = express.Router();
 
@@ -292,6 +294,78 @@ router.post('/check-url', async function (req, res) {
     }
   }
   res.json({ scraped: scrapedDetail !== null, scrapedDetail });
+});
+
+router.post('/register-failed-url', async function (req, res) {
+  if (
+    req.body.tracker == null ||
+    req.body.url == null ||
+    req.body.error == null
+  ) {
+    res
+      .status(400)
+      .json({ message: 'Must specify tracker, url, and the error' });
+    return;
+  }
+  const { tracker, url, error } = req.body;
+  let failedModel = null;
+  switch (tracker.toLowerCase()) {
+    case 'bluewater':
+      failedModel = db.bluewaterFailedUrl;
+      break;
+    case 'estela':
+      failedModel = db.estelaFailedUrl;
+      break;
+    case 'georacing':
+      failedModel = db.georacingFailedUrl;
+      break;
+    case 'isail':
+      failedModel = db.iSailFailedUrl;
+      break;
+    case 'kattack':
+      failedModel = db.kattackFailedUrl;
+      break;
+    case 'kwindoo':
+      failedModel = db.kwindooFailedUrl;
+      break;
+    case 'metasail':
+      failedModel = db.metasailFailedUrl;
+      break;
+    case 'raceqs':
+      failedModel = db.raceQsFailedUrl;
+      break;
+    case 'tacktracker':
+      failedModel = db.tackTrackerFailedUrl;
+      break;
+    case 'tractrac':
+      failedModel = db.tractracFailedUrl;
+      break;
+    case 'yachtbot':
+      failedModel = db.yachtBotFailedUrl;
+      break;
+    case 'yellowbrick':
+      failedModel = db.yellowbrickFailedUrl;
+      break;
+    default:
+      res.status(400).json({ message: 'Invalid Tracker' });
+      return;
+  }
+
+  const transaction = await db.sequelize.transaction();
+  let errorMessage = '';
+  try {
+    await failedModel.create({
+      id: uuidv4(),
+      url,
+      error,
+    });
+    await transaction.commit();
+  } catch (err) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(err);
+  }
+
+  res.json({ success: errorMessage == '', errorMessage });
 });
 
 module.exports = router;

@@ -42,10 +42,13 @@ const saveEstelaData = async (data) => {
       });
     }
     if (data.EstelaPosition) {
-      await db.estelaPosition.bulkCreate(data.EstelaPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.EstelaPosition.length > 0) {
+        const splicedArray = data.EstelaPosition.splice(0, 100);
+        await db.estelaPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.EstelaResult) {
       await db.estelaResult.bulkCreate(data.EstelaResult, {
@@ -56,7 +59,6 @@ const saveEstelaData = async (data) => {
     transaction.commit();
   } catch (error) {
     await transaction.rollback();
-    console.log(error);
     errorMessage = databaseErrorHandler(error);
   }
 
