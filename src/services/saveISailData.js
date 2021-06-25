@@ -51,10 +51,13 @@ const saveISailData = async (data) => {
       });
     }
     if (data.iSailPosition) {
-      await db.iSailPosition.bulkCreate(data.iSailPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.iSailPosition.length > 0) {
+        const splicedArray = data.iSailPosition.splice(0, 1000);
+        await db.iSailPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.iSailMark) {
       await db.iSailMark.bulkCreate(data.iSailMark, {

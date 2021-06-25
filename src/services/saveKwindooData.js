@@ -69,10 +69,13 @@ const saveKwindooData = async (data) => {
       });
     }
     if (data.KwindooPosition) {
-      await db.kwindooPosition.bulkCreate(data.KwindooPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.KwindooPosition.length > 0) {
+        const splicedArray = data.KwindooPosition.splice(0, 1000);
+        await db.kwindooPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.KwindooRunningGroup) {
       await db.kwindooRunningGroup.bulkCreate(data.KwindooRunningGroup, {

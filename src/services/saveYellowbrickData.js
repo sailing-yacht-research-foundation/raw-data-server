@@ -39,10 +39,13 @@ const saveYellowbrickData = async (data) => {
       });
     }
     if (data.YellowbrickPosition) {
-      await db.yellowbrickPosition.bulkCreate(data.YellowbrickPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.YellowbrickPosition.length > 0) {
+        const splicedArray = data.YellowbrickPosition.splice(0, 1000);
+        await db.yellowbrickPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.YellowbrickTag) {
       await db.yellowbrickTag.bulkCreate(data.YellowbrickTag, {

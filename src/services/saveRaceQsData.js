@@ -24,10 +24,13 @@ const saveRaceQsData = async (data) => {
       });
     }
     if (data.RaceQsPosition) {
-      await db.raceQsPosition.bulkCreate(data.RaceQsPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.RaceQsPosition.length > 0) {
+        const splicedArray = data.RaceQsPosition.splice(0, 1000);
+        await db.raceQsPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.RaceQsDivision) {
       await db.raceQsDivision.bulkCreate(data.RaceQsDivision, {

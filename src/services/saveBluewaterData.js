@@ -60,10 +60,13 @@ const saveBluewaterData = async (data) => {
       });
     }
     if (data.BluewaterPosition) {
-      await db.bluewaterPosition.bulkCreate(data.BluewaterPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.BluewaterPosition.length > 0) {
+        const splicedArray = data.BluewaterPosition.splice(0, 1000);
+        await db.bluewaterPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.BluewaterAnnouncement) {
       await db.bluewaterAnnouncement.bulkCreate(data.BluewaterAnnouncement, {

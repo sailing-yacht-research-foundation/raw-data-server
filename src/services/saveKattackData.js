@@ -30,10 +30,13 @@ const saveKattackData = async (data) => {
       });
     }
     if (data.KattackPosition) {
-      await db.kattackPosition.bulkCreate(data.KattackPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.KattackPosition.length > 0) {
+        const splicedArray = data.KattackPosition.splice(0, 1000);
+        await db.kattackPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.KattackWaypoint) {
       await db.kattackWaypoint.bulkCreate(data.KattackWaypoint, {

@@ -57,13 +57,13 @@ const saveTracTracData = async (data) => {
       );
     }
     if (data.TracTracCompetitorPosition) {
-      await db.tractracCompetitorPosition.bulkCreate(
-        data.TracTracCompetitorPosition,
-        {
+      while (data.TracTracCompetitorPosition.length > 0) {
+        const splicedArray = data.TracTracCompetitorPosition.splice(0, 1000);
+        await db.tractracCompetitorPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
-        },
-      );
+        });
+      }
     }
     if (data.TracTracCompetitorPassing) {
       await db.tractracCompetitorPassing.bulkCreate(

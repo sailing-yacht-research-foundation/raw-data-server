@@ -64,10 +64,13 @@ const saveGeoracingData = async (data) => {
       });
     }
     if (data.GeoracingPosition) {
-      await db.georacingPosition.bulkCreate(data.GeoracingPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.GeoracingPosition.length > 0) {
+        const splicedArray = data.GeoracingPosition.splice(0, 1000);
+        await db.georacingPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.GeoracingLine) {
       await db.georacingLine.bulkCreate(data.GeoracingLine, {

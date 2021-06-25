@@ -30,10 +30,13 @@ const saveYachtBotData = async (data) => {
       });
     }
     if (data.YachtBotPosition) {
-      await db.yachtBotPosition.bulkCreate(data.YachtBotPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.YachtBotPosition.length > 0) {
+        const splicedArray = data.YachtBotPosition.splice(0, 1000);
+        await db.yachtBotPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     await transaction.commit();
   } catch (error) {

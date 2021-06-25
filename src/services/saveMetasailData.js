@@ -42,10 +42,13 @@ const saveMetasailData = async (data) => {
       });
     }
     if (data.MetasailPosition) {
-      await db.metasailPosition.bulkCreate(data.MetasailPosition, {
-        ignoreDuplicates: true,
-        validate: true,
-      });
+      while (data.MetasailPosition.length > 0) {
+        const splicedArray = data.MetasailPosition.splice(0, 1000);
+        await db.metasailPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     await transaction.commit();
   } catch (error) {

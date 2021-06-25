@@ -52,6 +52,13 @@ const saveTackTrackerData = async (data) => {
         ignoreDuplicates: true,
         validate: true,
       });
+      while (data.TackTrackerPosition.length > 0) {
+        const splicedArray = data.TackTrackerPosition.splice(0, 1000);
+        await db.tackTrackerPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.TackTrackerStart) {
       await db.tackTrackerStart.bulkCreate(data.TackTrackerStart, {
