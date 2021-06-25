@@ -43,7 +43,7 @@ const saveEstelaData = async (data) => {
     }
     if (data.EstelaPosition) {
       while (data.EstelaPosition.length > 0) {
-        const splicedArray = data.EstelaPosition.splice(0, 100);
+        const splicedArray = data.EstelaPosition.splice(0, 1000);
         await db.estelaPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
