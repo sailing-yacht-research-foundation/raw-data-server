@@ -20,6 +20,7 @@ const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { TRACKER_MAP } = require('../constants');
 
 var router = express.Router();
 
@@ -118,60 +119,9 @@ router.get('/scraped-url/:tracker', async function (req, res) {
   const { tracker } = req.params;
   let urlToGet = (req.query.status || 'BOTH').toLowerCase();
   let urlList = [];
-  let successModel = null;
-  let failedModel = null;
-  switch (tracker.toLowerCase()) {
-    case 'bluewater':
-      successModel = db.bluewaterSuccessfulUrl;
-      failedModel = db.bluewaterFailedUrl;
-      break;
-    case 'estela':
-      successModel = db.estelaSuccessfulUrl;
-      failedModel = db.estelaFailedUrl;
-      break;
-    case 'georacing':
-      successModel = db.georacingSuccessfulUrl;
-      failedModel = db.georacingFailedUrl;
-      break;
-    case 'isail':
-      successModel = db.iSailSuccessfulUrl;
-      failedModel = db.iSailFailedUrl;
-      break;
-    case 'kattack':
-      successModel = db.kattackSuccessfulUrl;
-      failedModel = db.kattackFailedUrl;
-      break;
-    case 'kwindoo':
-      successModel = db.kwindooSuccessfulUrl;
-      failedModel = db.kwindooFailedUrl;
-      break;
-    case 'metasail':
-      successModel = db.metasailSuccessfulUrl;
-      failedModel = db.metasailFailedUrl;
-      break;
-    case 'raceqs':
-      successModel = db.raceQsSuccessfulUrl;
-      failedModel = db.raceQsFailedUrl;
-      break;
-    case 'tacktracker':
-      successModel = db.tackTrackerSuccessfulUrl;
-      failedModel = db.tackTrackerFailedUrl;
-      break;
-    case 'tractrac':
-      successModel = db.tractracSuccessfulUrl;
-      failedModel = db.tractracFailedUrl;
-      break;
-    case 'yachtbot':
-      successModel = db.yachtBotSuccessfulUrl;
-      failedModel = db.yachtBotFailedUrl;
-      break;
-    case 'yellowbrick':
-      successModel = db.yellowbrickSuccessfulUrl;
-      failedModel = db.yellowbrickFailedUrl;
-      break;
-    default:
-      break;
-  }
+  let successModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}SuccessfulUrl`];
+  let failedModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}FailedUrl`];
+
   if (urlToGet === 'success' || urlToGet === 'both') {
     if (successModel) {
       let successUrls = await successModel.findAll({
@@ -211,62 +161,19 @@ router.get('/scraped-url/:tracker', async function (req, res) {
 });
 
 router.post('/check-url', async function (req, res) {
-  const { tracker, url = null, originalId = null } = req.body;
-  let successModel = null;
-  let failedModel = null;
-  let scrapedDetail = null;
-  switch (tracker.toLowerCase()) {
-    case 'bluewater':
-      successModel = db.bluewaterSuccessfulUrl;
-      failedModel = db.bluewaterFailedUrl;
-      break;
-    case 'estela':
-      successModel = db.estelaSuccessfulUrl;
-      failedModel = db.estelaFailedUrl;
-      break;
-    case 'georacing':
-      successModel = db.georacingSuccessfulUrl;
-      failedModel = db.georacingFailedUrl;
-      break;
-    case 'isail':
-      successModel = db.iSailSuccessfulUrl;
-      failedModel = db.iSailFailedUrl;
-      break;
-    case 'kattack':
-      successModel = db.kattackSuccessfulUrl;
-      failedModel = db.kattackFailedUrl;
-      break;
-    case 'kwindoo':
-      successModel = db.kwindooSuccessfulUrl;
-      failedModel = db.kwindooFailedUrl;
-      break;
-    case 'metasail':
-      successModel = db.metasailSuccessfulUrl;
-      failedModel = db.metasailFailedUrl;
-      break;
-    case 'raceqs':
-      successModel = db.raceQsSuccessfulUrl;
-      failedModel = db.raceQsFailedUrl;
-      break;
-    case 'tacktracker':
-      successModel = db.tackTrackerSuccessfulUrl;
-      failedModel = db.tackTrackerFailedUrl;
-      break;
-    case 'tractrac':
-      successModel = db.tractracSuccessfulUrl;
-      failedModel = db.tractracFailedUrl;
-      break;
-    case 'yachtbot':
-      successModel = db.yachtBotSuccessfulUrl;
-      failedModel = db.yachtBotFailedUrl;
-      break;
-    case 'yellowbrick':
-      successModel = db.yellowbrickSuccessfulUrl;
-      failedModel = db.yellowbrickFailedUrl;
-      break;
-    default:
-      break;
+  if (
+    req.body.tracker == null ||
+    (req.body.url == null && req.body.originalId == null)
+  ) {
+    res
+      .status(400)
+      .json({ message: 'Must specify tracker, and a url or originalId' });
+    return;
   }
+  const { tracker, url = null, originalId = null } = req.body;
+  let successModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}SuccessfulUrl`];
+  let failedModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}FailedUrl`];
+  let scrapedDetail = null;
 
   if (originalId == null && url == null) {
     res.status(400).json({ message: 'Must specify originalId or url' });
@@ -310,48 +217,7 @@ router.post('/register-failed-url', async function (req, res) {
     return;
   }
   const { tracker, url, error } = req.body;
-  let failedModel = null;
-  switch (tracker.toLowerCase()) {
-    case 'bluewater':
-      failedModel = db.bluewaterFailedUrl;
-      break;
-    case 'estela':
-      failedModel = db.estelaFailedUrl;
-      break;
-    case 'georacing':
-      failedModel = db.georacingFailedUrl;
-      break;
-    case 'isail':
-      failedModel = db.iSailFailedUrl;
-      break;
-    case 'kattack':
-      failedModel = db.kattackFailedUrl;
-      break;
-    case 'kwindoo':
-      failedModel = db.kwindooFailedUrl;
-      break;
-    case 'metasail':
-      failedModel = db.metasailFailedUrl;
-      break;
-    case 'raceqs':
-      failedModel = db.raceQsFailedUrl;
-      break;
-    case 'tacktracker':
-      failedModel = db.tackTrackerFailedUrl;
-      break;
-    case 'tractrac':
-      failedModel = db.tractracFailedUrl;
-      break;
-    case 'yachtbot':
-      failedModel = db.yachtBotFailedUrl;
-      break;
-    case 'yellowbrick':
-      failedModel = db.yellowbrickFailedUrl;
-      break;
-    default:
-      res.status(400).json({ message: 'Invalid Tracker' });
-      return;
-  }
+  let failedModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}FailedUrl`];
 
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
