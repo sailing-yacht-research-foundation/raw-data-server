@@ -8,24 +8,14 @@ describe('Storing Metasail data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.metasailEvent.destroy({
-      truncate: true,
-    });
-    await db.metasailRace.destroy({
-      truncate: true,
-    });
-    await db.metasailBoat.destroy({
-      truncate: true,
-    });
-    await db.metasailBuoy.destroy({
-      truncate: true,
-    });
-    await db.metasailGate.destroy({
-      truncate: true,
-    });
-    await db.metasailPosition.destroy({
-      truncate: true,
-    });
+    await db.metasailEvent.destroy({ truncate: true });
+    await db.metasailRace.destroy({ truncate: true });
+    await db.metasailBoat.destroy({ truncate: true });
+    await db.metasailBuoy.destroy({ truncate: true });
+    await db.metasailGate.destroy({ truncate: true });
+    await db.metasailPosition.destroy({ truncate: true });
+    await db.metasailFailedUrl.destroy({ truncate: true });
+    await db.metasailSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {
@@ -57,5 +47,17 @@ describe('Storing Metasail data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(1);
     expect(createBuoy).toHaveBeenCalledTimes(1);
     expect(createGate).toHaveBeenCalledTimes(1);
+  });
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.MetasailRace = [
+      ...invalidData.MetasailRace,
+      {
+        original_id: '10387',
+        url: 'http://app.metasail.it/(S(bw42cieypqnejmnbfbuw1xmh))/ViewRecordedRace2018New.aspx?idgara=10387&token=5DUA',
+      },
+    ];
+    const response = await saveMetasailData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

@@ -37,6 +37,32 @@ describe('Processing exist Estela Data from DB to Parquet', () => {
   const raceID2 = 'random';
   beforeAll(async () => {
     await saveEstelaData(jsonData);
+    await saveEstelaData({
+      EstelaRace: {
+        id: 'f6373964-9496-46ba-b907-fa90f8c6fb63',
+        original_id: '6986',
+        initLon: '3.1180188',
+        initLat: '41.8491494',
+        end: '2021-04-11 12:06:44',
+        end_timestamp: '1618142804',
+        ended_at: '2021-04-11 12:44:35',
+        has_ended: 'true',
+        has_started: 'true',
+        length: '2.51319',
+        name: 'Regata Diumenge 11-04-2021',
+        offset: '2',
+        onset: '2021-04-11 10:30:00',
+        onset_timestamp: '1618137000',
+        scheduled_timestamp: '1618136100',
+        start: '2021-04-11 10:25:00',
+        start_timestamp: '1618136700',
+        url: 'https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021',
+        winds_csv: '',
+        leg_winds_csv: '',
+        club: null,
+        club_original_id: null,
+      },
+    });
   });
   afterAll(async () => {
     jest.resetAllMocks();

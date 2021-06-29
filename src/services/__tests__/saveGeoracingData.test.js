@@ -8,140 +8,88 @@ describe('Storing georacing data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.georacingEvent.destroy({
-      truncate: true,
-    });
-    await db.georacingRace.destroy({
-      truncate: true,
-    });
-    await db.georacingActor.destroy({
-      truncate: true,
-    });
-    await db.georacingWeather.destroy({
-      truncate: true,
-    });
-    await db.georacingCourse.destroy({
-      truncate: true,
-    });
-    await db.georacingCourseElement.destroy({
-      truncate: true,
-    });
-    await db.georacingCourseObject.destroy({
-      truncate: true,
-    });
-    await db.georacingGroundPlace.destroy({
-      truncate: true,
-    });
-    await db.georacingLine.destroy({
-      truncate: true,
-    });
-    await db.georacingPosition.destroy({
-      truncate: true,
-    });
-    await db.georacingSplittime.destroy({
-      truncate: true,
-    });
-    await db.georacingSplittimeObject.destroy({
-      truncate: true,
-    });
+    await db.georacingEvent.destroy({ truncate: true });
+    await db.georacingRace.destroy({ truncate: true });
+    await db.georacingActor.destroy({ truncate: true });
+    await db.georacingWeather.destroy({ truncate: true });
+    await db.georacingCourse.destroy({ truncate: true });
+    await db.georacingCourseElement.destroy({ truncate: true });
+    await db.georacingCourseObject.destroy({ truncate: true });
+    await db.georacingGroundPlace.destroy({ truncate: true });
+    await db.georacingLine.destroy({ truncate: true });
+    await db.georacingPosition.destroy({ truncate: true });
+    await db.georacingSplittime.destroy({ truncate: true });
+    await db.georacingSplittimeObject.destroy({ truncate: true });
+    await db.georacingFailedUrl.destroy({ truncate: true });
+    await db.georacingSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
-  it('should save georacing events correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingEvent, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingEvent, 'findAll');
-    await saveGeoracingData({ GeoracingEvent: jsonData.GeoracingEvent });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
+
+  it('should not save anything when empty data', async () => {
+    const createActor = jest.spyOn(db.georacingActor, 'bulkCreate');
+    const createCourse = jest.spyOn(db.georacingCourse, 'bulkCreate');
+    const createCE = jest.spyOn(db.georacingCourseElement, 'bulkCreate');
+    const createCO = jest.spyOn(db.georacingCourseObject, 'bulkCreate');
+    const createEvent = jest.spyOn(db.georacingEvent, 'bulkCreate');
+    const createGroundPlace = jest.spyOn(db.georacingGroundPlace, 'bulkCreate');
+    const createLine = jest.spyOn(db.georacingLine, 'bulkCreate');
+    const createPosition = jest.spyOn(db.georacingPosition, 'bulkCreate');
+    const createRace = jest.spyOn(db.georacingRace, 'bulkCreate');
+    const createSplittime = jest.spyOn(db.georacingSplittime, 'bulkCreate');
+    const createSO = jest.spyOn(db.georacingSplittimeObject, 'bulkCreate');
+    const createWeather = jest.spyOn(db.georacingWeather, 'bulkCreate');
+    await saveGeoracingData({});
+    expect(createActor).toHaveBeenCalledTimes(0);
+    expect(createCourse).toHaveBeenCalledTimes(0);
+    expect(createCE).toHaveBeenCalledTimes(0);
+    expect(createCO).toHaveBeenCalledTimes(0);
+    expect(createEvent).toHaveBeenCalledTimes(0);
+    expect(createGroundPlace).toHaveBeenCalledTimes(0);
+    expect(createLine).toHaveBeenCalledTimes(0);
+    expect(createPosition).toHaveBeenCalledTimes(0);
+    expect(createRace).toHaveBeenCalledTimes(0);
+    expect(createSplittime).toHaveBeenCalledTimes(0);
+    expect(createSO).toHaveBeenCalledTimes(0);
+    expect(createWeather).toHaveBeenCalledTimes(0);
   });
-  it('should save georacing races correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingRace, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingRace, 'findAll');
-    await saveGeoracingData({ GeoracingRace: jsonData.GeoracingRace });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
+  it('should save data correctly', async () => {
+    const createActor = jest.spyOn(db.georacingActor, 'bulkCreate');
+    const createCourse = jest.spyOn(db.georacingCourse, 'bulkCreate');
+    const createCE = jest.spyOn(db.georacingCourseElement, 'bulkCreate');
+    const createCO = jest.spyOn(db.georacingCourseObject, 'bulkCreate');
+    const createEvent = jest.spyOn(db.georacingEvent, 'bulkCreate');
+    const createGroundPlace = jest.spyOn(db.georacingGroundPlace, 'bulkCreate');
+    const createLine = jest.spyOn(db.georacingLine, 'bulkCreate');
+    const createPosition = jest.spyOn(db.georacingPosition, 'bulkCreate');
+    const createRace = jest.spyOn(db.georacingRace, 'bulkCreate');
+    const createSplittime = jest.spyOn(db.georacingSplittime, 'bulkCreate');
+    const createSO = jest.spyOn(db.georacingSplittimeObject, 'bulkCreate');
+    const createWeather = jest.spyOn(db.georacingWeather, 'bulkCreate');
+    await saveGeoracingData(jsonData);
+    expect(createActor).toHaveBeenCalledTimes(1);
+    expect(createCourse).toHaveBeenCalledTimes(1);
+    expect(createCE).toHaveBeenCalledTimes(1);
+    expect(createCO).toHaveBeenCalledTimes(1);
+    expect(createEvent).toHaveBeenCalledTimes(1);
+    expect(createGroundPlace).toHaveBeenCalledTimes(1);
+    expect(createLine).toHaveBeenCalledTimes(1);
+    expect(createPosition).toHaveBeenCalledTimes(1);
+    expect(createRace).toHaveBeenCalledTimes(1);
+    expect(createSplittime).toHaveBeenCalledTimes(1);
+    expect(createSO).toHaveBeenCalledTimes(1);
+    expect(createWeather).toHaveBeenCalledTimes(1);
   });
-  it('should save georacing actors correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingActor, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingActor, 'findAll');
-    await saveGeoracingData({ GeoracingActor: jsonData.GeoracingActor });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing weather correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingWeather, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingWeather, 'findAll');
-    await saveGeoracingData({ GeoracingWeather: jsonData.GeoracingWeather });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing course correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingCourse, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingCourse, 'findAll');
-    await saveGeoracingData({ GeoracingCourse: jsonData.GeoracingCourse });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing course object correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingCourseObject, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingCourseObject, 'findAll');
-    await saveGeoracingData({
-      GeoracingCourseObject: jsonData.GeoracingCourseObject,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing course element correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingCourseElement, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingCourseElement, 'findAll');
-    await saveGeoracingData({
-      GeoracingCourseElement: jsonData.GeoracingCourseElement,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing ground place correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingGroundPlace, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingGroundPlace, 'findAll');
-    await saveGeoracingData({
-      GeoracingGroundPlace: jsonData.GeoracingGroundPlace,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing line correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingLine, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingLine, 'findAll');
-    await saveGeoracingData({
-      GeoracingLine: jsonData.GeoracingLine,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing position correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingPosition, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingPosition, 'findAll');
-    await saveGeoracingData({
-      GeoracingPosition: jsonData.GeoracingPosition,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing splittime correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingSplittime, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingSplittime, 'findAll');
-    await saveGeoracingData({
-      GeoracingSplittime: jsonData.GeoracingSplittime,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
-  });
-  it('should save georacing splittime object correctly', async () => {
-    const spyCreate = jest.spyOn(db.georacingSplittimeObject, 'bulkCreate');
-    const spyFindAll = jest.spyOn(db.georacingSplittimeObject, 'findAll');
-    await saveGeoracingData({
-      GeoracingSplittimeObject: jsonData.GeoracingSplittimeObject,
-    });
-    expect(spyFindAll).toHaveBeenCalledTimes(1);
-    expect(spyCreate).toHaveBeenCalledTimes(1);
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.GeoracingRace = [
+      ...invalidData.GeoracingRace,
+      {
+        original_id: '97712',
+        event: '8fd17e9c-bce2-45ea-9c63-1eca69963e18',
+        url: 'https://tracker2021.qrillpaws.net/iditarod.html',
+      },
+    ];
+    const response = await saveGeoracingData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

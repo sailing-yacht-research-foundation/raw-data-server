@@ -9,6 +9,9 @@ describe('Write data to Parquet files', () => {
   beforeAll(async () => {
     dirPath = await temp.mkdir('rds-parquet');
   });
+  afterAll(async () => {
+    temp.cleanup();
+  });
 
   test('Successfully created a parquet', async () => {
     const fileName = 'test.parquet';
@@ -29,7 +32,6 @@ describe('Write data to Parquet files', () => {
     );
     expect(writeResult).toEqual({ success: true, errorDetail: null });
     expect(fs.existsSync(path)).toEqual(true);
-    temp.cleanup();
   });
 
   test('Failed to create a parquet when data-type is incorrect', async () => {
@@ -65,7 +67,6 @@ describe('Write data to Parquet files', () => {
         currentRecord: secondRecord,
       },
     });
-    temp.cleanup();
   });
 
   test('Failed when writer unable to open the file', async () => {
@@ -95,6 +96,5 @@ describe('Write data to Parquet files', () => {
         },
       }),
     );
-    temp.cleanup();
   });
 });

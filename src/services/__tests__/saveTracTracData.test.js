@@ -8,48 +8,22 @@ describe('Storing trac trac data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.tractracEvent.destroy({
-      truncate: true,
-    });
-    await db.tractracRace.destroy({
-      truncate: true,
-    });
-    await db.tractracClass.destroy({
-      truncate: true,
-    });
-    await db.tractracRaceClass.destroy({
-      truncate: true,
-    });
-    await db.tractracClass.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitor.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitorPassing.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitorPosition.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitorResult.destroy({
-      truncate: true,
-    });
-    await db.tractracControl.destroy({
-      truncate: true,
-    });
-    await db.tractracControlPoint.destroy({
-      truncate: true,
-    });
-    await db.tractracControlPointPosition.destroy({
-      truncate: true,
-    });
-    await db.tractracRoute.destroy({
-      truncate: true,
-    });
-    await db.sailorEmail.destroy({
-      truncate: true,
-    });
+    await db.tractracEvent.destroy({ truncate: true });
+    await db.tractracRace.destroy({ truncate: true });
+    await db.tractracClass.destroy({ truncate: true });
+    await db.tractracRaceClass.destroy({ truncate: true });
+    await db.tractracClass.destroy({ truncate: true });
+    await db.tractracCompetitor.destroy({ truncate: true });
+    await db.tractracCompetitorPassing.destroy({ truncate: true });
+    await db.tractracCompetitorPosition.destroy({ truncate: true });
+    await db.tractracCompetitorResult.destroy({ truncate: true });
+    await db.tractracControl.destroy({ truncate: true });
+    await db.tractracControlPoint.destroy({ truncate: true });
+    await db.tractracControlPointPosition.destroy({ truncate: true });
+    await db.tractracRoute.destroy({ truncate: true });
+    await db.sailorEmail.destroy({ truncate: true });
+    await db.tractracFailedUrl.destroy({ truncate: true });
+    await db.tractracSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {
@@ -139,5 +113,17 @@ describe('Storing trac trac data to DB', () => {
     expect(createControlPoint).toHaveBeenCalledTimes(1);
     expect(createControlPointPosition).toHaveBeenCalledTimes(1);
     expect(createRoute).toHaveBeenCalledTimes(1);
+  });
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.TracTracRace = [
+      ...invalidData.TracTracRace,
+      {
+        original_id: '80b39da0-b465-0131-ba03-10bf48d758cd',
+        url: 'https://live.tractrac.com/viewer/index.html?target=https://em.club.tractrac.com/events/c189feb0-9d3b-0131-d5a7-10bf48d758ce/races/80b39da0-b465-0131-ba03-10bf48d758cd.json',
+      },
+    ];
+    const response = await saveTracTracData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

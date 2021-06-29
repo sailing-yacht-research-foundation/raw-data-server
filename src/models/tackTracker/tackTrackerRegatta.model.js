@@ -9,11 +9,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       url: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
       original_id: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {

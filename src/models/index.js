@@ -51,6 +51,14 @@ db.iSailRounding = require('./iSail/iSailRounding.model.js')(
   Sequelize,
 );
 db.iSailResult = require('./iSail/iSailResult.model.js')(sequelize, Sequelize);
+db.iSailFailedUrl = require('./iSail/iSailFailedUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.iSailSuccessfulUrl = require('./iSail/iSailSuccessfulUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
 // === End of iSail ===
 
 // === Kattack ===
@@ -71,6 +79,14 @@ db.kattackPosition = require('./kattack/kattackPosition.model.js')(
   Sequelize,
 );
 db.kattackWaypoint = require('./kattack/kattackWaypoint.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackSuccessfulUrl = require('./kattack/kattackSuccessfulUrl.model.js')(
+  sequelize,
+  Sequelize,
+);
+db.kattackFailedUrl = require('./kattack/kattackFailedUrl.model.js')(
   sequelize,
   Sequelize,
 );
@@ -123,6 +139,14 @@ db.georacingSplittime = require('./georacing/georacingSplittime.model')(
 );
 db.georacingSplittimeObject =
   require('./georacing/georacingSplittimeObject.model')(sequelize, Sequelize);
+db.georacingSuccessfulUrl = require('./georacing/georacingSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.georacingFailedUrl = require('./georacing/georacingFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Georacing ===
 
 // === TracTrac ===
@@ -170,6 +194,14 @@ db.tractracRoute = require('./tractrac/tractracRoute.model')(
   sequelize,
   Sequelize,
 );
+db.tractracFailedUrl = require('./tractrac/tractracFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.tractracSuccessfulUrl = require('./tractrac/tractracSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of TracTrac ===
 
 // === Yellowbrick ===
@@ -199,6 +231,12 @@ db.yellowbrickTag = require('./yellowbrick/yellowbrickTag.model')(
   Sequelize,
 );
 db.yellowbrickTeam = require('./yellowbrick/yellowbrickTeam.model')(
+  sequelize,
+  Sequelize,
+);
+db.yellowbrickSuccessfulUrl =
+  require('./yellowbrick/yellowbrickSuccessfulUrl.model')(sequelize, Sequelize);
+db.yellowbrickFailedUrl = require('./yellowbrick/yellowbrickFailedUrl.model')(
   sequelize,
   Sequelize,
 );
@@ -245,6 +283,14 @@ db.kwindooWaypoint = require('./kwindoo/kwindooWaypoint.model')(
   sequelize,
   Sequelize,
 );
+db.kwindooFailedUrl = require('./kwindoo/kwindooFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.kwindooSuccessfulUrl = require('./kwindoo/kwindooSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Kwindoo ===
 
 // === Bluewater ===
@@ -276,6 +322,18 @@ db.bluewaterPosition = require('./bluewater/bluewaterPosition.model')(
   sequelize,
   Sequelize,
 );
+db.bluewaterAnnouncement = require('./bluewater/bluewaterAnnouncement.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterFailedUrl = require('./bluewater/bluewaterFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.bluewaterSuccessfulUrl = require('./bluewater/bluewaterSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Bluewater ===
 
 // === Yacht Bot ===
@@ -292,6 +350,14 @@ db.yachtBotYacht = require('./yachtbot/yachtBotYacht.model')(
   Sequelize,
 );
 db.yachtBotPosition = require('./yachtbot/yachtBotPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.yachtBotSuccessfulUrl = require('./yachtbot/yachtBotSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.yachtBotFailedUrl = require('./yachtbot/yachtBotFailedUrl.model')(
   sequelize,
   Sequelize,
 );
@@ -318,6 +384,14 @@ db.raceQsPosition = require('./raceQs/raceQsPosition.model')(
 db.raceQsRoute = require('./raceQs/raceQsRoute.model')(sequelize, Sequelize);
 db.raceQsStart = require('./raceQs/raceQsStart.model')(sequelize, Sequelize);
 db.raceQsWaypoint = require('./raceQs/raceQsWaypoint.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsSuccessfulUrl = require('./raceQs/raceQsSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.raceQsFailedUrl = require('./raceQs/raceQsFailedUrl.model')(
   sequelize,
   Sequelize,
 );
@@ -348,6 +422,14 @@ db.metasailPosition = require('./metasail/metasailPosition.model')(
   sequelize,
   Sequelize,
 );
+db.metasailFailedUrl = require('./metasail/metasailFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.metasailSuccessfulUrl = require('./metasail/metasailSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Metasail ===
 
 // === Estela ===
@@ -361,6 +443,14 @@ db.estelaPosition = require('./estela/estelaPosition.model')(
 );
 db.estelaRace = require('./estela/estelaRace.model')(sequelize, Sequelize);
 db.estelaResult = require('./estela/estelaResult.model')(sequelize, Sequelize);
+db.estelaSuccessfulUrl = require('./estela/estelaSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.estelaFailedUrl = require('./estela/estelaFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Estela ===
 
 // === TackTracker ===
@@ -396,5 +486,11 @@ db.tackTrackerStart = require('./tackTracker/tackTrackerStart.model')(
   sequelize,
   Sequelize,
 );
+db.tackTrackerFailedUrl = require('./tackTracker/tackTrackerFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.tackTrackerSuccessfulUrl =
+  require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
 // === End of TackTracker ===
 module.exports = db;

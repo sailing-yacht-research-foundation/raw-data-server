@@ -1,114 +1,114 @@
-const db = require('../models');
+const { v4: uuidv4 } = require('uuid');
 
-const Op = db.Sequelize.Op;
+const db = require('../models');
+const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
 const saveRaceQsData = async (data) => {
-  if (data.RaceQsRegatta) {
-    const existRegattas = await db.raceQsRegatta.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsRegatta.map((row) => row.id) },
-      },
-    });
-    const toRemove = existRegattas.map((row) => row.id);
-
-    const regattaData = data.RaceQsRegatta.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsRegatta.bulkCreate(regattaData);
-  }
-  if (data.RaceQsEvent) {
-    const existEvents = await db.raceQsEvent.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsEvent.map((row) => row.id) },
-      },
-    });
-    const toRemove = existEvents.map((row) => row.id);
-
-    const eventData = data.RaceQsEvent.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsEvent.bulkCreate(eventData);
-  }
-  if (data.RaceQsPosition) {
-    const existPositions = await db.raceQsPosition.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsPosition.map((row) => row.id) },
-      },
-    });
-    const toRemove = existPositions.map((row) => row.id);
-
-    const positionData = data.RaceQsPosition.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsPosition.bulkCreate(positionData);
-  }
-  if (data.RaceQsDivision) {
-    const existDivisions = await db.raceQsDivision.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsDivision.map((row) => row.id) },
-      },
-    });
-    const toRemove = existDivisions.map((row) => row.id);
-
-    const divisionData = data.RaceQsDivision.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsDivision.bulkCreate(divisionData);
-  }
-  if (data.RaceQsParticipant) {
-    const existParticipants = await db.raceQsParticipant.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsParticipant.map((row) => row.id) },
-      },
-    });
-    const toRemove = existParticipants.map((row) => row.id);
-
-    const participantData = data.RaceQsParticipant.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsParticipant.bulkCreate(participantData);
-  }
-  if (data.RaceQsRoute) {
-    const existRoutes = await db.raceQsRoute.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsRoute.map((row) => row.id) },
-      },
-    });
-    const toRemove = existRoutes.map((row) => row.id);
-
-    const routeData = data.RaceQsRoute.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsRoute.bulkCreate(routeData);
-  }
-  if (data.RaceQsStart) {
-    const existStarts = await db.raceQsStart.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsStart.map((row) => row.id) },
-      },
-    });
-    const toRemove = existStarts.map((row) => row.id);
-
-    const startData = data.RaceQsStart.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsStart.bulkCreate(startData);
-  }
-  if (data.RaceQsWaypoint) {
-    const existWaypoints = await db.raceQsWaypoint.findAll({
-      where: {
-        id: { [Op.in]: data.RaceQsWaypoint.map((row) => row.id) },
-      },
-    });
-    const toRemove = existWaypoints.map((row) => row.id);
-
-    const waypointData = data.RaceQsWaypoint.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.raceQsWaypoint.bulkCreate(waypointData);
+  const transaction = await db.sequelize.transaction();
+  let errorMessage = '';
+  let eventUrl = [];
+  try {
+    if (data.RaceQsEvent) {
+      eventUrl = data.RaceQsEvent.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
+      await db.raceQsEvent.bulkCreate(data.RaceQsEvent, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.RaceQsRegatta) {
+      await db.raceQsRegatta.bulkCreate(data.RaceQsRegatta, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.RaceQsPosition) {
+      while (data.RaceQsPosition.length > 0) {
+        const splicedArray = data.RaceQsPosition.splice(0, 1000);
+        await db.raceQsPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        });
+      }
+    }
+    if (data.RaceQsDivision) {
+      await db.raceQsDivision.bulkCreate(data.RaceQsDivision, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.RaceQsParticipant) {
+      await db.raceQsParticipant.bulkCreate(data.RaceQsParticipant, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.RaceQsRoute) {
+      await db.raceQsRoute.bulkCreate(data.RaceQsRoute, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.RaceQsStart) {
+      await db.raceQsStart.bulkCreate(data.RaceQsStart, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.RaceQsWaypoint) {
+      await db.raceQsWaypoint.bulkCreate(data.RaceQsWaypoint, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(error);
   }
 
-  return true;
+  if (eventUrl.length > 0) {
+    if (errorMessage) {
+      await db.raceQsFailedUrl.bulkCreate(
+        eventUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            error: errorMessage,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    } else {
+      await db.raceQsSuccessfulUrl.bulkCreate(
+        eventUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            original_id: row.original_id,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    }
+  }
+
+  return errorMessage;
 };
 
 module.exports = saveRaceQsData;

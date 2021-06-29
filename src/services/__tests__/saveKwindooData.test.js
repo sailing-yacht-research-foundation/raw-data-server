@@ -8,49 +8,22 @@ describe('Storing kwindoo data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.kwindooRegattaOwner.destroy({
-      truncate: true,
-    });
-    await db.kwindooRegatta.destroy({
-      truncate: true,
-    });
-    await db.kwindooRace.destroy({
-      truncate: true,
-    });
-    await db.kwindooBoat.destroy({
-      truncate: true,
-    });
-    await db.kwindooComment.destroy({
-      truncate: true,
-    });
-    await db.kwindooHomeportLocation.destroy({
-      truncate: true,
-    });
-    await db.kwindooMarker.destroy({
-      truncate: true,
-    });
-    await db.kwindooMIA.destroy({
-      truncate: true,
-    });
-    await db.kwindooPOI.destroy({
-      truncate: true,
-    });
-    await db.kwindooPosition.destroy({
-      truncate: true,
-    });
-    await db.kwindooRunningGroup.destroy({
-      truncate: true,
-    });
-    await db.kwindooVideoStream.destroy({
-      truncate: true,
-    });
-    await db.kwindooWaypoint.destroy({
-      truncate: true,
-    });
+    await db.kwindooRegattaOwner.destroy({ truncate: true });
+    await db.kwindooRegatta.destroy({ truncate: true });
+    await db.kwindooRace.destroy({ truncate: true });
+    await db.kwindooBoat.destroy({ truncate: true });
+    await db.kwindooComment.destroy({ truncate: true });
+    await db.kwindooHomeportLocation.destroy({ truncate: true });
+    await db.kwindooMarker.destroy({ truncate: true });
+    await db.kwindooMIA.destroy({ truncate: true });
+    await db.kwindooPOI.destroy({ truncate: true });
+    await db.kwindooPosition.destroy({ truncate: true });
+    await db.kwindooRunningGroup.destroy({ truncate: true });
+    await db.kwindooVideoStream.destroy({ truncate: true });
+    await db.kwindooWaypoint.destroy({ truncate: true });
+    await db.kwindooFailedUrl.destroy({ truncate: true });
+    await db.kwindooSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
-  });
-  afterEach(async () => {
-    jest.resetAllMocks();
   });
   it('should not save anything when empty data', async () => {
     const createRegattaOwner = jest.spyOn(db.kwindooRegattaOwner, 'bulkCreate');
@@ -115,5 +88,17 @@ describe('Storing kwindoo data to DB', () => {
     expect(createRunningGroup).toHaveBeenCalledTimes(1);
     expect(createVideoStream).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
+  });
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.KwindooRace = [
+      ...invalidData.KwindooRace,
+      {
+        original_id: '26121',
+        url: 'https://www.kwindoo.com/tracking/21572-i-flex-fleet-klasszikus-szolo?race_id=26121',
+      },
+    ];
+    const response = await saveKwindooData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

@@ -113,6 +113,14 @@ const bluewaterCombined = new parquet.ParquetSchema({
       source: { type: 'UTF8', optional: true },
     },
   },
+  announcements: {
+    repeated: true,
+    fields: {
+      id: { type: 'UTF8' },
+      html: { type: 'UTF8', optional: true },
+      time: { type: 'UTF8', optional: true },
+    },
+  },
 });
 
 module.exports = {

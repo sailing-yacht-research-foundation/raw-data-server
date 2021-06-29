@@ -99,6 +99,18 @@ const getPositions = async (raceList) => {
   });
   return result;
 };
+const getAnnouncements = async (raceList) => {
+  const announcements = await db.bluewaterAnnouncement.findAll({
+    where: { race: { [Op.in]: raceList } },
+    raw: true,
+  });
+  const result = new Map();
+  announcements.forEach((row) => {
+    let currentList = result.get(row.race);
+    result.set(row.race, [...(currentList || []), row]);
+  });
+  return result;
+};
 
 const processBluewaterData = async (optionalPath) => {
   const currentDate = new Date();
@@ -124,6 +136,7 @@ const processBluewaterData = async (optionalPath) => {
   const mapCrewSocialMedias = await getCrewSocialMedias(crewList);
   const maps = await getMaps(raceList);
   const positions = await getPositions(raceList);
+  const announcements = await getAnnouncements(raceList);
 
   const data = races.map((row) => {
     const {
@@ -184,6 +197,7 @@ const processBluewaterData = async (optionalPath) => {
       crewSocialMedias,
       markers: maps.get(race_id),
       mias: positions.get(race_id),
+      announcements: announcements.get(race_id),
     };
   });
   await writeToParquet(data, bluewaterCombined, parquetPath);
@@ -206,5 +220,6 @@ module.exports = {
   getCrewSocialMedias,
   getMaps,
   getPositions,
+  getAnnouncements,
   processBluewaterData,
 };
