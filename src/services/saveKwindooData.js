@@ -15,30 +15,35 @@ const saveKwindooData = async (data) => {
       await db.kwindooRace.bulkCreate(data.KwindooRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooBoat) {
       await db.kwindooBoat.bulkCreate(data.KwindooBoat, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooRegatta) {
       await db.kwindooRegatta.bulkCreate(data.KwindooRegatta, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooRegattaOwner) {
       await db.kwindooRegattaOwner.bulkCreate(data.KwindooRegattaOwner, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooComment) {
       await db.kwindooComment.bulkCreate(data.KwindooComment, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooHomeportLocation) {
@@ -47,6 +52,7 @@ const saveKwindooData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }
@@ -54,18 +60,21 @@ const saveKwindooData = async (data) => {
       await db.kwindooMarker.bulkCreate(data.KwindooMarker, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooMIA) {
       await db.kwindooMIA.bulkCreate(data.KwindooMIA, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooPOI) {
       await db.kwindooPOI.bulkCreate(data.KwindooPOI, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooPosition) {
@@ -74,6 +83,7 @@ const saveKwindooData = async (data) => {
         await db.kwindooPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -81,18 +91,21 @@ const saveKwindooData = async (data) => {
       await db.kwindooRunningGroup.bulkCreate(data.KwindooRunningGroup, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooVideoStream) {
       await db.kwindooVideoStream.bulkCreate(data.KwindooVideoStream, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KwindooWaypoint) {
       await db.kwindooWaypoint.bulkCreate(data.KwindooWaypoint, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     await transaction.commit();

@@ -15,12 +15,14 @@ const saveYellowbrickData = async (data) => {
       await db.yellowbrickRace.bulkCreate(data.YellowbrickRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YellowbrickCourseNode) {
       await db.yellowbrickCourseNode.bulkCreate(data.YellowbrickCourseNode, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YellowbrickLeaderboardTeam) {
@@ -29,6 +31,7 @@ const saveYellowbrickData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }
@@ -36,6 +39,7 @@ const saveYellowbrickData = async (data) => {
       await db.yellowbrickPoi.bulkCreate(data.YellowbrickPoi, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YellowbrickPosition) {
@@ -44,6 +48,7 @@ const saveYellowbrickData = async (data) => {
         await db.yellowbrickPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -51,12 +56,14 @@ const saveYellowbrickData = async (data) => {
       await db.yellowbrickTag.bulkCreate(data.YellowbrickTag, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YellowbrickTeam) {
       await db.yellowbrickTeam.bulkCreate(data.YellowbrickTeam, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     await transaction.commit();

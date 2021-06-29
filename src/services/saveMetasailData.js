@@ -15,30 +15,35 @@ const saveMetasailData = async (data) => {
       await db.metasailEvent.bulkCreate(data.MetasailEvent, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.MetasailRace) {
       await db.metasailRace.bulkCreate(data.MetasailRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.MetasailBoat) {
       await db.metasailBoat.bulkCreate(data.MetasailBoat, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.MetasailBuoy) {
       await db.metasailBuoy.bulkCreate(data.MetasailBuoy, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.MetasailGate) {
       await db.metasailGate.bulkCreate(data.MetasailGate, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.MetasailPosition) {
@@ -47,6 +52,7 @@ const saveMetasailData = async (data) => {
         await db.metasailPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }

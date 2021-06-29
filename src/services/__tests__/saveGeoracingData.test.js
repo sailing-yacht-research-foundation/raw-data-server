@@ -79,9 +79,7 @@ describe('Storing georacing data to DB', () => {
     expect(createSO).toHaveBeenCalledTimes(1);
     expect(createWeather).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.georacingRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.GeoracingRace = [
       ...invalidData.GeoracingRace,
@@ -92,8 +90,6 @@ describe('Storing georacing data to DB', () => {
       },
     ];
     const response = await saveGeoracingData(invalidData);
-    const raceCount = await db.georacingRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

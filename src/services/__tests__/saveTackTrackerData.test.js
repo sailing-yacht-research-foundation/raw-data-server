@@ -58,9 +58,7 @@ describe('Storing TackTracker data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(1);
     expect(createStart).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.tackTrackerRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.TackTrackerRace = [
       ...invalidData.TackTrackerRace,
@@ -70,8 +68,6 @@ describe('Storing TackTracker data to DB', () => {
       },
     ];
     const response = await saveTackTrackerData(invalidData);
-    const raceCount = await db.tackTrackerRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

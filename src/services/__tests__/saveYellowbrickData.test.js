@@ -59,9 +59,7 @@ describe('Storing yellowbrick data to DB', () => {
     expect(createTag).toHaveBeenCalledTimes(1);
     expect(createTeam).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.yellowbrickRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.YellowbrickRace = [
       ...invalidData.YellowbrickRace,
@@ -71,8 +69,6 @@ describe('Storing yellowbrick data to DB', () => {
       },
     ];
     const response = await saveYellowbrickData(invalidData);
-    const raceCount = await db.yellowbrickRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

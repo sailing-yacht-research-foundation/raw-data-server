@@ -15,12 +15,14 @@ const saveRaceQsData = async (data) => {
       await db.raceQsEvent.bulkCreate(data.RaceQsEvent, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.RaceQsRegatta) {
       await db.raceQsRegatta.bulkCreate(data.RaceQsRegatta, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.RaceQsPosition) {
@@ -29,6 +31,7 @@ const saveRaceQsData = async (data) => {
         await db.raceQsPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -36,30 +39,35 @@ const saveRaceQsData = async (data) => {
       await db.raceQsDivision.bulkCreate(data.RaceQsDivision, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.RaceQsParticipant) {
       await db.raceQsParticipant.bulkCreate(data.RaceQsParticipant, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.RaceQsRoute) {
       await db.raceQsRoute.bulkCreate(data.RaceQsRoute, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.RaceQsStart) {
       await db.raceQsStart.bulkCreate(data.RaceQsStart, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.RaceQsWaypoint) {
       await db.raceQsWaypoint.bulkCreate(data.RaceQsWaypoint, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     await transaction.commit();

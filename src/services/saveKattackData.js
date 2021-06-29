@@ -15,18 +15,21 @@ const saveKattackData = async (data) => {
       await db.kattackRace.bulkCreate(data.KattackRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KattackYachtClub) {
       await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KattackDevice) {
       await db.kattackDevice.bulkCreate(data.KattackDevice, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.KattackPosition) {
@@ -35,6 +38,7 @@ const saveKattackData = async (data) => {
         await db.kattackPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -42,6 +46,7 @@ const saveKattackData = async (data) => {
       await db.kattackWaypoint.bulkCreate(data.KattackWaypoint, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     await transaction.commit();

@@ -58,9 +58,7 @@ describe('Storing RaceQS data to DB', () => {
     expect(createStart).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.raceQsEvent.destroy({ truncate: true });
-    const initialEventCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.RaceQsEvent = [
       ...invalidData.RaceQsEvent,
@@ -70,8 +68,6 @@ describe('Storing RaceQS data to DB', () => {
       },
     ];
     const response = await saveRaceQsData(invalidData);
-    const eventCount = await db.raceQsEvent.count();
-    expect(eventCount).toEqual(initialEventCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

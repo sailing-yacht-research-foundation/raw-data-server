@@ -89,9 +89,7 @@ describe('Storing kwindoo data to DB', () => {
     expect(createVideoStream).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.kwindooRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.KwindooRace = [
       ...invalidData.KwindooRace,
@@ -101,8 +99,6 @@ describe('Storing kwindoo data to DB', () => {
       },
     ];
     const response = await saveKwindooData(invalidData);
-    const raceCount = await db.kwindooRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

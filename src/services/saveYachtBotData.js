@@ -15,18 +15,21 @@ const saveYachtBotData = async (data) => {
       await db.yachtBotRace.bulkCreate(data.YachtBotRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YachtBotYacht) {
       await db.yachtBotYacht.bulkCreate(data.YachtBotYacht, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YachtBotBuoy) {
       await db.yachtBotBuoy.bulkCreate(data.YachtBotBuoy, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.YachtBotPosition) {
@@ -35,6 +38,7 @@ const saveYachtBotData = async (data) => {
         await db.yachtBotPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }

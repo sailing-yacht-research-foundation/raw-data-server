@@ -15,36 +15,42 @@ const saveTracTracData = async (data) => {
       await db.tractracRace.bulkCreate(data.TracTracRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.SailorEmail) {
       await db.sailorEmail.bulkCreate(data.SailorEmail, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracEvent) {
       await db.tractracEvent.bulkCreate(data.TracTracEvent, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracClass) {
       await db.tractracClass.bulkCreate(data.TracTracClass, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracRaceClass) {
       await db.tractracRaceClass.bulkCreate(data.TracTracRaceClass, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracCompetitor) {
       await db.tractracCompetitor.bulkCreate(data.TracTracCompetitor, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracCompetitorResult) {
@@ -53,6 +59,7 @@ const saveTracTracData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }
@@ -62,6 +69,7 @@ const saveTracTracData = async (data) => {
         await db.tractracCompetitorPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -71,6 +79,7 @@ const saveTracTracData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }
@@ -78,18 +87,21 @@ const saveTracTracData = async (data) => {
       await db.tractracRoute.bulkCreate(data.TracTracRoute, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracControl) {
       await db.tractracControl.bulkCreate(data.TracTracControl, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracControlPoint) {
       await db.tractracControlPoint.bulkCreate(data.TracTracControlPoint, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TracTracControlPointPosition) {
@@ -98,6 +110,7 @@ const saveTracTracData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }

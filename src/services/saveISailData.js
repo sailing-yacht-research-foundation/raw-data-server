@@ -15,25 +15,28 @@ const saveISailData = async (data) => {
       if (!existEvent) {
         eventUrl = data.iSailEvent.url;
         originalId = data.iSailEvent.original_id;
-        await db.iSailEvent.create(data.iSailEvent);
+        await db.iSailEvent.create(data.iSailEvent, { transaction });
       }
     }
     if (data.iSailClass) {
       await db.iSailClass.bulkCreate(data.iSailClass, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailRace) {
       await db.iSailRace.bulkCreate(data.iSailRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailEventParticipant) {
       await db.iSailEventParticipant.bulkCreate(data.iSailEventParticipant, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailEventTracksData) {
@@ -41,13 +44,16 @@ const saveISailData = async (data) => {
         data.iSailEventTracksData.id,
       );
       if (!existEventTrack) {
-        await db.iSailEventTracksData.create(data.iSailEventTracksData);
+        await db.iSailEventTracksData.create(data.iSailEventTracksData, {
+          transaction,
+        });
       }
     }
     if (data.iSailTrack) {
       await db.iSailTrack.bulkCreate(data.iSailTrack, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailPosition) {
@@ -56,6 +62,7 @@ const saveISailData = async (data) => {
         await db.iSailPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -63,32 +70,38 @@ const saveISailData = async (data) => {
       await db.iSailMark.bulkCreate(data.iSailMark, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailStartline) {
       await db.iSailStartline.bulkCreate(data.iSailStartline, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailCourseMark) {
       await db.iSailCourseMark.bulkCreate(data.iSailCourseMark, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailRounding) {
       await db.iSailRounding.bulkCreate(data.iSailRounding, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.iSailResult) {
       await db.iSailResult.bulkCreate(data.iSailResult, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
+    await transaction.commit();
   } catch (error) {
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);

@@ -15,30 +15,35 @@ const saveEstelaData = async (data) => {
       await db.estelaRace.bulkCreate(data.EstelaRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.EstelaBuoy) {
       await db.estelaBuoy.bulkCreate(data.EstelaBuoy, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.EstelaClub) {
       await db.estelaClub.bulkCreate(data.EstelaClub, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.EstelaDorsal) {
       await db.estelaDorsal.bulkCreate(data.EstelaDorsal, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.EstelaPlayer) {
       await db.estelaPlayer.bulkCreate(data.EstelaPlayer, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.EstelaPosition) {
@@ -54,6 +59,7 @@ const saveEstelaData = async (data) => {
       await db.estelaResult.bulkCreate(data.EstelaResult, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     transaction.commit();

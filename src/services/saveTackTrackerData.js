@@ -15,36 +15,42 @@ const saveTackTrackerData = async (data) => {
       await db.tackTrackerRace.bulkCreate(data.TackTrackerRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TackTrackerRegatta) {
       await db.tackTrackerRegatta.bulkCreate(data.TackTrackerRegatta, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TackTrackerBoat) {
       await db.tackTrackerBoat.bulkCreate(data.TackTrackerBoat, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TackTrackerDefault) {
       await db.tackTrackerDefault.bulkCreate(data.TackTrackerDefault, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TackTrackerFinish) {
       await db.tackTrackerFinish.bulkCreate(data.TackTrackerFinish, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TackTrackerMark) {
       await db.tackTrackerMark.bulkCreate(data.TackTrackerMark, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.TackTrackerPosition) {
@@ -53,6 +59,7 @@ const saveTackTrackerData = async (data) => {
         await db.tackTrackerPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -60,6 +67,7 @@ const saveTackTrackerData = async (data) => {
       await db.tackTrackerStart.bulkCreate(data.TackTrackerStart, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     await transaction.commit();

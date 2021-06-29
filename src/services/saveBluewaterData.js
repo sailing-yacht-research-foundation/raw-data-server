@@ -16,18 +16,21 @@ const saveBluewaterData = async (data) => {
       await db.bluewaterRace.bulkCreate(data.BluewaterRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.BluewaterBoat) {
       await db.bluewaterBoat.bulkCreate(data.BluewaterBoat, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.BluewaterBoatHandicap) {
       await db.bluewaterBoatHandicap.bulkCreate(data.BluewaterBoatHandicap, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.BluewaterBoatSocialMedia) {
@@ -36,12 +39,15 @@ const saveBluewaterData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }
     if (data.BluewaterCrew) {
       await db.bluewaterCrew.bulkCreate(data.BluewaterCrew, {
         ignoreDuplicates: true,
+        validate: true,
+        transaction,
       });
     }
     if (data.BluewaterCrewSocialMedia) {
@@ -57,6 +63,7 @@ const saveBluewaterData = async (data) => {
       await db.bluewaterMap.bulkCreate(data.BluewaterMap, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.BluewaterPosition) {
@@ -65,6 +72,7 @@ const saveBluewaterData = async (data) => {
         await db.bluewaterPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -72,8 +80,10 @@ const saveBluewaterData = async (data) => {
       await db.bluewaterAnnouncement.bulkCreate(data.BluewaterAnnouncement, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
+    await transaction.commit();
   } catch (error) {
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);

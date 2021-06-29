@@ -125,6 +125,7 @@ describe('Read tracker parquet files', () => {
     await db.bluewaterCrewSocialMedia.destroy({ truncate: true });
     await db.bluewaterMap.destroy({ truncate: true });
     await db.bluewaterPosition.destroy({ truncate: true });
+    await db.bluewaterAnnouncement.destroy({ truncate: true });
 
     await db.estelaRace.destroy({ truncate: true });
     await db.estelaClub.destroy({ truncate: true });

@@ -87,9 +87,7 @@ describe('Storing iSail data to DB', () => {
     await saveISailData(jsonData);
     expect(createEvent).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.iSailEvent.destroy({ truncate: true });
-    const initialEventCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = {
       iSailEvent: {
         original_id: 14,
@@ -97,8 +95,6 @@ describe('Storing iSail data to DB', () => {
       },
     };
     const response = await saveISailData(invalidData);
-    const eventCount = await db.iSailEvent.count();
-    expect(eventCount).toEqual(initialEventCount);
     expect(response).toEqual(expect.stringContaining('cannot be null'));
   });
 });

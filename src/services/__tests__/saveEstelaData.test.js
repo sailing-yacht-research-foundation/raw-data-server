@@ -53,9 +53,7 @@ describe('Storing Estela data to DB', () => {
     expect(createPlayer).toHaveBeenCalledTimes(1);
     expect(createResult).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.estelaRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.EstelaRace = [
       {
@@ -66,8 +64,6 @@ describe('Storing Estela data to DB', () => {
       },
     ];
     const response = await saveEstelaData(invalidData);
-    const raceCount = await db.estelaRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('cannot be null'));
   });
 });

@@ -114,9 +114,7 @@ describe('Storing trac trac data to DB', () => {
     expect(createControlPointPosition).toHaveBeenCalledTimes(1);
     expect(createRoute).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.tractracRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.TracTracRace = [
       ...invalidData.TracTracRace,
@@ -126,8 +124,6 @@ describe('Storing trac trac data to DB', () => {
       },
     ];
     const response = await saveTracTracData(invalidData);
-    const raceCount = await db.tractracRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

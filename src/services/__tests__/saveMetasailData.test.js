@@ -48,9 +48,7 @@ describe('Storing Metasail data to DB', () => {
     expect(createBuoy).toHaveBeenCalledTimes(1);
     expect(createGate).toHaveBeenCalledTimes(1);
   });
-  it('should rollback data when one fails to execute', async () => {
-    await db.metasailRace.destroy({ truncate: true });
-    const initialRaceCount = 0;
+  it('should throw error when one fails to execute', async () => {
     const invalidData = Object.assign({}, jsonData);
     invalidData.MetasailRace = [
       ...invalidData.MetasailRace,
@@ -60,8 +58,6 @@ describe('Storing Metasail data to DB', () => {
       },
     ];
     const response = await saveMetasailData(invalidData);
-    const raceCount = await db.metasailRace.count();
-    expect(raceCount).toEqual(initialRaceCount);
     expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

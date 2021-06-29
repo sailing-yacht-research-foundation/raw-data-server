@@ -19,48 +19,56 @@ const saveGeoracingData = async (data) => {
       await db.georacingRace.bulkCreate(data.GeoracingRace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingEvent) {
       await db.georacingEvent.bulkCreate(data.GeoracingEvent, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingActor) {
       await db.georacingActor.bulkCreate(data.GeoracingActor, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingWeather) {
       await db.georacingWeather.bulkCreate(data.GeoracingWeather, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingCourse) {
       await db.georacingCourse.bulkCreate(data.GeoracingCourse, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingCourseObject) {
       await db.georacingCourseObject.bulkCreate(data.GeoracingCourseObject, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingCourseElement) {
       await db.georacingCourseElement.bulkCreate(data.GeoracingCourseElement, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingGroundPlace) {
       await db.georacingGroundPlace.bulkCreate(data.GeoracingGroundPlace, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingPosition) {
@@ -69,6 +77,7 @@ const saveGeoracingData = async (data) => {
         await db.georacingPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -76,12 +85,14 @@ const saveGeoracingData = async (data) => {
       await db.georacingLine.bulkCreate(data.GeoracingLine, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingSplittime) {
       await db.georacingSplittime.bulkCreate(data.GeoracingSplittime, {
         ignoreDuplicates: true,
         validate: true,
+        transaction,
       });
     }
     if (data.GeoracingSplittimeObject) {
@@ -90,9 +101,11 @@ const saveGeoracingData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }
+    await transaction.commit();
   } catch (error) {
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
