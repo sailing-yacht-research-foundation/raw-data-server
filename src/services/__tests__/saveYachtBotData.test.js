@@ -8,18 +8,12 @@ describe('Storing YachtBot data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.yachtBotRace.destroy({
-      truncate: true,
-    });
-    await db.yachtBotBuoy.destroy({
-      truncate: true,
-    });
-    await db.yachtBotYacht.destroy({
-      truncate: true,
-    });
-    await db.yachtBotPosition.destroy({
-      truncate: true,
-    });
+    await db.yachtBotRace.destroy.destroy({ truncate: true });
+    await db.yachtBotBuoy.destroy.destroy({ truncate: true });
+    await db.yachtBotYacht.destroy.destroy({ truncate: true });
+    await db.yachtBotPosition.destroy({ truncate: true });
+    await db.yachtBotFailedUrl.destroy({ truncate: true });
+    await db.yachtBotSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {
@@ -43,5 +37,17 @@ describe('Storing YachtBot data to DB', () => {
     expect(createBuoy).toHaveBeenCalledTimes(1);
     expect(createYacht).toHaveBeenCalledTimes(1);
     expect(createPosition).toHaveBeenCalledTimes(1);
+  });
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.YachtBotRace = [
+      ...invalidData.YachtBotRace,
+      {
+        original_id: '363',
+        url: 'http://www.yacht-bot.com/races/363',
+      },
+    ];
+    const response = await saveYachtBotData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

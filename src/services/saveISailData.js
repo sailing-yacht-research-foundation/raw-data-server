@@ -1,137 +1,129 @@
-const db = require('../models');
+const { v4: uuidv4 } = require('uuid');
 
-const Op = db.Sequelize.Op;
+const db = require('../models');
+const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
 const saveISailData = async (data) => {
-  if (data.iSailClass) {
-    const existClasses = await db.iSailClass.findAll({
-      where: { id: { [Op.in]: data.iSailClass.map((row) => row.id) } },
-    });
-    const toRemove = existClasses.map((row) => row.id);
-
-    const classData = data.iSailClass.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailClass.bulkCreate(classData);
+  const transaction = await db.sequelize.transaction();
+  let errorMessage = '';
+  let eventUrl = '';
+  let originalId = null;
+  try {
+    if (data.iSailEvent) {
+      // This field contains only a single object
+      const existEvent = await db.iSailEvent.findByPk(data.iSailEvent.id);
+      if (!existEvent) {
+        eventUrl = data.iSailEvent.url;
+        originalId = data.iSailEvent.original_id;
+        await db.iSailEvent.create(data.iSailEvent, { transaction });
+      }
+    }
+    if (data.iSailClass) {
+      await db.iSailClass.bulkCreate(data.iSailClass, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailRace) {
+      await db.iSailRace.bulkCreate(data.iSailRace, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailEventParticipant) {
+      await db.iSailEventParticipant.bulkCreate(data.iSailEventParticipant, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailEventTracksData) {
+      const existEventTrack = await db.iSailEventTracksData.findByPk(
+        data.iSailEventTracksData.id,
+      );
+      if (!existEventTrack) {
+        await db.iSailEventTracksData.create(data.iSailEventTracksData, {
+          transaction,
+        });
+      }
+    }
+    if (data.iSailTrack) {
+      await db.iSailTrack.bulkCreate(data.iSailTrack, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailPosition) {
+      while (data.iSailPosition.length > 0) {
+        const splicedArray = data.iSailPosition.splice(0, 1000);
+        await db.iSailPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        });
+      }
+    }
+    if (data.iSailMark) {
+      await db.iSailMark.bulkCreate(data.iSailMark, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailStartline) {
+      await db.iSailStartline.bulkCreate(data.iSailStartline, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailCourseMark) {
+      await db.iSailCourseMark.bulkCreate(data.iSailCourseMark, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailRounding) {
+      await db.iSailRounding.bulkCreate(data.iSailRounding, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.iSailResult) {
+      await db.iSailResult.bulkCreate(data.iSailResult, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(error);
   }
-  if (data.iSailEvent) {
-    // This field contains only a single object
-    const existEvent = await db.iSailEvent.findByPk(data.iSailEvent.id);
-    if (!existEvent) {
-      await db.iSailEvent.create(data.iSailEvent);
+
+  if (eventUrl) {
+    if (errorMessage) {
+      await db.iSailFailedUrl.create({
+        id: uuidv4(),
+        url: eventUrl,
+        error: errorMessage,
+      });
+    } else {
+      await db.iSailSuccessfulUrl.create({
+        id: uuidv4(),
+        url: eventUrl,
+        original_id: originalId,
+      });
     }
   }
-  if (data.iSailRace) {
-    const existRaces = await db.iSailRace.findAll({
-      where: { id: { [Op.in]: data.iSailRace.map((row) => row.id) } },
-    });
-    const toRemove = existRaces.map((row) => row.id);
 
-    const raceData = data.iSailRace.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailRace.bulkCreate(raceData);
-  }
-  if (data.iSailEventParticipant) {
-    const existParticipants = await db.iSailEventParticipant.findAll({
-      where: {
-        id: { [Op.in]: data.iSailEventParticipant.map((row) => row.id) },
-      },
-    });
-    const toRemove = existParticipants.map((row) => row.id);
-
-    const participantData = data.iSailEventParticipant.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailEventParticipant.bulkCreate(participantData);
-  }
-  if (data.iSailEventTracksData) {
-    // This field contains only a single object
-    const existEventTrack = await db.iSailEventTracksData.findByPk(
-      data.iSailEventTracksData.id,
-    );
-    if (!existEventTrack) {
-      await db.iSailEventTracksData.create(data.iSailEventTracksData);
-    }
-  }
-  if (data.iSailTrack) {
-    const existTracks = await db.iSailTrack.findAll({
-      where: { id: { [Op.in]: data.iSailTrack.map((row) => row.id) } },
-    });
-    const toRemove = existTracks.map((row) => row.id);
-
-    const trackData = data.iSailTrack.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailTrack.bulkCreate(trackData);
-  }
-  if (data.iSailPosition) {
-    const existPositions = await db.iSailPosition.findAll({
-      where: { id: { [Op.in]: data.iSailPosition.map((row) => row.id) } },
-    });
-    const toRemove = existPositions.map((row) => row.id);
-
-    const positionData = data.iSailPosition.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailPosition.bulkCreate(positionData);
-  }
-  if (data.iSailMark) {
-    const existMarks = await db.iSailMark.findAll({
-      where: { id: { [Op.in]: data.iSailMark.map((row) => row.id) } },
-    });
-    const toRemove = existMarks.map((row) => row.id);
-
-    const markData = data.iSailMark.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailMark.bulkCreate(markData);
-  }
-  if (data.iSailStartline) {
-    const existStartlines = await db.iSailStartline.findAll({
-      where: { id: { [Op.in]: data.iSailStartline.map((row) => row.id) } },
-    });
-    const toRemove = existStartlines.map((row) => row.id);
-
-    const startlineData = data.iSailStartline.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailStartline.bulkCreate(startlineData);
-  }
-  if (data.iSailCourseMark) {
-    const existCM = await db.iSailCourseMark.findAll({
-      where: { id: { [Op.in]: data.iSailCourseMark.map((row) => row.id) } },
-    });
-    const toRemove = existCM.map((row) => row.id);
-
-    const cmData = data.iSailCourseMark.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailCourseMark.bulkCreate(cmData);
-  }
-  if (data.iSailRounding) {
-    const existRoundings = await db.iSailRounding.findAll({
-      where: { id: { [Op.in]: data.iSailRounding.map((row) => row.id) } },
-    });
-    const toRemove = existRoundings.map((row) => row.id);
-
-    const roundingData = data.iSailRounding.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailRounding.bulkCreate(roundingData);
-  }
-  if (data.iSailResult) {
-    const existResults = await db.iSailResult.findAll({
-      where: { id: { [Op.in]: data.iSailResult.map((row) => row.id) } },
-    });
-    const toRemove = existResults.map((row) => row.id);
-
-    const resultData = data.iSailResult.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.iSailResult.bulkCreate(resultData);
-  }
-  return true;
+  return errorMessage;
 };
 
 module.exports = saveISailData;

@@ -32,6 +32,7 @@ services:
       ['./wait-for-it.sh', '-t', '120', 'rds-db:3306', '--', 'npm', 'start']
   rds-db:
     image: mysql:5.7
+    command: --max_allowed_packet=32505856
     restart: always
     environment:
       MYSQL_DATABASE: rawdata

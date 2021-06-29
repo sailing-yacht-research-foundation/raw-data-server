@@ -1,92 +1,110 @@
-const db = require('../models');
+const { v4: uuidv4 } = require('uuid');
 
-const Op = db.Sequelize.Op;
+const db = require('../models');
+const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
 const saveYellowbrickData = async (data) => {
-  if (data.YellowbrickCourseNode) {
-    const existCourseNodes = await db.yellowbrickCourseNode.findAll({
-      where: {
-        id: { [Op.in]: data.YellowbrickCourseNode.map((row) => row.id) },
-      },
-    });
-    const toRemove = existCourseNodes.map((row) => row.id);
-
-    const courseNodeData = data.YellowbrickCourseNode.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yellowbrickCourseNode.bulkCreate(courseNodeData);
+  const transaction = await db.sequelize.transaction();
+  let errorMessage = '';
+  let raceUrl = [];
+  try {
+    if (data.YellowbrickRace) {
+      raceUrl = data.YellowbrickRace.map((row) => {
+        return { url: row.url, original_id: row.race_code };
+      });
+      await db.yellowbrickRace.bulkCreate(data.YellowbrickRace, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.YellowbrickCourseNode) {
+      await db.yellowbrickCourseNode.bulkCreate(data.YellowbrickCourseNode, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.YellowbrickLeaderboardTeam) {
+      await db.yellowbrickLeaderboardTeam.bulkCreate(
+        data.YellowbrickLeaderboardTeam,
+        {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        },
+      );
+    }
+    if (data.YellowbrickPoi) {
+      await db.yellowbrickPoi.bulkCreate(data.YellowbrickPoi, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.YellowbrickPosition) {
+      while (data.YellowbrickPosition.length > 0) {
+        const splicedArray = data.YellowbrickPosition.splice(0, 1000);
+        await db.yellowbrickPosition.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        });
+      }
+    }
+    if (data.YellowbrickTag) {
+      await db.yellowbrickTag.bulkCreate(data.YellowbrickTag, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.YellowbrickTeam) {
+      await db.yellowbrickTeam.bulkCreate(data.YellowbrickTeam, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(error);
   }
-  if (data.YellowbrickLeaderboardTeam) {
-    const existLeaderboardTeams = await db.yellowbrickLeaderboardTeam.findAll({
-      where: {
-        id: { [Op.in]: data.YellowbrickLeaderboardTeam.map((row) => row.id) },
-      },
-    });
-    const toRemove = existLeaderboardTeams.map((row) => row.id);
 
-    const leaderboardTeamData = data.YellowbrickLeaderboardTeam.filter(
-      (row) => {
-        return !toRemove.includes(row.id);
-      },
-    );
-    await db.yellowbrickLeaderboardTeam.bulkCreate(leaderboardTeamData);
+  if (raceUrl.length > 0) {
+    if (errorMessage) {
+      await db.yellowbrickFailedUrl.bulkCreate(
+        raceUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            error: errorMessage,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    } else {
+      await db.yellowbrickSuccessfulUrl.bulkCreate(
+        raceUrl.map((row) => {
+          return {
+            id: uuidv4(),
+            url: row.url,
+            original_id: row.original_id,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
+    }
   }
-  if (data.YellowbrickPoi) {
-    const existPois = await db.yellowbrickPoi.findAll({
-      where: { id: { [Op.in]: data.YellowbrickPoi.map((row) => row.id) } },
-    });
-    const toRemove = existPois.map((row) => row.id);
 
-    const poiData = data.YellowbrickPoi.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yellowbrickPoi.bulkCreate(poiData);
-  }
-  if (data.YellowbrickPosition) {
-    const existPositions = await db.yellowbrickPosition.findAll({
-      where: { id: { [Op.in]: data.YellowbrickPosition.map((row) => row.id) } },
-    });
-    const toRemove = existPositions.map((row) => row.id);
-
-    const positionData = data.YellowbrickPosition.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yellowbrickPosition.bulkCreate(positionData);
-  }
-  if (data.YellowbrickRace) {
-    const existRaces = await db.yellowbrickRace.findAll({
-      where: { id: { [Op.in]: data.YellowbrickRace.map((row) => row.id) } },
-    });
-    const toRemove = existRaces.map((row) => row.id);
-
-    const raceData = data.YellowbrickRace.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yellowbrickRace.bulkCreate(raceData);
-  }
-  if (data.YellowbrickTag) {
-    const existTags = await db.yellowbrickTag.findAll({
-      where: { id: { [Op.in]: data.YellowbrickTag.map((row) => row.id) } },
-    });
-    const toRemove = existTags.map((row) => row.id);
-
-    const tagData = data.YellowbrickTag.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yellowbrickTag.bulkCreate(tagData);
-  }
-  if (data.YellowbrickTeam) {
-    const existTeams = await db.yellowbrickTeam.findAll({
-      where: { id: { [Op.in]: data.YellowbrickTeam.map((row) => row.id) } },
-    });
-    const toRemove = existTeams.map((row) => row.id);
-
-    const teamData = data.YellowbrickTeam.filter((row) => {
-      return !toRemove.includes(row.id);
-    });
-    await db.yellowbrickTeam.bulkCreate(teamData);
-  }
-  return true;
+  return errorMessage;
 };
 
 module.exports = saveYellowbrickData;

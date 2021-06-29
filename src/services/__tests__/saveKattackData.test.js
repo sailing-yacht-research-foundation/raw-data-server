@@ -8,26 +8,14 @@ describe('Storing kattack data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.kattackYachtClub.destroy({
-      truncate: true,
-    });
-    await db.kattackRace.destroy({
-      truncate: true,
-    });
-    await db.kattackDevice.destroy({
-      truncate: true,
-    });
-    await db.kattackPosition.destroy({
-      truncate: true,
-    });
-    await db.kattackWaypoint.destroy({
-      truncate: true,
-    });
+    await db.kattackYachtClub.destroy.destroy({ truncate: true });
+    await db.kattackRace.destroy.destroy({ truncate: true });
+    await db.kattackDevice.destroy.destroy({ truncate: true });
+    await db.kattackPosition.destroy.destroy({ truncate: true });
+    await db.kattackWaypoint.destroy.destroy({ truncate: true });
+    await db.kattackSuccessfulUrl.destroy({ truncate: true });
+    await db.kattackFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
-  });
-
-  afterEach(async () => {
-    jest.resetAllMocks();
   });
   it('should not save anything when empty data', async () => {
     const createYachtClub = jest.spyOn(db.kattackYachtClub, 'bulkCreate');
@@ -58,5 +46,17 @@ describe('Storing kattack data to DB', () => {
     expect(createDevice).toHaveBeenCalledTimes(1);
     expect(createPosition).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
+  });
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.KattackRace = [
+      ...invalidData.KattackRace,
+      {
+        original_id: '1011',
+        url: 'http://kws.kattack.com/GEPlayer/GMPosDisplay.aspx?FeedID=1011',
+      },
+    ];
+    const response = await saveKattackData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });

@@ -8,6 +8,7 @@ const {
   getCrewSocialMedias,
   getMaps,
   getPositions,
+  getAnnouncements,
   processBluewaterData,
 } = require('../processBluewaterData');
 const saveBluewaterData = require('../saveBluewaterData');
@@ -42,30 +43,15 @@ describe('Processing exist Bluewater Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.bluewaterRace.destroy({
-      truncate: true,
-    });
-    await db.bluewaterBoat.destroy({
-      truncate: true,
-    });
-    await db.bluewaterBoatHandicap.destroy({
-      truncate: true,
-    });
-    await db.bluewaterBoatSocialMedia.destroy({
-      truncate: true,
-    });
-    await db.bluewaterCrew.destroy({
-      truncate: true,
-    });
-    await db.bluewaterCrewSocialMedia.destroy({
-      truncate: true,
-    });
-    await db.bluewaterMap.destroy({
-      truncate: true,
-    });
-    await db.bluewaterPosition.destroy({
-      truncate: true,
-    });
+    await db.bluewaterRace.destroy({ truncate: true });
+    await db.bluewaterBoat.destroy({ truncate: true });
+    await db.bluewaterBoatHandicap.destroy({ truncate: true });
+    await db.bluewaterBoatSocialMedia.destroy({ truncate: true });
+    await db.bluewaterCrew.destroy({ truncate: true });
+    await db.bluewaterCrewSocialMedia.destroy({ truncate: true });
+    await db.bluewaterMap.destroy({ truncate: true });
+    await db.bluewaterPosition.destroy({ truncate: true });
+    await db.bluewaterAnnouncement.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get races', async () => {
@@ -109,6 +95,11 @@ describe('Processing exist Bluewater Data from DB to Parquet', () => {
     const positions = await getPositions([raceID]);
     expect(positions.size).toEqual(1);
     expect(positions.get(raceID).length).toEqual(4);
+  });
+  it('should get positions', async () => {
+    const announcements = await getAnnouncements([raceID]);
+    expect(announcements.size).toEqual(1);
+    expect(announcements.get(raceID).length).toEqual(1);
   });
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
     const mockS3UploadResultPath =

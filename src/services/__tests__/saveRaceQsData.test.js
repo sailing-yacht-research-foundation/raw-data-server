@@ -8,30 +8,16 @@ describe('Storing RaceQS data to DB', () => {
     await db.sequelize.sync();
   });
   afterAll(async () => {
-    await db.raceQsRegatta.destroy({
-      truncate: true,
-    });
-    await db.raceQsEvent.destroy({
-      truncate: true,
-    });
-    await db.raceQsDivision.destroy({
-      truncate: true,
-    });
-    await db.raceQsParticipant.destroy({
-      truncate: true,
-    });
-    await db.raceQsPosition.destroy({
-      truncate: true,
-    });
-    await db.raceQsRoute.destroy({
-      truncate: true,
-    });
-    await db.raceQsStart.destroy({
-      truncate: true,
-    });
-    await db.raceQsWaypoint.destroy({
-      truncate: true,
-    });
+    await db.raceQsRegatta.destroy({ truncate: true });
+    await db.raceQsEvent.destroy({ truncate: true });
+    await db.raceQsDivision.destroy({ truncate: true });
+    await db.raceQsParticipant.destroy({ truncate: true });
+    await db.raceQsPosition.destroy({ truncate: true });
+    await db.raceQsRoute.destroy({ truncate: true });
+    await db.raceQsStart.destroy({ truncate: true });
+    await db.raceQsWaypoint.destroy({ truncate: true });
+    await db.raceQsFailedUrl.destroy({ truncate: true });
+    await db.raceQsSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should not save anything when empty data', async () => {
@@ -71,5 +57,17 @@ describe('Storing RaceQS data to DB', () => {
     expect(createRoute).toHaveBeenCalledTimes(1);
     expect(createStart).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
+  });
+  it('should throw error when one fails to execute', async () => {
+    const invalidData = Object.assign({}, jsonData);
+    invalidData.RaceQsEvent = [
+      ...invalidData.RaceQsEvent,
+      {
+        original_id: '62881',
+        url: 'https://raceqs.com/tv-beta/tv.htm#eventId=62881',
+      },
+    ];
+    const response = await saveRaceQsData(invalidData);
+    expect(response).toEqual(expect.stringContaining('notNull Violation'));
   });
 });
