@@ -66,7 +66,13 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "DB_NAME", "value": "${var.db_name}" },
         { "name": "AWS_S3_ACCESS_KEY_ID", "value": "${var.s3_access_key_id}" },
         { "name": "AWS_S3_SECRET_ACCESS_KEY", "value": "${var.s3_secret_key}" },
-        { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" }
+        { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" },
+        { "name": "MQ_HOST", "value": "${var.mq_host}" },
+        { "name": "MQ_PORT", "value": "${var.mq_port}" },
+        { "name": "MQ_USER", "value": "${var.mq_user}" },
+        { "name": "MQ_PASSWORD", "value": "${var.mq_password}" },
+        { "name": "MQ_TOPIC", "value": "${var.mq_topic}" },
+        { "name": "MQ_TIMEOUT", "value": "${var.mq_timeout}" }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",

@@ -34,3 +34,31 @@ variable "s3_secret_key" {
 variable "s3_bucket" {
   type    = string
 }
+
+variable "mq_host" {
+  type    = string
+}
+
+variable "mq_port" {
+  type    = string
+}
+
+variable "mq_user" {
+  type    = string
+}
+
+variable "mq_password" {
+  type    = string
+}
+
+variable "s3_bucket" {
+  type    = string
+}
+
+variable "mq_topic" {
+  default = "/topic/rawdata.topic"
+}
+
+variable "mq_timeout" {
+  default = 2700000
+}
