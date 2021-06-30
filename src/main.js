@@ -9,6 +9,8 @@ const mqHost = process.env.MQ_HOST || 'localhost';
 const mqPort = process.env.MQ_PORT || 61613;
 const mqUser = process.env.MQ_USER || 'guest';
 const mqPassword = process.env.MQ_PASSWORD || 'guest';
+const mqTimeout = process.env.MQ_TIMEOUT || 2700000;
+const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
 
 (async () => {
   try {
@@ -17,16 +19,16 @@ const mqPassword = process.env.MQ_PASSWORD || 'guest';
     await db.sequelize.sync();
 
     const onConnect = () => {
-      console.log('connected successfully');
+      console.log('MQ connected successfully');
     };
     const subscriptions = [
       {
-        topic: '/topic/rawdata.topic',
+        topic: mqTopic,
         action: dataPointSubscriberAction,
       },
     ];
     const stompClient = createMQSubscriber(
-      { mqHost, mqPort, mqUser, mqPassword },
+      { mqHost, mqPort, mqUser, mqPassword, mqTimeout },
       onConnect,
       subscriptions,
     );

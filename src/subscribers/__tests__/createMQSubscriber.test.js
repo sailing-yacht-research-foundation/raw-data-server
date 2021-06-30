@@ -16,7 +16,7 @@ describe('Connect & Subscribe to topic from MQ', () => {
       },
     ];
     const stompClient = createMQSubscriber(
-      { mqHost, mqPort, mqUser, mqPassword },
+      { mqHost, mqPort, mqUser, mqPassword, mqTimeout: 2700000 },
       onConnect,
       subscriptions,
     );
