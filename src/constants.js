@@ -14,7 +14,13 @@ const TRACKER_MAP = {
   yachtbot: 'yachtBot',
   yellowbrick: 'yellowbrick',
 };
+
+const SAVE_DB_POSITION_CHUNK_COUNT = 10000;
+const SAVE_DB_CSV_CHUNK_COUNT = 50;
+
 module.exports = {
   TEMPORARY_FOLDER,
   TRACKER_MAP,
+  SAVE_DB_POSITION_CHUNK_COUNT,
+  SAVE_DB_CSV_CHUNK_COUNT,
 };

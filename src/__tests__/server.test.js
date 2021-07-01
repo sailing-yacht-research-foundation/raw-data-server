@@ -4,7 +4,6 @@ const path = require('path');
 const createServer = require('../server');
 const generateDateAuthFormat = require('../utils/generateDateAuthFormat');
 const generateSecret = require('../utils/generateSecret');
-const saveISailData = require('../services/saveISailData');
 
 jest.mock('../services/saveISailData', () => jest.fn());
 
@@ -69,6 +68,5 @@ describe('Test Endpoints', () => {
       })
       .attach('raw_data', path.resolve(__dirname, '../test-files/iSail.json'));
     expect(response.status).toBe(200);
-    expect(saveISailData).toHaveBeenCalledTimes(1);
   });
 });

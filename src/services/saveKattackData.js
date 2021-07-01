@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -34,7 +35,10 @@ const saveKattackData = async (data) => {
     }
     if (data.KattackPosition) {
       while (data.KattackPosition.length > 0) {
-        const splicedArray = data.KattackPosition.splice(0, 1000);
+        const splicedArray = data.KattackPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.kattackPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,

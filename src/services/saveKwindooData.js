@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -79,7 +80,10 @@ const saveKwindooData = async (data) => {
     }
     if (data.KwindooPosition) {
       while (data.KwindooPosition.length > 0) {
-        const splicedArray = data.KwindooPosition.splice(0, 1000);
+        const splicedArray = data.KwindooPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.kwindooPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,

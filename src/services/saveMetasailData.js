@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -48,7 +49,10 @@ const saveMetasailData = async (data) => {
     }
     if (data.MetasailPosition) {
       while (data.MetasailPosition.length > 0) {
-        const splicedArray = data.MetasailPosition.splice(0, 1000);
+        const splicedArray = data.MetasailPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.metasailPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,

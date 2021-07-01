@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -65,7 +66,10 @@ const saveTracTracData = async (data) => {
     }
     if (data.TracTracCompetitorPosition) {
       while (data.TracTracCompetitorPosition.length > 0) {
-        const splicedArray = data.TracTracCompetitorPosition.splice(0, 1000);
+        const splicedArray = data.TracTracCompetitorPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.tractracCompetitorPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
