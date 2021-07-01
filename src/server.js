@@ -19,7 +19,6 @@ function createServer() {
   });
 
   app.use('/api/v1', apiV1);
-  app.use('/testing', testing);
   app.use(errorHandler);
   return app;
 }
