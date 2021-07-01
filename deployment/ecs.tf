@@ -95,7 +95,7 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "MYSQL_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
         { "name": "MYSQL_ROOT_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" }
       ],
-      "command": ["--max_allowed_packet=32505856"],
+      "command": ["--max_allowed_packet=100M"],
       "memory": 256,
       "cpu": 128,
       "mountPoints": [
