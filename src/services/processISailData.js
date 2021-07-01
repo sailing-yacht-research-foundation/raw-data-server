@@ -1,4 +1,5 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
@@ -134,8 +135,7 @@ const processISailData = async (optionalPath) => {
   const fullDateFormat = yyyymmddFormat(currentDate);
   let parquetPath = optionalPath;
   if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-isail');
-    parquetPath = `${dirPath}/isail.parquet`;
+    parquetPath = (await temp.open('isail')).path;
   }
 
   const events = await db.iSailEvent.findAll({ raw: true });
@@ -200,7 +200,11 @@ const processISailData = async (optionalPath) => {
     `iSail/year=${currentYear}/month=${currentMonth}/isail_${fullDateFormat}.parquet`,
   );
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
   return fileUrl;
 };

@@ -1,4 +1,5 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
@@ -92,8 +93,7 @@ const processYellowbrickData = async (optionalPath) => {
 
   let parquetPath = optionalPath;
   if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-yellowbrick');
-    parquetPath = `${dirPath}/yellowbrick.parquet`;
+    parquetPath = (await temp.open('yellowbrick')).path;
   }
 
   const races = await getRaces();
@@ -170,7 +170,11 @@ const processYellowbrickData = async (optionalPath) => {
     `yellowbrick/year=${currentYear}/month=${currentMonth}/yellowbrick_${fullDateFormat}.parquet`,
   );
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
   return fileUrl;
 };

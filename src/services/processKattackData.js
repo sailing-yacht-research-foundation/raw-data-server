@@ -1,4 +1,5 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
@@ -65,8 +66,7 @@ const processKattackData = async (optionalPath) => {
 
   let parquetPath = optionalPath;
   if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-kattack');
-    parquetPath = `${dirPath}/kattack.parquet`;
+    parquetPath = (await temp.open('kattack')).path;
   }
 
   const yachtClubs = await getYachtClubs();
@@ -181,7 +181,11 @@ const processKattackData = async (optionalPath) => {
     `kattack/year=${currentYear}/month=${currentMonth}/kattack_${fullDateFormat}.parquet`,
   );
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
   return fileUrl;
 };

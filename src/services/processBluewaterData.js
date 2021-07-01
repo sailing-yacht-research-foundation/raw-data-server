@@ -1,4 +1,5 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
@@ -119,8 +120,7 @@ const processBluewaterData = async (optionalPath) => {
   const fullDateFormat = yyyymmddFormat(currentDate);
   let parquetPath = optionalPath;
   if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-bluewater');
-    parquetPath = `${dirPath}/bluewater.parquet`;
+    parquetPath = (await temp.open('bluewater')).path;
   }
 
   const races = await getRaces();
@@ -206,7 +206,13 @@ const processBluewaterData = async (optionalPath) => {
     `bluewater/year=${currentYear}/month=${currentMonth}/bluewater_${fullDateFormat}.parquet`,
   );
   if (!optionalPath) {
-    temp.cleanup();
+    // Not deleting if path is provided from function caller
+    // Only delete if it's produced within this function
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
   return fileUrl;
 };

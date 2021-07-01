@@ -1,4 +1,5 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
@@ -99,8 +100,7 @@ const processRaceQsData = async (optionalPath) => {
 
   let parquetPath = optionalPath;
   if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-raceqs');
-    parquetPath = `${dirPath}/raceqs.parquet`;
+    parquetPath = (await temp.open('raceqs')).path;
   }
 
   const events = await getEvents();
@@ -167,7 +167,11 @@ const processRaceQsData = async (optionalPath) => {
     `raceqs/year=${currentYear}/month=${currentMonth}/raceqs_${fullDateFormat}.parquet`,
   );
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
   return fileUrl;
 };
