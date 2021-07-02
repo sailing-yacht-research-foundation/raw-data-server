@@ -7,16 +7,13 @@ const {
   getCrews,
   getCrewSocialMedias,
   getMaps,
-  getPositions,
   getAnnouncements,
   processBluewaterData,
 } = require('../processBluewaterData');
 const saveBluewaterData = require('../saveBluewaterData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/bluewater.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Bluewater Data from DB to Parquet', () => {
@@ -52,6 +49,8 @@ describe('Processing exist Bluewater Data from DB to Parquet', () => {
     await db.bluewaterMap.destroy({ truncate: true });
     await db.bluewaterPosition.destroy({ truncate: true });
     await db.bluewaterAnnouncement.destroy({ truncate: true });
+    await db.bluewaterSuccessfulUrl.destroy({ truncate: true });
+    await db.bluewaterFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get races', async () => {
@@ -92,23 +91,21 @@ describe('Processing exist Bluewater Data from DB to Parquet', () => {
     expect(maps.get(raceID).length).toEqual(1);
   });
   it('should get positions', async () => {
-    const positions = await getPositions([raceID]);
-    expect(positions.size).toEqual(1);
-    expect(positions.get(raceID).length).toEqual(4);
-  });
-  it('should get positions', async () => {
     const announcements = await getAnnouncements([raceID]);
     expect(announcements.size).toEqual(1);
     expect(announcements.get(raceID).length).toEqual(1);
   });
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/bluewater/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/bluewater/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/bluewater/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processBluewaterData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

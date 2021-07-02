@@ -1,5 +1,22 @@
 var parquet = require('parquetjs-lite');
 
+const bluewaterPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  race_original_id: { type: 'UTF8', optional: true },
+  boat_original_id: { type: 'UTF8', optional: true },
+  boat_name: { type: 'UTF8', optional: true },
+  geometry_type: { type: 'UTF8', optional: true },
+  coordinate_0: { type: 'UTF8', optional: true },
+  coordinate_1: { type: 'UTF8', optional: true },
+  coordinate_2: { type: 'UTF8', optional: true },
+  cog: { type: 'UTF8', optional: true },
+  date: { type: 'UTF8', optional: true },
+  device_id: { type: 'UTF8', optional: true },
+  sog: { type: 'UTF8', optional: true },
+  source: { type: 'UTF8', optional: true },
+});
+
 const bluewaterCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   race_original_id: { type: 'UTF8', optional: true },
@@ -96,23 +113,6 @@ const bluewaterCombined = new parquet.ParquetSchema({
       regions: { type: 'UTF8', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      boat_original_id: { type: 'UTF8', optional: true },
-      boat_name: { type: 'UTF8', optional: true },
-      geometry_type: { type: 'UTF8', optional: true },
-      coordinate_0: { type: 'UTF8', optional: true },
-      coordinate_1: { type: 'UTF8', optional: true },
-      coordinate_2: { type: 'UTF8', optional: true },
-      cog: { type: 'UTF8', optional: true },
-      date: { type: 'UTF8', optional: true },
-      device_id: { type: 'UTF8', optional: true },
-      sog: { type: 'UTF8', optional: true },
-      source: { type: 'UTF8', optional: true },
-    },
-  },
   announcements: {
     repeated: true,
     fields: {
@@ -124,5 +124,6 @@ const bluewaterCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  bluewaterPosition,
   bluewaterCombined,
 };

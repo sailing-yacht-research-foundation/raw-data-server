@@ -4,6 +4,7 @@ const apiV1 = require('./routes/api-v1');
 const { errorHandler } = require('./errors');
 const { processGeoracingData } = require('./services/processGeoracingData');
 const { processEstelaData } = require('./services/processEstelaData');
+const { processBluewaterData } = require('./services/processBluewaterData');
 
 function createServer() {
   const app = express();
@@ -36,6 +37,14 @@ function createServer() {
       position: './estelapos.parquet',
     });
     res.send('SYRF - Processing estela data');
+  });
+
+  app.get('/bluewater', async (req, res) => {
+    await processBluewaterData({
+      main: './bluewater.parquet',
+      position: './bluewaterpos.parquet',
+    });
+    res.send('SYRF - Processing bluewater data');
   });
 
   app.use('/api/v1', apiV1);

@@ -238,16 +238,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Bluewater parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let bluewaterPath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
       '../../test-files/bluewater-test.parquet',
     );
-    await processBluewaterData(bluewaterPath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/bluewater-position-test.parquet',
+    );
+    await processBluewaterData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(bluewaterPath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(1);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -255,7 +257,12 @@ describe('Read tracker parquet files', () => {
         race_original_id: '605b1b069dbcc81862098de5',
       }),
     );
-    fs.unlink(bluewaterPath, (err) => {
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }
