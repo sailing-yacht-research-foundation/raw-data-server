@@ -80,7 +80,6 @@ router.post(
       const sourceStream = fs.createReadStream(req.file.path);
       const writeStream = fs.createWriteStream(unzippedJsonPath);
       await gunzipFile(sourceStream, writeStream);
-      console.log('gunzip done');
       fs.unlink(req.file.path, (err) => {
         if (err) {
           console.log('error deleting: ', err);
@@ -90,7 +89,6 @@ router.post(
 
     const jsonData = {};
     await new Promise((resolve, reject) => {
-      console.log('start parsing');
       const errorHandler = (err) => {
         reject(err);
       };

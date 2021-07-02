@@ -235,32 +235,24 @@ const processGeoracingData = async (optionalPath) => {
     },
   );
   for (let i = 0; i < events.length; i++) {
-    console.log('getting positions');
     const { id: event } = events[i];
     const perPage = 50000;
     let page = 1;
     let pageSize = 0;
-    console.time('position');
     do {
-      console.time('fetchData');
       const data = await db.georacingPosition.findAll({
         where: { event },
         raw: true,
         offset: (page - 1) * perPage,
         limit: perPage,
       });
-      console.timeEnd('fetchData');
       pageSize = data.length;
-      console.log(page, pageSize, perPage);
       page++;
-      console.time('writeParquet');
       while (data.length > 0) {
         await posWriter.appendRow(data.pop());
       }
-      console.timeEnd('writeParquet');
     } while (pageSize === perPage);
   }
-  console.timeEnd('position');
   await posWriter.close();
 
   const mainUrl = await uploadFileToS3(
