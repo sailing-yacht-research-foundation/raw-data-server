@@ -90,11 +90,10 @@ describe('Processing exist Estela Data from DB to Parquet', () => {
     expect(case2.size).toEqual(0);
   });
   it('should get dorsals', async () => {
-    const case1 = await getDorsals([raceID1]);
-    expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(1);
-    const case2 = await getDorsals([raceID2]);
-    expect(case2.size).toEqual(0);
+    const case1 = await getDorsals(raceID1);
+    expect(case1.length).toEqual(1);
+    const case2 = await getDorsals(raceID2);
+    expect(case2.length).toEqual(0);
   });
   it('should get players', async () => {
     const case1 = await getPlayers([raceID1]);

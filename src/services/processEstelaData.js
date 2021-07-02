@@ -35,17 +35,12 @@ const getBuoys = async (raceList) => {
   });
   return result;
 };
-const getDorsals = async (raceList) => {
+const getDorsals = async (race) => {
   const dorsals = await db.estelaDorsal.findAll({
-    where: { race: { [Op.in]: raceList } },
+    where: { race },
     raw: true,
   });
-  const result = new Map();
-  dorsals.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
-  });
-  return result;
+  return dorsals;
 };
 const getPlayers = async (raceList) => {
   const players = await db.estelaPlayer.findAll({
@@ -92,7 +87,6 @@ const processEstelaData = async (optionalPath) => {
 
   const mapClub = await getClubs(raceList);
   const buoys = await getBuoys(raceList);
-  const dorsals = await getDorsals(raceList);
   const players = await getPlayers(raceList);
   const results = await getResults(raceList);
 
@@ -158,7 +152,8 @@ const processEstelaData = async (optionalPath) => {
       club_original_id,
       club_data: club ? mapClub.get(club) : null,
       buoys: buoys.get(race_id),
-      dorsals: dorsals.get(race_id),
+      // Based on testing, dorsals have very large csv data. To prevent too much memory usage, query on each race instead
+      dorsals: await getDorsals(race_id),
       players: players.get(race_id),
       results: results.get(race_id),
     });
