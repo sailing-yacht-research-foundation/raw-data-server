@@ -288,16 +288,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Georacing parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
       '../../test-files/georacing-test.parquet',
     );
-    await processGeoracingData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/georacing-position-test.parquet',
+    );
+    await processGeoracingData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -305,7 +307,12 @@ describe('Read tracker parquet files', () => {
         name: 'Beargrease Sled Dog',
       }),
     );
-    fs.unlink(filePath, (err) => {
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }

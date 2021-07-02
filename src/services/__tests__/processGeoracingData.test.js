@@ -9,17 +9,14 @@ const {
   getCourseElements,
   getGroundPlace,
   getLines,
-  getPositions,
   getSplittime,
   getSplittimeObjects,
   processGeoracingData,
 } = require('../processGeoracingData');
 const saveGeoracingData = require('../saveGeoracingData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/georacing.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent georacing Data from DB to Parquet', () => {
@@ -97,11 +94,6 @@ describe('Processing exist georacing Data from DB to Parquet', () => {
     expect(actors.size).toEqual(1);
     expect(actors.get(eventID).length).toEqual(2);
   });
-  it('should get positions correctly', async () => {
-    const positions = await getPositions([eventID]);
-    expect(positions.size).toEqual(1);
-    expect(positions.get(eventID).length).toEqual(1);
-  });
   it('should get weathers correctly', async () => {
     const weathers = await getWeathers([raceID]);
     expect(weathers.size).toEqual(1);
@@ -144,13 +136,16 @@ describe('Processing exist georacing Data from DB to Parquet', () => {
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/georacing/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/georacing/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/georacing/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processGeoracingData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

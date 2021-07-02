@@ -2,6 +2,7 @@ const express = require('express');
 
 const apiV1 = require('./routes/api-v1');
 const { errorHandler } = require('./errors');
+const { processGeoracingData } = require('./services/processGeoracingDataV2');
 
 function createServer() {
   const app = express();
@@ -16,6 +17,11 @@ function createServer() {
 
   app.get('/', async (req, res) => {
     res.send('SYRF - Raw Data Server');
+  });
+
+  app.get('/process', async (req, res) => {
+    await processGeoracingData('./geoparquet.parquet');
+    res.send('SYRF - Processing georacing data');
   });
 
   app.use('/api/v1', apiV1);
