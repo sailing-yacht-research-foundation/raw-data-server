@@ -1,4 +1,4 @@
-const unzip = require('zlib').createGunzip();
+const zlib = require('zlib');
 
 async function gunzipFile(sourceStream, destinationStream) {
   //   const fileContents = fs.createReadStream(sourcePath);
@@ -8,10 +8,10 @@ async function gunzipFile(sourceStream, destinationStream) {
       destinationStream.destroy();
       reject(err);
     };
+    const unzip = zlib.createGunzip();
     const stream = sourceStream.pipe(unzip).pipe(destinationStream);
 
     stream.on('finish', () => {
-      console.log('finisihing unzip');
       resolve(true);
     });
     sourceStream.on('error', errorHandler);

@@ -13,7 +13,9 @@ function createServer() {
       extended: true,
     }),
   );
-  app.use(require('express-status-monitor')());
+  if (process.env.NODE_ENV !== 'test') {
+    app.use(require('express-status-monitor')());
+  }
 
   app.get('/', async (req, res) => {
     res.send('SYRF - Raw Data Server');
