@@ -3,6 +3,7 @@ const express = require('express');
 const apiV1 = require('./routes/api-v1');
 const { errorHandler } = require('./errors');
 const { processGeoracingData } = require('./services/processGeoracingData');
+const { processEstelaData } = require('./services/processEstelaData');
 
 function createServer() {
   const app = express();
@@ -21,9 +22,20 @@ function createServer() {
     res.send('SYRF - Raw Data Server');
   });
 
-  app.get('/process', async (req, res) => {
-    await processGeoracingData('./geoparquet.parquet');
+  app.get('/georacing', async (req, res) => {
+    await processGeoracingData({
+      main: './georacing.parquet',
+      position: './georacingpos.parquet',
+    });
     res.send('SYRF - Processing georacing data');
+  });
+
+  app.get('/estela', async (req, res) => {
+    await processEstelaData({
+      main: './estela.parquet',
+      position: './estelapos.parquet',
+    });
+    res.send('SYRF - Processing estela data');
   });
 
   app.use('/api/v1', apiV1);

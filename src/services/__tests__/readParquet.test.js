@@ -263,21 +263,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Estela parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
       '../../test-files/estela-test.parquet',
     );
-    await processEstelaData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/estela-position-test.parquet',
+    );
+    await processEstelaData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
-    fs.unlink(filePath, (err) => {
-      if (err) {
-        console.log('error deleting: ', err);
-      }
-    });
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -285,6 +282,16 @@ describe('Read tracker parquet files', () => {
         race_original_id: '6985',
       }),
     );
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
   });
 
   it('should read Georacing parquet files successfully', async () => {
