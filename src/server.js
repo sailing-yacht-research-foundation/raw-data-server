@@ -2,7 +2,7 @@ const express = require('express');
 
 const apiV1 = require('./routes/api-v1');
 const { errorHandler } = require('./errors');
-const { processGeoracingData } = require('./services/processGeoracingDataV2');
+const { processGeoracingData } = require('./services/processGeoracingData');
 
 function createServer() {
   const app = express();

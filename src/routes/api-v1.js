@@ -22,6 +22,7 @@ const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
+const gunzipFile = require('../utils/unzipFile');
 
 var router = express.Router();
 
@@ -39,7 +40,10 @@ var storage = multer.diskStorage({
 });
 
 function fileFilter(req, file, cb) {
-  if (file.mimetype !== 'application/json') {
+  if (
+    file.mimetype !== 'application/json' &&
+    file.mimetype !== 'application/gzip'
+  ) {
     cb(new BadRequestError('Invalid File Type'));
   } else {
     cb(null, true);
@@ -68,13 +72,29 @@ router.post(
       message: `File successfully uploaded`,
     });
 
+    // gunzip
+    let unzippedJsonPath = req.file.path;
+
+    if (req.file.mimetype === 'application/gzip') {
+      unzippedJsonPath = (await temp.open('georacing')).path;
+      const sourceStream = fs.createReadStream(req.file.path);
+      const writeStream = fs.createWriteStream(unzippedJsonPath);
+      await gunzipFile(sourceStream, writeStream);
+      console.log('gunzip done');
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.log('error deleting: ', err);
+        }
+      });
+    }
+
     const jsonData = {};
     await new Promise((resolve, reject) => {
       console.log('start parsing');
       const errorHandler = (err) => {
         reject(err);
       };
-      const stream = fs.createReadStream(req.file.path);
+      const stream = fs.createReadStream(unzippedJsonPath);
       // Need to use this emitPath: true
       // So we can get what properties the data latched on (TrackerRace, TrackerPosition, etc)
       // This way we don't need to add a new form data to this endpoint
@@ -137,7 +157,7 @@ router.post(
       console.error('error: ', err);
     } finally {
       console.log('save is triggered, now deleting files');
-      fs.unlink(req.file.path, (err) => {
+      fs.unlink(unzippedJsonPath, (err) => {
         if (err) {
           console.log('error deleting: ', err);
         }
