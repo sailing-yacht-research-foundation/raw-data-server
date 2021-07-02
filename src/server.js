@@ -5,6 +5,7 @@ const { errorHandler } = require('./errors');
 const { processGeoracingData } = require('./services/processGeoracingData');
 const { processEstelaData } = require('./services/processEstelaData');
 const { processBluewaterData } = require('./services/processBluewaterData');
+const { processISailData } = require('./services/processISailData');
 
 function createServer() {
   const app = express();
@@ -45,6 +46,14 @@ function createServer() {
       position: './bluewaterpos.parquet',
     });
     res.send('SYRF - Processing bluewater data');
+  });
+
+  app.get('/isail', async (req, res) => {
+    await processISailData({
+      main: './isail.parquet',
+      position: './isailpos.parquet',
+    });
+    res.send('SYRF - Processing iSail data');
   });
 
   app.use('/api/v1', apiV1);

@@ -107,7 +107,6 @@ router.post(
         jsonData[row.path[0]].push(row.value);
       });
       stream.on('close', () => {
-        console.log('done parsing');
         resolve(true);
       });
     });
@@ -154,7 +153,6 @@ router.post(
       // TODO: Handle error better
       console.error('error: ', err);
     } finally {
-      console.log('save is triggered, now deleting files');
       fs.unlink(unzippedJsonPath, (err) => {
         if (err) {
           console.log('error deleting: ', err);

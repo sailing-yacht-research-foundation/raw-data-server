@@ -334,16 +334,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read iSail parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
-      '../../test-files/isail-test.parquet',
+      '../../test-files/estela-test.parquet',
     );
-    await processISailData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/estela-position-test.parquet',
+    );
+    await processISailData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(1);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -351,7 +353,13 @@ describe('Read tracker parquet files', () => {
         name: 'DiZeBra 20150421',
       }),
     );
-    fs.unlink(filePath, (err) => {
+
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }

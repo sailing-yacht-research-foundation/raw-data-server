@@ -7,17 +7,17 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const saveISailData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let eventUrl = '';
-  let originalId = null;
+  let eventUrl = [];
   try {
     if (data.iSailEvent) {
-      // This field contains only a single object
-      const existEvent = await db.iSailEvent.findByPk(data.iSailEvent.id);
-      if (!existEvent) {
-        eventUrl = data.iSailEvent.url;
-        originalId = data.iSailEvent.original_id;
-        await db.iSailEvent.create(data.iSailEvent, { transaction });
-      }
+      eventUrl = data.iSailEvent.map((row) => {
+        return { original_id: row.original_id, url: row.url };
+      });
+      await db.iSailEvent.bulkCreate(data.iSailEvent, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
     }
     if (data.iSailClass) {
       await db.iSailClass.bulkCreate(data.iSailClass, {
@@ -41,14 +41,11 @@ const saveISailData = async (data) => {
       });
     }
     if (data.iSailEventTracksData) {
-      const existEventTrack = await db.iSailEventTracksData.findByPk(
-        data.iSailEventTracksData.id,
-      );
-      if (!existEventTrack) {
-        await db.iSailEventTracksData.create(data.iSailEventTracksData, {
-          transaction,
-        });
-      }
+      await db.iSailEventTracksData.bulkCreate(data.iSailEventTracksData, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
     }
     if (data.iSailTrack) {
       await db.iSailTrack.bulkCreate(data.iSailTrack, {
@@ -111,19 +108,37 @@ const saveISailData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
-  if (eventUrl) {
+  if (eventUrl.length > 0) {
     if (errorMessage) {
-      await db.iSailFailedUrl.create({
-        id: uuidv4(),
-        url: eventUrl,
-        error: errorMessage,
-      });
+      await db.iSailFailedUrl.bulkCreate(
+        eventUrl.map((row) => {
+          const { url } = row;
+          return {
+            id: uuidv4(),
+            url,
+            error: errorMessage,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
     } else {
-      await db.iSailSuccessfulUrl.create({
-        id: uuidv4(),
-        url: eventUrl,
-        original_id: originalId,
-      });
+      await db.iSailSuccessfulUrl.bulkCreate(
+        eventUrl.map((row) => {
+          const { url, original_id } = row;
+          return {
+            id: uuidv4(),
+            url,
+            original_id,
+          };
+        }),
+        {
+          ignoreDuplicates: true,
+          validate: true,
+        },
+      );
     }
   }
 

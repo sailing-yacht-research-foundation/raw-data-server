@@ -23,20 +23,22 @@
       "url": "http://app.i-sail.com/eventDetails/13/raceDetails?race="
     }
   ],
-  "iSailEvent": {
-    "id": "d451063e-b576-4b23-8638-457e68cb6c26",
-    "original_id": 13,
-    "name": "DiZeBra 20150421",
-    "start_date": "2015-04-21 00:00:00.000000",
-    "start_timezone_type": 3,
-    "start_timezone": "Europe/Paris",
-    "stop_date": "2015-04-21 00:00:00.000000",
-    "stop_timezone_type": 3,
-    "stop_timezone": "Europe/Paris",
-    "club": "WV Braassemermeer",
-    "location": "Braassemermeer",
-    "url": "http://app.i-sail.com/eventDetails/13"
-  },
+  "iSailEvent": [
+    {
+      "id": "d451063e-b576-4b23-8638-457e68cb6c26",
+      "original_id": 13,
+      "name": "DiZeBra 20150421",
+      "start_date": "2015-04-21 00:00:00.000000",
+      "start_timezone_type": 3,
+      "start_timezone": "Europe/Paris",
+      "stop_date": "2015-04-21 00:00:00.000000",
+      "stop_timezone_type": 3,
+      "stop_timezone": "Europe/Paris",
+      "club": "WV Braassemermeer",
+      "location": "Braassemermeer",
+      "url": "http://app.i-sail.com/eventDetails/13"
+    }
+  ],
   "iSailClass": [
     {
       "id": "42574d0c-3781-4d72-9ad8-1f41814924d0",
@@ -90,17 +92,19 @@
       "name": "Finish"
     }
   ],
-  "iSailEventTracksData": {
-    "id": "d2ebc1c0-0381-4cdd-aaac-4408baccc030",
-    "event": "d451063e-b576-4b23-8638-457e68cb6c26",
-    "original_event_id": 13,
-    "min_lon": 4.639424,
-    "max_lon": 4.653772,
-    "min_lat": 52.18676,
-    "max_lat": 52.1981,
-    "start_time": 1429635072,
-    "stop_time": 1429645312
-  },
+  "iSailEventTracksData": [
+    {
+      "id": "d2ebc1c0-0381-4cdd-aaac-4408baccc030",
+      "event": "d451063e-b576-4b23-8638-457e68cb6c26",
+      "original_event_id": 13,
+      "min_lon": 4.639424,
+      "max_lon": 4.653772,
+      "min_lat": 52.18676,
+      "max_lat": 52.1981,
+      "start_time": 1429635072,
+      "stop_time": 1429645312
+    }
+  ],
   "iSailTrack": [
     {
       "id": "feff0d0e-0027-44ba-a81f-59603600f60d",
