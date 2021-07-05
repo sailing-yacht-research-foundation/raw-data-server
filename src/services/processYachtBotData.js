@@ -1,12 +1,15 @@
 const fs = require('fs');
 const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { yachtbotCombined } = require('../schemas/parquets/yachtBot');
+const {
+  yachtbotCombined,
+  yachtbotPosition,
+} = require('../schemas/parquets/yachtBot');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getRaces = async () => {
   const races = await db.yachtBotRace.findAll({ raw: true });
@@ -36,28 +39,18 @@ const getYachts = async (raceList) => {
   });
   return result;
 };
-const getPositions = async (raceList) => {
-  const positions = await db.yachtBotPosition.findAll({
-    where: { race: { [Op.in]: raceList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
-  });
-  return result;
-};
 const processYachtBotData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    parquetPath = (await temp.open('yachtbot')).path;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('yachtbot')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('yachtbot_pos')).path;
 
   const races = await getRaces();
   if (races.length === 0) {
@@ -67,9 +60,15 @@ const processYachtBotData = async (optionalPath) => {
 
   const buoys = await getBuoys(raceList);
   const yachts = await getYachts(raceList);
-  const positions = await getPositions(raceList);
 
-  const data = races.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    yachtbotCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
     const {
       id: race_id,
       original_id: race_original_id,
@@ -79,9 +78,9 @@ const processYachtBotData = async (optionalPath) => {
       manual_wind,
       course_direction,
       url,
-    } = row;
+    } = races[i];
 
-    return {
+    await writer.appendRow({
       race_id,
       race_original_id,
       name,
@@ -92,28 +91,68 @@ const processYachtBotData = async (optionalPath) => {
       url,
       yachts: yachts.get(race_id),
       buoys: buoys.get(race_id),
-      positions: positions.get(race_id),
-    };
-  });
-  await writeToParquet(data, yachtbotCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    yachtbotPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
+    const { id: race } = races[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.yachtBotPosition.findAll({
+        where: { race },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `yachtbot/year=${currentYear}/month=${currentMonth}/yachtbot_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `yachtbot/year=${currentYear}/month=${currentMonth}/yachtbot_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
     fs.unlink(parquetPath, (err) => {
       if (err) {
         console.log(err);
       }
     });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
   getRaces,
   getBuoys,
   getYachts,
-  getPositions,
   processYachtBotData,
 };

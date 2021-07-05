@@ -567,16 +567,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Yacht Bot parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
-      '../../test-files/yachtBot-test.parquet',
+      '../../test-files/yachtbot-test.parquet',
     );
-    await processYachtBotData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/yachtbot-position-test.parquet',
+    );
+    await processYachtBotData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -585,7 +587,12 @@ describe('Read tracker parquet files', () => {
         name: 'Rolex Day 2 - Race 4',
       }),
     );
-    fs.unlink(filePath, (err) => {
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }

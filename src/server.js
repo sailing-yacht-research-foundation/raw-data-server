@@ -12,6 +12,7 @@ const { processMetasailData } = require('./services/processMetasailData');
 const { processRaceQsData } = require('./services/processRaceQsData');
 const { processTackTrackerData } = require('./services/processTackTrackerData');
 const { processTracTracData } = require('./services/processTracTracData');
+const { processYachtBotData } = require('./services/processYachtBotData');
 
 function createServer() {
   const app = express();
@@ -108,6 +109,14 @@ function createServer() {
       position: './tractracpos.parquet',
     });
     res.send('SYRF - Processing tractrac data');
+  });
+
+  app.get('/yachtbot', async (req, res) => {
+    await processYachtBotData({
+      main: './yachtbot.parquet',
+      position: './yachtbotpos.parquet',
+    });
+    res.send('SYRF - Processing Yacht bot data');
   });
 
   app.use('/api/v1', apiV1);
