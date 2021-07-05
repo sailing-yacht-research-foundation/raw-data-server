@@ -17,24 +17,22 @@ services:
       DB_USER: user
       DB_PASSWORD: password
       DB_NAME: rawdata
-      MQ_HOST: rabbit-mq
+      MQ_HOST:
       MQ_PORT: 61613
-      MQ_USER: guest
-      MQ_PASSWORD: guest
+      MQ_USER:
+      MQ_PASSWORD:
       MQ_TOPIC: /topic/rawdata.topic
-      MQ_TIMEOUT: 2700000
+      MQ_TIMEOUT:
     ports:
       - 3000:3000
     volumes:
       - .:/usr/src/app
     depends_on:
       - rds-db
-      - rabbit-mq
     command:
       ['./wait-for-it.sh', '-t', '120', 'rds-db:3306', '--', 'npm', 'start']
   rds-db:
     image: mysql:5.7
-    command: --max_allowed_packet=100M
     restart: always
     environment:
       MYSQL_DATABASE: rawdata
@@ -48,21 +46,5 @@ services:
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
       - rds-db:/var/lib/rds
-  rabbit-mq:
-    image: rabbitmq:3.7-management
-    build:
-      context: ./rabbit
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./rabbit/definitions.json:/etc/rabbitmq/definitions.json
-      - ./rabbit/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-    ports:
-      - 5672:5672
-      - 15672:15672
-      - 61613:61613
-    expose:
-      - 5672
-      - 15672
-      - 61613
 volumes:
   rds-db:

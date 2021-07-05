@@ -523,6 +523,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@syrf/transport-library@^1.0.7":
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@syrf/transport-library/-/transport-library-1.0.7.tgz#ef85a5faa5a05d6f12ee10cd7d3db8701105f9bc"
+  integrity sha512-SOg8vXulDi1TlsBpf/Tz6L1y4PSKCpxJiZh718oHgduufGe/Ag+6JAk4Bv6ReKY68sUWSJXW3WRkv93DbbMUGg==
+
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"
@@ -5478,7 +5483,7 @@ uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
 
-uuid@^8.1.0, uuid@^8.3.0:
+uuid@^8.1.0, uuid@^8.3.0, uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
