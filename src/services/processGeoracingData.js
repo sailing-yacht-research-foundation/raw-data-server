@@ -275,6 +275,45 @@ const processGeoracingData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.georacingLine.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingGroundPlace.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingCourseElement.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingCourseObject.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingCourse.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingWeather.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingRace.destroy({
+    where: { id: { [Op.in]: raceIDs } },
+  });
+  await db.georacingSplittimeObject.destroy({
+    where: { splittime: { [Op.in]: splittimeIDs } },
+  });
+  await db.georacingSplittime.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.georacingActor.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.georacingPosition.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.georacingEvent.destroy({
+    where: { id: { [Op.in]: eventList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

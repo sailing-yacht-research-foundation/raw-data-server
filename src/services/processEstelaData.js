@@ -85,7 +85,7 @@ const processEstelaData = async (optionalPath) => {
   }
   const raceList = races.map((row) => row.id);
 
-  const mapClub = await getClubs(raceList);
+  const mapClub = await getClubs();
   const buoys = await getBuoys(raceList);
   const players = await getPlayers(raceList);
   const results = await getResults(raceList);
@@ -209,6 +209,34 @@ const processEstelaData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.estelaResult.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.estelaPlayer.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.estelaBuoy.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  const mapIDs = [];
+  mapClub.forEach((row) => {
+    mapIDs.push(row.id);
+  });
+  await db.estelaClub.destroy({
+    where: { id: { [Op.in]: mapIDs } },
+  });
+  await db.estelaDorsal.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.estelaPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.estelaRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,
