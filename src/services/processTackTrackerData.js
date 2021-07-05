@@ -1,12 +1,15 @@
 const fs = require('fs');
 const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { tackTrackerCombined } = require('../schemas/parquets/tackTracker');
+const {
+  tackTrackerCombined,
+  tackTrackerPosition,
+} = require('../schemas/parquets/tackTracker');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getRegattas = async () => {
   const regattas = await db.tackTrackerRegatta.findAll({ raw: true });
@@ -68,18 +71,6 @@ const getMarks = async (raceList) => {
   });
   return result;
 };
-const getPositions = async (raceList) => {
-  const positions = await db.tackTrackerPosition.findAll({
-    where: { race: { [Op.in]: raceList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
-  });
-  return result;
-};
 const getStarts = async (raceList) => {
   const starts = await db.tackTrackerStart.findAll({
     where: { race: { [Op.in]: raceList } },
@@ -98,10 +89,12 @@ const processTackTrackerData = async (optionalPath) => {
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    parquetPath = (await temp.open('tacktracker')).path;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('tacktracker')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('tacktracker_pos')).path;
 
   const races = await getRaces();
   if (races.length === 0) {
@@ -114,10 +107,16 @@ const processTackTrackerData = async (optionalPath) => {
   const defaults = await getDefaults(raceList);
   const finishes = await getFinishes(raceList);
   const marks = await getMarks(raceList);
-  const positions = await getPositions(raceList);
   const starts = await getStarts(raceList);
 
-  const data = races.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    tackTrackerCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
     const {
       id: race_id,
       original_id: race_original_id,
@@ -136,11 +135,11 @@ const processTackTrackerData = async (optionalPath) => {
       event_notes,
       course_notes,
       upload_params,
-    } = row;
+    } = races[i];
 
     const regattaData = regatta ? mapRegatta.get(regatta) : null;
 
-    return {
+    await writer.appendRow({
       race_id,
       race_original_id,
       url,
@@ -163,23 +162,64 @@ const processTackTrackerData = async (optionalPath) => {
       defaults: defaults.get(race_id),
       finishes: finishes.get(race_id),
       marks: marks.get(race_id),
-      positions: positions.get(race_id),
       starts: starts.get(race_id),
-    };
-  });
-  await writeToParquet(data, tackTrackerCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
-    parquetPath,
-    `tackTracker/year=${currentYear}/month=${currentMonth}/tackTracker_${fullDateFormat}.parquet`,
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    tackTrackerPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
   );
+  for (let i = 0; i < races.length; i++) {
+    const { id: race } = races[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.tackTrackerPosition.findAll({
+        where: { race },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
+    parquetPath,
+    `tacktracker/year=${currentYear}/month=${currentMonth}/tacktracker_${fullDateFormat}.parquet`,
+  );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `tacktracker/year=${currentYear}/month=${currentMonth}/tacktracker_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
     fs.unlink(parquetPath, (err) => {
       if (err) {
         console.log(err);
       }
     });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
@@ -189,7 +229,6 @@ module.exports = {
   getDefaults,
   getFinishes,
   getMarks,
-  getPositions,
   getStarts,
   processTackTrackerData,
 };

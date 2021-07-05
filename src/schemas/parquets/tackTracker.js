@@ -1,5 +1,14 @@
 var parquet = require('parquetjs-lite');
 
+const tackTrackerPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  boat: { type: 'UTF8', optional: true },
+  race: { type: 'UTF8', optional: true },
+  time: { type: 'UTF8', optional: true },
+  lon: { type: 'UTF8', optional: true },
+  lat: { type: 'UTF8', optional: true },
+});
+
 const tackTrackerCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   race_original_id: { type: 'UTF8' },
@@ -68,16 +77,6 @@ const tackTrackerCombined = new parquet.ParquetSchema({
       type: { type: 'UTF8', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      boat: { type: 'UTF8', optional: true },
-      time: { type: 'UTF8', optional: true },
-      lon: { type: 'UTF8', optional: true },
-      lat: { type: 'UTF8', optional: true },
-    },
-  },
   starts: {
     repeated: true,
     fields: {
@@ -95,5 +94,6 @@ const tackTrackerCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  tackTrackerPosition,
   tackTrackerCombined,
 };

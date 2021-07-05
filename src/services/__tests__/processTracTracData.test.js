@@ -11,15 +11,12 @@ const {
   getCompetitors,
   getCompetitorPassings,
   getCompetitorResults,
-  getCompetitorPositions,
   processTracTracData,
 } = require('../processTracTracData');
 const saveTracTracData = require('../saveTracTracData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/tractrac.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent trac trac Data from DB to Parquet', () => {
@@ -46,48 +43,22 @@ describe('Processing exist Trac Trac Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.tractracEvent.destroy({
-      truncate: true,
-    });
-    await db.tractracRace.destroy({
-      truncate: true,
-    });
-    await db.tractracClass.destroy({
-      truncate: true,
-    });
-    await db.tractracRaceClass.destroy({
-      truncate: true,
-    });
-    await db.tractracClass.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitor.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitorPassing.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitorPosition.destroy({
-      truncate: true,
-    });
-    await db.tractracCompetitorResult.destroy({
-      truncate: true,
-    });
-    await db.tractracControl.destroy({
-      truncate: true,
-    });
-    await db.tractracControlPoint.destroy({
-      truncate: true,
-    });
-    await db.tractracControlPointPosition.destroy({
-      truncate: true,
-    });
-    await db.tractracRoute.destroy({
-      truncate: true,
-    });
-    await db.sailorEmail.destroy({
-      truncate: true,
-    });
+    await db.tractracEvent.destroy({ truncate: true });
+    await db.tractracRace.destroy({ truncate: true });
+    await db.tractracClass.destroy({ truncate: true });
+    await db.tractracRaceClass.destroy({ truncate: true });
+    await db.tractracClass.destroy({ truncate: true });
+    await db.tractracCompetitor.destroy({ truncate: true });
+    await db.tractracCompetitorPassing.destroy({ truncate: true });
+    await db.tractracCompetitorPosition.destroy({ truncate: true });
+    await db.tractracCompetitorResult.destroy({ truncate: true });
+    await db.tractracControl.destroy({ truncate: true });
+    await db.tractracControlPoint.destroy({ truncate: true });
+    await db.tractracControlPointPosition.destroy({ truncate: true });
+    await db.tractracRoute.destroy({ truncate: true });
+    await db.sailorEmail.destroy({ truncate: true });
+    await db.tractracFailedUrl.destroy({ truncate: true });
+    await db.tractracSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get events', async () => {
@@ -143,14 +114,6 @@ describe('Processing exist Trac Trac Data from DB to Parquet', () => {
     expect(result2.size).toEqual(1);
     expect(result2.get(raceID3).length).toEqual(3);
   });
-  it('should get race competitor positions correctly', async () => {
-    const result1 = await getCompetitorPositions([raceID1]);
-    expect(result1.size).toEqual(0);
-
-    const result2 = await getCompetitorPositions([raceID2]);
-    expect(result2.size).toEqual(1);
-    expect(result2.get(raceID2).length).toEqual(14);
-  });
 
   it('should get race controls correctly', async () => {
     const result1 = await getControls([raceID1]);
@@ -178,13 +141,16 @@ describe('Processing exist Trac Trac Data from DB to Parquet', () => {
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/tractrac/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/tractrac/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/tractrac/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processTracTracData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

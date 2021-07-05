@@ -9,6 +9,9 @@ const { processISailData } = require('./services/processISailData');
 const { processKattackData } = require('./services/processKattackData');
 const { processKwindooData } = require('./services/processKwindooData');
 const { processMetasailData } = require('./services/processMetasailData');
+const { processRaceQsData } = require('./services/processRaceQsData');
+const { processTackTrackerData } = require('./services/processTackTrackerData');
+const { processTracTracData } = require('./services/processTracTracData');
 
 function createServer() {
   const app = express();
@@ -84,11 +87,27 @@ function createServer() {
   });
 
   app.get('/raceqs', async (req, res) => {
-    await processMetasailData({
+    await processRaceQsData({
       main: './raceqs.parquet',
       position: './raceqspos.parquet',
     });
     res.send('SYRF - Processing race qs data');
+  });
+
+  app.get('/tacktracker', async (req, res) => {
+    await processTackTrackerData({
+      main: './tacktracker.parquet',
+      position: './tacktrackerpos.parquet',
+    });
+    res.send('SYRF - Processing tacktracker data');
+  });
+
+  app.get('/tractrac', async (req, res) => {
+    await processTracTracData({
+      main: './tractrac.parquet',
+      position: './tractracpos.parquet',
+    });
+    res.send('SYRF - Processing tractrac data');
   });
 
   app.use('/api/v1', apiV1);

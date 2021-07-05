@@ -502,16 +502,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read TackTracker parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
-      '../../test-files/tackTracker-test.parquet',
+      '../../test-files/tacktracker-test.parquet',
     );
-    await processTackTrackerData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/tacktracker-position-test.parquet',
+    );
+    await processTackTrackerData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(2);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -519,7 +521,13 @@ describe('Read tracker parquet files', () => {
         race_original_id: '8500595',
       }),
     );
-    fs.unlink(filePath, (err) => {
+
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }
@@ -527,16 +535,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Trac Trac parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
-      '../../test-files/tractrac-test.parquet',
+      '../../test-files/tacktracker-test.parquet',
     );
-    await processTracTracData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/tacktracker-position-test.parquet',
+    );
+    await processTracTracData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(5);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -544,7 +554,12 @@ describe('Read tracker parquet files', () => {
         original_race_id: '80b39da0-b465-0131-ba03-10bf48d758ce',
       }),
     );
-    fs.unlink(filePath, (err) => {
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }
