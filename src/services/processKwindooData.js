@@ -285,6 +285,52 @@ const processKwindooData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.kwindooWaypoint.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooVideoStream.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooRunningGroup.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooRace.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooPosition.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooPOI.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooMIA.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooMarker.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooHomeportLocation.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooComment.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooBoat.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  const ownerIDs = [];
+  mapOwner.forEach((row) => {
+    ownerIDs.push(row.id);
+  });
+  await db.kwindooRegattaOwner.destroy({
+    where: { id: { [Op.in]: ownerIDs } },
+  });
+  await db.kwindooRegatta.destroy({
+    where: { id: { [Op.in]: regattaList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

@@ -243,6 +243,42 @@ const processISailData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.iSailResult.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailCourseMark.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailStartline.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailMark.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailRace.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailRounding.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailEventTracksData.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailTrack.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailEventParticipant.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailPosition.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailEvent.destroy({
+    where: { id: { [Op.in]: queryEventList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

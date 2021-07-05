@@ -229,6 +229,27 @@ const processKattackData = async (optionalPath) => {
       });
     }
 
+    // Delete parqueted data from DB
+    await db.kattackWaypoint.destroy({
+      where: { race: { [Op.in]: raceList } },
+    });
+    await db.kattackDevice.destroy({
+      where: { race: { [Op.in]: raceList } },
+    });
+    await db.kattackPosition.destroy({
+      where: { race: { [Op.in]: raceList } },
+    });
+    const clubIDs = [];
+    yachtClubs.forEach((row) => {
+      clubIDs.push(row.id);
+    });
+    await db.kattackYachtClub.destroy({
+      where: { id: { [Op.in]: clubIDs } },
+    });
+    await db.kattackRace.destroy({
+      where: { id: { [Op.in]: raceList } },
+    });
+
     return {
       mainUrl,
       positionUrl,
