@@ -129,7 +129,7 @@ const processYachtBotData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `yachtbot/year=${currentYear}/month=${currentMonth}/yachtbot_${fullDateFormat}.parquet`,
+    `yachtbot/year=${currentYear}/month=${currentMonth}/yachtbotPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

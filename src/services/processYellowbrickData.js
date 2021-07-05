@@ -1,12 +1,15 @@
 const fs = require('fs');
 const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { yellowbrickCombined } = require('../schemas/parquets/yellowbrick');
+const {
+  yellowbrickCombined,
+  yellowbrickPosition,
+} = require('../schemas/parquets/yellowbrick');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getRaces = async () => {
   const races = await db.yellowbrickRace.findAll({ raw: true });
@@ -48,18 +51,6 @@ const getPois = async (raceList) => {
   });
   return result;
 };
-const getPositions = async (raceList) => {
-  const positions = await db.yellowbrickPosition.findAll({
-    where: { race: { [Op.in]: raceList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
-  });
-  return result;
-};
 const getTags = async (raceList) => {
   const tags = await db.yellowbrickTag.findAll({
     where: { race: { [Op.in]: raceList } },
@@ -91,10 +82,12 @@ const processYellowbrickData = async (optionalPath) => {
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    parquetPath = (await temp.open('yellowbrick')).path;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('yellowbrick')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('yellowbrick_pos')).path;
 
   const races = await getRaces();
   if (races.length === 0) {
@@ -104,12 +97,18 @@ const processYellowbrickData = async (optionalPath) => {
 
   const tags = await getTags(raceList);
   const teams = await getTeams(raceList);
-  const positions = await getPositions(raceList);
   const pois = await getPois(raceList);
   const courseNodes = await getCourseNodes(raceList);
   const leaderboardTeams = await getLeaderboardTeams(raceList);
 
-  const data = races.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    yellowbrickCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
     const {
       id: race_id,
       tz,
@@ -132,9 +131,9 @@ const processYellowbrickData = async (optionalPath) => {
       distance,
       url,
       race_handicap,
-    } = row;
+    } = races[i];
 
-    return {
+    await writer.appendRow({
       race_id,
       tz,
       tz_offset,
@@ -158,32 +157,72 @@ const processYellowbrickData = async (optionalPath) => {
       race_handicap,
       tags: tags.get(race_id),
       teams: teams.get(race_id),
-      positions: positions.get(race_id),
       pois: pois.get(race_id),
       leaderboardTeams: leaderboardTeams.get(race_id),
       courseNodes: courseNodes.get(race_id),
-    };
-  });
-  await writeToParquet(data, yellowbrickCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    yellowbrickPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
+    const { id: race } = races[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.yellowbrickPosition.findAll({
+        where: { race },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `yellowbrick/year=${currentYear}/month=${currentMonth}/yellowbrick_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `yellowbrick/year=${currentYear}/month=${currentMonth}/yellowbrickPosition_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
     fs.unlink(parquetPath, (err) => {
       if (err) {
         console.log(err);
       }
     });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
   getRaces,
   getCourseNodes,
   getLeaderboardTeams,
-  getPositions,
   getPois,
   getTags,
   getTeams,

@@ -194,7 +194,7 @@ const processEstelaData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `estela/year=${currentYear}/month=${currentMonth}/estela_${fullDateFormat}.parquet`,
+    `estela/year=${currentYear}/month=${currentMonth}/estelaPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

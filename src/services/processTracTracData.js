@@ -262,7 +262,7 @@ const processTracTracData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `tractrac/year=${currentYear}/month=${currentMonth}/tractrac_${fullDateFormat}.parquet`,
+    `tractrac/year=${currentYear}/month=${currentMonth}/tractracPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

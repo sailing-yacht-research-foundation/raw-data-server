@@ -201,7 +201,7 @@ const processTackTrackerData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `tacktracker/year=${currentYear}/month=${currentMonth}/tacktracker_${fullDateFormat}.parquet`,
+    `tacktracker/year=${currentYear}/month=${currentMonth}/tacktrackerPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

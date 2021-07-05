@@ -3,7 +3,6 @@ const fs = require('fs');
 
 const db = require('../../models');
 const readParquet = require('../readParquet');
-const uploadFileToS3 = require('../uploadFileToS3');
 
 const saveBluewaterData = require('../saveBluewaterData');
 const { processBluewaterData } = require('../processBluewaterData');
@@ -600,16 +599,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Yellowbrick parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
-      '../../test-files/yellowbrick-test.parquet',
+      '../../test-files/yachtbot-test.parquet',
     );
-    await processYellowbrickData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/yachtbot-position-test.parquet',
+    );
+    await processYellowbrickData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(3);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -618,7 +619,12 @@ describe('Read tracker parquet files', () => {
         tz_offset: '7200',
       }),
     );
-    fs.unlink(filePath, (err) => {
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }

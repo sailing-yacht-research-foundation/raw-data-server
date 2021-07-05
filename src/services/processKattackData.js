@@ -213,7 +213,7 @@ const processKattackData = async (optionalPath) => {
     );
     const positionUrl = await uploadFileToS3(
       positionPath,
-      `kattack/year=${currentYear}/month=${currentMonth}/kattack_${fullDateFormat}.parquet`,
+      `kattack/year=${currentYear}/month=${currentMonth}/kattackPosition_${fullDateFormat}.parquet`,
     );
 
     if (!optionalPath) {

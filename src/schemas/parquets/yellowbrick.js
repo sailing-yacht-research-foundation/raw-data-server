@@ -1,5 +1,29 @@
 var parquet = require('parquetjs-lite');
 
+const yellowbrickPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  original_id: { type: 'UTF8', optional: true },
+  race_code: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  team_original_id: { type: 'UTF8' },
+  team: { type: 'UTF8' },
+  pc: { type: 'UTF8', optional: true },
+  dtf_km: { type: 'UTF8', optional: true },
+  dtf_nm: { type: 'UTF8', optional: true },
+  lon: { type: 'UTF8', optional: true },
+  lat: { type: 'UTF8', optional: true },
+  timestamp: { type: 'UTF8', optional: true },
+  sog_kmph: { type: 'UTF8', optional: true },
+  tx_at: { type: 'UTF8', optional: true },
+  altitude: { type: 'UTF8', optional: true },
+  type: { type: 'UTF8', optional: true },
+  battery: { type: 'UTF8', optional: true },
+  sog_knots: { type: 'UTF8', optional: true },
+  alert: { type: 'BOOLEAN', optional: true },
+  cog: { type: 'UTF8', optional: true },
+  gps_at: { type: 'UTF8', optional: true },
+});
+
 const yellowbrickCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   tz: { type: 'UTF8', optional: true },
@@ -57,30 +81,6 @@ const yellowbrickCombined = new parquet.ParquetSchema({
       status: { type: 'UTF8', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      original_id: { type: 'UTF8', optional: true },
-      team_original_id: { type: 'UTF8' },
-      team: { type: 'UTF8' },
-      pc: { type: 'UTF8', optional: true },
-      dtf_km: { type: 'UTF8', optional: true },
-      dtf_nm: { type: 'UTF8', optional: true },
-      lon: { type: 'UTF8', optional: true },
-      lat: { type: 'UTF8', optional: true },
-      timestamp: { type: 'UTF8', optional: true },
-      sog_kmph: { type: 'UTF8', optional: true },
-      tx_at: { type: 'UTF8', optional: true },
-      altitude: { type: 'UTF8', optional: true },
-      type: { type: 'UTF8', optional: true },
-      battery: { type: 'UTF8', optional: true },
-      sog_knots: { type: 'UTF8', optional: true },
-      alert: { type: 'BOOLEAN', optional: true },
-      cog: { type: 'UTF8', optional: true },
-      gps_at: { type: 'UTF8', optional: true },
-    },
-  },
   pois: {
     repeated: true,
     fields: {
@@ -134,5 +134,6 @@ const yellowbrickCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  yellowbrickPosition,
   yellowbrickCombined,
 };

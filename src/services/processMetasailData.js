@@ -157,7 +157,7 @@ const processMetasailData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `metasail/year=${currentYear}/month=${currentMonth}/metasail_${fullDateFormat}.parquet`,
+    `metasail/year=${currentYear}/month=${currentMonth}/metasailPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

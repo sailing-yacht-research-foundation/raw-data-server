@@ -195,7 +195,7 @@ const processRaceQsData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `raceqs/year=${currentYear}/month=${currentMonth}/raceqs_${fullDateFormat}.parquet`,
+    `raceqs/year=${currentYear}/month=${currentMonth}/raceqsPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

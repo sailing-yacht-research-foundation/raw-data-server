@@ -270,7 +270,7 @@ const processKwindooData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `kwindoo/year=${currentYear}/month=${currentMonth}/kwindoo_${fullDateFormat}.parquet`,
+    `kwindoo/year=${currentYear}/month=${currentMonth}/kwindooPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

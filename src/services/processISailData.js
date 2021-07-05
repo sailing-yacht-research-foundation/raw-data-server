@@ -228,7 +228,7 @@ const processISailData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `iSail/year=${currentYear}/month=${currentMonth}/isail_${fullDateFormat}.parquet`,
+    `iSail/year=${currentYear}/month=${currentMonth}/isailPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {

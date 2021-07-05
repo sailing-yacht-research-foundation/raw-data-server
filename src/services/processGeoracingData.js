@@ -261,7 +261,7 @@ const processGeoracingData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
+    `georacing/year=${currentYear}/month=${currentMonth}/georacingPosition_${fullDateFormat}.parquet`,
   );
   if (!optionalPath) {
     fs.unlink(parquetPath, (err) => {

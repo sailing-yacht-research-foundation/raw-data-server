@@ -235,7 +235,7 @@ const processBluewaterData = async (optionalPath) => {
   );
   const positionUrl = await uploadFileToS3(
     positionPath,
-    `bluewater/year=${currentYear}/month=${currentMonth}/bluewater_${fullDateFormat}.parquet`,
+    `bluewater/year=${currentYear}/month=${currentMonth}/bluewaterPosition_${fullDateFormat}.parquet`,
   );
 
   if (!optionalPath) {
