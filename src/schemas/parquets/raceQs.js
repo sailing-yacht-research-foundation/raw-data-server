@@ -1,5 +1,22 @@
 var parquet = require('parquetjs-lite');
 
+const raceQsPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  event: { type: 'UTF8' },
+  event_original_id: { type: 'UTF8' },
+  participant: { type: 'UTF8' },
+  participant_original_id: { type: 'UTF8' },
+  time: { type: 'UTF8', optional: true },
+  lat: { type: 'UTF8', optional: true },
+  lon: { type: 'UTF8', optional: true },
+  roll: { type: 'UTF8', optional: true },
+  pitch: { type: 'UTF8', optional: true },
+  heading: { type: 'UTF8', optional: true },
+  sow: { type: 'UTF8', optional: true },
+  wind_angle: { type: 'UTF8', optional: true },
+  wind_speed: { type: 'UTF8', optional: true },
+});
+
 const raceQsCombined = new parquet.ParquetSchema({
   event_id: { type: 'UTF8' },
   event_original_id: { type: 'UTF8' },
@@ -54,23 +71,6 @@ const raceQsCombined = new parquet.ParquetSchema({
       boat: { type: 'UTF8' },
       start: { type: 'UTF8' },
       finish: { type: 'UTF8' },
-    },
-  },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      participant: { type: 'UTF8' },
-      participant_original_id: { type: 'UTF8' },
-      time: { type: 'UTF8', optional: true },
-      lat: { type: 'UTF8', optional: true },
-      lon: { type: 'UTF8', optional: true },
-      roll: { type: 'UTF8', optional: true },
-      pitch: { type: 'UTF8', optional: true },
-      heading: { type: 'UTF8', optional: true },
-      sow: { type: 'UTF8', optional: true },
-      wind_angle: { type: 'UTF8', optional: true },
-      wind_speed: { type: 'UTF8', optional: true },
     },
   },
   routes: {
@@ -135,5 +135,6 @@ const raceQsCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  raceQsPosition,
   raceQsCombined,
 };

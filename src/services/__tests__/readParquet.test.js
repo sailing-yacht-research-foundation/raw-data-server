@@ -468,16 +468,19 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read RaceQs parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
-      '../../test-files/raceQs-test.parquet',
+      '../../test-files/raceqs-test.parquet',
     );
-    await processRaceQsData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/raceqs-position-test.parquet',
+    );
+
+    await processRaceQsData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(1);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -485,7 +488,13 @@ describe('Read tracker parquet files', () => {
         event_original_id: '62880',
       }),
     );
-    fs.unlink(filePath, (err) => {
+
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }

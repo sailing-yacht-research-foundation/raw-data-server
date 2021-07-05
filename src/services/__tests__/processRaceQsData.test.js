@@ -4,18 +4,15 @@ const {
   getEvents,
   getDivisions,
   getParticipants,
-  getPositions,
   getRoutes,
   getStarts,
   getWaypoints,
   processRaceQsData,
 } = require('../processRaceQsData');
 const saveRaceQsData = require('../saveRaceQsData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/raceQs.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent RaceQs Data from DB to Parquet', () => {
@@ -41,30 +38,16 @@ describe('Processing exist RaceQs Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.raceQsRegatta.destroy({
-      truncate: true,
-    });
-    await db.raceQsEvent.destroy({
-      truncate: true,
-    });
-    await db.raceQsDivision.destroy({
-      truncate: true,
-    });
-    await db.raceQsParticipant.destroy({
-      truncate: true,
-    });
-    await db.raceQsPosition.destroy({
-      truncate: true,
-    });
-    await db.raceQsRoute.destroy({
-      truncate: true,
-    });
-    await db.raceQsStart.destroy({
-      truncate: true,
-    });
-    await db.raceQsWaypoint.destroy({
-      truncate: true,
-    });
+    await db.raceQsRegatta.destroy({ truncate: true });
+    await db.raceQsEvent.destroy({ truncate: true });
+    await db.raceQsDivision.destroy({ truncate: true });
+    await db.raceQsParticipant.destroy({ truncate: true });
+    await db.raceQsPosition.destroy({ truncate: true });
+    await db.raceQsRoute.destroy({ truncate: true });
+    await db.raceQsStart.destroy({ truncate: true });
+    await db.raceQsWaypoint.destroy({ truncate: true });
+    await db.raceQsSuccessfulUrl.destroy({ truncate: true });
+    await db.raceQsFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get events', async () => {
@@ -74,13 +57,6 @@ describe('Processing exist RaceQs Data from DB to Parquet', () => {
   it('should get regattas', async () => {
     const regattas = await getRegattas();
     expect(regattas.size).toEqual(1);
-  });
-  it('should get positions', async () => {
-    const case1 = await getPositions([event1]);
-    expect(case1.size).toEqual(1);
-    expect(case1.get(event1).length).toEqual(3);
-    const case2 = await getPositions([event2]);
-    expect(case2.size).toEqual(0);
   });
   it('should get participants', async () => {
     const case1 = await getParticipants([event1]);
@@ -93,7 +69,7 @@ describe('Processing exist RaceQs Data from DB to Parquet', () => {
     const case1 = await getDivisions([event1]);
     expect(case1.size).toEqual(1);
     expect(case1.get(event1).length).toEqual(1);
-    const case2 = await getPositions([event2]);
+    const case2 = await getDivisions([event2]);
     expect(case2.size).toEqual(0);
   });
   it('should get routes', async () => {
@@ -119,13 +95,16 @@ describe('Processing exist RaceQs Data from DB to Parquet', () => {
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/raceqs/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/raceqs/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/raceqs/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processRaceQsData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

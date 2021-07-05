@@ -83,6 +83,14 @@ function createServer() {
     res.send('SYRF - Processing metasail data');
   });
 
+  app.get('/raceqs', async (req, res) => {
+    await processMetasailData({
+      main: './raceqs.parquet',
+      position: './raceqspos.parquet',
+    });
+    res.send('SYRF - Processing race qs data');
+  });
+
   app.use('/api/v1', apiV1);
   app.use(errorHandler);
   return app;
