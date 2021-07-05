@@ -190,6 +190,8 @@ const kwindooCombined = new parquet.ParquetSchema({
 
 const kwindooPosition = new parquet.ParquetSchema({
   id: { type: 'UTF8' },
+  regatta: { type: 'UTF8' },
+  regatta_original_id: { type: 'UTF8' },
   race: { type: 'UTF8' },
   race_original_id: { type: 'UTF8' },
   boat: { type: 'UTF8' },
