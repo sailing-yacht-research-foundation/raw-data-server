@@ -9,7 +9,7 @@ const TRACKER_MAP = {
   kwindoo: 'kwindoo',
   metasail: 'metasail',
   raceqs: 'raceQs',
-  tackTracker: 'tackTracker',
+  tacktracker: 'tackTracker',
   tractrac: 'tractrac',
   yachtbot: 'yachtBot',
   yellowbrick: 'yellowbrick',
