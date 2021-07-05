@@ -140,26 +140,6 @@ const kwindooCombined = new parquet.ParquetSchema({
       description: { type: 'UTF8', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      race: { type: 'UTF8' },
-      race_original_id: { type: 'UTF8' },
-      boat: { type: 'UTF8' },
-      boat_original_id: { type: 'UTF8' },
-      i: { type: 'UTF8', optional: true },
-      u: { type: 'UTF8', optional: true },
-      t: { type: 'UTF8', optional: true },
-      lat: { type: 'UTF8', optional: true },
-      lon: { type: 'UTF8', optional: true },
-      b: { type: 'UTF8', optional: true },
-      a: { type: 'UTF8', optional: true },
-      d: { type: 'UTF8', optional: true },
-      s: { type: 'UTF8', optional: true },
-      y: { type: 'UTF8', optional: true },
-    },
-  },
   runningGroups: {
     repeated: true,
     fields: {
@@ -208,6 +188,25 @@ const kwindooCombined = new parquet.ParquetSchema({
   },
 });
 
+const kwindooPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  race_original_id: { type: 'UTF8' },
+  boat: { type: 'UTF8' },
+  boat_original_id: { type: 'UTF8' },
+  i: { type: 'UTF8', optional: true },
+  u: { type: 'UTF8', optional: true },
+  t: { type: 'UTF8', optional: true },
+  lat: { type: 'UTF8', optional: true },
+  lon: { type: 'UTF8', optional: true },
+  b: { type: 'UTF8', optional: true },
+  a: { type: 'UTF8', optional: true },
+  d: { type: 'UTF8', optional: true },
+  s: { type: 'UTF8', optional: true },
+  y: { type: 'UTF8', optional: true },
+});
+
 module.exports = {
   kwindooCombined,
+  kwindooPosition,
 };

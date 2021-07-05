@@ -401,16 +401,19 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Kwindoo parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
       '../../test-files/kwindoo-test.parquet',
     );
-    await processKwindooData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/kwindoo-position-test.parquet',
+    );
+
+    await processKwindooData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(3);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -418,7 +421,13 @@ describe('Read tracker parquet files', () => {
         name: 'I. Flex Fleet Klasszikus Szóló',
       }),
     );
-    fs.unlink(filePath, (err) => {
+
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }
