@@ -6,6 +6,9 @@ const { processGeoracingData } = require('./services/processGeoracingData');
 const { processEstelaData } = require('./services/processEstelaData');
 const { processBluewaterData } = require('./services/processBluewaterData');
 const { processISailData } = require('./services/processISailData');
+const { processKattackData } = require('./services/processKattackData');
+const { processKwindooData } = require('./services/processKwindooData');
+const { processMetasailData } = require('./services/processMetasailData');
 
 function createServer() {
   const app = express();
@@ -54,6 +57,30 @@ function createServer() {
       position: './isailpos.parquet',
     });
     res.send('SYRF - Processing iSail data');
+  });
+
+  app.get('/kattack', async (req, res) => {
+    await processKattackData({
+      main: './kattack.parquet',
+      position: './kattackpos.parquet',
+    });
+    res.send('SYRF - Processing kattack data');
+  });
+
+  app.get('/kwindoo', async (req, res) => {
+    await processKwindooData({
+      main: './kwindoo.parquet',
+      position: './kwindoopos.parquet',
+    });
+    res.send('SYRF - Processing kwindoo data');
+  });
+
+  app.get('/metasail', async (req, res) => {
+    await processMetasailData({
+      main: './metasail.parquet',
+      position: './metasailpos.parquet',
+    });
+    res.send('SYRF - Processing metasail data');
   });
 
   app.use('/api/v1', apiV1);

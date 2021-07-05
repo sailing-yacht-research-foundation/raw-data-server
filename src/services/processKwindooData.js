@@ -152,10 +152,10 @@ const processKwindooData = async (optionalPath) => {
 
   let parquetPath = optionalPath
     ? optionalPath.main
-    : (await temp.open('kattack')).path;
+    : (await temp.open('kwindoo')).path;
   let positionPath = optionalPath
     ? optionalPath.position
-    : (await temp.open('kattack_pos')).path;
+    : (await temp.open('kwindoo_pos')).path;
 
   const regattas = await getRegattas();
   if (regattas.length === 0) {

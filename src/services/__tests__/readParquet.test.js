@@ -435,16 +435,18 @@ describe('Read tracker parquet files', () => {
   });
 
   it('should read Metasail parquet files successfully', async () => {
-    uploadFileToS3.mockResolvedValueOnce('mockFilePath');
-
-    let filePath = path.resolve(
+    let mainPath = path.resolve(
       __dirname,
       '../../test-files/metasail-test.parquet',
     );
-    await processMetasailData(filePath);
+    let positionPath = path.resolve(
+      __dirname,
+      '../../test-files/metasail-position-test.parquet',
+    );
+    await processMetasailData({ main: mainPath, position: positionPath });
 
     const processRecord = jest.fn();
-    await readParquet(filePath, processRecord);
+    await readParquet(mainPath, processRecord);
     expect(processRecord).toHaveBeenCalledTimes(3);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -452,7 +454,13 @@ describe('Read tracker parquet files', () => {
         name: 'Spi Ouest France 2020 DIAM 24 suite R 7 (race id: 10386)',
       }),
     );
-    fs.unlink(filePath, (err) => {
+
+    fs.unlink(mainPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
       if (err) {
         console.log('error deleting: ', err);
       }
