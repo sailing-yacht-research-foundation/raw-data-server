@@ -172,6 +172,31 @@ const processMetasailData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.metasailBoat.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.metasailBuoy.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.metasailGate.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.metasailPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  const eventIDs = [];
+  mapEvent.forEach((row) => {
+    eventIDs.push(row.id);
+  });
+  await db.metasailEvent.destroy({
+    where: { id: { [Op.in]: eventIDs } },
+  });
+  await db.metasailRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

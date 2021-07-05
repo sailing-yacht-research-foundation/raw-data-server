@@ -216,6 +216,37 @@ const processTackTrackerData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.tackTrackerBoat.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tackTrackerDefault.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tackTrackerFinish.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tackTrackerMark.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tackTrackerStart.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tackTrackerPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  const regattaIDs = [];
+  mapRegatta.forEach((row) => {
+    regattaIDs.push(row.id);
+  });
+  await db.tackTrackerRegatta.destroy({
+    where: { id: { [Op.in]: regattaIDs } },
+  });
+  await db.tackTrackerRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

@@ -144,6 +144,21 @@ const processYachtBotData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.yachtBotBuoy.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yachtBotYacht.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yachtBotPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yachtBotRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

@@ -210,6 +210,37 @@ const processRaceQsData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.raceQsWaypoint.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsStart.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsRoute.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsParticipant.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsDivision.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsPosition.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  const regattaIDs = [];
+  mapRegatta.forEach((row) => {
+    regattaIDs.push(row.id);
+  });
+  await db.raceQsRegatta.destroy({
+    where: { id: { [Op.in]: regattaIDs } },
+  });
+  await db.raceQsEvent.destroy({
+    where: { id: { [Op.in]: eventList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

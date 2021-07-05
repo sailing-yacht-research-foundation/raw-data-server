@@ -213,6 +213,30 @@ const processYellowbrickData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.yellowbrickLeaderboardTeam.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yellowbrickCourseNode.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yellowbrickPoi.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yellowbrickTeam.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yellowbrickTag.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yellowbrickPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.yellowbrickRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,

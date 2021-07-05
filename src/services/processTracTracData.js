@@ -277,6 +277,53 @@ const processTracTracData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.tractracRoute.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracRaceClass.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracControl.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracControlPoint.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracControlPointPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitor.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitorPassing.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitorResult.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitorPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  const eventIDs = [];
+  mapEvent.forEach((row) => {
+    eventIDs.push(row.id);
+  });
+  await db.tractracEvent.destroy({
+    where: { id: { [Op.in]: eventIDs } },
+  });
+  const classIDs = [];
+  mapClass.forEach((row) => {
+    classIDs.push(row.id);
+  });
+  await db.tractracClass.destroy({
+    where: { id: { [Op.in]: classIDs } },
+  });
+  await db.tractracRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,
