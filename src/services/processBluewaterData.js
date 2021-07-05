@@ -250,6 +250,36 @@ const processBluewaterData = async (optionalPath) => {
       }
     });
   }
+
+  // Delete parqueted data from DB
+  await db.bluewaterAnnouncement.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.bluewaterMap.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.bluewaterCrewSocialMedia.destroy({
+    where: { crew: { [Op.in]: crewList } },
+  });
+  await db.bluewaterCrew.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.bluewaterBoatSocialMedia.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.bluewaterBoatHandicap.destroy({
+    where: { boat: { [Op.in]: boatList } },
+  });
+  await db.bluewaterBoat.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.bluewaterPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.bluewaterRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
   return {
     mainUrl,
     positionUrl,
