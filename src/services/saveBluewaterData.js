@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeBluewater');
 
 const saveBluewaterData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -68,8 +69,9 @@ const saveBluewaterData = async (data) => {
       });
     }
     if (data.BluewaterPosition) {
-      while (data.BluewaterPosition.length > 0) {
-        const splicedArray = data.BluewaterPosition.splice(
+      const positions = [...data.BluewaterPosition]; // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -87,8 +89,11 @@ const saveBluewaterData = async (data) => {
         transaction,
       });
     }
+
+    await normalizeRace(data, transaction);
     await transaction.commit();
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
