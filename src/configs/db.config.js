@@ -1,12 +1,12 @@
 module.exports = {
   HOST: process.env.DB_HOST || 'localhost',
   PORT: process.env.DB_PORT || '3306',
-  USER: process.env.DB_USER || 'database_user',
-  PASSWORD: process.env.DB_PASSWORD || 'database_password',
+  USER: process.env.DB_USER || 'user',
+  PASSWORD: process.env.DB_PASSWORD || 'password',
   DB:
     process.env.NODE_ENV === 'test'
       ? 'test_db'
-      : process.env.DB_NAME || 'database_name',
+      : process.env.DB_NAME || 'mysql',
   dialect: 'mysql',
   pool: {
     max: 5,
