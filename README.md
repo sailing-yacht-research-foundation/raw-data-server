@@ -88,7 +88,7 @@ Set an `Authorization` header containing md5 hash of current date with format: y
 - `/api/v1/upload-file`
 
   - Method: POST
-  - Upload the raw json file using multipart form data on `raw_data` field
+  - Upload the raw json file or gzipped json file using multipart form data on `raw_data` field
 
 - `/api/v1/scraped-url/{tracker}?status=BOTH`
 

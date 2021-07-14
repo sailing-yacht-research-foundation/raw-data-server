@@ -1,8 +1,9 @@
 const express = require('express');
 const multer = require('multer');
-const jsonfile = require('jsonfile');
 const { v4: uuidv4 } = require('uuid');
-const temp = require('temp').track();
+const temp = require('temp');
+const fs = require('fs');
+const JSONStream = require('JSONStream');
 
 const db = require('../models');
 const { BadRequestError } = require('../errors');
@@ -21,6 +22,7 @@ const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
+const gunzipFile = require('../utils/unzipFile');
 
 var router = express.Router();
 
@@ -38,7 +40,10 @@ var storage = multer.diskStorage({
 });
 
 function fileFilter(req, file, cb) {
-  if (file.mimetype !== 'application/json') {
+  if (
+    file.mimetype !== 'application/json' &&
+    file.mimetype !== 'application/gzip'
+  ) {
     cb(new BadRequestError('Invalid File Type'));
   } else {
     cb(null, true);
@@ -61,55 +66,97 @@ router.post(
       res.status(400).json({
         message: 'No File Uploaded',
       });
-    } else {
-      try {
-        const jsonData = await jsonfile.readFile(req.file.path);
-        switch (true) {
-          case Boolean(jsonData.iSailEvent):
-            saveISailData(jsonData);
-            break;
-          case Boolean(jsonData.KattackRace):
-            saveKattackData(jsonData);
-            break;
-          case Boolean(jsonData.GeoracingEvent):
-            saveGeoracingData(jsonData);
-            break;
-          case Boolean(jsonData.TracTracRace):
-            saveTracTracData(jsonData);
-            break;
-          case Boolean(jsonData.YellowbrickRace):
-            saveYellowbrickData(jsonData);
-            break;
-          case Boolean(jsonData.KwindooRace):
-            saveKwindooData(jsonData);
-            break;
-          case Boolean(jsonData.BluewaterRace):
-            saveBluewaterData(jsonData);
-            break;
-          case Boolean(jsonData.YachtBotRace):
-            saveYachtBotData(jsonData);
-            break;
-          case Boolean(jsonData.RaceQsEvent):
-            saveRaceQsData(jsonData);
-            break;
-          case Boolean(jsonData.MetasailRace):
-            saveMetasailData(jsonData);
-            break;
-          case Boolean(jsonData.EstelaRace):
-            saveEstelaData(jsonData);
-            break;
-          case Boolean(jsonData.TackTrackerRace):
-            saveTackTrackerData(jsonData);
-            break;
+      return;
+    }
+    res.json({
+      message: `File successfully uploaded`,
+    });
+
+    // gunzip
+    let unzippedJsonPath = req.file.path;
+
+    if (req.file.mimetype === 'application/gzip') {
+      unzippedJsonPath = (await temp.open('georacing')).path;
+      const sourceStream = fs.createReadStream(req.file.path);
+      const writeStream = fs.createWriteStream(unzippedJsonPath);
+      await gunzipFile(sourceStream, writeStream);
+      fs.unlink(req.file.path, (err) => {
+        if (err) {
+          console.log('error deleting: ', err);
         }
-      } catch (err) {
-        // TODO: Handle error better
-        console.error(err);
-      } finally {
-        temp.cleanup();
+      });
+    }
+
+    const jsonData = {};
+    await new Promise((resolve, reject) => {
+      const errorHandler = (err) => {
+        reject(err);
+      };
+      const stream = fs.createReadStream(unzippedJsonPath);
+      // Need to use this emitPath: true
+      // So we can get what properties the data latched on (TrackerRace, TrackerPosition, etc)
+      // This way we don't need to add a new form data to this endpoint
+      const parser = JSONStream.parse([true, { emitPath: true }]);
+      stream.on('error', errorHandler);
+      parser.on('error', errorHandler);
+      stream.pipe(parser);
+      parser.on('data', async function (row) {
+        if (jsonData[row.path[0]] === undefined) {
+          jsonData[row.path[0]] = [];
+        }
+        jsonData[row.path[0]].push(row.value);
+      });
+      stream.on('close', () => {
+        resolve(true);
+      });
+    });
+    try {
+      switch (true) {
+        case Boolean(jsonData.iSailEvent):
+          saveISailData(jsonData);
+          break;
+        case Boolean(jsonData.KattackRace):
+          saveKattackData(jsonData);
+          break;
+        case Boolean(jsonData.GeoracingEvent):
+          saveGeoracingData(jsonData);
+          break;
+        case Boolean(jsonData.TracTracRace):
+          saveTracTracData(jsonData);
+          break;
+        case Boolean(jsonData.YellowbrickRace):
+          saveYellowbrickData(jsonData);
+          break;
+        case Boolean(jsonData.KwindooRace):
+          saveKwindooData(jsonData);
+          break;
+        case Boolean(jsonData.BluewaterRace):
+          saveBluewaterData(jsonData);
+          break;
+        case Boolean(jsonData.YachtBotRace):
+          saveYachtBotData(jsonData);
+          break;
+        case Boolean(jsonData.RaceQsEvent):
+          saveRaceQsData(jsonData);
+          break;
+        case Boolean(jsonData.MetasailRace):
+          saveMetasailData(jsonData);
+          break;
+        case Boolean(jsonData.EstelaRace):
+          saveEstelaData(jsonData);
+          break;
+        case Boolean(jsonData.TackTrackerRace):
+          saveTackTrackerData(jsonData);
+          break;
       }
-      res.json({
-        message: `File successfully uploaded`,
+    } catch (err) {
+      // TODO: Handle error better
+      console.error('error: ', err);
+    } finally {
+      fs.unlink(unzippedJsonPath, (err) => {
+        if (err) {
+          console.log('error deleting: ', err);
+        }
       });
     }
   },

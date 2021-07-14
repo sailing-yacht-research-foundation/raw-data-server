@@ -3,15 +3,12 @@ const {
   getRaces,
   getBuoys,
   getYachts,
-  getPositions,
   processYachtBotData,
 } = require('../processYachtBotData');
 const saveYachtBotData = require('../saveYachtBotData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/yachtbot.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent YachtBot Data from DB to Parquet', () => {
@@ -37,18 +34,12 @@ describe('Processing exist YachtBot Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.yachtBotRace.destroy({
-      truncate: true,
-    });
-    await db.yachtBotBuoy.destroy({
-      truncate: true,
-    });
-    await db.yachtBotPosition.destroy({
-      truncate: true,
-    });
-    await db.yachtBotYacht.destroy({
-      truncate: true,
-    });
+    await db.yachtBotRace.destroy({ truncate: true });
+    await db.yachtBotBuoy.destroy({ truncate: true });
+    await db.yachtBotPosition.destroy({ truncate: true });
+    await db.yachtBotYacht.destroy({ truncate: true });
+    await db.yachtBotSuccessfulUrl.destroy({ truncate: true });
+    await db.yachtBotFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get races', async () => {
@@ -69,22 +60,18 @@ describe('Processing exist YachtBot Data from DB to Parquet', () => {
     const case2 = await getYachts([raceID2]);
     expect(case2.size).toEqual(0);
   });
-  it('should get positions', async () => {
-    const case1 = await getPositions([raceID1]);
-    expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(5);
-    const case2 = await getPositions([raceID2]);
-    expect(case2.size).toEqual(0);
-  });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/yachtbot/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/yachtbot/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/yachtbot/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processYachtBotData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

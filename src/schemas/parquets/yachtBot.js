@@ -1,5 +1,19 @@
 var parquet = require('parquetjs-lite');
 
+const yachtbotPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  race_original_id: { type: 'UTF8' },
+  yacht_or_buoy: { type: 'UTF8' },
+  yacht: { type: 'UTF8', optional: true },
+  yacht_original_id: { type: 'UTF8', optional: true },
+  buoy: { type: 'UTF8', optional: true },
+  buoy_original_id: { type: 'UTF8', optional: true },
+  time: { type: 'INT64', optional: true },
+  lat: { type: 'UTF8', optional: true },
+  lon: { type: 'UTF8', optional: true },
+  gps_quality: { type: 'UTF8', optional: true },
+});
 const yachtbotCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   race_original_id: { type: 'UTF8' },
@@ -23,23 +37,6 @@ const yachtbotCombined = new parquet.ParquetSchema({
       metas: { type: 'UTF8', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      race: { type: 'UTF8' },
-      race_original_id: { type: 'UTF8' },
-      yacht_or_buoy: { type: 'UTF8' },
-      yacht: { type: 'UTF8', optional: true },
-      yacht_original_id: { type: 'UTF8', optional: true },
-      buoy: { type: 'UTF8', optional: true },
-      buoy_original_id: { type: 'UTF8', optional: true },
-      time: { type: 'INT64', optional: true },
-      lat: { type: 'UTF8', optional: true },
-      lon: { type: 'UTF8', optional: true },
-      gps_quality: { type: 'UTF8', optional: true },
-    },
-  },
   yachts: {
     repeated: true,
     fields: {
@@ -57,5 +54,6 @@ const yachtbotCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  yachtbotPosition,
   yachtbotCombined,
 };

@@ -6,16 +6,13 @@ const {
   getDefaults,
   getFinishes,
   getMarks,
-  getPositions,
   getStarts,
   processTackTrackerData,
 } = require('../processTackTrackerData');
 const saveTackTrackerData = require('../saveTackTrackerData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/tackTracker.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent TackTracker Data from DB to Parquet', () => {
@@ -41,30 +38,16 @@ describe('Processing exist TackTracker Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.tackTrackerRegatta.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerRace.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerBoat.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerDefault.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerFinish.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerMark.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerPosition.destroy({
-      truncate: true,
-    });
-    await db.tackTrackerStart.destroy({
-      truncate: true,
-    });
+    await db.tackTrackerRegatta.destroy({ truncate: true });
+    await db.tackTrackerRace.destroy({ truncate: true });
+    await db.tackTrackerBoat.destroy({ truncate: true });
+    await db.tackTrackerDefault.destroy({ truncate: true });
+    await db.tackTrackerFinish.destroy({ truncate: true });
+    await db.tackTrackerMark.destroy({ truncate: true });
+    await db.tackTrackerPosition.destroy({ truncate: true });
+    await db.tackTrackerStart.destroy({ truncate: true });
+    await db.tackTrackerSuccessfulUrl.destroy({ truncate: true });
+    await db.tackTrackerFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get races', async () => {
@@ -103,13 +86,6 @@ describe('Processing exist TackTracker Data from DB to Parquet', () => {
     const case2 = await getMarks([raceID2]);
     expect(case2.size).toEqual(0);
   });
-  it('should get positions', async () => {
-    const case1 = await getPositions([raceID1]);
-    expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(3);
-    const case2 = await getPositions([raceID2]);
-    expect(case2.size).toEqual(0);
-  });
   it('should get starts', async () => {
     const case1 = await getStarts([raceID1]);
     expect(case1.size).toEqual(1);
@@ -118,13 +94,17 @@ describe('Processing exist TackTracker Data from DB to Parquet', () => {
     expect(case2.size).toEqual(0);
   });
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/tackTracker/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/tacktracker/main.parquet',
+      positionUrl:
+        'https://awsbucket.com/thebucket/tacktracker/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processTackTrackerData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

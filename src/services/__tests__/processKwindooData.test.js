@@ -9,18 +9,15 @@ const {
   getMarkers,
   getMIAs,
   getPOIs,
-  getPositions,
   getRunningGroups,
   getVideoStreams,
   getWaypoints,
   processKwindooData,
 } = require('../processKwindooData');
 const saveKwindooData = require('../saveKwindooData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/kwindoo.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Kwindoo Data from DB to Parquet', () => {
@@ -46,45 +43,21 @@ describe('Processing exist Kwindoo Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.kwindooRegattaOwner.destroy({
-      truncate: true,
-    });
-    await db.kwindooRegatta.destroy({
-      truncate: true,
-    });
-    await db.kwindooRace.destroy({
-      truncate: true,
-    });
-    await db.kwindooBoat.destroy({
-      truncate: true,
-    });
-    await db.kwindooComment.destroy({
-      truncate: true,
-    });
-    await db.kwindooHomeportLocation.destroy({
-      truncate: true,
-    });
-    await db.kwindooMarker.destroy({
-      truncate: true,
-    });
-    await db.kwindooMIA.destroy({
-      truncate: true,
-    });
-    await db.kwindooPOI.destroy({
-      truncate: true,
-    });
-    await db.kwindooPosition.destroy({
-      truncate: true,
-    });
-    await db.kwindooRunningGroup.destroy({
-      truncate: true,
-    });
-    await db.kwindooVideoStream.destroy({
-      truncate: true,
-    });
-    await db.kwindooWaypoint.destroy({
-      truncate: true,
-    });
+    await db.kwindooRegattaOwner.destroy({ truncate: true });
+    await db.kwindooRegatta.destroy({ truncate: true });
+    await db.kwindooRace.destroy({ truncate: true });
+    await db.kwindooBoat.destroy({ truncate: true });
+    await db.kwindooComment.destroy({ truncate: true });
+    await db.kwindooHomeportLocation.destroy({ truncate: true });
+    await db.kwindooMarker.destroy({ truncate: true });
+    await db.kwindooMIA.destroy({ truncate: true });
+    await db.kwindooPOI.destroy({ truncate: true });
+    await db.kwindooPosition.destroy({ truncate: true });
+    await db.kwindooRunningGroup.destroy({ truncate: true });
+    await db.kwindooVideoStream.destroy({ truncate: true });
+    await db.kwindooWaypoint.destroy({ truncate: true });
+    await db.kwindooFailedUrl.destroy({ truncate: true });
+    await db.kwindooSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get regattas', async () => {
@@ -108,7 +81,8 @@ describe('Processing exist Kwindoo Data from DB to Parquet', () => {
     expect(case1.size).toEqual(1);
     expect(case1.get(regatta1).length).toEqual(1);
     const case2 = await getBoats([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case2.size).toEqual(1);
+    expect(case1.get(regatta1).length).toEqual(1);
   });
   it('should get comments', async () => {
     const case1 = await getComments([regatta1]);
@@ -145,14 +119,6 @@ describe('Processing exist Kwindoo Data from DB to Parquet', () => {
     const case2 = await getPOIs([regatta2]);
     expect(case2.size).toEqual(0);
   });
-  it('should get positions', async () => {
-    const case1 = await getPositions([regatta1]);
-    expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(2);
-    const case2 = await getPositions([regatta2]);
-    expect(case2.size).toEqual(1);
-    expect(case2.get(regatta2).length).toEqual(1);
-  });
   it('should get running groups', async () => {
     const case1 = await getRunningGroups([regatta1]);
     expect(case1.size).toEqual(1);
@@ -176,13 +142,16 @@ describe('Processing exist Kwindoo Data from DB to Parquet', () => {
     expect(case2.size).toEqual(0);
   });
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/kwindoo/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/kwindoo/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/kwindoo/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processKwindooData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

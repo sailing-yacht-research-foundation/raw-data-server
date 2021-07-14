@@ -1,5 +1,21 @@
 var parquet = require('parquetjs-lite');
 
+const tractracCompetitorPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  race_original_id: { type: 'UTF8' },
+  competitor: { type: 'UTF8' },
+  competitor_original_id: { type: 'UTF8' },
+  lat: { type: 'UTF8' },
+  lon: { type: 'UTF8' },
+  height: { type: 'UTF8', optional: true },
+  speed: { type: 'UTF8', optional: true },
+  direction: { type: 'UTF8', optional: true },
+  m: { type: 'UTF8', optional: true },
+  timestamp: { type: 'UTF8', optional: true },
+  speed_avg: { type: 'UTF8', optional: true },
+});
+
 const tractracCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   original_race_id: { type: 'UTF8' },
@@ -112,22 +128,6 @@ const tractracCombined = new parquet.ParquetSchema({
       time_from_start: { type: 'UTF8', optional: true },
     },
   },
-  competitorPositions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      competitor: { type: 'UTF8' },
-      competitor_original_id: { type: 'UTF8' },
-      lat: { type: 'UTF8' },
-      lon: { type: 'UTF8' },
-      height: { type: 'UTF8', optional: true },
-      speed: { type: 'UTF8', optional: true },
-      direction: { type: 'UTF8', optional: true },
-      m: { type: 'UTF8', optional: true },
-      timestamp: { type: 'UTF8', optional: true },
-      speed_avg: { type: 'UTF8', optional: true },
-    },
-  },
   controls: {
     repeated: true,
     fields: {
@@ -170,5 +170,6 @@ const tractracCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  tractracCompetitorPosition,
   tractracCombined,
 };

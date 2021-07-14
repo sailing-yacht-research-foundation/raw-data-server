@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -68,7 +69,10 @@ const saveBluewaterData = async (data) => {
     }
     if (data.BluewaterPosition) {
       while (data.BluewaterPosition.length > 0) {
-        const splicedArray = data.BluewaterPosition.splice(0, 1000);
+        const splicedArray = data.BluewaterPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.bluewaterPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,

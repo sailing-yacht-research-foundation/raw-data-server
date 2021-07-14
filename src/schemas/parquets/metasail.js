@@ -1,5 +1,35 @@
 var parquet = require('parquetjs-lite');
 
+const metasailPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  race_original_id: { type: 'UTF8' },
+  event: { type: 'UTF8' },
+  event_original_id: { type: 'UTF8' },
+  boat: { type: 'UTF8', optional: true },
+  boat_original_id: { type: 'UTF8', optional: true },
+  buoy: { type: 'UTF8', optional: true },
+  buoy_original_id: { type: 'UTF8', optional: true },
+  time: { type: 'UTF8' },
+  lon: { type: 'UTF8' },
+  lat: { type: 'UTF8' },
+  speed: { type: 'UTF8' },
+  lon_metri_const: { type: 'UTF8', optional: true },
+  lat_metri_const: { type: 'UTF8', optional: true },
+  rank: { type: 'UTF8', optional: true },
+  distance_to_first_boat: { type: 'UTF8', optional: true },
+  wind_state: { type: 'UTF8', optional: true },
+  wind_direction: { type: 'UTF8', optional: true },
+  slope_rank_line: { type: 'UTF8', optional: true },
+  end_time_difference: { type: 'UTF8', optional: true },
+  begin_date_time: { type: 'UTF8', optional: true },
+  crt_race_segment: { type: 'UTF8', optional: true },
+  apply_wind: { type: 'UTF8', optional: true },
+  vmc: { type: 'UTF8', optional: true },
+  vmg: { type: 'UTF8', optional: true },
+  orientation: { type: 'UTF8', optional: true },
+});
+
 const metasailCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   race_original_id: { type: 'UTF8' },
@@ -60,38 +90,6 @@ const metasailCombined = new parquet.ParquetSchema({
       is_dummy: { type: 'BOOLEAN', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      event: { type: 'UTF8' },
-      event_original_id: { type: 'UTF8' },
-      boat: { type: 'UTF8', optional: true },
-      boat_original_id: { type: 'UTF8', optional: true },
-      buoy: { type: 'UTF8', optional: true },
-      buoy_original_id: { type: 'UTF8', optional: true },
-      time: { type: 'UTF8' },
-      lon: { type: 'UTF8' },
-      lat: { type: 'UTF8' },
-      speed: { type: 'UTF8' },
-      lon_metri_const: { type: 'UTF8', optional: true },
-      lat_metri_const: { type: 'UTF8', optional: true },
-      rank: { type: 'UTF8', optional: true },
-      distance_to_first_boat: { type: 'UTF8', optional: true },
-      wind_state: { type: 'UTF8', optional: true },
-      wind_direction: { type: 'UTF8', optional: true },
-      slope_rank_line: { type: 'UTF8', optional: true },
-      end_time_difference: { type: 'UTF8', optional: true },
-      begin_date_time: { type: 'UTF8', optional: true },
-      crt_race_segment: { type: 'UTF8', optional: true },
-      apply_wind: { type: 'UTF8', optional: true },
-      vmc: { type: 'UTF8', optional: true },
-      vmg: { type: 'UTF8', optional: true },
-      orientation: { type: 'UTF8', optional: true },
-    },
-  },
 });
 
-module.exports = {
-  metasailCombined,
-};
+module.exports = { metasailPosition, metasailCombined };

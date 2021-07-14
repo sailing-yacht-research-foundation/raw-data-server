@@ -1,11 +1,12 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { iSailCombined } = require('../schemas/parquets/iSail');
+const { iSailCombined, iSailPosition } = require('../schemas/parquets/iSail');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getParticipants = async (eventIDs) => {
   const participants = await db.iSailEventParticipant.findAll({
@@ -37,18 +38,6 @@ const getEventTracks = async (eventIDs) => {
   });
   const result = new Map();
   tracks.forEach((row) => {
-    let currentList = result.get(row.event);
-    result.set(row.event, [...(currentList || []), row]);
-  });
-  return result;
-};
-const getPositions = async (eventIDs) => {
-  const positions = await db.iSailPosition.findAll({
-    where: { event: { [Op.in]: eventIDs } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
     let currentList = result.get(row.event);
     result.set(row.event, [...(currentList || []), row]);
   });
@@ -132,11 +121,13 @@ const processISailData = async (optionalPath) => {
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-isail');
-    parquetPath = `${dirPath}/isail.parquet`;
-  }
+
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('isail')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('isail_pos')).path;
 
   const events = await db.iSailEvent.findAll({ raw: true });
   if (events.length === 0) {
@@ -147,14 +138,21 @@ const processISailData = async (optionalPath) => {
   const eventParticipants = await getParticipants(queryEventList);
   const eventTrackDatas = await getEventTrackData(queryEventList);
   const eventTracks = await getEventTracks(queryEventList);
-  const positions = await getPositions(queryEventList);
   const roundings = await getRoundings(queryEventList);
   const races = await getRaces(queryEventList);
   const marks = await getMarks(queryEventList);
   const startlines = await getStartlines(queryEventList);
   const courseMarks = await getCourseMarks(queryEventList);
   const results = await getResults(queryEventList);
-  const eventData = events.map((row) => {
+
+  const writer = await parquet.ParquetWriter.openFile(
+    iSailCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < events.length; i++) {
     const {
       id: event_id,
       original_id: original_event_id,
@@ -168,8 +166,9 @@ const processISailData = async (optionalPath) => {
       club,
       location,
       url,
-    } = row;
-    return {
+    } = events[i];
+
+    await writer.appendRow({
       event_id,
       original_event_id,
       name,
@@ -185,31 +184,111 @@ const processISailData = async (optionalPath) => {
       participants: eventParticipants.get(event_id),
       trackData: eventTrackDatas.get(event_id),
       tracks: eventTracks.get(event_id),
-      positions: positions.get(event_id),
       roundings: roundings.get(event_id),
       races: races.get(event_id),
       marks: marks.get(event_id),
       startlines: startlines.get(event_id),
       courseMarks: courseMarks.get(event_id),
       results: results.get(event_id),
-    };
-  });
-  await writeToParquet(eventData, iSailCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    iSailPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < events.length; i++) {
+    const { id: event } = events[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.iSailPosition.findAll({
+        where: { event },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `iSail/year=${currentYear}/month=${currentMonth}/isail_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `iSail/year=${currentYear}/month=${currentMonth}/isailPosition_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+
+  // Delete parqueted data from DB
+  await db.iSailResult.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailCourseMark.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailStartline.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailMark.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailRace.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailRounding.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailEventTracksData.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailTrack.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailEventParticipant.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailPosition.destroy({
+    where: { event: { [Op.in]: queryEventList } },
+  });
+  await db.iSailEvent.destroy({
+    where: { id: { [Op.in]: queryEventList } },
+  });
+
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
   getParticipants,
   getEventTrackData,
   getEventTracks,
-  getPositions,
   getRoundings,
   getRaces,
   getMarks,

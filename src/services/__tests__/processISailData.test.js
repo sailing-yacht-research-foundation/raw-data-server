@@ -3,7 +3,6 @@ const {
   getParticipants,
   getEventTrackData,
   getEventTracks,
-  getPositions,
   getRoundings,
   getRaces,
   getMarks,
@@ -13,11 +12,9 @@ const {
   processISailData,
 } = require('../processISailData');
 const saveISailData = require('../saveISailData');
-const writeToParquet = require('../writeToParquet');
 const uploadFileToS3 = require('../uploadFileToS3');
 const jsonData = require('../../test-files/iSail.json');
 
-jest.mock('../writeToParquet', () => jest.fn());
 jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent iSail Data from DB to Parquet', () => {
@@ -42,42 +39,20 @@ describe('Processing exist iSail Data from DB to Parquet', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await db.iSailClass.destroy({
-      truncate: true,
-    });
-    await db.iSailEvent.destroy({
-      truncate: true,
-    });
-    await db.iSailRace.destroy({
-      truncate: true,
-    });
-    await db.iSailEventParticipant.destroy({
-      truncate: true,
-    });
-    await db.iSailEventTracksData.destroy({
-      truncate: true,
-    });
-    await db.iSailPosition.destroy({
-      truncate: true,
-    });
-    await db.iSailTrack.destroy({
-      truncate: true,
-    });
-    await db.iSailMark.destroy({
-      truncate: true,
-    });
-    await db.iSailStartline.destroy({
-      truncate: true,
-    });
-    await db.iSailCourseMark.destroy({
-      truncate: true,
-    });
-    await db.iSailRounding.destroy({
-      truncate: true,
-    });
-    await db.iSailResult.destroy({
-      truncate: true,
-    });
+    await db.iSailClass.destroy({ truncate: true });
+    await db.iSailEvent.destroy({ truncate: true });
+    await db.iSailRace.destroy({ truncate: true });
+    await db.iSailEventParticipant.destroy({ truncate: true });
+    await db.iSailEventTracksData.destroy({ truncate: true });
+    await db.iSailPosition.destroy({ truncate: true });
+    await db.iSailTrack.destroy({ truncate: true });
+    await db.iSailMark.destroy({ truncate: true });
+    await db.iSailStartline.destroy({ truncate: true });
+    await db.iSailCourseMark.destroy({ truncate: true });
+    await db.iSailRounding.destroy({ truncate: true });
+    await db.iSailResult.destroy({ truncate: true });
+    await db.iSailFailedUrl.destroy({ truncate: true });
+    await db.iSailSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
   it('should get event participants correctly', async () => {
@@ -97,12 +72,6 @@ describe('Processing exist iSail Data from DB to Parquet', () => {
     const tracks = await getEventTracks([eventID]);
     expect(tracks.size).toEqual(1);
     expect(tracks.get(eventID).length).toEqual(4);
-  });
-  it('should get positions correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
-    const positions = await getPositions([eventID]);
-    expect(positions.size).toEqual(1);
-    expect(positions.get(eventID).length).toEqual(100);
   });
   it('should get roundings correctly', async () => {
     const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
@@ -142,13 +111,16 @@ describe('Processing exist iSail Data from DB to Parquet', () => {
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
-    const mockS3UploadResultPath =
-      'https://awsbucket.com/thebucket/isail/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const mockS3UploadResultPath = {
+      mainUrl: 'https://awsbucket.com/thebucket/isail/main.parquet',
+      positionUrl: 'https://awsbucket.com/thebucket/isail/position.parquet',
+    };
+    uploadFileToS3
+      .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
+      .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processISailData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
-    expect(writeToParquet).toHaveBeenCalledTimes(1);
+    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

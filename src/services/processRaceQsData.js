@@ -1,11 +1,15 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { raceQsCombined } = require('../schemas/parquets/raceQs');
+const {
+  raceQsCombined,
+  raceQsPosition,
+} = require('../schemas/parquets/raceQs');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getRegattas = async () => {
   const regattas = await db.raceQsRegatta.findAll({ raw: true });
@@ -38,18 +42,6 @@ const getParticipants = async (eventList) => {
   });
   const result = new Map();
   participants.forEach((row) => {
-    let currentList = result.get(row.event);
-    result.set(row.event, [...(currentList || []), row]);
-  });
-  return result;
-};
-const getPositions = async (eventList) => {
-  const positions = await db.raceQsPosition.findAll({
-    where: { event: { [Op.in]: eventList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
     let currentList = result.get(row.event);
     result.set(row.event, [...(currentList || []), row]);
   });
@@ -97,11 +89,12 @@ const processRaceQsData = async (optionalPath) => {
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-raceqs');
-    parquetPath = `${dirPath}/raceqs.parquet`;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('raceqs')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('raceqs_pos')).path;
 
   const events = await getEvents();
   if (events.length === 0) {
@@ -112,12 +105,18 @@ const processRaceQsData = async (optionalPath) => {
   const mapRegatta = await getRegattas();
   const divisions = await getDivisions(eventList);
   const participants = await getParticipants(eventList);
-  const positions = await getPositions(eventList);
   const routes = await getRoutes(eventList);
   const starts = await getStarts(eventList);
   const waypoints = await getWaypoints(eventList);
 
-  const data = events.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    raceQsCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < events.length; i++) {
     const {
       id: event_id,
       original_id: event_original_id,
@@ -134,9 +133,9 @@ const processRaceQsData = async (optionalPath) => {
       lon2,
       updated_at,
       url,
-    } = row;
+    } = events[i];
 
-    return {
+    await writer.appendRow({
       event_id,
       event_original_id,
       regatta,
@@ -155,21 +154,97 @@ const processRaceQsData = async (optionalPath) => {
       url,
       divisions: divisions.get(event_id),
       participants: participants.get(event_id),
-      positions: positions.get(event_id),
       routes: routes.get(event_id),
       starts: starts.get(event_id),
       waypoints: waypoints.get(event_id),
-    };
-  });
-  await writeToParquet(data, raceQsCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    raceQsPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < events.length; i++) {
+    const { id: event } = events[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.raceQsPosition.findAll({
+        where: { event },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `raceqs/year=${currentYear}/month=${currentMonth}/raceqs_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `raceqs/year=${currentYear}/month=${currentMonth}/raceqsPosition_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+
+  // Delete parqueted data from DB
+  await db.raceQsWaypoint.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsStart.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsRoute.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsParticipant.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsDivision.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.raceQsPosition.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  const regattaIDs = [];
+  mapRegatta.forEach((row) => {
+    regattaIDs.push(row.id);
+  });
+  await db.raceQsRegatta.destroy({
+    where: { id: { [Op.in]: regattaIDs } },
+  });
+  await db.raceQsEvent.destroy({
+    where: { id: { [Op.in]: eventList } },
+  });
+
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
@@ -177,7 +252,6 @@ module.exports = {
   getEvents,
   getDivisions,
   getParticipants,
-  getPositions,
   getRoutes,
   getStarts,
   getWaypoints,

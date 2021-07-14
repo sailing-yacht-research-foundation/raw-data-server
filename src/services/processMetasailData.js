@@ -1,11 +1,15 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { metasailCombined } = require('../schemas/parquets/metasail');
+const {
+  metasailPosition,
+  metasailCombined,
+} = require('../schemas/parquets/metasail');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getEvents = async () => {
   const events = await db.metasailEvent.findAll({ raw: true });
@@ -55,29 +59,18 @@ const getGates = async (raceList) => {
   });
   return result;
 };
-const getPositions = async (raceList) => {
-  const positions = await db.metasailPosition.findAll({
-    where: { race: { [Op.in]: raceList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
-  });
-  return result;
-};
 const processMetasailData = async (optionalPath) => {
   const currentDate = new Date();
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-metasail');
-    parquetPath = `${dirPath}/metasail.parquet`;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('metasail')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('metasail_pos')).path;
 
   const races = await getRaces();
   if (races.length === 0) {
@@ -89,9 +82,15 @@ const processMetasailData = async (optionalPath) => {
   const boats = await getBoats(raceList);
   const buoys = await getBuoys(raceList);
   const gates = await getGates(raceList);
-  const positions = await getPositions(raceList);
 
-  const data = races.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    metasailCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
     const {
       id: race_id,
       original_id: race_original_id,
@@ -103,9 +102,9 @@ const processMetasailData = async (optionalPath) => {
       url,
       stats,
       passings,
-    } = row;
+    } = races[i];
 
-    return {
+    await writer.appendRow({
       race_id,
       race_original_id,
       event,
@@ -120,18 +119,88 @@ const processMetasailData = async (optionalPath) => {
       boats: boats.get(race_id),
       buoys: buoys.get(race_id),
       gates: gates.get(race_id),
-      positions: positions.get(race_id),
-    };
-  });
-  await writeToParquet(data, metasailCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    metasailPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
+    const { id: race } = races[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.metasailPosition.findAll({
+        where: { race },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `metasail/year=${currentYear}/month=${currentMonth}/metasail_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `metasail/year=${currentYear}/month=${currentMonth}/metasailPosition_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+
+  // Delete parqueted data from DB
+  await db.metasailBoat.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.metasailBuoy.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.metasailGate.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.metasailPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  const eventIDs = [];
+  mapEvent.forEach((row) => {
+    eventIDs.push(row.id);
+  });
+  await db.metasailEvent.destroy({
+    where: { id: { [Op.in]: eventIDs } },
+  });
+  await db.metasailRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
@@ -139,7 +208,6 @@ module.exports = {
   getEvents,
   getBoats,
   getBuoys,
-  getPositions,
   getGates,
   processMetasailData,
 };

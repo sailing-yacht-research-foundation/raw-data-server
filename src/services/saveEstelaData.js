@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -12,11 +13,14 @@ const saveEstelaData = async (data) => {
       raceUrl = data.EstelaRace.map((row) => {
         return { original_id: row.original_id, url: row.url };
       });
-      await db.estelaRace.bulkCreate(data.EstelaRace, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
+      // Just in case race sent is more than 1, having 3 csv columns might cause max_allowed_packet error
+      while (data.EstelaRace.length > 0) {
+        const splicedArray = data.EstelaRace.splice(0, 20);
+        await db.estelaRace.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.EstelaBuoy) {
       await db.estelaBuoy.bulkCreate(data.EstelaBuoy, {
@@ -33,11 +37,13 @@ const saveEstelaData = async (data) => {
       });
     }
     if (data.EstelaDorsal) {
-      await db.estelaDorsal.bulkCreate(data.EstelaDorsal, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
+      while (data.EstelaDorsal.length > 0) {
+        const splicedArray = data.EstelaDorsal.splice(0, 50);
+        await db.estelaDorsal.bulkCreate(splicedArray, {
+          ignoreDuplicates: true,
+          validate: true,
+        });
+      }
     }
     if (data.EstelaPlayer) {
       await db.estelaPlayer.bulkCreate(data.EstelaPlayer, {
@@ -48,7 +54,10 @@ const saveEstelaData = async (data) => {
     }
     if (data.EstelaPosition) {
       while (data.EstelaPosition.length > 0) {
-        const splicedArray = data.EstelaPosition.splice(0, 1000);
+        const splicedArray = data.EstelaPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.estelaPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,

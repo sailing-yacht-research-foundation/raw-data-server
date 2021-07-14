@@ -1,5 +1,21 @@
 var parquet = require('parquetjs-lite');
 
+const estelaPosition = new parquet.ParquetSchema({
+  id: { type: 'UTF8' },
+  race: { type: 'UTF8' },
+  race_original_id: { type: 'UTF8' },
+  dorsal: { type: 'UTF8' },
+  dorsal_original_id: { type: 'UTF8', optional: true },
+  lon: { type: 'UTF8' },
+  lat: { type: 'UTF8' },
+  timestamp: { type: 'UTF8' },
+  s: { type: 'UTF8', optional: true },
+  c: { type: 'UTF8', optional: true },
+  p: { type: 'UTF8', optional: true },
+  w: { type: 'UTF8', optional: true },
+  y: { type: 'UTF8', optional: true },
+});
+
 const estelaCombined = new parquet.ParquetSchema({
   race_id: { type: 'UTF8' },
   race_original_id: { type: 'UTF8' },
@@ -94,22 +110,6 @@ const estelaCombined = new parquet.ParquetSchema({
       committee: { type: 'UTF8', optional: true },
     },
   },
-  positions: {
-    repeated: true,
-    fields: {
-      id: { type: 'UTF8' },
-      dorsal: { type: 'UTF8' },
-      dorsal_original_id: { type: 'UTF8', optional: true },
-      lon: { type: 'UTF8' },
-      lat: { type: 'UTF8' },
-      timestamp: { type: 'UTF8' },
-      s: { type: 'UTF8', optional: true },
-      c: { type: 'UTF8', optional: true },
-      p: { type: 'UTF8', optional: true },
-      w: { type: 'UTF8', optional: true },
-      y: { type: 'UTF8', optional: true },
-    },
-  },
   results: {
     repeated: true,
     fields: {
@@ -123,5 +123,6 @@ const estelaCombined = new parquet.ParquetSchema({
 });
 
 module.exports = {
+  estelaPosition,
   estelaCombined,
 };

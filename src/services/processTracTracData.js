@@ -1,11 +1,15 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { tractracCombined } = require('../schemas/parquets/tractrac');
+const {
+  tractracCombined,
+  tractracCompetitorPosition,
+} = require('../schemas/parquets/tractrac');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getEvents = async () => {
   const events = await db.tractracEvent.findAll({ raw: true });
@@ -123,18 +127,6 @@ const getCompetitorResults = async (raceList) => {
   });
   return mapResult;
 };
-const getCompetitorPositions = async (raceList) => {
-  const positions = await db.tractracCompetitorPosition.findAll({
-    where: { race: { [Op.in]: raceList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.race);
-    result.set(row.race, [...(currentList || []), row]);
-  });
-  return result;
-};
 
 const processTracTracData = async (optionalPath) => {
   const currentDate = new Date();
@@ -142,11 +134,12 @@ const processTracTracData = async (optionalPath) => {
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-tractrac');
-    parquetPath = `${dirPath}/tractrac.parquet`;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('tractrac')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('tractrac_pos')).path;
 
   const races = await getRaces();
   if (races.length === 0) {
@@ -166,9 +159,15 @@ const processTracTracData = async (optionalPath) => {
   const competitors = await getCompetitors(raceList);
   const competitorPassings = await getCompetitorPassings(raceList);
   const competitorResults = await getCompetitorResults(raceList);
-  const competitorPositions = await getCompetitorPositions(raceList);
 
-  const data = races.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    tractracCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
     const {
       id: race_id,
       original_id: original_race_id,
@@ -185,11 +184,11 @@ const processTracTracData = async (optionalPath) => {
       lat,
       calculated_start_time,
       race_handicap,
-    } = row;
+    } = races[i];
 
     const raceClasses = classes.get(race_id);
 
-    return {
+    await writer.appendRow({
       race_id,
       original_race_id,
       event,
@@ -225,18 +224,110 @@ const processTracTracData = async (optionalPath) => {
       competitors: competitors.get(race_id),
       competitorPassings: competitorPassings.get(race_id),
       competitorResults: competitorResults.get(race_id),
-      competitorPositions: competitorPositions.get(race_id),
-    };
-  });
-  await writeToParquet(data, tractracCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    tractracCompetitorPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < races.length; i++) {
+    const { id: race } = races[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.tractracCompetitorPosition.findAll({
+        where: { race },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `tractrac/year=${currentYear}/month=${currentMonth}/tractrac_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `tractrac/year=${currentYear}/month=${currentMonth}/tractracPosition_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+
+  // Delete parqueted data from DB
+  await db.tractracRoute.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracRaceClass.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracControl.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracControlPoint.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracControlPointPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitor.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitorPassing.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitorResult.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  await db.tractracCompetitorPosition.destroy({
+    where: { race: { [Op.in]: raceList } },
+  });
+  const eventIDs = [];
+  mapEvent.forEach((row) => {
+    eventIDs.push(row.id);
+  });
+  await db.tractracEvent.destroy({
+    where: { id: { [Op.in]: eventIDs } },
+  });
+  const classIDs = [];
+  mapClass.forEach((row) => {
+    classIDs.push(row.id);
+  });
+  await db.tractracClass.destroy({
+    where: { id: { [Op.in]: classIDs } },
+  });
+  await db.tractracRace.destroy({
+    where: { id: { [Op.in]: raceList } },
+  });
+
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
@@ -250,7 +341,6 @@ module.exports = {
   getControlPointPositions,
   getCompetitors,
   getCompetitorPassings,
-  getCompetitorPositions,
   getCompetitorResults,
   processTracTracData,
 };

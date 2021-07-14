@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
+const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 
@@ -10,9 +11,6 @@ const saveGeoracingData = async (data) => {
 
   try {
     if (data.GeoracingRace) {
-      // TODO: Are we going to accept array of race here, or will we be accepting one race per each file
-      // Most of the scrapers are currently accepting arrays of race, will update to single object if only one race at a time
-      // For better checking
       raceUrl = data.GeoracingRace.map((row) => {
         return { original_id: row.original_id, url: row.url };
       });
@@ -73,7 +71,10 @@ const saveGeoracingData = async (data) => {
     }
     if (data.GeoracingPosition) {
       while (data.GeoracingPosition.length > 0) {
-        const splicedArray = data.GeoracingPosition.splice(0, 1000);
+        const splicedArray = data.GeoracingPosition.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
         await db.georacingPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,

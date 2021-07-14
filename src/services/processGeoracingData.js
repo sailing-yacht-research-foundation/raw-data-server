@@ -1,11 +1,15 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { georacingCombined } = require('../schemas/parquets/georacing');
+const {
+  georacingCombined,
+  georacingPosition,
+} = require('../schemas/parquets/georacing');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getEvents = async () => {
   const events = await db.georacingEvent.findAll({ raw: true });
@@ -109,18 +113,6 @@ const getActors = async (eventList) => {
   });
   return result;
 };
-const getPositions = async (eventList) => {
-  const positions = await db.georacingPosition.findAll({
-    where: { event: { [Op.in]: eventList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.event);
-    result.set(row.event, [...(currentList || []), row]);
-  });
-  return result;
-};
 const getSplittime = async (eventList) => {
   const splittimes = await db.georacingSplittime.findAll({
     where: { event: { [Op.in]: eventList } },
@@ -153,12 +145,12 @@ const processGeoracingData = async (optionalPath) => {
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-georacing');
-    parquetPath = `${dirPath}/georacing.parquet`;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('georacing')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('georacing_pos')).path;
 
   const events = await getEvents();
   if (events.length === 0) {
@@ -167,7 +159,6 @@ const processGeoracingData = async (optionalPath) => {
   const eventList = events.map((row) => row.id);
 
   const actors = await getActors(eventList);
-  const positions = await getPositions(eventList);
 
   const { splittimeIDs, splittimeMap } = await getSplittime(eventList);
   const splittimeObjects = await getSplittimeObjects(splittimeIDs);
@@ -180,7 +171,14 @@ const processGeoracingData = async (optionalPath) => {
   const groundPlaces = await getGroundPlace(raceIDs);
   const lines = await getLines(raceIDs);
 
-  const data = events.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    georacingCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < events.length; i++) {
     const {
       id: event_id,
       original_id: original_event_id,
@@ -192,31 +190,25 @@ const processGeoracingData = async (optionalPath) => {
       short_description,
       start_time,
       end_time,
-    } = row;
-
+    } = events[i];
     const eventRaces = raceMap.get(event_id);
+
     const finalRaces = eventRaces
-      ? eventRaces.map((row) => {
-          return Object.assign({}, row, {
-            weathers: JSON.stringify(weathers.get(row.id)),
-            courses: JSON.stringify(courses.get(row.id)),
-            course_objects: JSON.stringify(courseObjects.get(row.id)),
-            course_elements: JSON.stringify(courseElements.get(row.id)),
-            ground_places: JSON.stringify(groundPlaces.get(row.id)),
-            lines: JSON.stringify(lines.get(row.id)),
-          });
-        })
-      : [];
-    const eventSplittimes = splittimeMap.get(event_id);
-    const finalSplittimes = eventSplittimes
-      ? eventSplittimes.map((row) => {
-          return Object.assign({}, row, {
-            objects: JSON.stringify(splittimeObjects.get(row.id)),
-          });
-        })
+      ? await Promise.all(
+          eventRaces.map(async (row) => {
+            return Object.assign({}, row, {
+              weathers: weathers.get(row.id),
+              courses: courses.get(row.id),
+              course_objects: courseObjects.get(row.id),
+              course_elements: courseElements.get(row.id),
+              ground_places: groundPlaces.get(row.id),
+              lines: lines.get(row.id),
+            });
+          }),
+        )
       : [];
 
-    return {
+    await writer.appendRow({
       event_id,
       original_event_id,
       name,
@@ -228,20 +220,104 @@ const processGeoracingData = async (optionalPath) => {
       start_time,
       end_time,
       races: finalRaces,
-      splittimes: finalSplittimes,
+      splittimes: splittimeMap.get(event_id),
+      splittime_objects: splittimeObjects.get(event_id),
       actors: actors.get(event_id),
-      positions: positions.get(event_id),
-    };
-  });
-  await writeToParquet(data, georacingCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    georacingPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < events.length; i++) {
+    const { id: event } = events[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.georacingPosition.findAll({
+        where: { event },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `georacing/year=${currentYear}/month=${currentMonth}/georacingPosition_${fullDateFormat}.parquet`,
+  );
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+
+  // Delete parqueted data from DB
+  await db.georacingLine.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingGroundPlace.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingCourseElement.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingCourseObject.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingCourse.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingWeather.destroy({
+    where: { race: { [Op.in]: raceIDs } },
+  });
+  await db.georacingRace.destroy({
+    where: { id: { [Op.in]: raceIDs } },
+  });
+  await db.georacingSplittimeObject.destroy({
+    where: { splittime: { [Op.in]: splittimeIDs } },
+  });
+  await db.georacingSplittime.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.georacingActor.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.georacingPosition.destroy({
+    where: { event: { [Op.in]: eventList } },
+  });
+  await db.georacingEvent.destroy({
+    where: { id: { [Op.in]: eventList } },
+  });
+
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
@@ -254,7 +330,6 @@ module.exports = {
   getCourseElements,
   getGroundPlace,
   getLines,
-  getPositions,
   getSplittime,
   getSplittimeObjects,
   processGeoracingData,

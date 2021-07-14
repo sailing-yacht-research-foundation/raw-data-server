@@ -27,12 +27,15 @@ describe('Storing iSail data to DB', () => {
   it('should not save anything when empty data', async () => {
     const createClass = jest.spyOn(db.iSailClass, 'bulkCreate');
     const createCourseMark = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
-    const createEvent = jest.spyOn(db.iSailEvent, 'create');
+    const createEvent = jest.spyOn(db.iSailEvent, 'bulkCreate');
     const createEventParticipant = jest.spyOn(
       db.iSailEventParticipant,
       'bulkCreate',
     );
-    const createEventTracksData = jest.spyOn(db.iSailEventTracksData, 'create');
+    const createEventTracksData = jest.spyOn(
+      db.iSailEventTracksData,
+      'bulkCreate',
+    );
     const createMark = jest.spyOn(db.iSailMark, 'bulkCreate');
     const createPosition = jest.spyOn(db.iSailPosition, 'bulkCreate');
     const createRace = jest.spyOn(db.iSailRace, 'bulkCreate');
@@ -57,12 +60,15 @@ describe('Storing iSail data to DB', () => {
   it('should save data correctly', async () => {
     const createClass = jest.spyOn(db.iSailClass, 'bulkCreate');
     const createCourseMark = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
-    const createEvent = jest.spyOn(db.iSailEvent, 'create');
+    const createEvent = jest.spyOn(db.iSailEvent, 'bulkCreate');
     const createEventParticipant = jest.spyOn(
       db.iSailEventParticipant,
       'bulkCreate',
     );
-    const createEventTracksData = jest.spyOn(db.iSailEventTracksData, 'create');
+    const createEventTracksData = jest.spyOn(
+      db.iSailEventTracksData,
+      'bulkCreate',
+    );
     const createMark = jest.spyOn(db.iSailMark, 'bulkCreate');
     const createPosition = jest.spyOn(db.iSailPosition, 'bulkCreate');
     const createRace = jest.spyOn(db.iSailRace, 'bulkCreate');
@@ -83,16 +89,15 @@ describe('Storing iSail data to DB', () => {
     expect(createRounding).toHaveBeenCalledTimes(1);
     expect(createStartline).toHaveBeenCalledTimes(1);
     expect(createTrack).toHaveBeenCalledTimes(1);
-    // Save same data
-    await saveISailData(jsonData);
-    expect(createEvent).toHaveBeenCalledTimes(1);
   });
   it('should throw error when one fails to execute', async () => {
     const invalidData = {
-      iSailEvent: {
-        original_id: 14,
-        url: 'http://app.i-sail.com/eventDetails/13',
-      },
+      iSailEvent: [
+        {
+          original_id: 14,
+          url: 'http://app.i-sail.com/eventDetails/13',
+        },
+      ],
     };
     const response = await saveISailData(invalidData);
     expect(response).toEqual(expect.stringContaining('cannot be null'));

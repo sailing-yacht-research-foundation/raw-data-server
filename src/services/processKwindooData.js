@@ -1,11 +1,15 @@
-const temp = require('temp').track();
+const fs = require('fs');
+const temp = require('temp');
+const parquet = require('parquetjs-lite');
 
 const db = require('../models');
 const Op = db.Sequelize.Op;
-const { kwindooCombined } = require('../schemas/parquets/kwindoo');
+const {
+  kwindooCombined,
+  kwindooPosition,
+} = require('../schemas/parquets/kwindoo');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
 const uploadFileToS3 = require('./uploadFileToS3');
-const writeToParquet = require('./writeToParquet');
 
 const getRegattas = async () => {
   const regattas = await db.kwindooRegatta.findAll({ raw: true });
@@ -103,18 +107,6 @@ const getPOIs = async (regattaList) => {
   });
   return result;
 };
-const getPositions = async (regattaList) => {
-  const positions = await db.kwindooPosition.findAll({
-    where: { regatta: { [Op.in]: regattaList } },
-    raw: true,
-  });
-  const result = new Map();
-  positions.forEach((row) => {
-    let currentList = result.get(row.regatta);
-    result.set(row.regatta, [...(currentList || []), row]);
-  });
-  return result;
-};
 const getRunningGroups = async (regattaList) => {
   const runningGroups = await db.kwindooRunningGroup.findAll({
     where: { regatta: { [Op.in]: regattaList } },
@@ -158,11 +150,12 @@ const processKwindooData = async (optionalPath) => {
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
 
-  let parquetPath = optionalPath;
-  if (!optionalPath) {
-    const dirPath = await temp.mkdir('rds-kwindoo');
-    parquetPath = `${dirPath}/kwindoo.parquet`;
-  }
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('kwindoo')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('kwindoo_pos')).path;
 
   const regattas = await getRegattas();
   if (regattas.length === 0) {
@@ -178,12 +171,18 @@ const processKwindooData = async (optionalPath) => {
   const markers = await getMarkers(regattaList);
   const mias = await getMIAs(regattaList);
   const pois = await getPOIs(regattaList);
-  const positions = await getPositions(regattaList);
   const runningGroups = await getRunningGroups(regattaList);
   const videoStreams = await getVideoStreams(regattaList);
   const waypoints = await getWaypoints(regattaList);
 
-  const data = regattas.map((row) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    kwindooCombined,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < regattas.length; i++) {
     const {
       id: regatta_id,
       original_id,
@@ -202,9 +201,9 @@ const processKwindooData = async (optionalPath) => {
       regatta_logo_path,
       featured_background_path,
       sponsor_logo_path,
-    } = row;
+    } = regattas[i];
 
-    return {
+    await writer.appendRow({
       regatta_id,
       original_id,
       owner,
@@ -230,21 +229,112 @@ const processKwindooData = async (optionalPath) => {
       markers: markers.get(regatta_id),
       mias: mias.get(regatta_id),
       pois: pois.get(regatta_id),
-      positions: positions.get(regatta_id),
       runningGroups: runningGroups.get(regatta_id),
       videoStreams: videoStreams.get(regatta_id),
       waypoints: waypoints.get(regatta_id),
-    };
-  });
-  await writeToParquet(data, kwindooCombined, parquetPath);
-  const fileUrl = await uploadFileToS3(
+    });
+  }
+  await writer.close();
+
+  const posWriter = await parquet.ParquetWriter.openFile(
+    kwindooPosition,
+    positionPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < regattas.length; i++) {
+    const { id: regatta } = regattas[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db.kwindooPosition.findAll({
+        where: { regatta },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await posWriter.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await posWriter.close();
+
+  const mainUrl = await uploadFileToS3(
     parquetPath,
     `kwindoo/year=${currentYear}/month=${currentMonth}/kwindoo_${fullDateFormat}.parquet`,
   );
+  const positionUrl = await uploadFileToS3(
+    positionPath,
+    `kwindoo/year=${currentYear}/month=${currentMonth}/kwindooPosition_${fullDateFormat}.parquet`,
+  );
+
   if (!optionalPath) {
-    temp.cleanup();
+    fs.unlink(parquetPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
+    fs.unlink(positionPath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
   }
-  return fileUrl;
+
+  // Delete parqueted data from DB
+  await db.kwindooWaypoint.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooVideoStream.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooRunningGroup.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooRace.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooPosition.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooPOI.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooMIA.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooMarker.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooHomeportLocation.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooComment.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  await db.kwindooBoat.destroy({
+    where: { regatta: { [Op.in]: regattaList } },
+  });
+  const ownerIDs = [];
+  mapOwner.forEach((row) => {
+    ownerIDs.push(row.id);
+  });
+  await db.kwindooRegattaOwner.destroy({
+    where: { id: { [Op.in]: ownerIDs } },
+  });
+  await db.kwindooRegatta.destroy({
+    where: { id: { [Op.in]: regattaList } },
+  });
+
+  return {
+    mainUrl,
+    positionUrl,
+  };
 };
 
 module.exports = {
@@ -257,7 +347,6 @@ module.exports = {
   getMarkers,
   getMIAs,
   getPOIs,
-  getPositions,
   getRunningGroups,
   getVideoStreams,
   getWaypoints,
