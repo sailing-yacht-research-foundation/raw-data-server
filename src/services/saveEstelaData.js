@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeEstela');
 
 const saveEstelaData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -14,8 +15,9 @@ const saveEstelaData = async (data) => {
         return { original_id: row.original_id, url: row.url };
       });
       // Just in case race sent is more than 1, having 3 csv columns might cause max_allowed_packet error
-      while (data.EstelaRace.length > 0) {
-        const splicedArray = data.EstelaRace.splice(0, 20);
+      const races = data.EstelaRace.slice(); // clone array to avoid mutating the data
+      while (races.length > 0) {
+        const splicedArray = races.splice(0, 20);
         await db.estelaRace.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -37,8 +39,9 @@ const saveEstelaData = async (data) => {
       });
     }
     if (data.EstelaDorsal) {
-      while (data.EstelaDorsal.length > 0) {
-        const splicedArray = data.EstelaDorsal.splice(0, 50);
+      const dorsals = data.EstelaDorsal.slice(); // clone array to avoid mutating the data
+      while (dorsals.length > 0) {
+        const splicedArray = dorsals.splice(0, 50);
         await db.estelaDorsal.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -53,8 +56,9 @@ const saveEstelaData = async (data) => {
       });
     }
     if (data.EstelaPosition) {
-      while (data.EstelaPosition.length > 0) {
-        const splicedArray = data.EstelaPosition.splice(
+      const positions = data.EstelaPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -71,6 +75,8 @@ const saveEstelaData = async (data) => {
         transaction,
       });
     }
+
+    await normalizeRace(data, transaction);
     transaction.commit();
   } catch (error) {
     await transaction.rollback();

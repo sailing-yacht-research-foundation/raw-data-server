@@ -54,11 +54,15 @@ describe('Uploading geojson files to S3', () => {
     await db.readyAboutTrackGeoJsonLookup.sync();
   });
   afterAll(async () => {
-    jest.resetAllMocks();
     await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.resetAllMocks();
+  })
+
   it('should upload correctly', async () => {
+    const uploadSpy = jest.spyOn(s3, 'upload');
     s3.promise.mockResolvedValueOnce({
       Location: 'jest-bucket-test.geojson',
     });
@@ -69,6 +73,20 @@ describe('Uploading geojson files to S3', () => {
       source,
     );
     expect(actual).toBe('jest-bucket-test.geojson');
-    expect(createLookup).toHaveBeenCalledTimes(1);
+    expect(createLookup).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: raceId,
+        source: source,
+        s3_id: expect.any(String),
+      }),
+      expect.anything()
+    );
+    expect(uploadSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        Bucket: expect.anything(),
+        Key: expect.stringMatching(/\.geojson$/),
+        Body: geojsonData,
+      })
+    )
   });
 });
