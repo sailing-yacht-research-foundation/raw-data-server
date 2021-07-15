@@ -7,4 +7,5 @@ module.exports = {
     '<rootDir>/src/configs',
     '<rootDir>/src/models',
   ],
+  setupFiles: ['dotenv/config'],
 };

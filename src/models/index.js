@@ -494,6 +494,17 @@ db.tackTrackerSuccessfulUrl =
   require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
 // === End of TackTracker ===
 
+// === Normalized Table ===
+db.readyAboutRaceMetadata = require('./normalizedTable/readyAboutRaceMetadata.model')(
+  sequelize,
+  Sequelize,
+);
+db.readyAboutTrackGeoJsonLookup = require('./normalizedTable/readyAboutTrackGeoJsonLookup.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Normalized Table ===
+
 // === Live Data Server ===
 db.liveDataPoint = require('./liveData/liveDataPoint.model')(
   sequelize,
