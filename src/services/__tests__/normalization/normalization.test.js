@@ -25,6 +25,12 @@ const scraperTestMappings = [
     raceTable: 'EstelaRace',
     source: 'ESTELA',
   },
+  {
+    filename: 'normalizeGeoracing',
+    testData: 'georacing.json',
+    raceTable: 'GeoracingRace',
+    source: 'GEORACING',
+  },
 ];
 
 describe('Normalization test', () => {
@@ -59,17 +65,4 @@ describe('Normalization test', () => {
       });
     },
   );
-  // it('should save metadata to readyAboutRaceMetadatas', async () => {
-  //   const createMetadata = jest.spyOn(db.readyAboutRaceMetadata, 'create');
-  //   const raceId = jsonData.BluewaterRace[0].id;
-  //   await normalizeRace(jsonData);
-  //   expect(createMetadata).toHaveBeenCalledTimes(1);
-  //   expect(elasticsearch.indexRace).toHaveBeenCalledTimes(1);
-  //   expect(s3Utils.uploadGeoJsonToS3).toHaveBeenCalledWith(
-  //     raceId,
-  //     expect.anything(),
-  //     'BLUEWATER',
-  //     undefined
-  //   );
-  // });
 });
