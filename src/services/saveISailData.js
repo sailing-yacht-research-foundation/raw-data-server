@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeISail');
 
 const saveISailData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -55,8 +56,9 @@ const saveISailData = async (data) => {
       });
     }
     if (data.iSailPosition) {
-      while (data.iSailPosition.length > 0) {
-        const splicedArray = data.iSailPosition.splice(
+      const positions = data.iSailPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -102,6 +104,7 @@ const saveISailData = async (data) => {
         transaction,
       });
     }
+    await normalizeRace(data);
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
