@@ -31,6 +31,12 @@ const scraperTestMappings = [
     raceTable: 'GeoracingRace',
     source: 'GEORACING',
   },
+  {
+    filename: 'normalizeISail',
+    testData: 'iSail.json',
+    raceTable: 'iSailRace',
+    source: 'ISAIL',
+  },
 ];
 
 describe('Normalization test', () => {
