@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeKattack');
 
 const saveKattackData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -34,8 +35,9 @@ const saveKattackData = async (data) => {
       });
     }
     if (data.KattackPosition) {
-      while (data.KattackPosition.length > 0) {
-        const splicedArray = data.KattackPosition.splice(
+      const positions = data.KattackPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -52,6 +54,9 @@ const saveKattackData = async (data) => {
         validate: true,
         transaction,
       });
+    }
+    if (data.KattackRace) {
+      await normalizeRace(data);
     }
     await transaction.commit();
   } catch (error) {

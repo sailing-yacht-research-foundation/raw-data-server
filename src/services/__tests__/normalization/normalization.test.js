@@ -37,6 +37,12 @@ const scraperTestMappings = [
     raceTable: 'iSailRace',
     source: 'ISAIL',
   },
+  {
+    filename: 'normalizeKattack',
+    testData: 'kattack.json',
+    raceTable: 'KattackRace',
+    source: 'KATTACK',
+  },
 ];
 
 describe('Normalization test', () => {
