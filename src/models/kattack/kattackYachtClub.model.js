@@ -8,8 +8,9 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: true,
+        unique: true,
       },
       name: {
         type: Sequelize.TEXT,

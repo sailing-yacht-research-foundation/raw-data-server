@@ -59,7 +59,7 @@ describe('Uploading geojson files to S3', () => {
   });
   afterEach(() => {
     jest.resetAllMocks();
-  })
+  });
 
   it('should upload correctly', async () => {
     const uploadSpy = jest.spyOn(s3, 'upload');
@@ -67,11 +67,7 @@ describe('Uploading geojson files to S3', () => {
       Location: 'jest-bucket-test.geojson',
     });
     const createLookup = jest.spyOn(db.readyAboutTrackGeoJsonLookup, 'create');
-    const actual = await uploadGeoJsonToS3(
-      raceId,
-      geojsonData,
-      source,
-    );
+    const actual = await uploadGeoJsonToS3(raceId, geojsonData, source);
     expect(actual).toBe('jest-bucket-test.geojson');
     expect(createLookup).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -79,14 +75,14 @@ describe('Uploading geojson files to S3', () => {
         source: source,
         s3_id: expect.any(String),
       }),
-      expect.anything()
+      expect.anything(),
     );
     expect(uploadSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         Bucket: expect.anything(),
         Key: expect.stringMatching(/\.geojson$/),
         Body: geojsonData,
-      })
-    )
+      }),
+    );
   });
 });

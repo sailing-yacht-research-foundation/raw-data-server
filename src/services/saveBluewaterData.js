@@ -71,10 +71,7 @@ const saveBluewaterData = async (data) => {
     if (data.BluewaterPosition) {
       const positions = data.BluewaterPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.bluewaterPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
