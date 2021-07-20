@@ -48,6 +48,8 @@ services:
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
       - rds-db:/var/lib/rds
+    command:
+      --innodb_lock_wait_timeout=180
   rabbit-mq:
     image: rabbitmq:3.7-management
     build:

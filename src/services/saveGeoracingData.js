@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeGeoracing');
 
 const saveGeoracingData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -70,8 +71,9 @@ const saveGeoracingData = async (data) => {
       });
     }
     if (data.GeoracingPosition) {
-      while (data.GeoracingPosition.length > 0) {
-        const splicedArray = data.GeoracingPosition.splice(
+      const positions = data.GeoracingPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -106,6 +108,8 @@ const saveGeoracingData = async (data) => {
         },
       );
     }
+
+    await normalizeRace(data, transaction);
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
