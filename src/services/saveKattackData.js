@@ -56,10 +56,11 @@ const saveKattackData = async (data) => {
       });
     }
     if (data.KattackRace) {
-      await normalizeRace(data);
+      await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
