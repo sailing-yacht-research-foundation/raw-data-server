@@ -351,12 +351,14 @@ exports.createRace = async function (
   };
 
   const gc = turf.greatCircle(startPoint, endPoint);
-
   let approxDistanceKm = roughDistanceKm;
   try {
     approxDistanceKm = turf.length(gc);
   } catch (err) {
     // Do nothing.
+    approxDistanceKm = roughDistanceKm;
+  }
+  if (isNaN(approxDistanceKm)) {
     approxDistanceKm = roughDistanceKm;
   }
   const numBoats = Object.keys(boatIdsToPositions).length;
@@ -396,7 +398,14 @@ exports.createRace = async function (
       name: 'EPSG:4326',
     },
   };
-
+  // Remove NaN in greatCircle values
+  greatCircle.coordinates = greatCircle.coordinates.map((v1) => {
+    return v1.map((v2) => v2.filter((v3) => !isNaN(v3)))
+      .filter((i) => i.length === 2);
+  });
+  if (greatCircle.coordinates === 0 || greatCircle.coordinates[0].length === 0) {
+    greatCircle = null;
+  }
   const raceMetadata = {
     id,
     name,

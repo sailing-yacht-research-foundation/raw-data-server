@@ -39,6 +39,16 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      track_ids: {
+          type: Sequelize.TEXT,
+          allowNull: false,
+          get() {
+            return this.getDataValue('track_ids').split(';')
+          },
+          set(val) {
+            this.setDataValue('track_ids', val.join(';'));
+          },
+      },
     },
     {
       tableName: 'iSailRaces',

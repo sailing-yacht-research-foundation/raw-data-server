@@ -112,6 +112,7 @@ const saveGeoracingData = async (data) => {
     await normalizeRace(data, transaction);
     await transaction.commit();
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
