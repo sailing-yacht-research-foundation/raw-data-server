@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeKwindoo');
 
 const saveKwindooData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -79,8 +80,9 @@ const saveKwindooData = async (data) => {
       });
     }
     if (data.KwindooPosition) {
-      while (data.KwindooPosition.length > 0) {
-        const splicedArray = data.KwindooPosition.splice(
+      const positions = data.KwindooPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -112,8 +114,10 @@ const saveKwindooData = async (data) => {
         transaction,
       });
     }
+    await normalizeRace(data, transaction);
     await transaction.commit();
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }

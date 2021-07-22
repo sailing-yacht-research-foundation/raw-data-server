@@ -43,6 +43,12 @@ const scraperTestMappings = [
     raceTable: 'KattackRace',
     source: 'KATTACK',
   },
+  {
+    filename: 'normalizeKwindoo',
+    testData: 'kwindoo.json',
+    raceTable: 'KwindooRace',
+    source: 'KWINDOO',
+  },
 ];
 
 describe('Normalization test', () => {
