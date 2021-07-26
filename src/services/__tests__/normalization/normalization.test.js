@@ -66,8 +66,8 @@ describe('Normalization test', () => {
         const createMetadata = jest.spyOn(db.readyAboutRaceMetadata, 'create');
         const raceId = jsonData[raceTable][0].id;
         await normalizeRace(jsonData);
-        expect(createMetadata).toHaveBeenCalledTimes(1);
-        expect(elasticsearch.indexRace).toHaveBeenCalledTimes(1);
+        expect(createMetadata).toHaveBeenCalled();
+        expect(elasticsearch.indexRace).toHaveBeenCalled();
         expect(s3Utils.uploadGeoJsonToS3).toHaveBeenCalledWith(
           raceId,
           expect.anything(),
