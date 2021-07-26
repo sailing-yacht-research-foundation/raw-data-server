@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeTracTrac');
 
 const saveTracTracData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -65,8 +66,9 @@ const saveTracTracData = async (data) => {
       );
     }
     if (data.TracTracCompetitorPosition) {
-      while (data.TracTracCompetitorPosition.length > 0) {
-        const splicedArray = data.TracTracCompetitorPosition.splice(
+      const positions = data.TracTracCompetitorPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -109,17 +111,24 @@ const saveTracTracData = async (data) => {
       });
     }
     if (data.TracTracControlPointPosition) {
-      await db.tractracControlPointPosition.bulkCreate(
-        data.TracTracControlPointPosition,
-        {
+      const cpPositions = data.TracTracControlPointPosition.slice(); // clone array to avoid mutating the data
+      while (cpPositions.length > 0) {
+        const splicedArray = cpPositions.splice(
+          0,
+          SAVE_DB_POSITION_CHUNK_COUNT,
+        );
+        await db.tractracControlPointPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
           transaction,
-        },
-      );
+        });
+      }
     }
+    await normalizeRace(data, transaction);
     await transaction.commit();
+    console.log('Finished saving data');
   } catch (error) {
+    console.log(error.toString());
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }

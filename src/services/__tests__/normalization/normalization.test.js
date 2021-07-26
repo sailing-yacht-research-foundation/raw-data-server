@@ -49,6 +49,12 @@ const scraperTestMappings = [
     raceTable: 'KwindooRace',
     source: 'KWINDOO',
   },
+  {
+    filename: 'normalizeTracTrac',
+    testData: 'tractrac.json',
+    raceTable: 'TracTracRace',
+    source: 'TRACTRAC',
+  },
 ];
 
 describe('Normalization test', () => {
@@ -61,7 +67,7 @@ describe('Normalization test', () => {
   });
   afterEach(() => {
     jest.resetAllMocks();
-  })
+  });
 
   describe.each(scraperTestMappings)(
     'when calling normalizeRace on $filename',
@@ -70,16 +76,19 @@ describe('Normalization test', () => {
         const { normalizeRace } = require(`../../normalization/${filename}`);
         const jsonData = require(`../../../test-files/${testData}`);
         const createMetadata = jest.spyOn(db.readyAboutRaceMetadata, 'create');
-        const raceId = jsonData[raceTable][0].id;
+        const races = jsonData[raceTable];
+        // const raceId = jsonData[raceTable][0].id;
         await normalizeRace(jsonData);
-        expect(createMetadata).toHaveBeenCalled();
-        expect(elasticsearch.indexRace).toHaveBeenCalled();
-        expect(s3Utils.uploadGeoJsonToS3).toHaveBeenCalledWith(
-          raceId,
-          expect.anything(),
-          source,
-          undefined,
-        );
+        expect(createMetadata).toHaveBeenCalledTimes(races.length);
+        expect(elasticsearch.indexRace).toHaveBeenCalledTimes(races.length);
+        races.forEach((race) => {
+          expect(s3Utils.uploadGeoJsonToS3).toHaveBeenCalledWith(
+            race.id,
+            expect.anything(),
+            source,
+            undefined,
+          );
+        });
       });
     },
   );
