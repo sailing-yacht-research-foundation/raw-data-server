@@ -55,6 +55,12 @@ const scraperTestMappings = [
     raceTable: 'TracTracRace',
     source: 'TRACTRAC',
   },
+  {
+    filename: 'normalizeYachtBot',
+    testData: 'yachtbot.json',
+    raceTable: 'YachtBotRace',
+    source: 'YACHTBOT',
+  },
 ];
 
 describe('Normalization test', () => {

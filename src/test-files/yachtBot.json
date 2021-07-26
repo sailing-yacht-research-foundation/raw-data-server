@@ -9,16 +9,6 @@
       "manual_wind": "",
       "course_direction": "",
       "url": "http://www.yacht-bot.com/races/362"
-    },
-    {
-      "id": "22af95d6-8c45-4532-abc2-d2a41f6744b7",
-      "original_id": "370",
-      "name": "Rolex Day 4 - Race 8",
-      "start_time": "1348157100000",
-      "end_time": "1348161113000",
-      "manual_wind": "{\"strength\":\"15\",\"direction\":\"305\"}",
-      "course_direction": "",
-      "url": "http://www.yacht-bot.com/races/370"
     }
   ],
   "YachtBotBuoy": [
