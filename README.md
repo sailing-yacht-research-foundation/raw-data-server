@@ -10,6 +10,7 @@ Server that will be used to transform data to parquet format and perform bulk sa
   - [Deployment](#deployment)
     - [Terraform Configurations](#terraform-configurations)
     - [Terraform Commands](#terraform-commands)
+    - [Terraform Known Issues](#terraform-known-issues)
   - [Usage](#usage)
   - [API Endpoint](#api-endpoint)
 
@@ -68,6 +69,14 @@ AWS requires to use an MFA to perform IAM operation with an assume-role, please 
 - To check terraform resources to be created, run `docker-compose -f deployment/docker-compose.yml run --rm terraform plan`
 - To apply the terraform configurations, run `docker-compose -f deployment/docker-compose.yml run --rm terraform apply`
 - To destroy the instances createdd by terraform, run `docker-compose -f deployment/docker-compose.yml run --rm terraform destroy`
+
+### Terraform Known Issues
+
+- A change in the backend configuration has been detected, which may require migrating existing state.
+  If you have run terraform previously before backend setup with s3 is implemented, you need to remove all the state and lock files from your local deployment folder, or run init with -migrate-state option
+
+- Failed to get existing workspaces: S3 bucket does not exist.
+  The s3 bucket used by terraform needs to be created before init. It's possible to create s3 bucket and dynamoDB with terraform, but needs to comment out the terraform backend block before proceeding and then uncomment after successfully applied. Or create a separate terraform config just for the s3 bucket and dynamoDB.
 
 ## Usage
 
