@@ -67,7 +67,7 @@ describe('Normalization test', () => {
   });
   afterEach(() => {
     jest.resetAllMocks();
-  })
+  });
 
   describe.each(scraperTestMappings)(
     'when calling normalizeRace on $filename',
@@ -88,7 +88,7 @@ describe('Normalization test', () => {
             source,
             undefined,
           );
-        })
+        });
       });
     },
   );

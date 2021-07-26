@@ -51,10 +51,6 @@ variable "mq_password" {
   type    = string
 }
 
-variable "s3_bucket" {
-  type    = string
-}
-
 variable "mq_topic" {
   default = "/topic/rawdata.topic"
 }
