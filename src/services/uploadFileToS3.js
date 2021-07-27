@@ -46,13 +46,11 @@ const uploadGeoJsonToS3 = async (raceId, geojson, source, transaction) => {
   const lookupId = uuidv4();
   const file = lookupId + '.geojson';
   // Uploading files to the bucket
-  const result = await s3
-    .upload({
-      Bucket: GEOJSON_BUCKET_NAME,
-      Key: file, // File name you want to save as in S3
-      Body: geojson,
-    })
-    .promise();
+  const result = await uploadDataToS3({
+    Bucket: GEOJSON_BUCKET_NAME,
+    Key: file, // File name you want to save as in S3
+    Body: geojson,
+  });
 
   await db.readyAboutTrackGeoJsonLookup.create(
     {
@@ -65,7 +63,17 @@ const uploadGeoJsonToS3 = async (raceId, geojson, source, transaction) => {
   return result.Location;
 };
 
+const uploadDataToS3 = async (params) => {
+  return await s3.upload(params).promise();
+};
+
+const deleteObjectInS3 = async (params) => {
+  return await s3.deleteObject(params).promise();
+};
+
 module.exports = {
   uploadFileToS3,
   uploadGeoJsonToS3,
+  uploadDataToS3,
+  deleteObjectInS3,
 };
