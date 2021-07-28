@@ -4,6 +4,7 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { uploadDataToS3 } = require('./uploadFileToS3');
+const { normalizeRace } = require('./normalization/normalizeYellowbrick');
 const KML_S3_BUCKET = process.env.AWS_YELLOWBRICK_KML_S3_BUCKET;
 
 const saveYellowbrickData = async (data) => {
@@ -46,11 +47,9 @@ const saveYellowbrickData = async (data) => {
       });
     }
     if (data.YellowbrickPosition) {
-      while (data.YellowbrickPosition.length > 0) {
-        const splicedArray = data.YellowbrickPosition.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+      const positions = data.YellowbrickPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.yellowbrickPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -80,6 +79,9 @@ const saveYellowbrickData = async (data) => {
           Body: kmlObj.data,
         });
       }
+    }
+    if (data.YellowbrickRace) {
+      await normalizeRace(data, transaction);
     }
     await transaction.commit();
     console.log('Finished saving data');

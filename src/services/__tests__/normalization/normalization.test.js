@@ -55,6 +55,12 @@ const scraperTestMappings = [
     raceTable: 'TracTracRace',
     source: 'TRACTRAC',
   },
+  {
+    filename: 'normalizeYellowbrick',
+    testData: 'yellowbrick.json',
+    raceTable: 'YellowbrickRace',
+    source: 'YELLOWBRICK',
+  },
 ];
 
 describe('Normalization test', () => {
