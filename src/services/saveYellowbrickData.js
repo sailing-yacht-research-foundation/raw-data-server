@@ -3,6 +3,8 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { uploadDataToS3 } = require('./uploadFileToS3');
+const KML_S3_BUCKET = process.env.AWS_YELLOWBRICK_KML_S3_BUCKET;
 
 const saveYellowbrickData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -70,8 +72,19 @@ const saveYellowbrickData = async (data) => {
         transaction,
       });
     }
+    if (data.YellowbrickKml) {
+      for (const kmlObj of data.YellowbrickKml) {
+        await uploadDataToS3({
+          Bucket: KML_S3_BUCKET,
+          Key: `${kmlObj.id}.kml`,
+          Body: kmlObj.data,
+        });
+      }
+    }
     await transaction.commit();
+    console.log('Finished saving data');
   } catch (error) {
+    console.log(error.toString());
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
