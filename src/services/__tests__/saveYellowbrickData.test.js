@@ -5,12 +5,13 @@ const s3Util = require('../uploadFileToS3');
 const jsonData = require('../../test-files/yellowbrick.json');
 
 jest.mock('../uploadFileToS3', () => ({
+  uploadGeoJsonToS3: jest.fn(),
   uploadDataToS3: jest.fn(),
 }));
 jest.mock('../../utils/elasticsearch', () => ({
   indexRace: jest.fn(),
 }));
-jest.setTimeout(30000);
+jest.setTimeout(60000);
 describe('Storing yellowbrick data to DB', () => {
   beforeAll(async () => {
     await db.yellowbrickRace.sync({ force: true });
@@ -22,6 +23,8 @@ describe('Storing yellowbrick data to DB', () => {
     await db.yellowbrickTeam.sync({ force: true });
     await db.yellowbrickSuccessfulUrl.sync({ force: true });
     await db.yellowbrickFailedUrl.sync({ force: true });
+    await db.readyAboutRaceMetadata.sync({ force: true });
+    await db.readyAboutTrackGeoJsonLookup.sync({ force: true });
   });
   afterAll(async () => {
     await db.yellowbrickRace.destroy({ truncate: true });
@@ -33,6 +36,8 @@ describe('Storing yellowbrick data to DB', () => {
     await db.yellowbrickTeam.destroy({ truncate: true });
     await db.yellowbrickSuccessfulUrl.destroy({ truncate: true });
     await db.yellowbrickFailedUrl.destroy({ truncate: true });
+    await db.readyAboutRaceMetadata.destroy({ truncate: true });
+    await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
   afterEach(() => {

@@ -76,6 +76,7 @@ router.post(
     let unzippedJsonPath = req.file.path;
 
     if (req.file.mimetype === 'application/gzip') {
+      console.log('Got gzip file');
       unzippedJsonPath = (await temp.open('georacing')).path;
       const sourceStream = fs.createReadStream(req.file.path);
       const writeStream = fs.createWriteStream(unzippedJsonPath);
@@ -110,42 +111,43 @@ router.post(
         resolve(true);
       });
     });
+    const isScraperExist = (data, source) => Object.keys(data).some((i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1);
     try {
       switch (true) {
-        case Boolean(jsonData.iSailEvent):
+        case isScraperExist(jsonData, TRACKER_MAP.isail):
           saveISailData(jsonData);
           break;
-        case Boolean(jsonData.KattackRace):
+        case isScraperExist(jsonData, TRACKER_MAP.kattack):
           saveKattackData(jsonData);
           break;
-        case Boolean(jsonData.GeoracingEvent):
+        case isScraperExist(jsonData, TRACKER_MAP.georacing):
           saveGeoracingData(jsonData);
           break;
-        case Boolean(jsonData.TracTracRace):
+        case isScraperExist(jsonData, TRACKER_MAP.tractrac):
           saveTracTracData(jsonData);
           break;
-        case Boolean(jsonData.YellowbrickRace):
+        case isScraperExist(jsonData, TRACKER_MAP.yellowbrick):
           saveYellowbrickData(jsonData);
           break;
-        case Boolean(jsonData.KwindooRace):
+        case isScraperExist(jsonData, TRACKER_MAP.kwindoo):
           saveKwindooData(jsonData);
           break;
-        case Boolean(jsonData.BluewaterRace):
+        case isScraperExist(jsonData, TRACKER_MAP.bluewater):
           saveBluewaterData(jsonData);
           break;
-        case Boolean(jsonData.YachtBotRace):
+        case isScraperExist(jsonData, TRACKER_MAP.yachtbot):
           saveYachtBotData(jsonData);
           break;
-        case Boolean(jsonData.RaceQsEvent):
+        case isScraperExist(jsonData, TRACKER_MAP.raceqs):
           saveRaceQsData(jsonData);
           break;
-        case Boolean(jsonData.MetasailRace):
+        case isScraperExist(jsonData, TRACKER_MAP.metasail):
           saveMetasailData(jsonData);
           break;
-        case Boolean(jsonData.EstelaRace):
+        case isScraperExist(jsonData, TRACKER_MAP.estela):
           saveEstelaData(jsonData);
           break;
-        case Boolean(jsonData.TackTrackerRace):
+        case isScraperExist(jsonData, TRACKER_MAP.tacktracker):
           saveTackTrackerData(jsonData);
           break;
       }

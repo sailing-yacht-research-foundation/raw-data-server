@@ -132,6 +132,8 @@ module.exports = (sequelize, Sequelize) => {
                 fields: ['source'],
             },
         ],
+        charset: 'utf8',
+        collate: 'utf8_unicode_ci' // For storing accented char in name
     },
   );
   return readyAboutRaceMetadata;
