@@ -61,6 +61,12 @@ const scraperTestMappings = [
     raceTable: 'YellowbrickRace',
     source: 'YELLOWBRICK',
   },
+  {
+    filename: 'normalizeYachtBot',
+    testData: 'yachtbot.json',
+    raceTable: 'YachtBotRace',
+    source: 'YACHTBOT',
+  },
 ];
 
 describe('Normalization test', () => {
