@@ -1,11 +1,30 @@
 const db = require('../../models');
 const saveRaceQsData = require('../saveRaceQsData');
+const s3Util = require('../uploadFileToS3');
 
 const jsonData = require('../../test-files/raceQs.json');
 
+jest.mock('../uploadFileToS3', () => ({
+  uploadGeoJsonToS3: jest.fn(),
+}));
+jest.mock('../../utils/elasticsearch', () => ({
+  indexRace: jest.fn(),
+}));
+jest.setTimeout(60000);
 describe('Storing RaceQS data to DB', () => {
   beforeAll(async () => {
-    await db.sequelize.sync();
+    await db.raceQsRegatta.sync({ force: true });
+    await db.raceQsEvent.sync({ force: true });
+    await db.raceQsDivision.sync({ force: true });
+    await db.raceQsParticipant.sync({ force: true });
+    await db.raceQsPosition.sync({ force: true });
+    await db.raceQsRoute.sync({ force: true });
+    await db.raceQsStart.sync({ force: true });
+    await db.raceQsWaypoint.sync({ force: true });
+    await db.raceQsFailedUrl.sync({ force: true });
+    await db.raceQsSuccessfulUrl.sync({ force: true });
+    await db.readyAboutRaceMetadata.sync({ force: true });
+    await db.readyAboutTrackGeoJsonLookup.sync({ force: true });
   });
   afterAll(async () => {
     await db.raceQsRegatta.destroy({ truncate: true });
@@ -18,8 +37,14 @@ describe('Storing RaceQS data to DB', () => {
     await db.raceQsWaypoint.destroy({ truncate: true });
     await db.raceQsFailedUrl.destroy({ truncate: true });
     await db.raceQsSuccessfulUrl.destroy({ truncate: true });
+    await db.readyAboutRaceMetadata.destroy({ truncate: true });
+    await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should not save anything when empty data', async () => {
     const createRegatta = jest.spyOn(db.raceQsRegatta, 'bulkCreate');
     const createEvent = jest.spyOn(db.raceQsEvent, 'bulkCreate');
@@ -48,6 +73,8 @@ describe('Storing RaceQS data to DB', () => {
     const createRoute = jest.spyOn(db.raceQsRoute, 'bulkCreate');
     const createStart = jest.spyOn(db.raceQsStart, 'bulkCreate');
     const createWaypoint = jest.spyOn(db.raceQsWaypoint, 'bulkCreate');
+    const uploadS3Spy = jest.spyOn(s3Util, 'uploadGeoJsonToS3');
+
     await saveRaceQsData(jsonData);
     expect(createRegatta).toHaveBeenCalledTimes(1);
     expect(createEvent).toHaveBeenCalledTimes(1);
@@ -57,17 +84,6 @@ describe('Storing RaceQS data to DB', () => {
     expect(createRoute).toHaveBeenCalledTimes(1);
     expect(createStart).toHaveBeenCalledTimes(1);
     expect(createWaypoint).toHaveBeenCalledTimes(1);
-  });
-  it('should throw error when one fails to execute', async () => {
-    const invalidData = Object.assign({}, jsonData);
-    invalidData.RaceQsEvent = [
-      ...invalidData.RaceQsEvent,
-      {
-        original_id: '62881',
-        url: 'https://raceqs.com/tv-beta/tv.htm#eventId=62881',
-      },
-    ];
-    const response = await saveRaceQsData(invalidData);
-    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+    expect(uploadS3Spy).toHaveBeenCalledTimes(1);
   });
 });
