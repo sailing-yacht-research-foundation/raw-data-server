@@ -9,7 +9,7 @@ module.exports = {
       : process.env.DB_NAME || 'mysql',
   dialect: 'mysql',
   pool: {
-    max: 10,
+    max: 30,
     min: 0,
     acquire: 30000,
     idle: process.env.NODE_ENV === 'test' ? 500 : 10000,
