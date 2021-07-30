@@ -3,11 +3,13 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeMetasailData');
 
 const saveMetasailData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let eventUrl = [];
+  let metasailPositions;
   try {
     if (data.MetasailEvent) {
       eventUrl = data.MetasailEvent.map((row) => {
@@ -48,6 +50,7 @@ const saveMetasailData = async (data) => {
       });
     }
     if (data.MetasailPosition) {
+      metasailPositions = data.MetasailPosition.slice();
       while (data.MetasailPosition.length > 0) {
         const splicedArray = data.MetasailPosition.splice(
           0,
@@ -60,6 +63,8 @@ const saveMetasailData = async (data) => {
         });
       }
     }
+    data.MetasailPosition = metasailPositions;
+    await normalizeRace(data, transaction);
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();
