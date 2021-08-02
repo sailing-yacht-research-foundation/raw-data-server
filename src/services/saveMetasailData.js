@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
-const { normalizeRace } = require('./normalization/normalizeMetasailData');
+const { normalizeRace } = require('./normalization/normalizeMetasail');
 
 const saveMetasailData = async (data) => {
   const transaction = await db.sequelize.transaction();
