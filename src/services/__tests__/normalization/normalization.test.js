@@ -50,6 +50,12 @@ const scraperTestMappings = [
     source: 'KWINDOO',
   },
   {
+    filename: 'normalizeTackTracker',
+    testData: 'tacktracker.json',
+    raceTable: 'TackTrackerRace',
+    source: 'TACKTRACKER',
+  },
+  {
     filename: 'normalizeRaceQs',
     testData: 'raceQs.json',
     raceTable: 'RaceQsEvent',

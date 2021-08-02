@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeTackTracker');
 
 const saveTackTrackerData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -55,8 +56,9 @@ const saveTackTrackerData = async (data) => {
       });
     }
     if (data.TackTrackerPosition) {
-      while (data.TackTrackerPosition.length > 0) {
-        const splicedArray = data.TackTrackerPosition.splice(
+      const positions = data.TackTrackerPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -74,8 +76,13 @@ const saveTackTrackerData = async (data) => {
         transaction,
       });
     }
+    if (data.TackTrackerRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
+    console.log('Finished saving data');
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
