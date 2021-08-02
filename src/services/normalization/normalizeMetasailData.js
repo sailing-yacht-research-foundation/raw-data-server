@@ -23,41 +23,43 @@ const normalizeRace = async (
     return;
   }
 
-  for (const index in MetasailRace) {
-    const race = MetasailRace[index];
-
+  for (const race of MetasailRace) {
     const id = race.id;
-    const name = MetasailEvent.name + ' - ' + race.name;
+    const name = MetasailEvent[0].name + ' - ' + race.name;
     const eventId = race.event;
     const url = race.url;
     const startTime = parseInt(race.start);
     const endTime = parseInt(race.stop);
     const original_id = race.original_id;
 
-    const classes = [MetasailEvent.category_text];
+    const classes = [MetasailEvent[0].category_text];
     const boatNames = [];
     const identifiers = [];
     const handicapRules = [];
     const unstructuredText = [];
-    let RaceMetasailBoat = MetasailBoat.filter(
-      (x) => x.race_original_id == original_id,
+    let raceBoat = MetasailBoat.filter(
+      (x) => x.race_original_id === original_id,
     );
-    let RaceMetasailPosition = MetasailPosition.filter(
-      (x) => x.race_original_id == original_id,
+    let racePositions = MetasailPosition.filter(
+      (x) => x.race_original_id === original_id,
     );
+    if (racePositions.length === 0) {
+      console.log('No race positions, skip');
+      continue;
+    }
 
-    RaceMetasailBoat.forEach((b) => {
+    raceBoat.forEach((b) => {
       boatNames.push(b.name);
     });
 
-    RaceMetasailPosition.forEach((p) => {
+    racePositions.forEach((p) => {
       p.timestamp = parseInt(p.time);
     });
     const boundingBox = turf.bbox(
-      positionsToFeatureCollection('lat', 'lon', RaceMetasailPosition),
+      positionsToFeatureCollection('lat', 'lon', racePositions),
     );
     const boatsToSortedPositions = createBoatToPositionDictionary(
-      RaceMetasailPosition,
+      racePositions,
       'boat',
       'time',
     );
@@ -77,9 +79,7 @@ const normalizeRace = async (
     );
     const endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
 
-    console.log('F');
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    console.log('G');
 
     const raceMetadata = await createRace(
       id,
@@ -100,11 +100,9 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    console.log('H');
     const tracksGeojson = JSON.stringify(
       allPositionsToFeatureCollection(boatsToSortedPositions),
     );
-    console.log('I');
     await db.readyAboutRaceMetadata.create(raceMetadata, {
       fields: Object.keys(raceMetadata),
       transaction,

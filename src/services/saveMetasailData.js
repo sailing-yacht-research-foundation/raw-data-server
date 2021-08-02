@@ -51,8 +51,8 @@ const saveMetasailData = async (data) => {
     }
     if (data.MetasailPosition) {
       metasailPositions = data.MetasailPosition.slice();
-      while (data.MetasailPosition.length > 0) {
-        const splicedArray = data.MetasailPosition.splice(
+      while (metasailPositions.length > 0) {
+        const splicedArray = metasailPositions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -63,7 +63,6 @@ const saveMetasailData = async (data) => {
         });
       }
     }
-    data.MetasailPosition = metasailPositions;
     await normalizeRace(data, transaction);
     await transaction.commit();
   } catch (error) {
