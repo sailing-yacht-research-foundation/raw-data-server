@@ -75,7 +75,8 @@ describe('Storing yellowbrick data to DB', () => {
     const createPosition = jest.spyOn(db.yellowbrickPosition, 'bulkCreate');
     const createTag = jest.spyOn(db.yellowbrickTag, 'bulkCreate');
     const createTeam = jest.spyOn(db.yellowbrickTeam, 'bulkCreate');
-    const uploadS3Spy = jest.spyOn(s3Util, 'uploadDataToS3');
+    const uploadS3Spy = jest.spyOn(s3Util, 'uploadGeoJsonToS3');
+    const uploadDataS3Spy = jest.spyOn(s3Util, 'uploadDataToS3');
 
     await saveYellowbrickData(jsonData);
     expect(createRace).toHaveBeenCalledTimes(1);
@@ -86,5 +87,6 @@ describe('Storing yellowbrick data to DB', () => {
     expect(createTag).toHaveBeenCalledTimes(1);
     expect(createTeam).toHaveBeenCalledTimes(1);
     expect(uploadS3Spy).toHaveBeenCalledTimes(1);
+    expect(uploadDataS3Spy).toHaveBeenCalledTimes(1);
   });
 });
