@@ -6,25 +6,16 @@ const {
   uploadGeoJsonToS3,
   uploadDataToS3,
   deleteObjectInS3,
-} = require('../uploadFileToS3');
+} = require('../uploadUtil');
 const geojsonData = require('../../test-files/bluewater.json');
-
-jest.mock('aws-sdk', () => {
-  const mockS3Instance = {
-    upload: jest.fn().mockReturnThis(),
-    deleteObject: jest.fn().mockReturnThis(),
-    promise: jest.fn(),
-  };
-  return { S3: jest.fn(() => mockS3Instance) };
-});
 
 describe('uploadFileToS3 test', () => {
   let s3;
   beforeAll(() => {
     s3 = new AWS.S3();
   });
-  afterAll(() => {
-    jest.resetAllMocks();
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('Uploading file to S3', () => {

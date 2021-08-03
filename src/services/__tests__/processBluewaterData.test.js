@@ -10,11 +10,13 @@ const {
   getAnnouncements,
   processBluewaterData,
 } = require('../processBluewaterData');
+const normalizeObj = require('../normalization/normalizeBluewater');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveBluewaterData = require('../saveBluewaterData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/bluewater.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Bluewater Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -51,7 +53,6 @@ describe('Processing exist Bluewater Data from DB to Parquet', () => {
     await db.bluewaterAnnouncement.destroy({ truncate: true });
     await db.bluewaterSuccessfulUrl.destroy({ truncate: true });
     await db.bluewaterFailedUrl.destroy({ truncate: true });
-    await db.sequelize.close();
   });
   it('should get races', async () => {
     const races = await getRaces();
@@ -100,12 +101,12 @@ describe('Processing exist Bluewater Data from DB to Parquet', () => {
       mainUrl: 'https://awsbucket.com/thebucket/bluewater/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/bluewater/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processBluewaterData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

@@ -14,11 +14,13 @@ const {
   getWaypoints,
   processKwindooData,
 } = require('../processKwindooData');
+const normalizeObj = require('../normalization/normalizeKwindoo');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveKwindooData = require('../saveKwindooData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/kwindoo.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Kwindoo Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -36,8 +38,7 @@ describe('Processing non-existent Kwindoo Data from DB to Parquet', () => {
 });
 
 describe('Processing exist Kwindoo Data from DB to Parquet', () => {
-  const regatta1 = '89405c05-8967-49cf-a1a2-05e9d1b2973f';
-  const regatta2 = '240c3fe1-ce41-482a-bd13-33b8a23edf15';
+  const regatta1 = jsonData.KwindooRegatta[0].id;
   beforeAll(async () => {
     await saveKwindooData(jsonData);
   });
@@ -62,96 +63,85 @@ describe('Processing exist Kwindoo Data from DB to Parquet', () => {
   });
   it('should get regattas', async () => {
     const regattas = await getRegattas();
-    expect(regattas.length).toEqual(3);
+    const expectedLength = jsonData.KwindooRegatta.length;
+    expect(regattas.length).toEqual(expectedLength);
   });
   it('should get regatta owners', async () => {
     const owners = await getRegattaOwners();
-    expect(owners.size).toEqual(3);
+    const expectedLength = jsonData.KwindooRegattaOwner.length;
+    expect(owners.size).toEqual(expectedLength);
   });
   it('should get races', async () => {
     const case1 = await getRaces([regatta1]);
+    const expectedLength = jsonData.KwindooRace.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(2);
-    const case2 = await getRaces([regatta2]);
-    expect(case2.size).toEqual(1);
-    expect(case2.get(regatta2).length).toEqual(1);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get boats', async () => {
     const case1 = await getBoats([regatta1]);
+    const expectedLength = jsonData.KwindooBoat.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getBoats([regatta2]);
-    expect(case2.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get comments', async () => {
     const case1 = await getComments([regatta1]);
+    const expectedLength = jsonData.KwindooComment.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(2);
-    const case2 = await getComments([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get homeport locations', async () => {
     const case1 = await getHomeportLocations([regatta1]);
+    const expectedLength = jsonData.KwindooHomeportLocation.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getHomeportLocations([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get markers', async () => {
     const case1 = await getMarkers([regatta1]);
+    const expectedLength = jsonData.KwindooMarker.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getMarkers([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get MIAs', async () => {
     const case1 = await getMIAs([regatta1]);
+    const expectedLength = jsonData.KwindooMIA.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getMIAs([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get POIs', async () => {
     const case1 = await getPOIs([regatta1]);
+    const expectedLength = jsonData.KwindooPOI.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getPOIs([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get running groups', async () => {
     const case1 = await getRunningGroups([regatta1]);
+    const expectedLength = jsonData.KwindooRunningGroup.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getRunningGroups([regatta2]);
-    expect(case2.size).toEqual(1);
-    expect(case2.get(regatta2).length).toEqual(1);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get video streams', async () => {
     const case1 = await getVideoStreams([regatta1]);
+    const expectedLength = jsonData.KwindooVideoStream.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(1);
-    const case2 = await getVideoStreams([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should get waypoints', async () => {
     const case1 = await getWaypoints([regatta1]);
+    const expectedLength = jsonData.KwindooWaypoint.filter((p) => p.regatta === regatta1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(regatta1).length).toEqual(2);
-    const case2 = await getWaypoints([regatta2]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(regatta1).length).toEqual(expectedLength);
   });
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
     const mockS3UploadResultPath = {
       mainUrl: 'https://awsbucket.com/thebucket/kwindoo/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/kwindoo/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processKwindooData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

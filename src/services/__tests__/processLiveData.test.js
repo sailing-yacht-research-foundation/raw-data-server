@@ -2,10 +2,9 @@ const db = require('../../models');
 const { getDataPoints, processLiveData } = require('../processLiveData');
 const { saveLiveDataPoint } = require('../../subscribers/dataPoint');
 const writeToParquet = require('../writeToParquet');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 
 jest.mock('../writeToParquet', () => jest.fn());
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Live Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -61,10 +60,11 @@ describe('Processing exist Live Data from DB to Parquet', () => {
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
     const mockS3UploadResultPath =
       'https://awsbucket.com/thebucket/livedata/result.parquet';
-    uploadFileToS3.mockResolvedValueOnce(mockS3UploadResultPath);
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
+      .mockResolvedValueOnce(mockS3UploadResultPath);
 
     const fileUrl = await processLiveData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(1);
+    expect(uploadSpy).toHaveBeenCalledTimes(1);
     expect(writeToParquet).toHaveBeenCalledTimes(1);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });

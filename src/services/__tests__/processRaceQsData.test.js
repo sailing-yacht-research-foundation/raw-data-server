@@ -9,11 +9,13 @@ const {
   getWaypoints,
   processRaceQsData,
 } = require('../processRaceQsData');
+const normalizeObj = require('../normalization/normalizeRaceQs');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveRaceQsData = require('../saveRaceQsData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/raceQs.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent RaceQs Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -99,12 +101,12 @@ describe('Processing exist RaceQs Data from DB to Parquet', () => {
       mainUrl: 'https://awsbucket.com/thebucket/raceqs/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/raceqs/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processRaceQsData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });
