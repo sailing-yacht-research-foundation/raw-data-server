@@ -11,7 +11,7 @@ const {
   createTurfPoint,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadFileToS3');
+const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
   {

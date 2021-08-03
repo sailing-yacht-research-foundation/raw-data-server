@@ -1,5 +1,5 @@
 const db = require('../../../models');
-const s3Utils = require('../../uploadFileToS3');
+const uploadUtil = require('../../uploadUtil');
 const elasticsearch = require('../../../utils/elasticsearch');
 
 const scraperTestMappings = [
@@ -52,6 +52,12 @@ const scraperTestMappings = [
     source: 'RACEQS',
   },
   {
+    filename: 'normalizeTackTracker',
+    testData: 'tacktracker.json',
+    raceTable: 'TackTrackerRace',
+    source: 'TACKTRACKER',
+  },
+  {
     filename: 'normalizeTracTrac',
     testData: 'tractrac.json',
     raceTable: 'TracTracRace',
@@ -72,9 +78,12 @@ const scraperTestMappings = [
 ];
 
 describe('Normalization test', () => {
+  let indexRaceSpy, uploadGeoJsonSpy;
   beforeAll(async () => {
     await db.readyAboutRaceMetadata.sync();
     await db.readyAboutTrackGeoJsonLookup.sync();
+    indexRaceSpy = jest.spyOn(elasticsearch, 'indexRace');
+    uploadGeoJsonSpy = jest.spyOn(uploadUtil, 'uploadGeoJsonToS3');
   });
   afterAll(async () => {
     await db.readyAboutRaceMetadata.destroy({ truncate: true });
@@ -93,12 +102,11 @@ describe('Normalization test', () => {
         const jsonData = require(`../../../test-files/${testData}`);
         const createMetadata = jest.spyOn(db.readyAboutRaceMetadata, 'create');
         const races = jsonData[raceTable];
-        // const raceId = jsonData[raceTable][0].id;
         await normalizeRace(jsonData);
         expect(createMetadata).toHaveBeenCalledTimes(races.length);
-        expect(elasticsearch.indexRace).toHaveBeenCalledTimes(races.length);
+        expect(indexRaceSpy).toHaveBeenCalledTimes(races.length);
         races.forEach((race) => {
-          expect(s3Utils.uploadGeoJsonToS3).toHaveBeenCalledWith(
+          expect(uploadGeoJsonSpy).toHaveBeenCalledWith(
             race.id,
             expect.anything(),
             source,
