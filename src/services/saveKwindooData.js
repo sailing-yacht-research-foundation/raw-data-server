@@ -114,7 +114,9 @@ const saveKwindooData = async (data) => {
         transaction,
       });
     }
-    await normalizeRace(data, transaction);
+    if (data.KwindooRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error);

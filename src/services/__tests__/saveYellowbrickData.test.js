@@ -1,30 +1,32 @@
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeYellowbrick');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveYellowbrickData = require('../saveYellowbrickData');
-const s3Util = require('../uploadFileToS3');
-
 const jsonData = require('../../test-files/yellowbrick.json');
 
-jest.mock('../uploadFileToS3', () => ({
-  uploadGeoJsonToS3: jest.fn(),
-  uploadDataToS3: jest.fn(),
-}));
-jest.mock('../../utils/elasticsearch', () => ({
-  indexRace: jest.fn(),
-}));
-jest.setTimeout(60000);
 describe('Storing yellowbrick data to DB', () => {
+  let createRace,
+    createCourseNode,
+    createLeaderboardTeam,
+    createPoi,
+    createPosition,
+    createTag,
+    createTeam;
+
   beforeAll(async () => {
-    await db.yellowbrickRace.sync({ force: true });
-    await db.yellowbrickCourseNode.sync({ force: true });
-    await db.yellowbrickLeaderboardTeam.sync({ force: true });
-    await db.yellowbrickPoi.sync({ force: true });
-    await db.yellowbrickPosition.sync({ force: true });
-    await db.yellowbrickTag.sync({ force: true });
-    await db.yellowbrickTeam.sync({ force: true });
-    await db.yellowbrickSuccessfulUrl.sync({ force: true });
-    await db.yellowbrickFailedUrl.sync({ force: true });
-    await db.readyAboutRaceMetadata.sync({ force: true });
-    await db.readyAboutTrackGeoJsonLookup.sync({ force: true });
+    await db.sequelize.sync();
+    createRace = jest.spyOn(db.yellowbrickRace, 'bulkCreate');
+    createCourseNode = jest.spyOn(db.yellowbrickCourseNode, 'bulkCreate');
+    createLeaderboardTeam = jest.spyOn(
+      db.yellowbrickLeaderboardTeam,
+      'bulkCreate',
+    );
+    createPoi = jest.spyOn(db.yellowbrickPoi, 'bulkCreate');
+    createPosition = jest.spyOn(db.yellowbrickPosition, 'bulkCreate');
+    createTag = jest.spyOn(db.yellowbrickTag, 'bulkCreate');
+    createTeam = jest.spyOn(db.yellowbrickTeam, 'bulkCreate');
   });
   afterAll(async () => {
     await db.yellowbrickRace.destroy({ truncate: true });
@@ -40,21 +42,8 @@ describe('Storing yellowbrick data to DB', () => {
     await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
 
   it('should not save anything when empty data', async () => {
-    const createRace = jest.spyOn(db.yellowbrickRace, 'bulkCreate');
-    const createCourseNode = jest.spyOn(db.yellowbrickCourseNode, 'bulkCreate');
-    const createLeaderboardTeam = jest.spyOn(
-      db.yellowbrickLeaderboardTeam,
-      'bulkCreate',
-    );
-    const createPoi = jest.spyOn(db.yellowbrickPoi, 'bulkCreate');
-    const createPosition = jest.spyOn(db.yellowbrickPosition, 'bulkCreate');
-    const createTag = jest.spyOn(db.yellowbrickTag, 'bulkCreate');
-    const createTeam = jest.spyOn(db.yellowbrickTeam, 'bulkCreate');
     await saveYellowbrickData({});
     expect(createRace).toHaveBeenCalledTimes(0);
     expect(createCourseNode).toHaveBeenCalledTimes(0);
@@ -63,30 +52,38 @@ describe('Storing yellowbrick data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(0);
     expect(createTag).toHaveBeenCalledTimes(0);
     expect(createTeam).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createRace = jest.spyOn(db.yellowbrickRace, 'bulkCreate');
-    const createCourseNode = jest.spyOn(db.yellowbrickCourseNode, 'bulkCreate');
-    const createLeaderboardTeam = jest.spyOn(
-      db.yellowbrickLeaderboardTeam,
-      'bulkCreate',
-    );
-    const createPoi = jest.spyOn(db.yellowbrickPoi, 'bulkCreate');
-    const createPosition = jest.spyOn(db.yellowbrickPosition, 'bulkCreate');
-    const createTag = jest.spyOn(db.yellowbrickTag, 'bulkCreate');
-    const createTeam = jest.spyOn(db.yellowbrickTeam, 'bulkCreate');
-    const uploadS3Spy = jest.spyOn(s3Util, 'uploadGeoJsonToS3');
-    const uploadDataS3Spy = jest.spyOn(s3Util, 'uploadDataToS3');
-
     await saveYellowbrickData(jsonData);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createCourseNode).toHaveBeenCalledTimes(1);
-    expect(createLeaderboardTeam).toHaveBeenCalledTimes(1);
-    expect(createPoi).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createTag).toHaveBeenCalledTimes(1);
-    expect(createTeam).toHaveBeenCalledTimes(1);
-    expect(uploadS3Spy).toHaveBeenCalledTimes(1);
-    expect(uploadDataS3Spy).toHaveBeenCalledTimes(1);
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.YellowbrickRace,
+      expect.anything(),
+    );
+    expect(createCourseNode).toHaveBeenCalledWith(
+      jsonData.YellowbrickCourseNode,
+      expect.anything(),
+    );
+    expect(createLeaderboardTeam).toHaveBeenCalledWith(
+      jsonData.YellowbrickLeaderboardTeam,
+      expect.anything(),
+    );
+    expect(createPoi).toHaveBeenCalledWith(
+      jsonData.YellowbrickPoi,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.YellowbrickPosition,
+      expect.anything(),
+    );
+    expect(createTag).toHaveBeenCalledWith(
+      jsonData.YellowbrickTag,
+      expect.anything(),
+    );
+    expect(createTeam).toHaveBeenCalledWith(
+      jsonData.YellowbrickTeam,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });

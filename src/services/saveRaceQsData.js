@@ -80,7 +80,6 @@ const saveRaceQsData = async (data) => {
       await normalizeRace(data, transaction);
     }
     await transaction.commit();
-    console.log('Finished saving data');
   } catch (error) {
     console.log(error.toString());
     await transaction.rollback();

@@ -63,7 +63,10 @@ const saveMetasailData = async (data) => {
         });
       }
     }
-    await normalizeRace(data, transaction);
+
+    if (data.MetasailRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     await transaction.rollback();

@@ -73,10 +73,7 @@ const saveGeoracingData = async (data) => {
     if (data.GeoracingPosition) {
       const positions = data.GeoracingPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.georacingPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -109,7 +106,9 @@ const saveGeoracingData = async (data) => {
       );
     }
 
-    await normalizeRace(data, transaction);
+    if (data.GeoracingRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error);

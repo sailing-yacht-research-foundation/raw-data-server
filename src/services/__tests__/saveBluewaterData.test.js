@@ -1,11 +1,39 @@
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeBluewater');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveBluewaterData = require('../saveBluewaterData');
-
 const jsonData = require('../../test-files/bluewater.json');
 
 describe('Storing bluewater data to DB', () => {
+  let createRace,
+    createBoat,
+    createBoatHandicap,
+    createBoatSocialMedia,
+    createCrew,
+    createCrewSocialMedia,
+    createMap,
+    createPosition,
+    createAnnouncement;
+
   beforeAll(async () => {
     await db.sequelize.sync();
+    createRace = jest.spyOn(db.bluewaterRace, 'bulkCreate');
+    createBoat = jest.spyOn(db.bluewaterBoat, 'bulkCreate');
+    createBoatHandicap = jest.spyOn(db.bluewaterBoatHandicap, 'bulkCreate');
+    createBoatSocialMedia = jest.spyOn(
+      db.bluewaterBoatSocialMedia,
+      'bulkCreate',
+    );
+    createCrew = jest.spyOn(db.bluewaterCrew, 'bulkCreate');
+    createCrewSocialMedia = jest.spyOn(
+      db.bluewaterCrewSocialMedia,
+      'bulkCreate',
+    );
+    createMap = jest.spyOn(db.bluewaterMap, 'bulkCreate');
+    createPosition = jest.spyOn(db.bluewaterPosition, 'bulkCreate');
+    createAnnouncement = jest.spyOn(db.bluewaterAnnouncement, 'bulkCreate');
   });
   afterAll(async () => {
     await db.bluewaterRace.destroy({ truncate: true });
@@ -20,29 +48,13 @@ describe('Storing bluewater data to DB', () => {
     await db.bluewaterSuccessfulUrl.destroy({ truncate: true });
     await db.bluewaterFailedUrl.destroy({ truncate: true });
     await db.sequelize.close();
+    jest.restoreAllMocks();
   });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should not save anything when json data is empty', async () => {
-    const createRace = jest.spyOn(db.bluewaterRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.bluewaterBoat, 'bulkCreate');
-    const createBoatHandicap = jest.spyOn(
-      db.bluewaterBoatHandicap,
-      'bulkCreate',
-    );
-    const createBoatSocialMedia = jest.spyOn(
-      db.bluewaterBoatSocialMedia,
-      'bulkCreate',
-    );
-    const createCrew = jest.spyOn(db.bluewaterCrew, 'bulkCreate');
-    const createCrewSocialMedia = jest.spyOn(
-      db.bluewaterCrewSocialMedia,
-      'bulkCreate',
-    );
-    const createMap = jest.spyOn(db.bluewaterMap, 'bulkCreate');
-    const createPosition = jest.spyOn(db.bluewaterPosition, 'bulkCreate');
-    const createAnnouncement = jest.spyOn(
-      db.bluewaterAnnouncement,
-      'bulkCreate',
-    );
     await saveBluewaterData({});
     expect(createRace).toHaveBeenCalledTimes(0);
     expect(createBoat).toHaveBeenCalledTimes(0);
@@ -53,52 +65,46 @@ describe('Storing bluewater data to DB', () => {
     expect(createMap).toHaveBeenCalledTimes(0);
     expect(createPosition).toHaveBeenCalledTimes(0);
     expect(createAnnouncement).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createRace = jest.spyOn(db.bluewaterRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.bluewaterBoat, 'bulkCreate');
-    const createBoatHandicap = jest.spyOn(
-      db.bluewaterBoatHandicap,
-      'bulkCreate',
-    );
-    const createBoatSocialMedia = jest.spyOn(
-      db.bluewaterBoatSocialMedia,
-      'bulkCreate',
-    );
-    const createCrew = jest.spyOn(db.bluewaterCrew, 'bulkCreate');
-    const createCrewSocialMedia = jest.spyOn(
-      db.bluewaterCrewSocialMedia,
-      'bulkCreate',
-    );
-    const createMap = jest.spyOn(db.bluewaterMap, 'bulkCreate');
-    const createPosition = jest.spyOn(db.bluewaterPosition, 'bulkCreate');
-    const createAnnouncement = jest.spyOn(
-      db.bluewaterAnnouncement,
-      'bulkCreate',
-    );
     await saveBluewaterData(jsonData);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createBoat).toHaveBeenCalledTimes(1);
-    expect(createBoatHandicap).toHaveBeenCalledTimes(1);
-    expect(createBoatSocialMedia).toHaveBeenCalledTimes(1);
-    expect(createCrew).toHaveBeenCalledTimes(1);
-    expect(createCrewSocialMedia).toHaveBeenCalledTimes(1);
-    expect(createMap).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createAnnouncement).toHaveBeenCalledTimes(1);
-  });
-  it('should throw error when one fails to execute', async () => {
-    const invalidData = Object.assign({}, jsonData);
-    invalidData.BluewaterRace = [
-      ...invalidData.BluewaterRace,
-      {
-        // To trigger error, field id is purposely removed
-        name: '2021 ORCV Melbourne to Port Fairy Race',
-        slug: '2021-orcv-melbourne-to-port-fairy-race',
-        original_id: '605b1b069dbcc81862098de8',
-      },
-    ];
-    const response = await saveBluewaterData(invalidData);
-    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.BluewaterRace,
+      expect.anything(),
+    );
+    expect(createBoat).toHaveBeenCalledWith(
+      jsonData.BluewaterBoat,
+      expect.anything(),
+    );
+    expect(createBoatHandicap).toHaveBeenCalledWith(
+      jsonData.BluewaterBoatHandicap,
+      expect.anything(),
+    );
+    expect(createBoatSocialMedia).toHaveBeenCalledWith(
+      jsonData.BluewaterBoatSocialMedia,
+      expect.anything(),
+    );
+    expect(createCrew).toHaveBeenCalledWith(
+      jsonData.BluewaterCrew,
+      expect.anything(),
+    );
+    expect(createCrewSocialMedia).toHaveBeenCalledWith(
+      jsonData.BluewaterCrewSocialMedia,
+      expect.anything(),
+    );
+    expect(createMap).toHaveBeenCalledWith(
+      jsonData.BluewaterMap,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.BluewaterPosition,
+      expect.anything(),
+    );
+    expect(createAnnouncement).toHaveBeenCalledWith(
+      jsonData.BluewaterAnnouncement,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });

@@ -1,30 +1,31 @@
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeTackTracker');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveTackTrackerData = require('../saveTackTrackerData');
-const s3Util = require('../uploadFileToS3');
-
 const jsonData = require('../../test-files/tackTracker.json');
 
-jest.mock('../uploadFileToS3', () => ({
-  uploadGeoJsonToS3: jest.fn(),
-}));
-jest.mock('../../utils/elasticsearch', () => ({
-  indexRace: jest.fn(),
-}));
-jest.setTimeout(60000);
 describe('Storing TackTracker data to DB', () => {
+  let createRegatta,
+    createRace,
+    createBoat,
+    createDefault,
+    createFinish,
+    createMark,
+    createPosition,
+    createStart;
+
   beforeAll(async () => {
-    await db.tackTrackerRegatta.sync({ force: true });
-    await db.tackTrackerRace.sync({ force: true });
-    await db.tackTrackerBoat.sync({ force: true });
-    await db.tackTrackerDefault.sync({ force: true });
-    await db.tackTrackerFinish.sync({ force: true });
-    await db.tackTrackerMark.sync({ force: true });
-    await db.tackTrackerPosition.sync({ force: true });
-    await db.tackTrackerStart.sync({ force: true });
-    await db.tackTrackerFailedUrl.sync({ force: true });
-    await db.tackTrackerSuccessfulUrl.sync({ force: true });
-    await db.readyAboutRaceMetadata.sync({ force: true });
-    await db.readyAboutTrackGeoJsonLookup.sync({ force: true });
+    await db.sequelize.sync();
+    createRegatta = jest.spyOn(db.tackTrackerRegatta, 'bulkCreate');
+    createRace = jest.spyOn(db.tackTrackerRace, 'bulkCreate');
+    createBoat = jest.spyOn(db.tackTrackerBoat, 'bulkCreate');
+    createDefault = jest.spyOn(db.tackTrackerDefault, 'bulkCreate');
+    createFinish = jest.spyOn(db.tackTrackerFinish, 'bulkCreate');
+    createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
+    createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
+    createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
   });
   afterAll(async () => {
     await db.tackTrackerRegatta.destroy({ truncate: true });
@@ -46,14 +47,6 @@ describe('Storing TackTracker data to DB', () => {
   });
 
   it('should not save anything when empty data', async () => {
-    const createRegatta = jest.spyOn(db.tackTrackerRegatta, 'bulkCreate');
-    const createRace = jest.spyOn(db.tackTrackerRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.tackTrackerBoat, 'bulkCreate');
-    const createDefault = jest.spyOn(db.tackTrackerDefault, 'bulkCreate');
-    const createFinish = jest.spyOn(db.tackTrackerFinish, 'bulkCreate');
-    const createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
-    const createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
-    const createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
     await saveTackTrackerData({});
     expect(createRegatta).toHaveBeenCalledTimes(0);
     expect(createRace).toHaveBeenCalledTimes(0);
@@ -63,27 +56,43 @@ describe('Storing TackTracker data to DB', () => {
     expect(createMark).toHaveBeenCalledTimes(0);
     expect(createPosition).toHaveBeenCalledTimes(0);
     expect(createStart).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createRegatta = jest.spyOn(db.tackTrackerRegatta, 'bulkCreate');
-    const createRace = jest.spyOn(db.tackTrackerRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.tackTrackerBoat, 'bulkCreate');
-    const createDefault = jest.spyOn(db.tackTrackerDefault, 'bulkCreate');
-    const createFinish = jest.spyOn(db.tackTrackerFinish, 'bulkCreate');
-    const createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
-    const createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
-    const createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
-    const uploadS3Spy = jest.spyOn(s3Util, 'uploadGeoJsonToS3');
-
     await saveTackTrackerData(jsonData);
-    expect(createRegatta).toHaveBeenCalledTimes(1);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createBoat).toHaveBeenCalledTimes(1);
-    expect(createDefault).toHaveBeenCalledTimes(1);
-    expect(createFinish).toHaveBeenCalledTimes(1);
-    expect(createMark).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createStart).toHaveBeenCalledTimes(1);
-    expect(uploadS3Spy).toHaveBeenCalledTimes(1);
+    expect(createRegatta).toHaveBeenCalledWith(
+      jsonData.TackTrackerRegatta,
+      expect.anything(),
+    );
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.TackTrackerRace,
+      expect.anything(),
+    );
+    expect(createBoat).toHaveBeenCalledWith(
+      jsonData.TackTrackerBoat,
+      expect.anything(),
+    );
+    expect(createDefault).toHaveBeenCalledWith(
+      jsonData.TackTrackerDefault,
+      expect.anything(),
+    );
+    expect(createFinish).toHaveBeenCalledWith(
+      jsonData.TackTrackerFinish,
+      expect.anything(),
+    );
+    expect(createMark).toHaveBeenCalledWith(
+      jsonData.TackTrackerMark,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.TackTrackerPosition,
+      expect.anything(),
+    );
+    expect(createStart).toHaveBeenCalledWith(
+      jsonData.TackTrackerStart,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });

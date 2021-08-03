@@ -104,7 +104,10 @@ const saveISailData = async (data) => {
         transaction,
       });
     }
-    await normalizeRace(data, transaction);
+
+    if (data.iSailRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error);

@@ -1,16 +1,6 @@
 const db = require('../../../models');
-// const { normalizeRace } = require('../../normalization/normalizeBluewater');
 const s3Utils = require('../../uploadFileToS3');
 const elasticsearch = require('../../../utils/elasticsearch');
-// const jsonData = require('../../../test-files/bluewater.json');
-
-jest.mock('../../uploadFileToS3', () => ({
-  uploadGeoJsonToS3: jest.fn(),
-}));
-jest.mock('../../../utils/elasticsearch', () => ({
-  indexRace: jest.fn(),
-}));
-jest.setTimeout(60000);
 
 const scraperTestMappings = [
   {
@@ -50,10 +40,10 @@ const scraperTestMappings = [
     source: 'KWINDOO',
   },
   {
-    filename: 'normalizeTackTracker',
-    testData: 'tacktracker.json',
-    raceTable: 'TackTrackerRace',
-    source: 'TACKTRACKER',
+    filename: 'normalizeMetasail',
+    testData: 'metasail.json',
+    raceTable: 'MetasailRace',
+    source: 'METASAIL',
   },
   {
     filename: 'normalizeRaceQs',
@@ -84,9 +74,11 @@ const scraperTestMappings = [
 describe('Normalization test', () => {
   beforeAll(async () => {
     await db.readyAboutRaceMetadata.sync();
+    await db.readyAboutTrackGeoJsonLookup.sync();
   });
   afterAll(async () => {
     await db.readyAboutRaceMetadata.destroy({ truncate: true });
+    await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
   afterEach(() => {
