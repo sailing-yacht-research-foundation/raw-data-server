@@ -1,11 +1,29 @@
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeEstela');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveEstelaData = require('../saveEstelaData');
-
 const jsonData = require('../../test-files/estela.json');
 
 describe('Storing Estela data to DB', () => {
+  let createRace,
+    createBuoy,
+    createClub,
+    createPosition,
+    createDorsal,
+    createPlayer,
+    createResult;
+
   beforeAll(async () => {
     await db.sequelize.sync();
+    createRace = jest.spyOn(db.estelaRace, 'bulkCreate');
+    createBuoy = jest.spyOn(db.estelaBuoy, 'bulkCreate');
+    createClub = jest.spyOn(db.estelaClub, 'bulkCreate');
+    createPosition = jest.spyOn(db.estelaPosition, 'bulkCreate');
+    createDorsal = jest.spyOn(db.estelaDorsal, 'bulkCreate');
+    createPlayer = jest.spyOn(db.estelaPlayer, 'bulkCreate');
+    createResult = jest.spyOn(db.estelaResult, 'bulkCreate');
   });
   afterAll(async () => {
     await db.estelaBuoy.destroy({ truncate: true });
@@ -19,14 +37,11 @@ describe('Storing Estela data to DB', () => {
     await db.estelaSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should not save anything when empty data', async () => {
-    const createRace = jest.spyOn(db.estelaRace, 'bulkCreate');
-    const createBuoy = jest.spyOn(db.estelaBuoy, 'bulkCreate');
-    const createClub = jest.spyOn(db.estelaClub, 'bulkCreate');
-    const createPosition = jest.spyOn(db.estelaPosition, 'bulkCreate');
-    const createDorsal = jest.spyOn(db.estelaDorsal, 'bulkCreate');
-    const createPlayer = jest.spyOn(db.estelaPlayer, 'bulkCreate');
-    const createResult = jest.spyOn(db.estelaResult, 'bulkCreate');
     await saveEstelaData({});
     expect(createRace).toHaveBeenCalledTimes(0);
     expect(createBuoy).toHaveBeenCalledTimes(0);
@@ -35,35 +50,38 @@ describe('Storing Estela data to DB', () => {
     expect(createDorsal).toHaveBeenCalledTimes(0);
     expect(createPlayer).toHaveBeenCalledTimes(0);
     expect(createResult).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createRace = jest.spyOn(db.estelaRace, 'bulkCreate');
-    const createBuoy = jest.spyOn(db.estelaBuoy, 'bulkCreate');
-    const createClub = jest.spyOn(db.estelaClub, 'bulkCreate');
-    const createPosition = jest.spyOn(db.estelaPosition, 'bulkCreate');
-    const createDorsal = jest.spyOn(db.estelaDorsal, 'bulkCreate');
-    const createPlayer = jest.spyOn(db.estelaPlayer, 'bulkCreate');
-    const createResult = jest.spyOn(db.estelaResult, 'bulkCreate');
     await saveEstelaData(jsonData);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createBuoy).toHaveBeenCalledTimes(1);
-    expect(createClub).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createDorsal).toHaveBeenCalledTimes(1);
-    expect(createPlayer).toHaveBeenCalledTimes(1);
-    expect(createResult).toHaveBeenCalledTimes(1);
-  });
-  it('should throw error when one fails to execute', async () => {
-    const invalidData = Object.assign({}, jsonData);
-    invalidData.EstelaRace = [
-      {
-        original_id: '6985',
-        initLon: '3.1180188',
-        initLat: '41.8491494',
-        url: 'https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021',
-      },
-    ];
-    const response = await saveEstelaData(invalidData);
-    expect(response).toEqual(expect.stringContaining('cannot be null'));
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.EstelaRace,
+      expect.anything(),
+    );
+    expect(createBuoy).toHaveBeenCalledWith(
+      jsonData.EstelaBuoy,
+      expect.anything(),
+    );
+    expect(createClub).toHaveBeenCalledWith(
+      jsonData.EstelaClub,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.EstelaPosition,
+      expect.anything(),
+    );
+    expect(createDorsal).toHaveBeenCalledWith(
+      jsonData.EstelaDorsal,
+      expect.anything(),
+    );
+    expect(createPlayer).toHaveBeenCalledWith(
+      jsonData.EstelaPlayer,
+      expect.anything(),
+    );
+    expect(createResult).toHaveBeenCalledWith(
+      jsonData.EstelaResult,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });

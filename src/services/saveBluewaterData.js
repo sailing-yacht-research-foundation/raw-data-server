@@ -87,7 +87,9 @@ const saveBluewaterData = async (data) => {
       });
     }
 
-    await normalizeRace(data, transaction);
+    if (data.BluewaterRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error);

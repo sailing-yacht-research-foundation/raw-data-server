@@ -9,7 +9,7 @@ const {
   raceQsPosition,
 } = require('../schemas/parquets/raceQs');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getRegattas = async () => {
   const regattas = await db.raceQsRegatta.findAll({ raw: true });
@@ -189,11 +189,11 @@ const processRaceQsData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `raceqs/year=${currentYear}/month=${currentMonth}/raceqs_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `raceqs/year=${currentYear}/month=${currentMonth}/raceqsPosition_${fullDateFormat}.parquet`,
   );

@@ -1,10 +1,38 @@
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeISail');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveISailData = require('../saveISailData');
-
 const jsonData = require('../../test-files/iSail.json');
 
 describe('Storing iSail data to DB', () => {
+  let createClass,
+    createCourseMark,
+    createEvent,
+    createEventParticipant,
+    createEventTracksData,
+    createMark,
+    createPosition,
+    createRace,
+    createResult,
+    createRounding,
+    createStartline,
+    createTrack;
+
   beforeAll(async () => {
+    createClass = jest.spyOn(db.iSailClass, 'bulkCreate');
+    createCourseMark = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
+    createEvent = jest.spyOn(db.iSailEvent, 'bulkCreate');
+    createEventParticipant = jest.spyOn(db.iSailEventParticipant, 'bulkCreate');
+    createEventTracksData = jest.spyOn(db.iSailEventTracksData, 'bulkCreate');
+    createMark = jest.spyOn(db.iSailMark, 'bulkCreate');
+    createPosition = jest.spyOn(db.iSailPosition, 'bulkCreate');
+    createRace = jest.spyOn(db.iSailRace, 'bulkCreate');
+    createResult = jest.spyOn(db.iSailResult, 'bulkCreate');
+    createRounding = jest.spyOn(db.iSailRounding, 'bulkCreate');
+    createStartline = jest.spyOn(db.iSailStartline, 'bulkCreate');
+    createTrack = jest.spyOn(db.iSailTrack, 'bulkCreate');
     await db.sequelize.sync();
   });
   afterAll(async () => {
@@ -24,25 +52,11 @@ describe('Storing iSail data to DB', () => {
     await db.iSailSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should not save anything when empty data', async () => {
-    const createClass = jest.spyOn(db.iSailClass, 'bulkCreate');
-    const createCourseMark = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
-    const createEvent = jest.spyOn(db.iSailEvent, 'bulkCreate');
-    const createEventParticipant = jest.spyOn(
-      db.iSailEventParticipant,
-      'bulkCreate',
-    );
-    const createEventTracksData = jest.spyOn(
-      db.iSailEventTracksData,
-      'bulkCreate',
-    );
-    const createMark = jest.spyOn(db.iSailMark, 'bulkCreate');
-    const createPosition = jest.spyOn(db.iSailPosition, 'bulkCreate');
-    const createRace = jest.spyOn(db.iSailRace, 'bulkCreate');
-    const createResult = jest.spyOn(db.iSailResult, 'bulkCreate');
-    const createRounding = jest.spyOn(db.iSailRounding, 'bulkCreate');
-    const createStartline = jest.spyOn(db.iSailStartline, 'bulkCreate');
-    const createTrack = jest.spyOn(db.iSailTrack, 'bulkCreate');
     await saveISailData({});
     expect(createClass).toHaveBeenCalledTimes(0);
     expect(createCourseMark).toHaveBeenCalledTimes(0);
@@ -56,50 +70,58 @@ describe('Storing iSail data to DB', () => {
     expect(createRounding).toHaveBeenCalledTimes(0);
     expect(createStartline).toHaveBeenCalledTimes(0);
     expect(createTrack).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createClass = jest.spyOn(db.iSailClass, 'bulkCreate');
-    const createCourseMark = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
-    const createEvent = jest.spyOn(db.iSailEvent, 'bulkCreate');
-    const createEventParticipant = jest.spyOn(
-      db.iSailEventParticipant,
-      'bulkCreate',
-    );
-    const createEventTracksData = jest.spyOn(
-      db.iSailEventTracksData,
-      'bulkCreate',
-    );
-    const createMark = jest.spyOn(db.iSailMark, 'bulkCreate');
-    const createPosition = jest.spyOn(db.iSailPosition, 'bulkCreate');
-    const createRace = jest.spyOn(db.iSailRace, 'bulkCreate');
-    const createResult = jest.spyOn(db.iSailResult, 'bulkCreate');
-    const createRounding = jest.spyOn(db.iSailRounding, 'bulkCreate');
-    const createStartline = jest.spyOn(db.iSailStartline, 'bulkCreate');
-    const createTrack = jest.spyOn(db.iSailTrack, 'bulkCreate');
     await saveISailData(jsonData);
-    expect(createClass).toHaveBeenCalledTimes(1);
-    expect(createCourseMark).toHaveBeenCalledTimes(1);
-    expect(createEvent).toHaveBeenCalledTimes(1);
-    expect(createEventParticipant).toHaveBeenCalledTimes(1);
-    expect(createEventTracksData).toHaveBeenCalledTimes(1);
-    expect(createMark).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createResult).toHaveBeenCalledTimes(1);
-    expect(createRounding).toHaveBeenCalledTimes(1);
-    expect(createStartline).toHaveBeenCalledTimes(1);
-    expect(createTrack).toHaveBeenCalledTimes(1);
-  });
-  it('should throw error when one fails to execute', async () => {
-    const invalidData = {
-      iSailEvent: [
-        {
-          original_id: 14,
-          url: 'http://app.i-sail.com/eventDetails/13',
-        },
-      ],
-    };
-    const response = await saveISailData(invalidData);
-    expect(response).toEqual(expect.stringContaining('cannot be null'));
+    expect(createClass).toHaveBeenCalledWith(
+      jsonData.iSailClass,
+      expect.anything(),
+    );
+    expect(createCourseMark).toHaveBeenCalledWith(
+      jsonData.iSailCourseMark,
+      expect.anything(),
+    );
+    expect(createEvent).toHaveBeenCalledWith(
+      jsonData.iSailEvent,
+      expect.anything(),
+    );
+    expect(createEventParticipant).toHaveBeenCalledWith(
+      jsonData.iSailEventParticipant,
+      expect.anything(),
+    );
+    expect(createEventTracksData).toHaveBeenCalledWith(
+      jsonData.iSailEventTracksData,
+      expect.anything(),
+    );
+    expect(createMark).toHaveBeenCalledWith(
+      jsonData.iSailMark,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.iSailPosition,
+      expect.anything(),
+    );
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.iSailRace,
+      expect.anything(),
+    );
+    expect(createResult).toHaveBeenCalledWith(
+      jsonData.iSailResult,
+      expect.anything(),
+    );
+    expect(createRounding).toHaveBeenCalledWith(
+      jsonData.iSailRounding,
+      expect.anything(),
+    );
+    expect(createStartline).toHaveBeenCalledWith(
+      jsonData.iSailStartline,
+      expect.anything(),
+    );
+    expect(createTrack).toHaveBeenCalledWith(
+      jsonData.iSailTrack,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });

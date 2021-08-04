@@ -6,11 +6,13 @@ const {
   getWaypoints,
   processKattackData,
 } = require('../processKattackData');
+const normalizeObj = require('../normalization/normalizeKattack');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveKattackData = require('../saveKattackData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/kattack.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent kattack Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -27,7 +29,7 @@ describe('Processing non-existent kattack Data from DB to Parquet', () => {
 });
 
 describe('Processing exist kattack Data from DB to Parquet', () => {
-  const raceID = '79722f12-5f07-43a1-a327-08459673802d';
+  const raceID = jsonData.KattackRace[0].id;
   beforeAll(async () => {
     await saveKattackData(jsonData);
   });
@@ -44,21 +46,25 @@ describe('Processing exist kattack Data from DB to Parquet', () => {
   });
   it('should get yacht clubs correctly', async () => {
     const clubs = await getYachtClubs();
-    expect(clubs.size).toEqual(2);
+    const expectedLength = jsonData.KattackYachtClub.length;
+    expect(clubs.size).toEqual(expectedLength);
   });
   it('should get races correctly', async () => {
     const races = await getRaces();
-    expect(races.length).toEqual(2);
+    const expectedLength = jsonData.KattackRace.length;
+    expect(races.length).toEqual(expectedLength);
   });
   it('should get devices correctly', async () => {
     const devices = await getDevices([raceID]);
+    const expectedLength = jsonData.KattackDevice.filter((p) => p.race === raceID).length;
     expect(devices.size).toEqual(1);
-    expect(devices.get(raceID).length).toEqual(1);
+    expect(devices.get(raceID).length).toEqual(expectedLength);
   });
   it('should get waypoints correctly', async () => {
     const waypoints = await getWaypoints([raceID]);
+    const expectedLength = jsonData.KattackWaypoint.filter((p) => p.race === raceID).length;
     expect(waypoints.size).toEqual(1);
-    expect(waypoints.get(raceID).length).toEqual(2);
+    expect(waypoints.get(raceID).length).toEqual(expectedLength);
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
@@ -66,12 +72,12 @@ describe('Processing exist kattack Data from DB to Parquet', () => {
       mainUrl: 'https://awsbucket.com/thebucket/kattack/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/kattack/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processKattackData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

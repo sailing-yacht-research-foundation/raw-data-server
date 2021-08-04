@@ -9,7 +9,7 @@ const {
   georacingPosition,
 } = require('../schemas/parquets/georacing');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getEvents = async () => {
   const events = await db.georacingEvent.findAll({ raw: true });
@@ -255,11 +255,11 @@ const processGeoracingData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacing_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `georacing/year=${currentYear}/month=${currentMonth}/georacingPosition_${fullDateFormat}.parquet`,
   );

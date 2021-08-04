@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
-const { uploadDataToS3 } = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 const { normalizeRace } = require('./normalization/normalizeYellowbrick');
 const KML_S3_BUCKET = process.env.AWS_YELLOWBRICK_KML_S3_BUCKET;
 
@@ -73,7 +73,7 @@ const saveYellowbrickData = async (data) => {
     }
     if (data.YellowbrickKml) {
       for (const kmlObj of data.YellowbrickKml) {
-        await uploadDataToS3({
+        await uploadUtil.uploadDataToS3({
           Bucket: KML_S3_BUCKET,
           Key: `${kmlObj.id}.kml`,
           Body: kmlObj.data,
@@ -84,9 +84,8 @@ const saveYellowbrickData = async (data) => {
       await normalizeRace(data, transaction);
     }
     await transaction.commit();
-    console.log('Finished saving data');
   } catch (error) {
-    console.log(error.toString());
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }

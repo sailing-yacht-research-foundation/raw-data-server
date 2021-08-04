@@ -7,11 +7,13 @@ const {
   getGates,
   processMetasailData,
 } = require('../processMetasailData');
+const normalizeObj = require('../normalization/normalizeMetasail');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveMetasailData = require('../saveMetasailData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/metasail.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Metasail Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -29,7 +31,7 @@ describe('Processing non-existent Metasail Data from DB to Parquet', () => {
 });
 
 describe('Processing exist Metasail Data from DB to Parquet', () => {
-  const race1 = '1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d';
+  const race1 = jsonData.MetasailRace[0].id;
   const race2 = 'random';
   beforeAll(async () => {
     await saveMetasailData(jsonData);
@@ -48,30 +50,33 @@ describe('Processing exist Metasail Data from DB to Parquet', () => {
   });
   it('should get events', async () => {
     const events = await getEvents();
-    expect(events.size).toEqual(1);
+    expect(events.size).toEqual(jsonData.MetasailEvent.length);
   });
   it('should get races', async () => {
     const races = await getRaces();
-    expect(races.length).toEqual(3);
+    expect(races.length).toEqual(jsonData.MetasailRace.length);
   });
   it('should get boats', async () => {
     const case1 = await getBoats([race1]);
+    const expectedLength1 = jsonData.MetasailBoat.filter((r) => r.race === race1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(race1).length).toEqual(2);
+    expect(case1.get(race1).length).toEqual(expectedLength1);
     const case2 = await getBoats([race2]);
     expect(case2.size).toEqual(0);
   });
   it('should get buoys', async () => {
     const case1 = await getBuoys([race1]);
+    const expectedLength1 = jsonData.MetasailBuoy.filter((r) => r.race === race1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(race1).length).toEqual(2);
+    expect(case1.get(race1).length).toEqual(expectedLength1);
     const case2 = await getBuoys([race2]);
     expect(case2.size).toEqual(0);
   });
   it('should get gates', async () => {
     const case1 = await getGates([race1]);
+    const expectedLength1 = jsonData.MetasailGate.filter((r) => r.race === race1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(race1).length).toEqual(3);
+    expect(case1.get(race1).length).toEqual(expectedLength1);
     const case2 = await getGates([race2]);
     expect(case2.size).toEqual(0);
   });
@@ -81,12 +86,12 @@ describe('Processing exist Metasail Data from DB to Parquet', () => {
       mainUrl: 'https://awsbucket.com/thebucket/metasail/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/metasail/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processMetasailData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

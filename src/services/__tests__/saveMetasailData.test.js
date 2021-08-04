@@ -1,11 +1,28 @@
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeMetasail');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveMetasailData = require('../saveMetasailData');
 
 const jsonData = require('../../test-files/metasail.json');
 
 describe('Storing Metasail data to DB', () => {
+  let createEvent,
+    createRace,
+    createBoat,
+    createBuoy,
+    createGate,
+    createPosition;
+
   beforeAll(async () => {
     await db.sequelize.sync();
+    createEvent = jest.spyOn(db.metasailEvent, 'bulkCreate');
+    createRace = jest.spyOn(db.metasailRace, 'bulkCreate');
+    createBoat = jest.spyOn(db.metasailBoat, 'bulkCreate');
+    createBuoy = jest.spyOn(db.metasailBuoy, 'bulkCreate');
+    createGate = jest.spyOn(db.metasailGate, 'bulkCreate');
+    createPosition = jest.spyOn(db.metasailPosition, 'bulkCreate');
   });
   afterAll(async () => {
     await db.metasailEvent.destroy({ truncate: true });
@@ -18,13 +35,11 @@ describe('Storing Metasail data to DB', () => {
     await db.metasailSuccessfulUrl.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('should not save anything when empty data', async () => {
-    const createEvent = jest.spyOn(db.raceQsEvent, 'bulkCreate');
-    const createRace = jest.spyOn(db.metasailRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.metasailBoat, 'bulkCreate');
-    const createBuoy = jest.spyOn(db.metasailBuoy, 'bulkCreate');
-    const createGate = jest.spyOn(db.metasailGate, 'bulkCreate');
-    const createPosition = jest.spyOn(db.metasailPosition, 'bulkCreate');
     await saveMetasailData({});
     expect(createEvent).toHaveBeenCalledTimes(0);
     expect(createRace).toHaveBeenCalledTimes(0);
@@ -32,32 +47,34 @@ describe('Storing Metasail data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(0);
     expect(createBuoy).toHaveBeenCalledTimes(0);
     expect(createGate).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createEvent = jest.spyOn(db.metasailEvent, 'bulkCreate');
-    const createRace = jest.spyOn(db.metasailRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.metasailBoat, 'bulkCreate');
-    const createBuoy = jest.spyOn(db.metasailBuoy, 'bulkCreate');
-    const createGate = jest.spyOn(db.metasailGate, 'bulkCreate');
-    const createPosition = jest.spyOn(db.metasailPosition, 'bulkCreate');
     await saveMetasailData(jsonData);
-    expect(createEvent).toHaveBeenCalledTimes(1);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createBoat).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createBuoy).toHaveBeenCalledTimes(1);
-    expect(createGate).toHaveBeenCalledTimes(1);
-  });
-  it('should throw error when one fails to execute', async () => {
-    const invalidData = Object.assign({}, jsonData);
-    invalidData.MetasailRace = [
-      ...invalidData.MetasailRace,
-      {
-        original_id: '10387',
-        url: 'http://app.metasail.it/(S(bw42cieypqnejmnbfbuw1xmh))/ViewRecordedRace2018New.aspx?idgara=10387&token=5DUA',
-      },
-    ];
-    const response = await saveMetasailData(invalidData);
-    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+    expect(createEvent).toHaveBeenCalledWith(
+      jsonData.MetasailEvent,
+      expect.anything(),
+    );
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.MetasailRace,
+      expect.anything(),
+    );
+    expect(createBoat).toHaveBeenCalledWith(
+      jsonData.MetasailBoat,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.MetasailPosition,
+      expect.anything(),
+    );
+    expect(createBuoy).toHaveBeenCalledWith(
+      jsonData.MetasailBuoy,
+      expect.anything(),
+    );
+    expect(createGate).toHaveBeenCalledWith(
+      jsonData.MetasailGate,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });

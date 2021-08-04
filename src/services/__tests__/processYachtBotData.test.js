@@ -5,11 +5,13 @@ const {
   getYachts,
   processYachtBotData,
 } = require('../processYachtBotData');
+const normalizeObj = require('../normalization/normalizeYachtBot');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveYachtBotData = require('../saveYachtBotData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/yachtbot.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent YachtBot Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -44,7 +46,7 @@ describe('Processing exist YachtBot Data from DB to Parquet', () => {
   });
   it('should get races', async () => {
     const races = await getRaces();
-    expect(races.length).toEqual(2);
+    expect(races.length).toEqual(1);
   });
   it('should get buoys', async () => {
     const case1 = await getBuoys([raceID1]);
@@ -66,12 +68,12 @@ describe('Processing exist YachtBot Data from DB to Parquet', () => {
       mainUrl: 'https://awsbucket.com/thebucket/yachtbot/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/yachtbot/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processYachtBotData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

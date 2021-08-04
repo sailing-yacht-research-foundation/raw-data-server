@@ -9,7 +9,7 @@ const {
   tractracCompetitorPosition,
 } = require('../schemas/parquets/tractrac');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getEvents = async () => {
   const events = await db.tractracEvent.findAll({ raw: true });
@@ -256,11 +256,11 @@ const processTracTracData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `tractrac/year=${currentYear}/month=${currentMonth}/tractrac_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `tractrac/year=${currentYear}/month=${currentMonth}/tractracPosition_${fullDateFormat}.parquet`,
   );

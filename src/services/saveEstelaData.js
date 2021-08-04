@@ -76,7 +76,9 @@ const saveEstelaData = async (data) => {
       });
     }
 
-    await normalizeRace(data, transaction);
+    if (data.EstelaRace) {
+      await normalizeRace(data, transaction);
+    }
     transaction.commit();
   } catch (error) {
     console.log(error);

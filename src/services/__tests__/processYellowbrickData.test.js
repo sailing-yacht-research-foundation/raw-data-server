@@ -8,11 +8,13 @@ const {
   getPois,
   processYellowbrickData,
 } = require('../processYellowbrickData');
+const normalizeObj = require('../normalization/normalizeYellowbrick');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveYellowbrickData = require('../saveYellowbrickData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/yellowbrick.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent Yellowbrick Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -30,9 +32,7 @@ describe('Processing non-existent Yellowbrick Data from DB to Parquet', () => {
 });
 
 describe('Processing exist Yellowbrick Data from DB to Parquet', () => {
-  const raceID1 = 'e64453b5-4e1f-4ffe-9cdd-3fd1cdea49fd';
-  const raceID2 = 'ed7412dc-92f0-4e52-8f72-6ba4589bd7bb';
-  const raceID3 = '4ae1af86-b76e-41ce-90a3-8c08b3d874b4';
+  const raceID1 = jsonData.YellowbrickRace[0].id;;
   beforeAll(async () => {
     await saveYellowbrickData(jsonData);
   });
@@ -51,48 +51,36 @@ describe('Processing exist Yellowbrick Data from DB to Parquet', () => {
   });
   it('should get races', async () => {
     const races = await getRaces();
-    expect(races.length).toEqual(3);
+    expect(races.length).toEqual(1);
   });
   it('should get teams', async () => {
-    const case1 = await getTeams([raceID1, raceID2]);
+    const case1 = await getTeams([raceID1]);
+    const expectedLength = jsonData.YellowbrickTeam.filter((p) => p.race === raceID1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(2);
-    const case2 = await getTeams([raceID3]);
-    expect(case2.size).toEqual(1);
-    expect(case2.get(raceID3).length).toEqual(1);
+    expect(case1.get(raceID1).length).toEqual(expectedLength);
   });
   it('should get tags', async () => {
-    const case1 = await getTags([raceID1, raceID2]);
-    expect(case1.size).toEqual(2);
-    expect(case1.get(raceID1).length).toEqual(2);
-    const case2 = await getTags([raceID3]);
-    expect(case2.size).toEqual(0);
+    const case1 = await getTags([raceID1]);
+    const expectedLength = jsonData.YellowbrickTag.filter((p) => p.race === raceID1).length;
+    expect(case1.size).toEqual(1);
+    expect(case1.get(raceID1).length).toEqual(expectedLength);
   });
   it('should get pois', async () => {
     const case1 = await getPois([raceID1]);
+    const expectedLength = jsonData.YellowbrickPoi.filter((p) => p.race === raceID1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(1);
-
-    const case2 = await getPois([raceID2, raceID3]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(raceID1).length).toEqual(expectedLength);
   });
   it('should get leaderboard teams', async () => {
     const case1 = await getLeaderboardTeams([raceID1]);
+    const expectedLength = jsonData.YellowbrickLeaderboardTeam.filter((p) => p.race === raceID1).length;
     expect(case1.size).toEqual(1);
-    expect(case1.get(raceID1).length).toEqual(2);
-
-    const case2 = await getLeaderboardTeams([raceID2, raceID3]);
-    expect(case2.size).toEqual(0);
+    expect(case1.get(raceID1).length).toEqual(expectedLength);
   });
   it('should get course nodes', async () => {
     const case1 = await getCourseNodes([raceID1]);
-    expect(case1.size).toEqual(1);
-
-    const case2 = await getCourseNodes([raceID2]);
-    expect(case2.size).toEqual(1);
-
-    const case3 = await getCourseNodes([raceID3]);
-    expect(case3.size).toEqual(0);
+    const expectedLength = jsonData.YellowbrickCourseNode.filter((p) => p.race === raceID1).length;
+    expect(case1.size).toEqual(expectedLength);
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
@@ -101,12 +89,12 @@ describe('Processing exist Yellowbrick Data from DB to Parquet', () => {
       positionUrl:
         'https://awsbucket.com/thebucket/yellowbrick/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processYellowbrickData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

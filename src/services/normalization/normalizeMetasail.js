@@ -10,14 +10,13 @@ const {
   createRace,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadFileToS3');
+const { uploadGeoJsonToS3 } = require('../uploadUtil');
 const METASAIL_SOURCE = 'METASAIL';
 
 const normalizeRace = async (
   { MetasailEvent, MetasailRace, MetasailBoat, MetasailPosition },
   transaction,
 ) => {
-  console.log('Normalize data');
   if (!MetasailPosition || MetasailPosition.length === 0) {
     console.log('No positions, skip');
     return;

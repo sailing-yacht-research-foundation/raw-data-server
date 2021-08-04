@@ -3,7 +3,7 @@ const temp = require('temp').track();
 const db = require('../models');
 const { liveDataSchema } = require('../schemas/parquets/liveData');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 const writeToParquet = require('./writeToParquet');
 
 const getDataPoints = async () => {
@@ -67,7 +67,7 @@ const processLiveData = async (optionalPath) => {
     });
   }
   await writeToParquet(data, liveDataSchema, parquetPath);
-  const fileUrl = await uploadFileToS3(
+  const fileUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `livedata/year=${currentYear}/month=${currentMonth}/livedata_${fullDateFormat}.parquet`,
   );

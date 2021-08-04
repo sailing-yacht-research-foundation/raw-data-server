@@ -1,13 +1,15 @@
 const createMQSubscriber = require('../createMQSubscriber');
 const { getAllLiveDataPoint } = require('../dataPoint');
 
-const mqHost = process.env.MQ_HOST;
-const mqPort = process.env.MQ_PORT;
-const mqUser = process.env.MQ_USER;
-const mqPassword = process.env.MQ_PASSWORD;
+const mqHost = process.env.MQ_HOST || 'localhost';
+const mqPort = process.env.MQ_PORT || 61613;
+const mqUser = process.env.MQ_USER || 'guest';
+const mqPassword = process.env.MQ_PASSWORD || 'guest';
 
 describe('Connect & Subscribe to topic from MQ', () => {
   it('should connect successfully to MQ', async () => {
+    console.log('host', mqHost);
+    console.log('port', mqPort);
     const onConnect = jest.fn();
     const subscriptions = [
       {

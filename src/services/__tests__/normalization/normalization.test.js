@@ -1,16 +1,6 @@
 const db = require('../../../models');
-// const { normalizeRace } = require('../../normalization/normalizeBluewater');
-const s3Utils = require('../../uploadFileToS3');
+const uploadUtil = require('../../uploadUtil');
 const elasticsearch = require('../../../utils/elasticsearch');
-// const jsonData = require('../../../test-files/bluewater.json');
-
-jest.mock('../../uploadFileToS3', () => ({
-  uploadGeoJsonToS3: jest.fn(),
-}));
-jest.mock('../../../utils/elasticsearch', () => ({
-  indexRace: jest.fn(),
-}));
-jest.setTimeout(60000);
 
 const scraperTestMappings = [
   {
@@ -50,16 +40,22 @@ const scraperTestMappings = [
     source: 'KWINDOO',
   },
   {
-    filename: 'normalizeTackTracker',
-    testData: 'tacktracker.json',
-    raceTable: 'TackTrackerRace',
-    source: 'TACKTRACKER',
+    filename: 'normalizeMetasail',
+    testData: 'metasail.json',
+    raceTable: 'MetasailRace',
+    source: 'METASAIL',
   },
   {
     filename: 'normalizeRaceQs',
     testData: 'raceQs.json',
     raceTable: 'RaceQsEvent',
     source: 'RACEQS',
+  },
+  {
+    filename: 'normalizeTackTracker',
+    testData: 'tacktracker.json',
+    raceTable: 'TackTrackerRace',
+    source: 'TACKTRACKER',
   },
   {
     filename: 'normalizeTracTrac',
@@ -82,11 +78,16 @@ const scraperTestMappings = [
 ];
 
 describe('Normalization test', () => {
+  let indexRaceSpy, uploadGeoJsonSpy;
   beforeAll(async () => {
     await db.readyAboutRaceMetadata.sync();
+    await db.readyAboutTrackGeoJsonLookup.sync();
+    indexRaceSpy = jest.spyOn(elasticsearch, 'indexRace');
+    uploadGeoJsonSpy = jest.spyOn(uploadUtil, 'uploadGeoJsonToS3');
   });
   afterAll(async () => {
     await db.readyAboutRaceMetadata.destroy({ truncate: true });
+    await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
   afterEach(() => {
@@ -101,12 +102,11 @@ describe('Normalization test', () => {
         const jsonData = require(`../../../test-files/${testData}`);
         const createMetadata = jest.spyOn(db.readyAboutRaceMetadata, 'create');
         const races = jsonData[raceTable];
-        // const raceId = jsonData[raceTable][0].id;
         await normalizeRace(jsonData);
         expect(createMetadata).toHaveBeenCalledTimes(races.length);
-        expect(elasticsearch.indexRace).toHaveBeenCalledTimes(races.length);
+        expect(indexRaceSpy).toHaveBeenCalledTimes(races.length);
         races.forEach((race) => {
-          expect(s3Utils.uploadGeoJsonToS3).toHaveBeenCalledWith(
+          expect(uploadGeoJsonSpy).toHaveBeenCalledWith(
             race.id,
             expect.anything(),
             source,
