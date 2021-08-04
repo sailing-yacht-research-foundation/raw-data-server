@@ -12,7 +12,7 @@ terraform {
     region = "us-east-1"
 
     dynamodb_table = "terraform-state-locking"
-    encrypt = true
+    encrypt        = true
   }
 }
 # Providing a reference to our default VPC
