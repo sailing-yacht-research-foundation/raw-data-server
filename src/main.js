@@ -5,7 +5,7 @@ const { dataPointSubscriberAction } = require('./subscribers/dataPoint');
 
 const createServer = require('./server');
 const port = process.env.PORT || 3000;
-const mqHost = process.env.MQ_HOST || 'localhost';
+const mqHost = process.env.MQ_HOST;
 const mqPort = process.env.MQ_PORT || 61613;
 const mqUser = process.env.MQ_USER || 'guest';
 const mqPassword = process.env.MQ_PASSWORD || 'guest';
@@ -27,11 +27,13 @@ const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
         action: dataPointSubscriberAction,
       },
     ];
-    const stompClient = createMQSubscriber(
-      { mqHost, mqPort, mqUser, mqPassword, mqTimeout },
-      onConnect,
-      subscriptions,
-    );
+    const stompClient = mqHost
+      ? createMQSubscriber(
+          { mqHost, mqPort, mqUser, mqPassword, mqTimeout },
+          onConnect,
+          subscriptions,
+        )
+      : null;
 
     const server = app.listen(port, () => {
       console.log(`Server has started! Listening on ${port}`);
