@@ -9,7 +9,7 @@ const mqHost = process.env.MQ_HOST || 'localhost';
 const mqPort = process.env.MQ_PORT || 61613;
 const mqUser = process.env.MQ_USER || 'guest';
 const mqPassword = process.env.MQ_PASSWORD || 'guest';
-const mqTimeout = process.env.MQ_TIMEOUT || 2700000;
+const mqTimeout = Number(process.env.MQ_TIMEOUT) || 2700000;
 const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
 
 (async () => {

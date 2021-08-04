@@ -58,3 +58,17 @@ variable "mq_topic" {
 variable "mq_timeout" {
   default = 2700000
 }
+
+variable "es_host" {
+  type = string
+}
+
+variable "geojson_s3_bucket" {
+  default = "syrf-rawdataserver-geojson-staging"
+  type = string
+}
+
+variable "yellowbrick_kml_s3_bucket" {
+  default = "syrf-rawdataserver-yellowbrick-kml-staging"
+  type = string
+}
