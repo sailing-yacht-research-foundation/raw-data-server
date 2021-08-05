@@ -44,7 +44,6 @@ const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
       if (stompClient !== null) {
         stompClient.destroy();
       }
-      stompClient.destroy();
       server.close(() => {
         console.log('Server has been closed!');
       });
