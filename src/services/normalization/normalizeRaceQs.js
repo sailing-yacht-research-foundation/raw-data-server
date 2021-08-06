@@ -52,7 +52,10 @@ const normalizeRace = async (
     const waypoints = RaceQsWaypoint?.filter((w) => w.event_original_id === event.original_id);
     const participants = RaceQsParticipant?.filter((p) => p.event_original_id === event.original_id);
     const id = event.id;
-    const name = `${regatta.name} - ${event.name}`;
+    let name = regatta.name || '';
+    if (event.name) {
+      name += ` - ${event.name}`;
+    }
     const regattaId = event.regatta;
     const url = event.url;
     const startTime = parseInt(event.from);
