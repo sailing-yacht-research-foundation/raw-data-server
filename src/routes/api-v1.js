@@ -20,6 +20,7 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
+const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const gunzipFile = require('../utils/unzipFile');
@@ -111,7 +112,10 @@ router.post(
         resolve(true);
       });
     });
-    const isScraperExist = (data, source) => Object.keys(data).some((i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1);
+    const isScraperExist = (data, source) =>
+      Object.keys(data).some(
+        (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
+      );
     try {
       switch (true) {
         case isScraperExist(jsonData, TRACKER_MAP.isail):
@@ -283,6 +287,13 @@ router.post('/register-failed-url', async function (req, res) {
   }
 
   res.json({ success: errorMessage == '', errorMessage });
+});
+
+router.get('/america-cup-2021-save', async function (req, res) {
+  console.log('Entered');
+  let rawdata = fs.readFileSync('race.json');
+  let raceData = JSON.parse(rawdata);
+  saveAmericasCup2021Data(raceData);
 });
 
 module.exports = router;
