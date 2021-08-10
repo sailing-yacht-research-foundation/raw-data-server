@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeRaceQs');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveRaceQsData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let eventUrl = [];
+  let raceMetadatas;
   try {
     if (data.RaceQsEvent) {
       eventUrl = data.RaceQsEvent.map((row) => {
@@ -77,7 +79,7 @@ const saveRaceQsData = async (data) => {
       });
     }
     if (data.RaceQsEvent) {
-      await normalizeRace(data, transaction);
+      raceMetadatas = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -118,6 +120,11 @@ const saveRaceQsData = async (data) => {
     }
   }
 
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
+    }
+  }
   return errorMessage;
 };
 

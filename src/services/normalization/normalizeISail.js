@@ -18,6 +18,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const ISAIL_SOURCE = 'ISAIL';
+  const raceMetadatas = [];
   if (!iSailRace || !iSailPosition || iSailPosition.length === 0) {
     console.log('No race or positions so skipping.');
     return;
@@ -166,7 +167,9 @@ const normalizeRace = async (
       transaction,
     });
     await uploadGeoJsonToS3(race.id, tracksGeojson, ISAIL_SOURCE, transaction);
+    raceMetadatas.push(raceMetadata);
   };
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

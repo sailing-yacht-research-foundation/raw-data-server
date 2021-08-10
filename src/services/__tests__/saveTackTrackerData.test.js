@@ -1,8 +1,9 @@
+const axios = require('axios');
 const db = require('../../models');
 const normalizeObj = require('../normalization/normalizeTackTracker');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve());
+  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
 const saveTackTrackerData = require('../saveTackTrackerData');
 const jsonData = require('../../test-files/tackTracker.json');
 
@@ -14,7 +15,8 @@ describe('Storing TackTracker data to DB', () => {
     createFinish,
     createMark,
     createPosition,
-    createStart;
+    createStart,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -26,6 +28,7 @@ describe('Storing TackTracker data to DB', () => {
     createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
     createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
     createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.tackTrackerRegatta.destroy({ truncate: true });
@@ -43,7 +46,7 @@ describe('Storing TackTracker data to DB', () => {
     await db.sequelize.close();
   });
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should not save anything when empty data', async () => {
@@ -58,6 +61,7 @@ describe('Storing TackTracker data to DB', () => {
     expect(createStart).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
     await saveTackTrackerData(jsonData);
@@ -94,5 +98,6 @@ describe('Storing TackTracker data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

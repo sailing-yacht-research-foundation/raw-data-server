@@ -21,6 +21,7 @@ const normalizeRace = async (
     console.log('No positions, skip');
     return;
   }
+  const raceMetadatas = [];
 
   for (const race of MetasailRace) {
     const id = race.id;
@@ -112,7 +113,9 @@ const normalizeRace = async (
       METASAIL_SOURCE,
       transaction,
     );
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

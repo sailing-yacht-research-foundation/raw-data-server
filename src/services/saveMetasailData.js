@@ -4,12 +4,14 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeMetasail');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveMetasailData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let eventUrl = [];
   let metasailPositions;
+  let raceMetadatas;
   try {
     if (data.MetasailEvent) {
       eventUrl = data.MetasailEvent.map((row) => {
@@ -65,7 +67,7 @@ const saveMetasailData = async (data) => {
     }
 
     if (data.MetasailRace) {
-      await normalizeRace(data, transaction);
+      raceMetadatas = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -105,6 +107,11 @@ const saveMetasailData = async (data) => {
     }
   }
 
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
+    }
+  }
   return errorMessage;
 };
 

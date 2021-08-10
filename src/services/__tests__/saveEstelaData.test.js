@@ -1,8 +1,9 @@
+const axios = require('axios');
 const db = require('../../models');
 const normalizeObj = require('../normalization/normalizeEstela');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve());
+  .mockImplementation(() => Promise.resolve({ id: '123' }));
 const saveEstelaData = require('../saveEstelaData');
 const jsonData = require('../../test-files/estela.json');
 
@@ -13,7 +14,8 @@ describe('Storing Estela data to DB', () => {
     createPosition,
     createDorsal,
     createPlayer,
-    createResult;
+    createResult,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -24,6 +26,7 @@ describe('Storing Estela data to DB', () => {
     createDorsal = jest.spyOn(db.estelaDorsal, 'bulkCreate');
     createPlayer = jest.spyOn(db.estelaPlayer, 'bulkCreate');
     createResult = jest.spyOn(db.estelaResult, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.estelaBuoy.destroy({ truncate: true });
@@ -38,7 +41,7 @@ describe('Storing Estela data to DB', () => {
     await db.sequelize.close();
   });
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should not save anything when empty data', async () => {
@@ -51,6 +54,7 @@ describe('Storing Estela data to DB', () => {
     expect(createPlayer).toHaveBeenCalledTimes(0);
     expect(createResult).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
     await saveEstelaData(jsonData);
@@ -83,5 +87,6 @@ describe('Storing Estela data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

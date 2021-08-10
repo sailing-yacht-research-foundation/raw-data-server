@@ -136,6 +136,7 @@ const normalizeRace = async (
     YELLOWBRICK_SOURCE,
     transaction,
   );
+  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

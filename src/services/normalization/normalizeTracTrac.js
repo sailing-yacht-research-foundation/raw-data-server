@@ -23,6 +23,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const TRACTRAC_SOURCE = 'TRACTRAC';
+  const raceMetadatas = [];
 
   if (
     !TracTracRace ||
@@ -123,7 +124,9 @@ const normalizeRace = async (
       TRACTRAC_SOURCE,
       transaction,
     );
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

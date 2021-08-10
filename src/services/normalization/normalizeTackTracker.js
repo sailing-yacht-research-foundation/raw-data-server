@@ -23,6 +23,7 @@ const normalizeRace = async ({
   transaction
 ) => {
   const TACKTRACKER_SOURCE = 'TACKTRACKER';
+  const raceMetadatas = [];
 
   if (!TackTrackerRace || !TackTrackerPosition || TackTrackerPosition.length === 0) {
     console.log('No race or positions so skipping.');
@@ -136,7 +137,9 @@ const normalizeRace = async ({
         TACKTRACKER_SOURCE,
         transaction
     );
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

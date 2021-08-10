@@ -1,8 +1,9 @@
+const axios = require('axios');
 const db = require('../../models');
 const normalizeObj = require('../normalization/normalizeGeoracing');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve());
+  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
 const saveGeoracingData = require('../saveGeoracingData');
 const jsonData = require('../../test-files/georacing.json');
 
@@ -18,7 +19,8 @@ describe('Storing georacing data to DB', () => {
     createRace,
     createSplittime,
     createSO,
-    createWeather;
+    createWeather,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -34,6 +36,7 @@ describe('Storing georacing data to DB', () => {
     createSplittime = jest.spyOn(db.georacingSplittime, 'bulkCreate');
     createSO = jest.spyOn(db.georacingSplittimeObject, 'bulkCreate');
     createWeather = jest.spyOn(db.georacingWeather, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.georacingEvent.destroy({ truncate: true });
@@ -53,7 +56,7 @@ describe('Storing georacing data to DB', () => {
     await db.sequelize.close();
   });
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should not save anything when empty data', async () => {
@@ -71,6 +74,7 @@ describe('Storing georacing data to DB', () => {
     expect(createSO).toHaveBeenCalledTimes(0);
     expect(createWeather).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
     await saveGeoracingData(jsonData);
@@ -123,5 +127,6 @@ describe('Storing georacing data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

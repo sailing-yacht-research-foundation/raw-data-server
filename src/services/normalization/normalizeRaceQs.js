@@ -25,6 +25,7 @@ const normalizeRace = async (
 ) => {
   const RACEQS_SOURCE = 'RACEQS';
   const regatta = RaceQsRegatta[0];
+  const raceMetadatas = [];
 
   if (!RaceQsRegatta || !RaceQsPosition || RaceQsPosition.length === 0) {
     console.log('No event or positions so skipping.');
@@ -127,13 +128,14 @@ const normalizeRace = async (
     const tracksGeojson = JSON.stringify(
       allPositionsToFeatureCollection(boatsToSortedPositions),
     );
-    await uploadGeoJsonToS3(id, tracksGeojson, RACEQS_SOURCE, transaction);
-
     await db.readyAboutRaceMetadata.create(raceMetadata, {
       fields: Object.keys(raceMetadata),
       transaction,
     });
+    await uploadGeoJsonToS3(id, tracksGeojson, RACEQS_SOURCE, transaction);
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

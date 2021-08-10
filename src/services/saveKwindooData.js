@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKwindoo');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveKwindooData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadatas;
   try {
     if (data.KwindooRace) {
       raceUrl = data.KwindooRace.map((row) => {
@@ -115,7 +117,7 @@ const saveKwindooData = async (data) => {
       });
     }
     if (data.KwindooRace) {
-      await normalizeRace(data, transaction);
+      raceMetadatas = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -156,6 +158,11 @@ const saveKwindooData = async (data) => {
     }
   }
 
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
+    }
+  }
   return errorMessage;
 };
 
