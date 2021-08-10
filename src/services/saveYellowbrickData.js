@@ -5,12 +5,14 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const uploadUtil = require('./uploadUtil');
 const { normalizeRace } = require('./normalization/normalizeYellowbrick');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const KML_S3_BUCKET = process.env.AWS_YELLOWBRICK_KML_S3_BUCKET;
 
 const saveYellowbrickData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadata;
   try {
     if (data.YellowbrickRace) {
       raceUrl = data.YellowbrickRace.map((row) => {
@@ -81,7 +83,7 @@ const saveYellowbrickData = async (data) => {
       }
     }
     if (data.YellowbrickRace) {
-      await normalizeRace(data, transaction);
+      raceMetadata = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -122,6 +124,7 @@ const saveYellowbrickData = async (data) => {
     }
   }
 
+  await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 

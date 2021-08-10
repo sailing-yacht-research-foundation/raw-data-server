@@ -34,7 +34,6 @@ services:
       ['./wait-for-it.sh', '-t', '120', 'rds-db:3306', '--', 'npm', 'start']
   rds-db:
     image: mysql:5.7
-    command: --max_allowed_packet=100M
     restart: always
     environment:
       MYSQL_DATABASE: rawdata
@@ -49,7 +48,7 @@ services:
       - ./scripts:/docker-entrypoint-initdb.d
       - rds-db:/var/lib/rds
     command:
-      --innodb_lock_wait_timeout=180
+      ['--innodb_lock_wait_timeout=180', '--max_allowed_packet=100M']
   rabbit-mq:
     image: rabbitmq:3.7-management
     build:

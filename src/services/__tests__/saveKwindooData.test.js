@@ -1,8 +1,9 @@
+const axios = require('axios');
 const db = require('../../models');
 const normalizeObj = require('../normalization/normalizeKwindoo');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve());
+  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
 const saveKwindooData = require('../saveKwindooData');
 
 const jsonData = require('../../test-files/kwindoo.json');
@@ -19,7 +20,8 @@ describe('Storing kwindoo data to DB', () => {
     createPosition,
     createRunningGroup,
     createVideoStream,
-    createWaypoint;
+    createWaypoint,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -38,6 +40,7 @@ describe('Storing kwindoo data to DB', () => {
     createRunningGroup = jest.spyOn(db.kwindooRunningGroup, 'bulkCreate');
     createVideoStream = jest.spyOn(db.kwindooVideoStream, 'bulkCreate');
     createWaypoint = jest.spyOn(db.kwindooWaypoint, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.kwindooRegattaOwner.destroy({ truncate: true });
@@ -58,7 +61,7 @@ describe('Storing kwindoo data to DB', () => {
     await db.sequelize.close();
   });
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should not save anything when empty data', async () => {
@@ -76,6 +79,7 @@ describe('Storing kwindoo data to DB', () => {
     expect(createVideoStream).toHaveBeenCalledTimes(0);
     expect(createWaypoint).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
     await saveKwindooData(jsonData);
@@ -128,5 +132,6 @@ describe('Storing kwindoo data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

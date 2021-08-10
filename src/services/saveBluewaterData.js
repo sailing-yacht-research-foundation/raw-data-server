@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeBluewater');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveBluewaterData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadata;
   try {
     if (data.BluewaterRace) {
       raceUrl = data.BluewaterRace.map((row) => {
@@ -88,7 +90,7 @@ const saveBluewaterData = async (data) => {
     }
 
     if (data.BluewaterRace) {
-      await normalizeRace(data, transaction);
+      raceMetadata = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -129,6 +131,7 @@ const saveBluewaterData = async (data) => {
     }
   }
 
+  await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 

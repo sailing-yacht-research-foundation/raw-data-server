@@ -26,6 +26,7 @@ const normalizeRace = async (
 ) => {
   const KWINDOO_SOURCE = 'KWINDOO';
   const regatta = KwindooRegatta[0];
+  const raceMetadatas = [];
   const runningGroups = KwindooRunningGroup;
   if (!KwindooRace || !KwindooPosition || KwindooPosition.length === 0) {
     console.log('No race or positions so skipping.');
@@ -142,13 +143,14 @@ const normalizeRace = async (
       allPositionsToFeatureCollection(boatsToSortedPositions),
     );
 
-    await uploadGeoJsonToS3(id, tracksGeojson, KWINDOO_SOURCE, transaction);
-
     await db.readyAboutRaceMetadata.create(raceMetadata, {
       fields: Object.keys(raceMetadata),
       transaction,
     });
+    await uploadGeoJsonToS3(id, tracksGeojson, KWINDOO_SOURCE, transaction);
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

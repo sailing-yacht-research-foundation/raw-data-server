@@ -1,8 +1,9 @@
+const axios = require('axios');
 const db = require('../../models');
 const normalizeObj = require('../normalization/normalizeYellowbrick');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve());
+  .mockImplementation(() => Promise.resolve({ id: '123' }));
 const saveYellowbrickData = require('../saveYellowbrickData');
 const jsonData = require('../../test-files/yellowbrick.json');
 
@@ -13,7 +14,8 @@ describe('Storing yellowbrick data to DB', () => {
     createPoi,
     createPosition,
     createTag,
-    createTeam;
+    createTeam,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -27,6 +29,7 @@ describe('Storing yellowbrick data to DB', () => {
     createPosition = jest.spyOn(db.yellowbrickPosition, 'bulkCreate');
     createTag = jest.spyOn(db.yellowbrickTag, 'bulkCreate');
     createTeam = jest.spyOn(db.yellowbrickTeam, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.yellowbrickRace.destroy({ truncate: true });
@@ -42,6 +45,9 @@ describe('Storing yellowbrick data to DB', () => {
     await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('should not save anything when empty data', async () => {
     await saveYellowbrickData({});
@@ -53,6 +59,7 @@ describe('Storing yellowbrick data to DB', () => {
     expect(createTag).toHaveBeenCalledTimes(0);
     expect(createTeam).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
     await saveYellowbrickData(jsonData);
@@ -85,5 +92,6 @@ describe('Storing yellowbrick data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

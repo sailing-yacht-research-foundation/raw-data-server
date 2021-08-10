@@ -1,8 +1,9 @@
+const axios = require('axios');
 const db = require('../../models');
 const normalizeObj = require('../normalization/normalizeBluewater');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve());
+  .mockImplementation(() => Promise.resolve({ id: '123' }));
 const saveBluewaterData = require('../saveBluewaterData');
 const jsonData = require('../../test-files/bluewater.json');
 
@@ -15,7 +16,8 @@ describe('Storing bluewater data to DB', () => {
     createCrewSocialMedia,
     createMap,
     createPosition,
-    createAnnouncement;
+    createAnnouncement,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -34,6 +36,7 @@ describe('Storing bluewater data to DB', () => {
     createMap = jest.spyOn(db.bluewaterMap, 'bulkCreate');
     createPosition = jest.spyOn(db.bluewaterPosition, 'bulkCreate');
     createAnnouncement = jest.spyOn(db.bluewaterAnnouncement, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.bluewaterRace.destroy({ truncate: true });
@@ -51,7 +54,7 @@ describe('Storing bluewater data to DB', () => {
     jest.restoreAllMocks();
   });
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('should not save anything when json data is empty', async () => {
@@ -66,6 +69,7 @@ describe('Storing bluewater data to DB', () => {
     expect(createPosition).toHaveBeenCalledTimes(0);
     expect(createAnnouncement).toHaveBeenCalledTimes(0);
     expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
     await saveBluewaterData(jsonData);
@@ -106,5 +110,6 @@ describe('Storing bluewater data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

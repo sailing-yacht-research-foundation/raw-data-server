@@ -142,6 +142,7 @@ const normalizeRace = async ({BluewaterRace, BluewaterPosition, BluewaterMap, Bl
     BLUEWATER_SOURCE,
     transaction,
   );
+  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

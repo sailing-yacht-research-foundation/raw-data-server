@@ -104,6 +104,7 @@ const normalizeRace = async (
     transaction,
   });
   await uploadGeoJsonToS3(race.id, tracksGeojson, KATTACK_SOURCE, transaction);
+  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;
