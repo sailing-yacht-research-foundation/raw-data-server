@@ -13,6 +13,7 @@ const TRACKER_MAP = {
   tractrac: 'tractrac',
   yachtbot: 'yachtBot',
   yellowbrick: 'yellowbrick',
+  swiftsure: 'swiftsure',
 };
 
 const SAVE_DB_POSITION_CHUNK_COUNT = 10000;
