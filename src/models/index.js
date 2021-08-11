@@ -494,6 +494,47 @@ db.tackTrackerSuccessfulUrl =
   require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
 // === End of TackTracker ===
 
+// === Swiftsure ===
+db.swiftsureBoat = require('./swiftsure/swiftsureBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureLine = require('./swiftsure/swiftsureLine.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureLink = require('./swiftsure/swiftsureLink.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureMark = require('./swiftsure/swiftsureMark.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsurePoint = require('./swiftsure/swiftsurePoint.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsurePosition = require('./swiftsure/swiftsurePosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureRace = require('./swiftsure/swiftsureRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureSponsor = require('./swiftsure/swiftsureSponsor.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureFailedUrl = require('./swiftsure/swiftsureFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureSuccessfulUrl =
+  require('./swiftsure/swiftsureSuccessfulUrl.model')(sequelize, Sequelize);
+// === End of Swiftsure ===
+
 // === Normalized Table ===
 db.readyAboutRaceMetadata = require('./normalizedTable/readyAboutRaceMetadata.model')(
   sequelize,
