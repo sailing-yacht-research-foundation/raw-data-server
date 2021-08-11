@@ -11,10 +11,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      boat_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
       race_status_interpolator_value: {
         type: Sequelize.INTEGER,
         allowNull: false,

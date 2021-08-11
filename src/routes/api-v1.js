@@ -290,10 +290,23 @@ router.post('/register-failed-url', async function (req, res) {
 });
 
 router.get('/america-cup-2021-save', async function (req, res) {
-  console.log('Entered');
   let rawdata = fs.readFileSync('race.json');
   let raceData = JSON.parse(rawdata);
-  saveAmericasCup2021Data(raceData);
+  let race = await db.americasCup2021Race.findOne({
+    where: { race_id: raceData.race.raceId },
+  });
+  let errorMessage = '';
+  try {
+    if (!race) {
+      saveAmericasCup2021Data(raceData);
+    } else {
+      console.log('Race exists');
+    }
+  } catch (err) {
+    await transaction.rollback();
+    errorMessage = databaseErrorHandler(err);
+  }
+  res.json({ success: errorMessage == '', errorMessage });
 });
 
 module.exports = router;
