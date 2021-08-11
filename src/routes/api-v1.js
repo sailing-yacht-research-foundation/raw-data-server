@@ -24,6 +24,7 @@ const saveAmericasCup2021Data = require('../services/non-automatable/saveAmerica
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const gunzipFile = require('../utils/unzipFile');
+const s3Util = require('../services/s3Util');
 
 var router = express.Router();
 
@@ -290,22 +291,32 @@ router.post('/register-failed-url', async function (req, res) {
 });
 
 router.get('/america-cup-2021-save', async function (req, res) {
-  let rawdata = fs.readFileSync('race.json');
-  let raceData = JSON.parse(rawdata);
-  let race = await db.americasCup2021Race.findOne({
-    where: { race_id: raceData.race.raceId },
-  });
+  let fileNames = await s3Util.listAllKeys(req.query.bucketName);
+  let count = 0;
   let errorMessage = '';
-  try {
-    if (!race) {
-      saveAmericasCup2021Data(raceData);
-    } else {
-      console.log('Race exists');
+  while (count < fileNames.length) {
+    let rawData = await s3Util.getObject(
+      fileNames[count],
+      req.query.bucketName,
+    );
+    let raceData = JSON.parse(rawData);
+    let race = await db.americasCup2021Race.findOne({
+      where: { race_id: raceData.race.raceId },
+    });
+    try {
+      if (!race) {
+        saveAmericasCup2021Data(raceData);
+      } else {
+        console.log(`Race ${fileNames[count]} already exists`);
+      }
+    } catch (err) {
+      await transaction.rollback();
+      errorMessage += `\n${databaseErrorHandler(err)}`;
     }
-  } catch (err) {
-    await transaction.rollback();
-    errorMessage = databaseErrorHandler(err);
+
+    count++;
   }
+
   res.json({ success: errorMessage == '', errorMessage });
 });
 
