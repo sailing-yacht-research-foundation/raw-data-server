@@ -15,11 +15,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      leg_interpolator_value: {
+      rudder_angle_value: {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      leg_interpolator_time: {
+      rudder_angle_time: {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },

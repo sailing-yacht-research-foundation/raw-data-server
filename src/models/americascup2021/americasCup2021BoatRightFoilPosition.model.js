@@ -15,11 +15,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      left_foil_position_interpolator_value: {
+      right_foil_position_interpolator_value: {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
-      left_foil_position_interpolator_time: {
+      right_foil_position_interpolator_time: {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
