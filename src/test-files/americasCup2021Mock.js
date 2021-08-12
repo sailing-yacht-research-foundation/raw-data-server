@@ -1,7 +1,9 @@
 const data = require('./americasCup2021.json');
 module.exports = {
   mockExpectRaceObject: {
-    race_id: data.race.raceId,
+    event_name: 'PRADA_CUP',
+    race_name: 'Race_1',
+    original_id: data.race.raceId,
     terrain_config_location_lon: data.appConfig.terrainConfig.location.x,
     terrain_config_location_lat: data.appConfig.terrainConfig.location.y,
     boundary_center_set: data.race.boundaryCenterSet,

@@ -11,6 +11,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      race_original_id: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       race_status_interpolator_value: {
         type: Sequelize.INTEGER,
         allowNull: false,

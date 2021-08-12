@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const americasCup2021BoundaryPacket = sequelize.define(
-    'AmericasCup2021BoundaryPacket',
+  const americasCup2021BuoyPositionState = sequelize.define(
+    'AmericasCup2021BuoyPositionState',
     {
       id: {
         type: Sequelize.UUID,
@@ -15,23 +15,23 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      packet_id: {
+      mark_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      coordinate_interpolator_lon: {
-        type: Sequelize.DOUBLE,
+      state_interpolator_value: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
-      coordinate_interpolator_lat: {
+      state_interpolator_time: {
         type: Sequelize.DOUBLE,
         allowNull: false,
       },
     },
     {
-      tableName: 'AmericasCup2021BoundaryPackets',
+      tableName: 'AmericasCup2021BuoyPositionStates',
       timestamps: false,
     },
   );
-  return americasCup2021BoundaryPacket;
+  return americasCup2021BuoyPositionState;
 };

@@ -11,7 +11,11 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      mark_id: {
+      race_original_id: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      original_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },

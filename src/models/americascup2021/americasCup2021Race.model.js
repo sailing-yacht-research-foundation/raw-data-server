@@ -7,7 +7,15 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         primaryKey: true,
       },
-      race_id: {
+      original_id: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      event_name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      race_name: {
         type: Sequelize.TEXT,
         allowNull: false,
       },

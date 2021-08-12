@@ -7,12 +7,16 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         primaryKey: true,
       },
+      original_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       race_id: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      boat_id: {
-        type: Sequelize.INTEGER,
+      race_original_id: {
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       team_id: {

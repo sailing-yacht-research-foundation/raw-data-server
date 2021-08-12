@@ -593,6 +593,11 @@ db.americasCup2021BuoyPosition =
     sequelize,
     Sequelize,
   );
+db.americasCup2021BuoyPositionState =
+  require('./americascup2021/americasCup2021BuoyPositionState.model')(
+    sequelize,
+    Sequelize,
+  );
 db.americasCup2021Race = require('./americascup2021/americasCup2021Race.model')(
   sequelize,
   Sequelize,

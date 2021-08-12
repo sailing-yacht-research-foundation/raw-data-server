@@ -23,12 +23,13 @@ describe('Storing americascup2021 data to DB', () => {
     createBoatVmg,
     createBuoy,
     createBuoyPosition,
+    createBuoyPositionState,
     createTeam,
     createRanking,
     createRoundingTime,
     createWindData,
     createWindPoint,
-    n;
+    createBoundaryPacket;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -75,6 +76,10 @@ describe('Storing americascup2021 data to DB', () => {
       db.americasCup2021BuoyPosition,
       'bulkCreate',
     );
+    createBuoyPositionState = jest.spyOn(
+      db.americasCup2021BuoyPositionState,
+      'bulkCreate',
+    );
     createTeam = jest.spyOn(db.americasCup2021Team, 'bulkCreate');
     createRanking = jest.spyOn(db.americasCup2021Ranking, 'bulkCreate');
     createRoundingTime = jest.spyOn(
@@ -109,6 +114,7 @@ describe('Storing americascup2021 data to DB', () => {
     await db.americasCup2021BoatVmg.destroy({ truncate: true });
     await db.americasCup2021Buoy.destroy({ truncate: true });
     await db.americasCup2021BuoyPosition.destroy({ truncate: true });
+    await db.americasCup2021BuoyPositionState.destroy({ truncate: true });
     await db.americasCup2021Team.destroy({ truncate: true });
     await db.americasCup2021Ranking.destroy({ truncate: true });
     await db.americasCup2021RoundingTime.destroy({ truncate: true });
@@ -140,6 +146,8 @@ describe('Storing americascup2021 data to DB', () => {
     expect(createBoatVmg).toHaveBeenCalledTimes(0);
     expect(createBuoy).toHaveBeenCalledTimes(0);
     expect(createBuoyPosition).toHaveBeenCalledTimes(0);
+    expect(createBuoyPositionState).toHaveBeenCalledTimes(0);
+    expect(createTeam).toHaveBeenCalledTimes(0);
     expect(createRanking).toHaveBeenCalledTimes(0);
     expect(createRoundingTime).toHaveBeenCalledTimes(0);
     expect(createWindData).toHaveBeenCalledTimes(0);
@@ -171,6 +179,8 @@ describe('Storing americascup2021 data to DB', () => {
     expect(createBoatVmg).toHaveBeenCalledTimes(1);
     expect(createBuoy).toHaveBeenCalledTimes(1);
     expect(createBuoyPosition).toHaveBeenCalledTimes(1);
+    expect(createBuoyPositionState).toHaveBeenCalledTimes(1);
+    expect(createTeam).toHaveBeenCalledTimes(1);
     expect(createRanking).toHaveBeenCalledTimes(1);
     expect(createRoundingTime).toHaveBeenCalledTimes(1);
     expect(createWindData).toHaveBeenCalledTimes(1);
