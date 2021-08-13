@@ -75,6 +75,12 @@ const scraperTestMappings = [
     raceTable: 'YachtBotRace',
     source: 'YACHTBOT',
   },
+  {
+    filename: 'normalizeSwiftsure',
+    testData: 'swiftsure.json',
+    raceTable: 'SwiftsureRace',
+    source: 'SWIFTSURE',
+  },
 ];
 
 describe('Normalization test', () => {
