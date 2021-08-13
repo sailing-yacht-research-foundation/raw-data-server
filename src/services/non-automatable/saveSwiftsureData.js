@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
 const databaseErrorHandler = require('../../utils/databaseErrorHandler');
+const { normalizeRace } = require('../normalization/normalizeSwiftsure');
 
 const saveSwiftsureData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -73,6 +74,9 @@ const saveSwiftsureData = async (data) => {
       }
     }
 
+    if (data.SwiftsureRace) {
+      await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error);
