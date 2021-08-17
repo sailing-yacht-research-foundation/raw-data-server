@@ -20,7 +20,11 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
+<<<<<<< HEAD
 const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
+=======
+const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
+>>>>>>> develop
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const gunzipFile = require('../utils/unzipFile');
@@ -154,6 +158,9 @@ router.post(
           break;
         case isScraperExist(jsonData, TRACKER_MAP.tacktracker):
           saveTackTrackerData(jsonData);
+          break;
+        case isScraperExist(jsonData, TRACKER_MAP.swiftsure):
+          saveSwiftsureData(jsonData);
           break;
       }
     } catch (err) {
