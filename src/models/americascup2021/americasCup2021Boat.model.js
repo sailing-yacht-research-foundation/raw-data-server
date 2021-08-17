@@ -20,6 +20,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       team_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        primaryKey: true,
+      },
+      team_original_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },

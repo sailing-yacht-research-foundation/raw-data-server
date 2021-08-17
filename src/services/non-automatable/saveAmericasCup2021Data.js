@@ -6,7 +6,6 @@ const databaseErrorHandler = require('../../utils/databaseErrorHandler');
 
 const saveAmericasCup2021Data = async (data) => {
   const transaction = await db.sequelize.transaction();
-  let errorMessage = '';
   try {
     if (data.race) {
       let raceId = uuidv4();
@@ -50,6 +49,34 @@ const saveAmericasCup2021Data = async (data) => {
         transaction,
       });
 
+      let teams = data.appConfig.teams.map((row) => {
+        return {
+          id: uuidv4(),
+          original_id: row.team_id,
+          race_id: raceId,
+          race_original_id: data.race.raceId,
+          name: row.name,
+          abbreviation: row.abbr,
+          flag_id: row.flag_id,
+          color: row.color,
+          boat_name: row?.boatmodel?.name,
+          top_mast_offset_x: row?.boatmodel?.topMastOffset.x,
+          top_mast_offset_y: row?.boatmodel?.topMastOffset.y,
+          top_mast_offset_z: row?.boatmodel?.topMastOffset.z,
+          default_bow_offset: row?.boatmodel?.defaultbowoffset,
+          jib_target: row?.boatmodel?.jibtarget,
+          main_sail_target: row?.boatmodel?.mainsailtarget,
+          left_foil: row?.boatmodel?.leftfoil,
+          right_foil: row?.boatmodel?.rightfoil,
+        };
+      });
+
+      await db.americasCup2021Team.bulkCreate(teams, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+
       let boatKeys = Object.keys(data.race.boats);
       let boats = boatKeys.map((key) => {
         return {
@@ -57,7 +84,10 @@ const saveAmericasCup2021Data = async (data) => {
           race_id: raceId,
           race_original_id: data.race.raceId,
           original_id: data.race.boats[key].boatId,
-          team_id: data.race.boats[key].teamId,
+          team_id: teams.find(
+            (x) => x.original_id === data.race.boats[key].teamId,
+          ).id,
+          team_original_id: data.race.boats[key].teamId,
           current_leg: data.race.boats[key].current_leg,
           distance_to_leader: data.race.boats[key].distance_to_leader,
           rank: data.race.boats[key].rank,
@@ -78,7 +108,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             coordinate_interpolator_lon:
               data.race.boats[bKey].coordIntep.xCerp.valHistory[boatIndex][0],
             coordinate_interpolator_lon_time:
@@ -142,7 +175,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             left_foil_position_interpolator_value:
               data.race.boats[bKey].leftFoilPosition.valHistory[boatIndex][0],
             left_foil_position_interpolator_time:
@@ -170,7 +206,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             left_foil_state_interpolator_value:
               data.race.boats[bKey].leftFoilState.valHistory[boatIndex][0],
             left_foil_state_interpolator_time:
@@ -195,7 +234,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             right_foil_position_interpolator_value:
               data.race.boats[bKey].rightFoilPosition.valHistory[boatIndex][0],
             right_foil_position_interpolator_time:
@@ -223,7 +265,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             right_foil_state_interpolator_value:
               data.race.boats[bKey].rightFoilState.valHistory[boatIndex][0],
             right_foil_state_interpolator_time:
@@ -250,7 +295,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             leg_interpolator_value:
               data.race.boats[bKey].legInterp.valHistory[boatIndex][0],
             leg_interpolator_time:
@@ -275,7 +323,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             penalty_count_interpolator_value:
               data.race.boats[bKey].penaltyCountInterp.valHistory[boatIndex][0],
             penalty_count_interpolator_time:
@@ -300,7 +351,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             protest_interpolator_value:
               data.race.boats[bKey].protestInterp.valHistory[boatIndex][0],
             protest_interpolator_time:
@@ -324,7 +378,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             rank_interpolator_value:
               data.race.boats[bKey].rankInterp.valHistory[boatIndex][0],
             rank_interpolator_time:
@@ -348,7 +405,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             rudder_angle__value:
               data.race.boats[bKey].ruddleAngle.valHistory[boatIndex][0],
             rudder_angle__time:
@@ -372,7 +432,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             sow_interpolator_value:
               data.race.boats[bKey].sowInterp.valHistory[boatIndex][0],
             sow_interpolator_time:
@@ -396,7 +459,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             status_interpolator_value:
               data.race.boats[bKey].statusInterp.valHistory[boatIndex][0],
             status_interpolator_time:
@@ -420,7 +486,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             twd_interpolator_value:
               data.race.boats[bKey].twdInterp.valHistory[boatIndex][0],
             twd_interpolator_time:
@@ -448,7 +517,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             tws_interpolator_value:
               data.race.boats[bKey].twsInterp.valHistory[boatIndex][0],
             tws_interpolator_time:
@@ -476,7 +548,10 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.boats[bKey].boatId,
+            boat_id: boats.find(
+              (x) => x.original_id === data.race.boats[bKey].boatId,
+            ).id,
+            boat_original_id: data.race.boats[bKey].boatId,
             vmg_interpolator_value:
               data.race.boats[bKey].vmgInterp.valHistory[boatIndex][0],
             vmg_interpolator_time:
@@ -590,40 +665,13 @@ const saveAmericasCup2021Data = async (data) => {
         });
       }
 
-      let teams = data.appConfig.teams.map((row) => {
-        return {
-          id: uuidv4(),
-          original_id: row.team_id,
-          race_id: raceId,
-          race_original_id: data.race.raceId,
-          name: row.name,
-          abbreviation: row.abbr,
-          flag_id: row.flag_id,
-          color: row.color,
-          boat_name: row?.boatmodel?.name,
-          top_mast_offset_x: row?.boatmodel?.topMastOffset.x,
-          top_mast_offset_y: row?.boatmodel?.topMastOffset.y,
-          top_mast_offset_z: row?.boatmodel?.topMastOffset.z,
-          default_bow_offset: row?.boatmodel?.defaultbowoffset,
-          jib_target: row?.boatmodel?.jibtarget,
-          main_sail_target: row?.boatmodel?.main_sail_target,
-          left_foil: row?.boatmodel?.left_foil,
-          right_foil: row?.boatmodel?.right_foil,
-        };
-      });
-
-      await db.americasCup2021Team.bulkCreate(teams, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
       let rankings = data.race.rankings.map((row) => {
         return {
           id: uuidv4(),
           race_id: raceId,
           race_original_id: data.race.raceId,
-          boat_id: row.boat_id,
+          boat_id: boats.find((x) => x.original_id === row.boat_id).id,
+          boat_original_id: row.boat_id,
           rank: row.rank,
           leg: row.leg,
           dtl: row.dtl,
@@ -650,7 +698,12 @@ const saveAmericasCup2021Data = async (data) => {
             id: uuidv4(),
             race_id: raceId,
             race_original_id: data.race.raceId,
-            boat_id: data.race.roundingTimesByMarkId[rkey][key].boatId,
+            boat_id: boats.find(
+              (x) =>
+                x.original_id ===
+                data.race.roundingTimesByMarkId[rkey][key].boatId,
+            ).id,
+            boat_original_id: data.race.roundingTimesByMarkId[rkey][key].boatId,
             packet_id: data.race.roundingTimesByMarkId[rkey][key].packetId,
             mark_number: data.race.roundingTimesByMarkId[rkey][key].markNumber,
             time: data.race.roundingTimesByMarkId[rkey][key].time,

@@ -16,6 +16,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       boat_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        primaryKey: true,
+      },
+      boat_original_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
