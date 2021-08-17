@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       race_status_interpolator_time: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {
