@@ -20,10 +20,12 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
+const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
 const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const gunzipFile = require('../utils/unzipFile');
+const s3Util = require('../services/s3Util');
 
 var router = express.Router();
 
@@ -112,7 +114,10 @@ router.post(
         resolve(true);
       });
     });
-    const isScraperExist = (data, source) => Object.keys(data).some((i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1);
+    const isScraperExist = (data, source) =>
+      Object.keys(data).some(
+        (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
+      );
     try {
       switch (true) {
         case isScraperExist(jsonData, TRACKER_MAP.isail):
@@ -284,6 +289,43 @@ router.post('/register-failed-url', async function (req, res) {
   } catch (err) {
     await transaction.rollback();
     errorMessage = databaseErrorHandler(err);
+  }
+
+  res.json({ success: errorMessage == '', errorMessage });
+});
+
+router.post('/america-cup-2021-save', async function (req, res) {
+  let errorMessage = '';
+  try {
+    let fileNames = await s3Util.listAllKeys(req.query.bucketName);
+    let count = 0;
+    while (count < fileNames.length) {
+      let rawData = await s3Util.getObject(
+        fileNames[count],
+        req.query.bucketName,
+      );
+      let destructuredFileName = fileNames[count].split('-');
+      let raceData = JSON.parse(rawData);
+      raceData.eventName = destructuredFileName[1];
+      raceData.raceName = destructuredFileName[2].replace('.json', '');
+      let race = await db.americasCup2021Race.findOne({
+        where: { original_id: raceData.race.raceId },
+      });
+      try {
+        if (!race) {
+          await saveAmericasCup2021Data(raceData);
+        } else {
+          console.log(`Race ${fileNames[count]} already exists`);
+        }
+      } catch (err) {
+        await transaction.rollback();
+        errorMessage += `\n${databaseErrorHandler(err)}`;
+      }
+
+      count++;
+    }
+  } catch (err) {
+    errorMessage += `\n${databaseErrorHandler(err)}`;
   }
 
   res.json({ success: errorMessage == '', errorMessage });
