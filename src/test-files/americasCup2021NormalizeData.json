@@ -1,5 +1,5 @@
 {
-    "AmericasCup2021Race":{
+    "AmericasCup2021Race":[{
         "id": "51c38686-b82d-4d03-843b-e4b9bb799ecf",
         "original_id": 11111,
         "event_name": "PRADA_ACWS",
@@ -22,7 +22,7 @@
         "scene_center_utm_lon": 304647.4607711397,
         "scene_center_utm_lat": 5926647.527339729,
         "sim_time": 62798.186215
-      },
+      }],
     "AmericasCup2021Boat":[
         {
           "id": "77005a1c-a9c6-41a2-b11a-29b6ed2e24fe",

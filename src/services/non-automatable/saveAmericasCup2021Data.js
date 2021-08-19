@@ -848,7 +848,7 @@ const saveAmericasCup2021Data = async (data) => {
     }
     if (data.race) {
       let normalizeData = {
-        AmericasCup2021Race: race,
+        AmericasCup2021Race: [race],
         AmericasCup2021Boat: boats,
         AmericasCup2021Position: boatPositions,
         AmericasCup2021Team: teams,

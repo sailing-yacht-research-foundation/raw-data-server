@@ -23,7 +23,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const SOURCE = 'AMERICASCUP2021';
-  const race = AmericasCup2021Race;
+  const race = AmericasCup2021Race[0];
   const positions = AmericasCup2021Position;
   const boats = AmericasCup2021Boat;
   const id = race.id;
