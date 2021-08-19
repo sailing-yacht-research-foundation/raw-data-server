@@ -3,17 +3,26 @@ const { v4: uuidv4, v4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
 const databaseErrorHandler = require('../../utils/databaseErrorHandler');
+const {
+  normalizeRace,
+} = require('../normalization/non-automatable/normalizeAmericascup2021');
 
 const saveAmericasCup2021Data = async (data) => {
   const transaction = await db.sequelize.transaction();
   try {
+    let race = {};
+    let boatPositions = [];
+    let boats = [];
+    let raceMetadatas;
+    let teams = [];
     if (data.race) {
       let raceId = uuidv4();
-      await db.americasCup2021Race.create({
+      race = {
         id: raceId,
         original_id: data.race.raceId,
         event_name: data.eventName,
         race_name: data.raceName,
+        file_name: data.fileName,
         terrain_config_location_lon: data.appConfig.terrainConfig.location.x,
         terrain_config_location_lat: data.appConfig.terrainConfig.location.y,
         boundary_center_set: data.race.boundaryCenterSet,
@@ -31,7 +40,8 @@ const saveAmericasCup2021Data = async (data) => {
         scene_center_utm_lon: data.race.sceneCenterUTM.x,
         scene_center_utm_lat: data.race.sceneCenterUTM.y,
         sim_time: data.race.simTime,
-      });
+      };
+      await db.americasCup2021Race.create(race);
 
       let raceStatus = data.race.raceStatusInterp.valHistory.map((row) => {
         return {
@@ -49,7 +59,7 @@ const saveAmericasCup2021Data = async (data) => {
         transaction,
       });
 
-      let teams = data.appConfig.teams.map((row) => {
+      teams = data.appConfig.teams.map((row) => {
         return {
           id: uuidv4(),
           original_id: row.team_id,
@@ -78,7 +88,7 @@ const saveAmericasCup2021Data = async (data) => {
       });
 
       let boatKeys = Object.keys(data.race.boats);
-      let boats = boatKeys.map((key) => {
+      boats = boatKeys.map((key) => {
         return {
           id: uuidv4(),
           race_id: raceId,
@@ -100,8 +110,6 @@ const saveAmericasCup2021Data = async (data) => {
         transaction,
       });
 
-      let boatPositions = [];
-
       boatKeys.map((bKey) => {
         for (const boatIndex in data.race.boats[bKey].headingIntep.valHistory) {
           let boatPosition = {
@@ -113,13 +121,13 @@ const saveAmericasCup2021Data = async (data) => {
             ).id,
             boat_original_id: data.race.boats[bKey].boatId,
             coordinate_interpolator_lon:
-              data.race.boats[bKey].coordIntep.xCerp.valHistory[boatIndex][0],
-            coordinate_interpolator_lon_time:
-              data.race.boats[bKey].coordIntep.xCerp.valHistory[boatIndex][1],
-            coordinate_interpolator_lat:
               data.race.boats[bKey].coordIntep.yCerp.valHistory[boatIndex][0],
-            coordinate_interpolator_lat_time:
+            coordinate_interpolator_lon_time:
               data.race.boats[bKey].coordIntep.yCerp.valHistory[boatIndex][1],
+            coordinate_interpolator_lat:
+              data.race.boats[bKey].coordIntep.xCerp.valHistory[boatIndex][0],
+            coordinate_interpolator_lat_time:
+              data.race.boats[bKey].coordIntep.xCerp.valHistory[boatIndex][1],
             heading_interpolator_value:
               data.race.boats[bKey].headingIntep.valHistory[boatIndex][0],
             heading_interpolator_time:
@@ -598,19 +606,19 @@ const saveAmericasCup2021Data = async (data) => {
             race_original_id: data.race.raceId,
             mark_id: data.race.buoys[key].markId,
             coordinate_interpolator_lon:
-              data.race.buoys[key].coordIntepolator.xCerp.valHistory[
+              data.race.buoys[key].coordIntepolator.yCerp.valHistory[
                 buoyIndex
               ][0],
             coordinate_interpolator_lon_time:
-              data.race.buoys[key].coordIntepolator.xCerp.valHistory[
+              data.race.buoys[key].coordIntepolator.yCerp.valHistory[
                 buoyIndex
               ][1],
             coordinate_interpolator_lat:
-              data.race.buoys[key].coordIntepolator.yCerp.valHistory[
+              data.race.buoys[key].coordIntepolator.xCerp.valHistory[
                 buoyIndex
               ][0],
             coordinate_interpolator_lat_time:
-              data.race.buoys[key].coordIntepolator.yCerp.valHistory[
+              data.race.buoys[key].coordIntepolator.xCerp.valHistory[
                 buoyIndex
               ][1],
             heading_interpolator_value:
@@ -769,19 +777,19 @@ const saveAmericasCup2021Data = async (data) => {
             race_original_id: data.race.raceId,
             wind_point_id: data.race.windPoints[wpKey].Id,
             coordinate_interpolator_lon:
-              data.race.windPoints[wpKey].coordIntepolator.xCerp.valHistory[
+              data.race.windPoints[wpKey].coordIntepolator.yCerp.valHistory[
                 i
               ][0],
             coordinate_interpolator_lon_time:
-              data.race.windPoints[wpKey].coordIntepolator.xCerp.valHistory[
+              data.race.windPoints[wpKey].coordIntepolator.yCerp.valHistory[
                 i
               ][1],
             coordinate_interpolator_lat:
-              data.race.windPoints[wpKey].coordIntepolator.yCerp.valHistory[
+              data.race.windPoints[wpKey].coordIntepolator.xCerp.valHistory[
                 i
               ][0],
             coordinate_interpolator_lat_time:
-              data.race.windPoints[wpKey].coordIntepolator.yCerp.valHistory[
+              data.race.windPoints[wpKey].coordIntepolator.xCerp.valHistory[
                 i
               ][1],
             heading_interpolator_value:
@@ -838,7 +846,16 @@ const saveAmericasCup2021Data = async (data) => {
         });
       }
     }
-
+    if (data.race) {
+      let normalizeData = {
+        AmericasCup2021Race: race,
+        AmericasCup2021Boat: boats,
+        AmericasCup2021Position: boatPositions,
+        AmericasCup2021Team: teams,
+        AmericasCup2021Model: [data.appConfig.defaultboatmodel.name],
+      };
+      raceMetadatas = await normalizeRace(normalizeData, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error.toString());
