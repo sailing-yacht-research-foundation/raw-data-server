@@ -2,6 +2,9 @@ const db = require('../../models');
 const saveAmericasCup2021Data = require('../non-automatable/saveAmericasCup2021Data');
 const data = require('../../test-files/americasCup2021.json');
 const mock = require('../../test-files/americasCup2021Mock');
+
+jest.setTimeout(90000);
+
 describe('Storing americascup2021 data to DB', () => {
   let createRace,
     createRaceStatus,
@@ -122,6 +125,7 @@ describe('Storing americascup2021 data to DB', () => {
     await db.americasCup2021WindPoint.destroy({ truncate: true });
     await db.americasCup2021BoundaryPacket.destroy({ truncate: true });
     await db.sequelize.close();
+    jest.restoreAllMocks();
   });
 
   it('should not save anything when empty data', async () => {

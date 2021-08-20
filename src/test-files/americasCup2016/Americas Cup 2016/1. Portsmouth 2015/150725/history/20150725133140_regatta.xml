@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RegattaConfig>
+  <RegattaID>23</RegattaID>
+  <RegattaName>Portsmouth World Series 2015</RegattaName>
+  <CourseName>Portsmouth</CourseName>
+  <CentralLatitude>50.780111</CentralLatitude>
+  <CentralLongitude>-1.091612</CentralLongitude>
+  <CentralAltitude>0.00</CentralAltitude>
+  <UtcOffset>1</UtcOffset>
+  <MagneticVariation>-1.06</MagneticVariation>
+  <ShorelineName>portsmouth_shoreline</ShorelineName>
+</RegattaConfig>

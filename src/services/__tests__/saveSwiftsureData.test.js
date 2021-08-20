@@ -1,10 +1,10 @@
-const db = require('../../../models');
-const normalizeObj = require('../../normalization/normalizeSwiftsure');
+const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeSwiftsure');
 const normalizeSpy = jest
   .spyOn(normalizeObj, 'normalizeRace')
   .mockImplementation(() => Promise.resolve({ id: '123' }));
-const saveSwiftsureData = require('../../non-automatable/saveSwiftsureData');
-const jsonData = require('../../../test-files/swiftsure.json');
+const saveSwiftsureData = require('../non-automatable/saveSwiftsureData');
+const jsonData = require('../../test-files/swiftsure.json');
 
 describe('Storing swiftsure data to DB', () => {
   const bulkCreateSpies = {};

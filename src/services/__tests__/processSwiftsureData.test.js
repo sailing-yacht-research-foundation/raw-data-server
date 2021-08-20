@@ -1,16 +1,16 @@
-const db = require('../../../models');
+const db = require('../../models');
 const {
   getRaces,
   getObjectToRaceMapping,
   processSwiftsureData,
-} = require('../../non-automatable/processSwiftsureData');
-const normalizeObj = require('../../normalization/normalizeSwiftsure');
+} = require('../non-automatable/processSwiftsureData');
+const normalizeObj = require('../normalization/normalizeSwiftsure');
 jest
   .spyOn(normalizeObj, 'normalizeRace')
   .mockImplementation(() => Promise.resolve());
-const saveSwiftsureData = require('../../non-automatable/saveSwiftsureData');
-const uploadUtil = require('../../uploadUtil');
-const jsonData = require('../../../test-files/swiftsure.json');
+const saveSwiftsureData = require('../non-automatable/saveSwiftsureData');
+const uploadUtil = require('../uploadUtil');
+const jsonData = require('../../test-files/swiftsure.json');
 
 describe('Processing non-existent Swiftsure Data from DB to Parquet', () => {
   beforeAll(async () => {
