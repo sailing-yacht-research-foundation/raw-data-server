@@ -81,12 +81,6 @@ const scraperTestMappings = [
     raceTable: 'SwiftsureRace',
     source: 'SWIFTSURE',
   },
-  {
-    filename: 'non-automatable/normalizeAmericascup2021',
-    testData: 'americasCup2021NormalizeData.json',
-    raceTable: 'AmericasCup2021Race',
-    source: 'AMERICASCUP2021',
-  },
 ];
 
 describe('Normalization test', () => {

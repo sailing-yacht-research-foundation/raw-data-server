@@ -73,34 +73,10 @@ const normalizeRace = async (
   const endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
-    id,
-    name,
-    event,
-    SOURCE,
-    url,
-    startTime,
-    endTime,
-    startPoint,
-    endPoint,
-    boundingBox,
-    roughLength,
-    boatsToSortedPositions,
-    boatNames,
-    boatModels,
-    identifiers,
-    handicapRules,
-    unstructuredText,
-  );
   const tracksGeojson = JSON.stringify(
     allPositionsToFeatureCollection(boatsToSortedPositions),
   );
-  await db.readyAboutRaceMetadata.create(raceMetadata, {
-    fields: Object.keys(raceMetadata),
-    transaction,
-  });
   await uploadGeoJsonToS3(race.id, tracksGeojson, SOURCE, transaction);
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

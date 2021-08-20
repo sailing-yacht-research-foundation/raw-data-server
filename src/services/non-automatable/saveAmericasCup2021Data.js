@@ -853,7 +853,7 @@ const saveAmericasCup2021Data = async (data) => {
         AmericasCup2021Team: teams,
         AmericasCup2021Model: [data.appConfig.defaultboatmodel.name],
       };
-      raceMetadatas = await normalizeRace(normalizeData, transaction);
+      await normalizeRace(normalizeData, transaction);
     }
     await transaction.commit();
   } catch (error) {
