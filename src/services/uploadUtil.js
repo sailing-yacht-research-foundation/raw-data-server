@@ -72,6 +72,7 @@ const deleteObjectInS3 = async (params) => {
 };
 
 module.exports = {
+  s3,
   uploadFileToS3,
   uploadGeoJsonToS3,
   uploadDataToS3,
