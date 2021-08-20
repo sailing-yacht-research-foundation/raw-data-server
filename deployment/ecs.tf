@@ -39,7 +39,7 @@ resource "aws_ecs_service" "rds_service" {
   }
 
   network_configuration {
-    subnets          = aws_default_subnet.default_subnet.*.id
+    subnets          = aws_subnet.public_subnet.*.id
     assign_public_ip = true
     security_groups  = [aws_security_group.service_security_group.id]
   }
@@ -67,6 +67,9 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "AWS_S3_ACCESS_KEY_ID", "value": "${var.s3_access_key_id}" },
         { "name": "AWS_S3_SECRET_ACCESS_KEY", "value": "${var.s3_secret_key}" },
         { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" },
+        { "name": "ES_HOST", "value": "${var.es_host}" },
+        { "name": "AWS_GEOJSON_S3_BUCKET", "value": "${var.geojson_s3_bucket}" },
+        { "name": "AWS_YELLOWBRICK_KML_S3_BUCKET", "value": "${var.yellowbrick_kml_s3_bucket}" },
         { "name": "MQ_HOST", "value": "${var.mq_host}" },
         { "name": "MQ_PORT", "value": "${var.mq_port}" },
         { "name": "MQ_USER", "value": "${var.mq_user}" },
@@ -82,8 +85,8 @@ resource "aws_ecs_task_definition" "rds_task" {
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "memory": 256,
-      "cpu": 128
+      "memory": 6144,
+      "cpu": 2048
     },
     {
       "name": "rds-db",
@@ -102,8 +105,8 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "MYSQL_ROOT_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" }
       ],
       "command": ["--max_allowed_packet=100M"],
-      "memory": 256,
-      "cpu": 128,
+      "memory": 6144,
+      "cpu": 2048,
       "mountPoints": [
           {
               "containerPath": "/var/lib/mysql",
@@ -113,10 +116,10 @@ resource "aws_ecs_task_definition" "rds_task" {
     }
   ]
   DEFINITION
-  requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
+  requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 512         # Specifying the memory our container requires
-  cpu                      = 256         # Specifying the CPU our container requires
+  memory                   = 12288       # Specifying the memory our container requires
+  cpu                      = 4096         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
   volume {
@@ -136,11 +139,14 @@ resource "aws_ecs_task_definition" "rds_task" {
 }
 
 resource "aws_security_group" "service_security_group" {
+  vpc_id = aws_vpc.syrf-vpc.id
+
+
   ingress {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
-    # Only allowing traffic in from the load balancer security group
+    # Only allowing traffic in from the load balancer security #group
     security_groups = [aws_security_group.load_balancer_security_group.id]
   }
 
@@ -154,6 +160,20 @@ resource "aws_security_group" "service_security_group" {
   ingress {
     from_port   = 3306
     to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 61613
+    to_port     = 61613
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
