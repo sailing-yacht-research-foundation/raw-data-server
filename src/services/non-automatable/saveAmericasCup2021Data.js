@@ -22,7 +22,6 @@ const saveAmericasCup2021Data = async (data) => {
         original_id: data.race.raceId,
         event_name: data.eventName,
         race_name: data.raceName,
-        file_name: data.fileName,
         terrain_config_location_lon: data.appConfig.terrainConfig.location.x,
         terrain_config_location_lat: data.appConfig.terrainConfig.location.y,
         boundary_center_set: data.race.boundaryCenterSet,

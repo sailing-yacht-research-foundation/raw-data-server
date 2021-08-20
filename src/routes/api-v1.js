@@ -308,7 +308,6 @@ router.post('/america-cup-2021-save', async function (req, res) {
       let raceData = JSON.parse(rawData);
       raceData.eventName = destructuredFileName[1];
       raceData.raceName = destructuredFileName[2].replace('.json', '');
-      raceData.fileName = fileNames[count];
       let race = await db.americasCup2021Race.findOne({
         where: { original_id: raceData.race.raceId },
       });

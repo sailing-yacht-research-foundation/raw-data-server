@@ -19,10 +19,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      file_name: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
       terrain_config_location_lon: {
         type: Sequelize.TEXT,
         allowNull: true,
