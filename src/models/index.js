@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
+const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -675,6 +676,15 @@ db.americasCup2021WindPoint =
     Sequelize,
   );
 // === End of Americascup2021 ===
+
+// === Americas Cup ===
+for (key of AMERICAS_CUP_TABLE_SUFFIX) {
+  db[`americascup${key}`] = require(`./americascup/americascup${key}.model`)(
+    sequelize,
+    Sequelize,
+  );
+};
+// === End of Americas Cup ===
 
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
