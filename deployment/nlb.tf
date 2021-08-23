@@ -1,7 +1,7 @@
 resource "aws_lb" "network_load_balancer" {
   name               = "Raw-Data-Server-NLB"
   load_balancer_type = "network"
-  subnets            = aws_default_subnet.default_subnet.*.id
+  subnets            = aws_subnet.public_subnet.*.id
 }
 
 
@@ -10,7 +10,7 @@ resource "aws_lb_target_group" "target_group_db" {
   port        = 3306
   protocol    = "TCP"
   target_type = "ip"
-  vpc_id      = aws_default_vpc.default_vpc.id
+  vpc_id      = aws_vpc.syrf-vpc.id
 }
 
 resource "aws_lb_listener" "listener_db" {

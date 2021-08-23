@@ -1,11 +1,12 @@
 resource "aws_alb" "application_load_balancer" {
   name               = "Raw-Data-Server-LB"
   load_balancer_type = "application"
-  subnets            = aws_default_subnet.default_subnet.*.id
+  subnets            = aws_subnet.public_subnet.*.id
   security_groups    = [aws_security_group.load_balancer_security_group.id]
 }
 
 resource "aws_security_group" "load_balancer_security_group" {
+  vpc_id = aws_vpc.syrf-vpc.id
   ingress {
     from_port   = 80 # Allowing traffic in from port 80
     to_port     = 80
@@ -20,6 +21,7 @@ resource "aws_security_group" "load_balancer_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+
   egress {
     from_port   = 0             # Allowing any incoming port
     to_port     = 0             # Allowing any outgoing port
@@ -33,7 +35,7 @@ resource "aws_lb_target_group" "target_group" {
   port        = 80
   protocol    = "HTTP"
   target_type = "ip"
-  vpc_id      = aws_default_vpc.default_vpc.id
+  vpc_id      = aws_vpc.syrf-vpc.id
   health_check {
     matcher  = "200,301,302"
     path     = "/"
