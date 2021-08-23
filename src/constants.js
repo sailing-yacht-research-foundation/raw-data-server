@@ -16,12 +16,15 @@ const TRACKER_MAP = {
   swiftsure: 'swiftsure',
 };
 
+const AMERICAS_CUP_TABLE_SUFFIX = ['AvgWind', 'Boat', 'BoatShape', 'CompoundMark', 'CourseLimit', 'Event', 'Mark', 'Race', 'Regatta', 'Position'];
+
 const SAVE_DB_POSITION_CHUNK_COUNT = 10000;
 const SAVE_DB_CSV_CHUNK_COUNT = 50;
 
 module.exports = {
   TEMPORARY_FOLDER,
   TRACKER_MAP,
+  AMERICAS_CUP_TABLE_SUFFIX,
   SAVE_DB_POSITION_CHUNK_COUNT,
   SAVE_DB_CSV_CHUNK_COUNT,
 };

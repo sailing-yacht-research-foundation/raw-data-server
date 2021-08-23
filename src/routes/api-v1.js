@@ -22,9 +22,10 @@ const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
 const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
 const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
+const saveAmericasCup2016Data = require('../services/non-automatable/saveAmericasCup2016Data');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
-const gunzipFile = require('../utils/unzipFile');
+const { gunzipFile } = require('../utils/unzipFile');
 const s3Util = require('../services/s3Util');
 
 var router = express.Router();
@@ -326,6 +327,20 @@ router.post('/america-cup-2021-save', async function (req, res) {
     }
   } catch (err) {
     errorMessage += `\n${databaseErrorHandler(err)}`;
+  }
+  res.json({ success: errorMessage == '', errorMessage });
+});
+
+router.post('/americas-cup-2016', async function (req, res) {
+  if (!req.body.bucketName && !req.body.fileName) {
+    res.status(400).json({ message: 'Must specify bucketName and fileName in body' });
+    return;
+  }
+  let errorMessage = '';
+  try {
+    saveAmericasCup2016Data(req.body.bucketName, req.body.fileName);
+  } catch (err) {
+    console.error(err);
   }
 
   res.json({ success: errorMessage == '', errorMessage });

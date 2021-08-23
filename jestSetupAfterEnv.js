@@ -3,6 +3,7 @@ jest.mock('aws-sdk', () => {
     upload: jest.fn().mockReturnThis(),
     deleteObject: jest.fn().mockReturnThis(),
     promise: jest.fn().mockResolvedValue({ Location: 'mockLocation' }),
+    getObject: jest.fn().mockResolvedValue({ createReadStream: jest.fn() }),
   };
   return { S3: jest.fn(() => mockS3Instance) };
 });
