@@ -1,4 +1,9 @@
 const zlib = require('zlib');
+const path = require('path');
+const { pipeline } = require('stream');
+const { promisify } = require('util');
+const fs = require('fs');
+const extract = require('extract-zip');
 
 async function gunzipFile(sourceStream, destinationStream) {
   //   const fileContents = fs.createReadStream(sourcePath);
@@ -20,4 +25,32 @@ async function gunzipFile(sourceStream, destinationStream) {
   });
 }
 
-module.exports = gunzipFile;
+async function downloadAndExtract({ s3, bucketName, fileName, targetDir }) {
+  let writeStream;
+  try {
+    const options = {
+      Bucket: bucketName,
+      Key: fileName,
+    };
+    const s3Object = await s3.getObject(options);
+    const sourceStream = s3Object.createReadStream();
+    const zipPath = path.join(targetDir, 'raw-data.zip');
+    writeStream = fs.createWriteStream(zipPath);
+    await promisify(pipeline)(sourceStream, writeStream);
+    await unzipFile(zipPath, targetDir);
+  } finally {
+    if (writeStream) {
+      writeStream.destroy();
+    }
+  }
+}
+
+async function unzipFile(zipPath, targetDir) {
+  await extract(zipPath, { dir: targetDir })
+}
+
+module.exports = {
+  gunzipFile,
+  downloadAndExtract,
+  unzipFile,
+}

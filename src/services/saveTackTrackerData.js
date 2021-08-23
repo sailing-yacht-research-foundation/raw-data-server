@@ -3,11 +3,14 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeTackTracker');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveTackTrackerData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadatas;
   try {
     if (data.TackTrackerRace) {
       raceUrl = data.TackTrackerRace.map((row) => {
@@ -55,8 +58,9 @@ const saveTackTrackerData = async (data) => {
       });
     }
     if (data.TackTrackerPosition) {
-      while (data.TackTrackerPosition.length > 0) {
-        const splicedArray = data.TackTrackerPosition.splice(
+      const positions = data.TackTrackerPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -74,8 +78,12 @@ const saveTackTrackerData = async (data) => {
         transaction,
       });
     }
+    if (data.TackTrackerRace) {
+      raceMetadatas = await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
@@ -112,6 +120,11 @@ const saveTackTrackerData = async (data) => {
     }
   }
 
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
+    }
+  }
   return errorMessage;
 };
 

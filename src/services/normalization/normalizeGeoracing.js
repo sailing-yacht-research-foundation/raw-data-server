@@ -11,7 +11,7 @@ const {
   createTurfPoint,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadFileToS3');
+const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
   {
@@ -27,6 +27,7 @@ const normalizeRace = async (
 ) => {
   const GEORACING_SOURCE = 'GEORACING';
   const eventObj = GeoracingEvent[0];
+  const raceMetadatas = [];
 
   let actorPositions = GeoracingPosition?.filter(
     (p) => p.trackable_type === 'actor' && !!p.lat && !!p.lon && !!p.timestamp,
@@ -210,7 +211,9 @@ const normalizeRace = async (
       GEORACING_SOURCE,
       transaction,
     );
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

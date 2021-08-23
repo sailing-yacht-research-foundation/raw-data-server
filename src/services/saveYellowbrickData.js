@@ -3,11 +3,16 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const uploadUtil = require('./uploadUtil');
+const { normalizeRace } = require('./normalization/normalizeYellowbrick');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const KML_S3_BUCKET = process.env.AWS_YELLOWBRICK_KML_S3_BUCKET;
 
 const saveYellowbrickData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadata;
   try {
     if (data.YellowbrickRace) {
       raceUrl = data.YellowbrickRace.map((row) => {
@@ -44,11 +49,9 @@ const saveYellowbrickData = async (data) => {
       });
     }
     if (data.YellowbrickPosition) {
-      while (data.YellowbrickPosition.length > 0) {
-        const splicedArray = data.YellowbrickPosition.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+      const positions = data.YellowbrickPosition.slice(); // clone array to avoid mutating the data
+      while (positions.length > 0) {
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.yellowbrickPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -70,8 +73,21 @@ const saveYellowbrickData = async (data) => {
         transaction,
       });
     }
+    if (data.YellowbrickKml) {
+      for (const kmlObj of data.YellowbrickKml) {
+        await uploadUtil.uploadDataToS3({
+          Bucket: KML_S3_BUCKET,
+          Key: `${kmlObj.id}.kml`,
+          Body: kmlObj.data,
+        });
+      }
+    }
+    if (data.YellowbrickRace) {
+      raceMetadata = await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
@@ -108,6 +124,7 @@ const saveYellowbrickData = async (data) => {
     }
   }
 
+  await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 

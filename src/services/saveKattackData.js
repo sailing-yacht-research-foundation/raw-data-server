@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKattack');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveKattackData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadata;
   try {
     if (data.KattackRace) {
       raceUrl = data.KattackRace.map((row) => {
@@ -56,7 +58,7 @@ const saveKattackData = async (data) => {
       });
     }
     if (data.KattackRace) {
-      await normalizeRace(data, transaction);
+      raceMetadata = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -97,6 +99,7 @@ const saveKattackData = async (data) => {
     }
   }
 
+  await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 

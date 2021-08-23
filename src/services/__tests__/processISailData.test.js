@@ -11,11 +11,13 @@ const {
   getResults,
   processISailData,
 } = require('../processISailData');
+const normalizeObj = require('../normalization/normalizeISail');
+jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve());
 const saveISailData = require('../saveISailData');
-const uploadFileToS3 = require('../uploadFileToS3');
+const uploadUtil = require('../uploadUtil');
 const jsonData = require('../../test-files/iSail.json');
-
-jest.mock('../uploadFileToS3', () => jest.fn());
 
 describe('Processing non-existent iSail Data from DB to Parquet', () => {
   beforeAll(async () => {
@@ -34,6 +36,8 @@ describe('Processing non-existent iSail Data from DB to Parquet', () => {
 });
 
 describe('Processing exist iSail Data from DB to Parquet', () => {
+  const eventID = jsonData.iSailEvent[0].id;
+
   beforeAll(async () => {
     await saveISailData(jsonData);
   });
@@ -56,58 +60,58 @@ describe('Processing exist iSail Data from DB to Parquet', () => {
     await db.sequelize.close();
   });
   it('should get event participants correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const participants = await getParticipants([eventID]);
+    const expectedLength = jsonData.iSailEventParticipant.filter((p) => p.event === eventID).length;
     expect(participants.size).toEqual(1);
-    expect(participants.get(eventID).length).toEqual(4);
+    expect(participants.get(eventID).length).toEqual(expectedLength);
   });
   it('should get event track data correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const trackDatas = await getEventTrackData([eventID]);
+    const expectedTracksData = jsonData.iSailEventTracksData.find((p) => p.event === eventID);
     expect(trackDatas.get(eventID)).toBeDefined();
-    expect(trackDatas.get(eventID)).toHaveProperty('min_lon', '4.639424');
+    expect(trackDatas.get(eventID)).toHaveProperty('min_lon', expectedTracksData.min_lon);
   });
   it('should get event tracks correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const tracks = await getEventTracks([eventID]);
+    const expectedLength = jsonData.iSailTrack.filter((p) => p.event === eventID).length;
     expect(tracks.size).toEqual(1);
-    expect(tracks.get(eventID).length).toEqual(4);
+    expect(tracks.get(eventID).length).toEqual(expectedLength);
   });
   it('should get roundings correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const roundings = await getRoundings([eventID]);
+    const expectedLength = jsonData.iSailRounding.filter((p) => p.event === eventID).length;
     expect(roundings.size).toEqual(1);
-    expect(roundings.get(eventID).length).toEqual(1);
+    expect(roundings.get(eventID).length).toEqual(expectedLength);
   });
   it('should get races correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const races = await getRaces([eventID]);
+    const expectedLength = jsonData.iSailRace.filter((p) => p.event === eventID).length;
     expect(races.size).toEqual(1);
-    expect(races.get(eventID).length).toEqual(2);
+    expect(races.get(eventID).length).toEqual(expectedLength);
   });
   it('should get marks correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const marks = await getMarks([eventID]);
+    const expectedLength = jsonData.iSailMark.filter((p) => p.event === eventID).length;
     expect(marks.size).toEqual(1);
-    expect(marks.get(eventID).length).toEqual(1);
+    expect(marks.get(eventID).length).toEqual(expectedLength);
   });
   it('should get startlines correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const startlines = await getStartlines([eventID]);
+    const expectedLength = jsonData.iSailStartline.filter((p) => p.event === eventID).length;
     expect(startlines.size).toEqual(1);
-    expect(startlines.get(eventID).length).toEqual(1);
+    expect(startlines.get(eventID).length).toEqual(expectedLength);
   });
   it('should get course marks correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const courseMarks = await getCourseMarks([eventID]);
+    const expectedLength = jsonData.iSailCourseMark.filter((p) => p.event === eventID).length;
     expect(courseMarks.size).toEqual(1);
-    expect(courseMarks.get(eventID).length).toEqual(1);
+    expect(courseMarks.get(eventID).length).toEqual(expectedLength);
   });
   it('should get results correctly', async () => {
-    const eventID = 'd451063e-b576-4b23-8638-457e68cb6c26';
     const results = await getResults([eventID]);
+    const expectedLength = jsonData.iSailResult.filter((p) => p.event === eventID).length;
     expect(results.size).toEqual(1);
-    expect(results.get(eventID).length).toEqual(1);
+    expect(results.get(eventID).length).toEqual(expectedLength);
   });
 
   it('should fetch data from db, save a parquet file, and calls upload to s3', async () => {
@@ -115,12 +119,12 @@ describe('Processing exist iSail Data from DB to Parquet', () => {
       mainUrl: 'https://awsbucket.com/thebucket/isail/main.parquet',
       positionUrl: 'https://awsbucket.com/thebucket/isail/position.parquet',
     };
-    uploadFileToS3
+    const uploadSpy = jest.spyOn(uploadUtil, 'uploadFileToS3')
       .mockResolvedValueOnce(mockS3UploadResultPath.mainUrl)
       .mockResolvedValueOnce(mockS3UploadResultPath.positionUrl);
 
     const fileUrl = await processISailData();
-    expect(uploadFileToS3).toHaveBeenCalledTimes(2);
+    expect(uploadSpy).toHaveBeenCalledTimes(2);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
 });

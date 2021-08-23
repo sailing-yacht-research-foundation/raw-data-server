@@ -9,7 +9,7 @@ const {
   tackTrackerPosition,
 } = require('../schemas/parquets/tackTracker');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getRegattas = async () => {
   const regattas = await db.tackTrackerRegatta.findAll({ raw: true });
@@ -195,11 +195,11 @@ const processTackTrackerData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `tacktracker/year=${currentYear}/month=${currentMonth}/tacktracker_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `tacktracker/year=${currentYear}/month=${currentMonth}/tacktrackerPosition_${fullDateFormat}.parquet`,
   );

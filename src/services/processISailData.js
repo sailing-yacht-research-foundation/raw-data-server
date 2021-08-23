@@ -6,7 +6,7 @@ const db = require('../models');
 const Op = db.Sequelize.Op;
 const { iSailCombined, iSailPosition } = require('../schemas/parquets/iSail');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getParticipants = async (eventIDs) => {
   const participants = await db.iSailEventParticipant.findAll({
@@ -222,11 +222,11 @@ const processISailData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `iSail/year=${currentYear}/month=${currentMonth}/isail_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `iSail/year=${currentYear}/month=${currentMonth}/isailPosition_${fullDateFormat}.parquet`,
   );

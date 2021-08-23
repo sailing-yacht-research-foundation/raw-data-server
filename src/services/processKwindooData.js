@@ -9,7 +9,7 @@ const {
   kwindooPosition,
 } = require('../schemas/parquets/kwindoo');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getRegattas = async () => {
   const regattas = await db.kwindooRegatta.findAll({ raw: true });
@@ -264,11 +264,11 @@ const processKwindooData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `kwindoo/year=${currentYear}/month=${currentMonth}/kwindoo_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `kwindoo/year=${currentYear}/month=${currentMonth}/kwindooPosition_${fullDateFormat}.parquet`,
   );

@@ -24,15 +24,3 @@ exports.indexRace = (id, raceData) =>
       },
     );
   });
-
-exports.searchDocumentById = async (id) => {
-  const resp = await elasticsearchclient.get({
-    index: 'races',
-    type: 'race',
-    id,
-  });
-  if (!resp.found) {
-    return null;
-  }
-  return resp._source;
-};

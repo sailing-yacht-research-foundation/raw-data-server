@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeTracTrac');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveTracTracData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadatas;
   try {
     if (data.TracTracRace) {
       raceUrl = data.TracTracRace.map((row) => {
@@ -124,9 +126,11 @@ const saveTracTracData = async (data) => {
         });
       }
     }
-    await normalizeRace(data, transaction);
+
+    if (data.TracTracRace) {
+      raceMetadatas = await normalizeRace(data, transaction);
+    }
     await transaction.commit();
-    console.log('Finished saving data');
   } catch (error) {
     console.log(error.toString());
     await transaction.rollback();
@@ -165,6 +169,11 @@ const saveTracTracData = async (data) => {
     }
   }
 
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
+    }
+  }
   return errorMessage;
 };
 

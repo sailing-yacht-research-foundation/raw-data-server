@@ -9,7 +9,7 @@ const {
   metasailCombined,
 } = require('../schemas/parquets/metasail');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getEvents = async () => {
   const events = await db.metasailEvent.findAll({ raw: true });
@@ -151,11 +151,11 @@ const processMetasailData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `metasail/year=${currentYear}/month=${currentMonth}/metasail_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `metasail/year=${currentYear}/month=${currentMonth}/metasailPosition_${fullDateFormat}.parquet`,
   );

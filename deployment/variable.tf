@@ -24,31 +24,31 @@ variable "app_container_port" {
 }
 
 variable "s3_access_key_id" {
-  type    = string
+  type = string
 }
 
 variable "s3_secret_key" {
-  type    = string
+  type = string
 }
 
 variable "s3_bucket" {
-  type    = string
+  type = string
 }
 
 variable "mq_host" {
-  type    = string
+  type = string
 }
 
 variable "mq_port" {
-  type    = string
+  type = string
 }
 
 variable "mq_user" {
-  type    = string
+  type = string
 }
 
 variable "mq_password" {
-  type    = string
+  type = string
 }
 
 variable "mq_topic" {
@@ -57,4 +57,18 @@ variable "mq_topic" {
 
 variable "mq_timeout" {
   default = 2700000
+}
+
+variable "es_host" {
+  type = string
+}
+
+variable "geojson_s3_bucket" {
+  default = "syrf-rawdataserver-geojson-staging"
+  type    = string
+}
+
+variable "yellowbrick_kml_s3_bucket" {
+  default = "syrf-rawdataserver-yellowbrick-kml-staging"
+  type    = string
 }

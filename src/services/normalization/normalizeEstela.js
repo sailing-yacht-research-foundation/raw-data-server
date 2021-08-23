@@ -10,7 +10,7 @@ const {
   createTurfPoint,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadFileToS3');
+const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
   { EstelaRace, EstelaPosition, EstelaDorsal, EstelaBuoy },
@@ -103,6 +103,7 @@ const normalizeRace = async (
     transaction,
   });
   await uploadGeoJsonToS3(race.id, tracksGeojson, ESTELA_SOURCE, transaction);
+  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

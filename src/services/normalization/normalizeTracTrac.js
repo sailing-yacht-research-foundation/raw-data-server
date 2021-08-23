@@ -10,7 +10,7 @@ const {
   createRace,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadFileToS3');
+const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
   {
@@ -23,6 +23,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const TRACTRAC_SOURCE = 'TRACTRAC';
+  const raceMetadatas = [];
 
   if (
     !TracTracRace ||
@@ -123,7 +124,9 @@ const normalizeRace = async (
       TRACTRAC_SOURCE,
       transaction,
     );
+    raceMetadatas.push(raceMetadata);
   }
+  return raceMetadatas;
 };
 
 exports.normalizeRace = normalizeRace;

@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
+const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
 const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   host: dbConfig.HOST,
@@ -494,15 +495,208 @@ db.tackTrackerSuccessfulUrl =
   require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
 // === End of TackTracker ===
 
+// === Swiftsure ===
+db.swiftsureBoat = require('./swiftsure/swiftsureBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureLine = require('./swiftsure/swiftsureLine.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureLink = require('./swiftsure/swiftsureLink.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureMark = require('./swiftsure/swiftsureMark.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsurePoint = require('./swiftsure/swiftsurePoint.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsurePosition = require('./swiftsure/swiftsurePosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureRace = require('./swiftsure/swiftsureRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureSponsor = require('./swiftsure/swiftsureSponsor.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureFailedUrl = require('./swiftsure/swiftsureFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.swiftsureSuccessfulUrl = require('./swiftsure/swiftsureSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Swiftsure ===
+
+// === Americascup2021 ===
+db.americasCup2021Boat = require('./americascup2021/americasCup2021Boat.model')(
+  sequelize,
+  Sequelize,
+);
+db.americasCup2021BoatLeftFoilPosition =
+  require('./americascup2021/americasCup2021BoatLeftFoilPosition.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatLeftFoilState =
+  require('./americascup2021/americasCup2021BoatLeftFoilState.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatLeg =
+  require('./americascup2021/americasCup2021BoatLeg.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatPenalty =
+  require('./americascup2021/americasCup2021BoatPenalty.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatPosition =
+  require('./americascup2021/americasCup2021BoatPosition.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatProtest =
+  require('./americascup2021/americasCup2021BoatProtest.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatRank =
+  require('./americascup2021/americasCup2021BoatRank.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatRightFoilPosition =
+  require('./americascup2021/americasCup2021BoatRightFoilPosition.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatRightFoilState =
+  require('./americascup2021/americasCup2021BoatRightFoilState.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatRudderAngle =
+  require('./americascup2021/americasCup2021BoatRudderAngle.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatSow =
+  require('./americascup2021/americasCup2021BoatSow.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatStatus =
+  require('./americascup2021/americasCup2021BoatStatus.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatTwd =
+  require('./americascup2021/americasCup2021BoatTwd.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatTws =
+  require('./americascup2021/americasCup2021BoatTws.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoatVmg =
+  require('./americascup2021/americasCup2021BoatVmg.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoundaryPacket =
+  require('./americascup2021/americasCup2021BoundaryPacket.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BoundaryPacket =
+  require('./americascup2021/americasCup2021BoundaryPacket.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021Buoy = require('./americascup2021/americasCup2021Buoy.model')(
+  sequelize,
+  Sequelize,
+);
+db.americasCup2021BuoyPosition =
+  require('./americascup2021/americasCup2021BuoyPosition.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021BuoyPositionState =
+  require('./americascup2021/americasCup2021BuoyPositionState.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021Race = require('./americascup2021/americasCup2021Race.model')(
+  sequelize,
+  Sequelize,
+);
+db.americasCup2021RaceStatus =
+  require('./americascup2021/americasCup2021RaceStatus.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021Ranking =
+  require('./americascup2021/americasCup2021Ranking.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021RoundingTime =
+  require('./americascup2021/americasCup2021RoundingTime.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021Team = require('./americascup2021/americasCup2021Team.model')(
+  sequelize,
+  Sequelize,
+);
+db.americasCup2021WindData =
+  require('./americascup2021/americasCup2021WindData.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCup2021WindPoint =
+  require('./americascup2021/americasCup2021WindPoint.model')(
+    sequelize,
+    Sequelize,
+  );
+// === End of Americascup2021 ===
+
+// === Americas Cup ===
+for (key of AMERICAS_CUP_TABLE_SUFFIX) {
+  db[`americascup${key}`] = require(`./americascup/americascup${key}.model`)(
+    sequelize,
+    Sequelize,
+  );
+};
+// === End of Americas Cup ===
+
 // === Normalized Table ===
-db.readyAboutRaceMetadata = require('./normalizedTable/readyAboutRaceMetadata.model')(
-  sequelize,
-  Sequelize,
-);
-db.readyAboutTrackGeoJsonLookup = require('./normalizedTable/readyAboutTrackGeoJsonLookup.model')(
-  sequelize,
-  Sequelize,
-);
+db.readyAboutRaceMetadata =
+  require('./normalizedTable/readyAboutRaceMetadata.model')(
+    sequelize,
+    Sequelize,
+  );
+db.readyAboutTrackGeoJsonLookup =
+  require('./normalizedTable/readyAboutTrackGeoJsonLookup.model')(
+    sequelize,
+    Sequelize,
+  );
 // === End of Normalized Table ===
 
 // === Live Data Server ===

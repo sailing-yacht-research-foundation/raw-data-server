@@ -8,4 +8,5 @@ module.exports = {
     '<rootDir>/src/models',
   ],
   setupFiles: ['dotenv/config'],
+  setupFilesAfterEnv: ['./jestSetupAfterEnv']
 };

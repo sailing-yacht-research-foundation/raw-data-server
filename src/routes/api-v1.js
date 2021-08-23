@@ -20,9 +20,13 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
+const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
+const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
+const saveAmericasCup2016Data = require('../services/non-automatable/saveAmericasCup2016Data');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
-const gunzipFile = require('../utils/unzipFile');
+const { gunzipFile } = require('../utils/unzipFile');
+const s3Util = require('../services/s3Util');
 
 var router = express.Router();
 
@@ -76,6 +80,7 @@ router.post(
     let unzippedJsonPath = req.file.path;
 
     if (req.file.mimetype === 'application/gzip') {
+      console.log('Got gzip file');
       unzippedJsonPath = (await temp.open('georacing')).path;
       const sourceStream = fs.createReadStream(req.file.path);
       const writeStream = fs.createWriteStream(unzippedJsonPath);
@@ -110,43 +115,50 @@ router.post(
         resolve(true);
       });
     });
+    const isScraperExist = (data, source) =>
+      Object.keys(data).some(
+        (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
+      );
     try {
       switch (true) {
-        case Boolean(jsonData.iSailEvent):
+        case isScraperExist(jsonData, TRACKER_MAP.isail):
           saveISailData(jsonData);
           break;
-        case Boolean(jsonData.KattackRace):
+        case isScraperExist(jsonData, TRACKER_MAP.kattack):
           saveKattackData(jsonData);
           break;
-        case Boolean(jsonData.GeoracingEvent):
+        case isScraperExist(jsonData, TRACKER_MAP.georacing):
           saveGeoracingData(jsonData);
           break;
-        case Boolean(jsonData.TracTracRace):
+        case isScraperExist(jsonData, TRACKER_MAP.tractrac):
           saveTracTracData(jsonData);
           break;
-        case Boolean(jsonData.YellowbrickRace):
+        case isScraperExist(jsonData, TRACKER_MAP.yellowbrick):
           saveYellowbrickData(jsonData);
           break;
-        case Boolean(jsonData.KwindooRace):
+        case isScraperExist(jsonData, TRACKER_MAP.kwindoo):
           saveKwindooData(jsonData);
           break;
-        case Boolean(jsonData.BluewaterRace):
+        case isScraperExist(jsonData, TRACKER_MAP.bluewater):
           saveBluewaterData(jsonData);
           break;
-        case Boolean(jsonData.YachtBotRace):
+        case isScraperExist(jsonData, TRACKER_MAP.yachtbot):
           saveYachtBotData(jsonData);
           break;
-        case Boolean(jsonData.RaceQsEvent):
+        case isScraperExist(jsonData, TRACKER_MAP.raceqs):
           saveRaceQsData(jsonData);
           break;
-        case Boolean(jsonData.MetasailRace):
+        case isScraperExist(jsonData, TRACKER_MAP.metasail):
           saveMetasailData(jsonData);
           break;
-        case Boolean(jsonData.EstelaRace):
+        case isScraperExist(jsonData, TRACKER_MAP.estela):
           saveEstelaData(jsonData);
           break;
-        case Boolean(jsonData.TackTrackerRace):
+        case isScraperExist(jsonData, TRACKER_MAP.tacktracker):
           saveTackTrackerData(jsonData);
+          break;
+        case isScraperExist(jsonData, TRACKER_MAP.swiftsure):
+          saveSwiftsureData(jsonData);
           break;
       }
     } catch (err) {
@@ -278,6 +290,57 @@ router.post('/register-failed-url', async function (req, res) {
   } catch (err) {
     await transaction.rollback();
     errorMessage = databaseErrorHandler(err);
+  }
+
+  res.json({ success: errorMessage == '', errorMessage });
+});
+
+router.post('/america-cup-2021-save', async function (req, res) {
+  let errorMessage = '';
+  try {
+    let fileNames = await s3Util.listAllKeys(req.query.bucketName);
+    let count = 0;
+    while (count < fileNames.length) {
+      let rawData = await s3Util.getObject(
+        fileNames[count],
+        req.query.bucketName,
+      );
+      let destructuredFileName = fileNames[count].split('-');
+      let raceData = JSON.parse(rawData);
+      raceData.eventName = destructuredFileName[1];
+      raceData.raceName = destructuredFileName[2].replace('.json', '');
+      let race = await db.americasCup2021Race.findOne({
+        where: { original_id: raceData.race.raceId },
+      });
+      try {
+        if (!race) {
+          await saveAmericasCup2021Data(raceData);
+        } else {
+          console.log(`Race ${fileNames[count]} already exists`);
+        }
+      } catch (err) {
+        await transaction.rollback();
+        errorMessage += `\n${databaseErrorHandler(err)}`;
+      }
+
+      count++;
+    }
+  } catch (err) {
+    errorMessage += `\n${databaseErrorHandler(err)}`;
+  }
+  res.json({ success: errorMessage == '', errorMessage });
+});
+
+router.post('/americas-cup-2016', async function (req, res) {
+  if (!req.body.bucketName && !req.body.fileName) {
+    res.status(400).json({ message: 'Must specify bucketName and fileName in body' });
+    return;
+  }
+  let errorMessage = '';
+  try {
+    saveAmericasCup2016Data(req.body.bucketName, req.body.fileName);
+  } catch (err) {
+    console.error(err);
   }
 
   res.json({ success: errorMessage == '', errorMessage });
