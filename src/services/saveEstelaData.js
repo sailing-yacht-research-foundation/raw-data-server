@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeEstela');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveEstelaData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadata;
   try {
     if (data.EstelaRace) {
       raceUrl = data.EstelaRace.map((row) => {
@@ -76,7 +78,9 @@ const saveEstelaData = async (data) => {
       });
     }
 
-    await normalizeRace(data, transaction);
+    if (data.EstelaRace) {
+      raceMetadata = await normalizeRace(data, transaction);
+    }
     transaction.commit();
   } catch (error) {
     console.log(error);
@@ -118,6 +122,7 @@ const saveEstelaData = async (data) => {
     }
   }
 
+  await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 

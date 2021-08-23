@@ -1,11 +1,34 @@
+const axios = require('axios');
 const db = require('../../models');
+const normalizeObj = require('../normalization/normalizeTackTracker');
+const normalizeSpy = jest
+  .spyOn(normalizeObj, 'normalizeRace')
+  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
 const saveTackTrackerData = require('../saveTackTrackerData');
-
 const jsonData = require('../../test-files/tackTracker.json');
 
 describe('Storing TackTracker data to DB', () => {
+  let createRegatta,
+    createRace,
+    createBoat,
+    createDefault,
+    createFinish,
+    createMark,
+    createPosition,
+    createStart,
+    axiosPostSpy;
+
   beforeAll(async () => {
     await db.sequelize.sync();
+    createRegatta = jest.spyOn(db.tackTrackerRegatta, 'bulkCreate');
+    createRace = jest.spyOn(db.tackTrackerRace, 'bulkCreate');
+    createBoat = jest.spyOn(db.tackTrackerBoat, 'bulkCreate');
+    createDefault = jest.spyOn(db.tackTrackerDefault, 'bulkCreate');
+    createFinish = jest.spyOn(db.tackTrackerFinish, 'bulkCreate');
+    createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
+    createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
+    createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
+    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.tackTrackerRegatta.destroy({ truncate: true });
@@ -18,17 +41,15 @@ describe('Storing TackTracker data to DB', () => {
     await db.tackTrackerStart.destroy({ truncate: true });
     await db.tackTrackerFailedUrl.destroy({ truncate: true });
     await db.tackTrackerSuccessfulUrl.destroy({ truncate: true });
+    await db.readyAboutRaceMetadata.destroy({ truncate: true });
+    await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
     await db.sequelize.close();
   });
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should not save anything when empty data', async () => {
-    const createRegatta = jest.spyOn(db.tackTrackerRegatta, 'bulkCreate');
-    const createRace = jest.spyOn(db.tackTrackerRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.tackTrackerBoat, 'bulkCreate');
-    const createDefault = jest.spyOn(db.tackTrackerDefault, 'bulkCreate');
-    const createFinish = jest.spyOn(db.tackTrackerFinish, 'bulkCreate');
-    const createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
-    const createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
-    const createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
     await saveTackTrackerData({});
     expect(createRegatta).toHaveBeenCalledTimes(0);
     expect(createRace).toHaveBeenCalledTimes(0);
@@ -38,36 +59,45 @@ describe('Storing TackTracker data to DB', () => {
     expect(createMark).toHaveBeenCalledTimes(0);
     expect(createPosition).toHaveBeenCalledTimes(0);
     expect(createStart).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(normalizeSpy).toHaveBeenCalledTimes(0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
   });
   it('should save data correctly', async () => {
-    const createRegatta = jest.spyOn(db.tackTrackerRegatta, 'bulkCreate');
-    const createRace = jest.spyOn(db.tackTrackerRace, 'bulkCreate');
-    const createBoat = jest.spyOn(db.tackTrackerBoat, 'bulkCreate');
-    const createDefault = jest.spyOn(db.tackTrackerDefault, 'bulkCreate');
-    const createFinish = jest.spyOn(db.tackTrackerFinish, 'bulkCreate');
-    const createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
-    const createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
-    const createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
     await saveTackTrackerData(jsonData);
-    expect(createRegatta).toHaveBeenCalledTimes(1);
-    expect(createRace).toHaveBeenCalledTimes(1);
-    expect(createBoat).toHaveBeenCalledTimes(1);
-    expect(createDefault).toHaveBeenCalledTimes(1);
-    expect(createFinish).toHaveBeenCalledTimes(1);
-    expect(createMark).toHaveBeenCalledTimes(1);
-    expect(createPosition).toHaveBeenCalledTimes(1);
-    expect(createStart).toHaveBeenCalledTimes(1);
-  });
-  it('should throw error when one fails to execute', async () => {
-    const invalidData = Object.assign({}, jsonData);
-    invalidData.TackTrackerRace = [
-      ...invalidData.TackTrackerRace,
-      {
-        original_id: '8500587',
-        url: 'https://tacktracker.com/cloud/regattas/show/asd',
-      },
-    ];
-    const response = await saveTackTrackerData(invalidData);
-    expect(response).toEqual(expect.stringContaining('notNull Violation'));
+    expect(createRegatta).toHaveBeenCalledWith(
+      jsonData.TackTrackerRegatta,
+      expect.anything(),
+    );
+    expect(createRace).toHaveBeenCalledWith(
+      jsonData.TackTrackerRace,
+      expect.anything(),
+    );
+    expect(createBoat).toHaveBeenCalledWith(
+      jsonData.TackTrackerBoat,
+      expect.anything(),
+    );
+    expect(createDefault).toHaveBeenCalledWith(
+      jsonData.TackTrackerDefault,
+      expect.anything(),
+    );
+    expect(createFinish).toHaveBeenCalledWith(
+      jsonData.TackTrackerFinish,
+      expect.anything(),
+    );
+    expect(createMark).toHaveBeenCalledWith(
+      jsonData.TackTrackerMark,
+      expect.anything(),
+    );
+    expect(createPosition).toHaveBeenCalledWith(
+      jsonData.TackTrackerPosition,
+      expect.anything(),
+    );
+    expect(createStart).toHaveBeenCalledWith(
+      jsonData.TackTrackerStart,
+      expect.anything(),
+    );
+    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
+    expect(axiosPostSpy).toHaveBeenCalledTimes(1);
   });
 });

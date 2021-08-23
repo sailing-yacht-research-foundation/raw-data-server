@@ -9,7 +9,7 @@ const {
   bluewaterPosition,
 } = require('../schemas/parquets/bluewater');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getRaces = async () => {
   const races = await db.bluewaterRace.findAll({ raw: true });
@@ -229,11 +229,11 @@ const processBluewaterData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `bluewater/year=${currentYear}/month=${currentMonth}/bluewater_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `bluewater/year=${currentYear}/month=${currentMonth}/bluewaterPosition_${fullDateFormat}.parquet`,
   );

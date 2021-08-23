@@ -5,11 +5,11 @@ const { dataPointSubscriberAction } = require('./subscribers/dataPoint');
 
 const createServer = require('./server');
 const port = process.env.PORT || 3000;
-const mqHost = process.env.MQ_HOST || 'localhost';
+const mqHost = process.env.MQ_HOST;
 const mqPort = process.env.MQ_PORT || 61613;
 const mqUser = process.env.MQ_USER || 'guest';
 const mqPassword = process.env.MQ_PASSWORD || 'guest';
-const mqTimeout = process.env.MQ_TIMEOUT || 2700000;
+const mqTimeout = Number(process.env.MQ_TIMEOUT) || 2700000;
 const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
 
 (async () => {
@@ -27,11 +27,13 @@ const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
         action: dataPointSubscriberAction,
       },
     ];
-    const stompClient = createMQSubscriber(
-      { mqHost, mqPort, mqUser, mqPassword, mqTimeout },
-      onConnect,
-      subscriptions,
-    );
+    const stompClient = mqHost
+      ? createMQSubscriber(
+          { mqHost, mqPort, mqUser, mqPassword, mqTimeout },
+          onConnect,
+          subscriptions,
+        )
+      : null;
 
     const server = app.listen(port, () => {
       console.log(`Server has started! Listening on ${port}`);
@@ -39,7 +41,9 @@ const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
 
     const shutDown = () => {
       console.log('Signal received! Closing...');
-      stompClient.destroy();
+      if (stompClient !== null) {
+        stompClient.destroy();
+      }
       server.close(() => {
         console.log('Server has been closed!');
       });

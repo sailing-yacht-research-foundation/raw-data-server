@@ -3,11 +3,15 @@ const { v4: uuidv4 } = require('uuid');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
+const { normalizeRace } = require('./normalization/normalizeMetasail');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveMetasailData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let eventUrl = [];
+  let metasailPositions;
+  let raceMetadatas;
   try {
     if (data.MetasailEvent) {
       eventUrl = data.MetasailEvent.map((row) => {
@@ -48,8 +52,9 @@ const saveMetasailData = async (data) => {
       });
     }
     if (data.MetasailPosition) {
-      while (data.MetasailPosition.length > 0) {
-        const splicedArray = data.MetasailPosition.splice(
+      metasailPositions = data.MetasailPosition.slice();
+      while (metasailPositions.length > 0) {
+        const splicedArray = metasailPositions.splice(
           0,
           SAVE_DB_POSITION_CHUNK_COUNT,
         );
@@ -59,6 +64,10 @@ const saveMetasailData = async (data) => {
           transaction,
         });
       }
+    }
+
+    if (data.MetasailRace) {
+      raceMetadatas = await normalizeRace(data, transaction);
     }
     await transaction.commit();
   } catch (error) {
@@ -98,6 +107,11 @@ const saveMetasailData = async (data) => {
     }
   }
 
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
+    }
+  }
   return errorMessage;
 };
 

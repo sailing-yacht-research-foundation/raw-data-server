@@ -9,7 +9,7 @@ const {
   yellowbrickPosition,
 } = require('../schemas/parquets/yellowbrick');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 
 const getRaces = async () => {
   const races = await db.yellowbrickRace.findAll({ raw: true });
@@ -192,11 +192,11 @@ const processYellowbrickData = async (optionalPath) => {
   }
   await posWriter.close();
 
-  const mainUrl = await uploadFileToS3(
+  const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
     `yellowbrick/year=${currentYear}/month=${currentMonth}/yellowbrick_${fullDateFormat}.parquet`,
   );
-  const positionUrl = await uploadFileToS3(
+  const positionUrl = await uploadUtil.uploadFileToS3(
     positionPath,
     `yellowbrick/year=${currentYear}/month=${currentMonth}/yellowbrickPosition_${fullDateFormat}.parquet`,
   );

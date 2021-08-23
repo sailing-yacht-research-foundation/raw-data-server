@@ -5,7 +5,7 @@ const parquet = require('parquetjs-lite');
 const db = require('../models');
 const Op = db.Sequelize.Op;
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadFileToS3 = require('./uploadFileToS3');
+const uploadUtil = require('./uploadUtil');
 const {
   kattackCombined,
   kattackPosition,
@@ -207,11 +207,11 @@ const processKattackData = async (optionalPath) => {
     }
     await posWriter.close();
 
-    const mainUrl = await uploadFileToS3(
+    const mainUrl = await uploadUtil.uploadFileToS3(
       parquetPath,
       `kattack/year=${currentYear}/month=${currentMonth}/kattack_${fullDateFormat}.parquet`,
     );
-    const positionUrl = await uploadFileToS3(
+    const positionUrl = await uploadUtil.uploadFileToS3(
       positionPath,
       `kattack/year=${currentYear}/month=${currentMonth}/kattackPosition_${fullDateFormat}.parquet`,
     );

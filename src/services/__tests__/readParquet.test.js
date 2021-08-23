@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const axios = require('axios');
 
 const db = require('../../models');
 const readParquet = require('../readParquet');
@@ -52,8 +53,7 @@ const saveYellowbrickData = require('../saveYellowbrickData');
 const { processYellowbrickData } = require('../processYellowbrickData');
 const yellowbrickData = require('../../test-files/yellowbrick.json');
 
-jest.mock('../uploadFileToS3', () => jest.fn());
-
+jest.setTimeout(120000);
 describe('Basic read parquet functionality', () => {
   it('should read parquet files successfully', async () => {
     const filePath = path.resolve(
@@ -101,6 +101,7 @@ it('should return failed when error thrown from process function ', async () => 
 describe('Read tracker parquet files', () => {
   beforeAll(async () => {
     await db.sequelize.sync();
+    jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
     await saveBluewaterData(bluewaterData);
     await saveEstelaData(estelaData);
     await saveGeoracingData(georacingData);
@@ -233,9 +234,14 @@ describe('Read tracker parquet files', () => {
     await db.yellowbrickTag.destroy({ truncate: true });
     await db.yellowbrickTeam.destroy({ truncate: true });
 
+    await db.readyAboutRaceMetadata.destroy({ truncate: true });
+    await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
+
     await db.sequelize.close();
   });
-
+  it.only('test sample', () => {
+    expect(1).toBe(1);
+  })
   it('should read Bluewater parquet files successfully', async () => {
     let mainPath = path.resolve(
       __dirname,
@@ -249,11 +255,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledTimes(bluewaterData.BluewaterRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: '74314800-9ccb-4f52-a37f-82e01b2afe80',
-        race_original_id: '605b1b069dbcc81862098de5',
+        race_id: bluewaterData.BluewaterRace[0].id,
+        race_original_id: bluewaterData.BluewaterRace[0].original_id,
       }),
     );
     fs.unlink(mainPath, (err) => {
@@ -281,11 +287,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledTimes(estelaData.EstelaRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: 'f6373964-9496-46ba-b907-fa90f8c6fb62',
-        race_original_id: '6985',
+        race_id: estelaData.EstelaRace[0].id,
+        race_original_id: estelaData.EstelaRace[0].original_id,
       }),
     );
     fs.unlink(mainPath, (err) => {
@@ -313,11 +319,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledTimes(georacingData.GeoracingEvent.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        event_id: '54503929-7f8d-4627-a40b-e7dca635a3dd',
-        name: 'Beargrease Sled Dog',
+        event_id: georacingData.GeoracingEvent[0].id,
+        name: georacingData.GeoracingEvent[0].name,
       }),
     );
     fs.unlink(mainPath, (err) => {
@@ -345,11 +351,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledTimes(iSailData.iSailEvent.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        event_id: 'd451063e-b576-4b23-8638-457e68cb6c26',
-        name: 'DiZeBra 20150421',
+        event_id: iSailData.iSailEvent[0].id,
+        name: iSailData.iSailEvent[0].name,
       }),
     );
 
@@ -379,11 +385,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledTimes(kattackData.KattackRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: '79722f12-5f07-43a1-a327-08459673803c',
-        name: 'Rox',
+        race_id: kattackData.KattackRace[0].id,
+        name: kattackData.KattackRace[0].name,
       }),
     );
 
@@ -413,11 +419,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(3);
+    expect(processRecord).toHaveBeenCalledTimes(kwindooData.KwindooRegatta.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        regatta_id: 'efe26138-6744-40c7-a64e-82f89464589a',
-        name: 'I. Flex Fleet Klasszikus Szóló',
+        regatta_id: kwindooData.KwindooRegatta[0].id,
+        name: kwindooData.KwindooRegatta[0].name,
       }),
     );
 
@@ -446,11 +452,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(3);
+    expect(processRecord).toHaveBeenCalledTimes(metasailData.MetasailRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: '1c48bc9b-0933-4e85-ba46-f6ba9cd5b76d',
-        name: 'Spi Ouest France 2020 DIAM 24 suite R 7 (race id: 10386)',
+        race_id: metasailData.MetasailRace[0].id,
+        name: metasailData.MetasailRace[0].name,
       }),
     );
 
@@ -480,11 +486,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(1);
+    expect(processRecord).toHaveBeenCalledTimes(raceQsData.RaceQsEvent.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        event_id: '846a774c-fefb-4729-b5bf-8746e2e64f4a',
-        event_original_id: '62880',
+        event_id: raceQsData.RaceQsEvent[0].id,
+        event_original_id: raceQsData.RaceQsEvent[0].original_id,
       }),
     );
 
@@ -513,11 +519,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledTimes(tackTrackerData.TackTrackerRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: '8e555bca-e34b-4a3a-a552-34206c108563',
-        race_original_id: '8500595',
+        race_id: tackTrackerData.TackTrackerRace[0].id,
+        race_original_id: tackTrackerData.TackTrackerRace[0].original_id,
       }),
     );
 
@@ -546,11 +552,11 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(5);
+    expect(processRecord).toHaveBeenCalledTimes(tractracData.TracTracRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: '022e3341-0740-4714-b7e8-5bfcf9651b6f',
-        original_race_id: '80b39da0-b465-0131-ba03-10bf48d758ce',
+        race_id: tractracData.TracTracRace[0].id,
+        original_race_id: tractracData.TracTracRace[0].original_id,
       }),
     );
     fs.unlink(mainPath, (err) => {
@@ -578,12 +584,12 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(2);
+    expect(processRecord).toHaveBeenCalledTimes(yachtBotData.YachtBotRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: '2f052217-bd51-4428-b772-5a0ca8659c77',
-        race_original_id: '362',
-        name: 'Rolex Day 2 - Race 4',
+        race_id: yachtBotData.YachtBotRace[0].id,
+        race_original_id: yachtBotData.YachtBotRace[0].original_id,
+        name: yachtBotData.YachtBotRace[0].name,
       }),
     );
     fs.unlink(mainPath, (err) => {
@@ -611,12 +617,12 @@ describe('Read tracker parquet files', () => {
 
     const processRecord = jest.fn();
     await readParquet(mainPath, processRecord);
-    expect(processRecord).toHaveBeenCalledTimes(3);
+    expect(processRecord).toHaveBeenCalledTimes(yellowbrickData.YellowbrickRace.length);
     expect(processRecord).toHaveBeenCalledWith(
       expect.objectContaining({
-        race_id: 'e64453b5-4e1f-4ffe-9cdd-3fd1cdea49fd',
-        tz: 'CEST',
-        tz_offset: '7200',
+        race_id: yellowbrickData.YellowbrickRace[0].id,
+        tz: yellowbrickData.YellowbrickRace[0].tz,
+        tz_offset: yellowbrickData.YellowbrickRace[0].tz_offset,
       }),
     );
     fs.unlink(mainPath, (err) => {

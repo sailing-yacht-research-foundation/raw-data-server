@@ -1,17 +1,23 @@
 const { PassThrough } = require('stream');
+const extract = require('extract-zip');
+const fs = require('fs');
+const AWS = require('aws-sdk');
 
-const unzipFile = require('../unzipFile');
+const { gunzipFile, downloadAndExtract } = require('../unzipFile');
+
+jest.mock('extract-zip');
 
 describe('Unzip a gzipped file from a read stream to a write stream', () => {
   afterAll(() => {
     jest.resetAllMocks();
   });
+
   it('should reject when write error occured', async () => {
     const mockReadable = new PassThrough();
     const mockWriteable = new PassThrough();
     const mockError = new Error('Mocked Error Here!');
 
-    const thePromise = unzipFile(mockReadable, mockWriteable);
+    const thePromise = gunzipFile(mockReadable, mockWriteable);
     setTimeout(() => {
       mockWriteable.emit('error', mockError);
     }, 100);
@@ -23,7 +29,7 @@ describe('Unzip a gzipped file from a read stream to a write stream', () => {
     const mockReadable = new PassThrough();
     const mockWriteable = new PassThrough();
 
-    const thePromise = unzipFile(mockReadable, mockWriteable);
+    const thePromise = gunzipFile(mockReadable, mockWriteable);
     setTimeout(() => {
       mockReadable.emit('data', 'plain string');
     }, 100);
@@ -31,5 +37,26 @@ describe('Unzip a gzipped file from a read stream to a write stream', () => {
     await expect(thePromise).rejects.toEqual(
       expect.objectContaining({ code: 'Z_DATA_ERROR' }),
     );
+  });
+
+  describe('When downloadAndExtract is called', () => {
+    it('should call s3 getObject and extract with the passed directory path', async () => {
+      const mockReadable = new PassThrough();
+      const mockWriteable = new PassThrough();
+      const s3 = new AWS.S3();
+      s3.getObject.mockResolvedValue({ createReadStream: jest.fn().mockReturnValue(mockReadable) });
+      jest.spyOn(fs, 'createWriteStream').mockReturnValue(mockWriteable);
+      // extract.mockResolvedValue('')
+
+      const targetDir = 'directoryToExtraction';
+      setTimeout(() => {
+        mockReadable.emit('data', 'plain string');
+        mockReadable.emit('end', 'message end');
+      }, 100);
+      await downloadAndExtract({ s3, bucketName: 'bucketName', fileName: 'fileName', targetDir })
+
+      expect(s3.getObject).toHaveBeenCalledTimes(1)
+      expect(extract).toHaveBeenCalledWith(expect.any(String), {dir: targetDir })
+    })
   });
 });

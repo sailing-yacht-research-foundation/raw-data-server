@@ -1,175 +1,112 @@
 {
-  "TackTrackerRegatta": [
-    {
-      "id": "c74a5f2c-4e16-43e4-83bd-d5e53e52d596",
-      "url": "https://tacktracker.com/cloud/regattas/show/1525468984",
-      "original_id": "1525468984"
-    }
-  ],
-  "TackTrackerRace": [
-    {
-      "id": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "original_id": "8500595",
-      "url": "https://tacktracker.com/cloud/regattas/show/1525468984",
-      "regatta": "c74a5f2c-4e16-43e4-83bd-d5e53e52d596",
-      "user": "",
-      "regatta_original_id": "1525468984",
-      "user_original_id": "",
-      "start": "2017-02-18T11:00:00Z",
-      "state": "Complete",
-      "name": "Oxford Blue R1",
-      "type": "YachtRace",
-      "finish_at_start": "",
-      "span": "3600",
-      "course": "\"A B C D A B C D A B C D A B C D\"",
-      "event_notes": "{\"Notes\":{}}",
-      "course_notes": "[{\"Leg\":\"0\",\"Notes\":{}},{\"Leg\":\"12\",\"Notes\":{}}]",
-      "upload_params": "{\"cid\":\"193047150\",\"locked\":\"0\",\"private\":\"0\",\"raceid\":\"8500595\",\"rgid\":\"1525468984\",\"seq\":\"0\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Oxford Blue R1\",\"Comment\":{},\"Message\":{}}"
-    },
-    {
-      "id": "8e555bca-e34b-4a3a-a552-34206c108564",
-      "original_id": "8500596",
-      "url": "https://tacktracker.com/cloud/regattas/show/1525468985",
-      "regatta": null,
-      "user": "",
-      "regatta_original_id": null,
-      "user_original_id": "",
-      "start": "2017-02-18T11:00:00Z",
-      "state": "Complete",
-      "name": "Oxford Blue R1",
-      "type": "YachtRace",
-      "finish_at_start": "",
-      "span": "3600",
-      "course": "\"A B C D A B C D A B C D A B C D\"",
-      "event_notes": "{\"Notes\":{}}",
-      "course_notes": "[{\"Leg\":\"0\",\"Notes\":{}},{\"Leg\":\"12\",\"Notes\":{}}]",
-      "upload_params": "{\"cid\":\"193047150\",\"locked\":\"0\",\"private\":\"0\",\"raceid\":\"8500595\",\"rgid\":\"1525468984\",\"seq\":\"0\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Oxford Blue R1\",\"Comment\":{},\"Message\":{}}"
-    }
-  ],
-  "TackTrackerBoat": [
-    {
-      "id": "03f1f7b8-564b-4e83-a940-3df82d522588",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "details": "1181",
-      "color": "Blue",
-      "unknown_1": "",
-      "unknown_2": "",
-      "unknown_3": "0.903342",
-      "unknown_4": "SmallMono",
-      "unknown_5": "0.903342,0,1,0,1,1,1",
-      "unknown_6": "1,0,1,0,1,1,1",
-      "name": "RS Aero 5 BELTON"
-    },
-    {
-      "id": "7586a6db-3766-479f-a84b-a91cdf25a611",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "details": "402",
-      "color": "Turquoise",
-      "unknown_1": "",
-      "unknown_2": "",
-      "unknown_3": "1.02987",
-      "unknown_4": "SmallMono",
-      "unknown_5": "1.02987,0,1,0,1,1,1",
-      "unknown_6": "1,0,1,0,1,1,1",
-      "name": "D_One BROOKS"
-    }
-  ],
-  "TackTrackerDefault": [
-    {
-      "id": "cf84d2ec-83be-4dbd-a125-837d70df7ea3",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "lon": -1.3569769,
-      "lat": 51.75066096,
-      "color": "Yellow",
-      "trim": "30"
-    }
-  ],
-  "TackTrackerFinish": [
-    {
-      "id": "45b5831f-9346-4861-8ac1-bf4fcb80248e",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "finish_mark_name": "FinishBoat",
-      "finish_mark_lat": "51.75399676",
-      "finish_mark_lon": "-1.35632241",
-      "finish_mark_type": "FinishBoat",
-      "finish_pin_name": "FinishPin",
-      "finish_pin_lat": "51.75319071",
-      "finish_pin_lon": "-1.35685853",
-      "finish_pin_type": "FinishPin"
-    }
-  ],
-  "TackTrackerMark": [
-    {
-      "id": "9c7091a6-824e-4d8d-91d4-7344ccdb3945",
-      "name": "\"D\"",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "lon": "-1.35595916",
-      "lat": "51.75249300",
-      "type": "Rounding"
-    },
-    {
-      "id": "d3621d4a-2a7f-4d83-a65c-11c621d077df",
-      "name": "\"A\"",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "lon": "-1.35889440",
-      "lat": "51.74873543",
-      "type": "Rounding"
-    },
-    {
-      "id": "96571e57-6883-40ad-a2f9-4b1e604eb856",
-      "name": "\"B\"",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "lon": "-1.35153735",
-      "lat": "51.74835004",
-      "type": "Rounding"
-    },
-    {
-      "id": "14e192b1-4805-44a3-97e2-adbdc2dcdc55",
-      "name": "\"C\"",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "lon": "-1.35010367",
-      "lat": "51.75264777",
-      "type": "Rounding"
-    }
-  ],
-  "TackTrackerPosition": [
-    {
-      "id": "651a54c9-788c-43b7-9725-f5456d5130ed",
-      "boat": "03f1f7b8-564b-4e83-a940-3df82d522588",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "time": "2017-02-18T10:41:43Z",
-      "lon": "-1.35020600",
-      "lat": "51.75343100"
-    },
-    {
-      "id": "06102474-80e6-417b-a823-807fbdccf602",
-      "boat": "03f1f7b8-564b-4e83-a940-3df82d522588",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "time": "2017-02-18T10:41:48Z",
-      "lon": "-1.35039500",
-      "lat": "51.75344200"
-    },
-    {
-      "id": "9dc884a2-5e0f-411b-8e82-dc796c7b706f",
-      "boat": "03f1f7b8-564b-4e83-a940-3df82d522588",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "time": "2017-02-18T10:41:53Z",
-      "lon": "-1.35057800",
-      "lat": "51.75345900"
-    }
-  ],
-  "TackTrackerStart": [
-    {
-      "id": "1a9219e8-68c3-4926-8f4f-9c6377d06dbb",
-      "race": "8e555bca-e34b-4a3a-a552-34206c108563",
-      "start_mark_name": "StartBoat",
-      "start_mark_lat": "51.75393664",
-      "start_mark_lon": "-1.35710411",
-      "start_mark_type": "StartBoat",
-      "start_pin_name": "StartPin",
-      "start_pin_lat": "51.75325768",
-      "start_pin_lon": "-1.35353446",
-      "start_pin_type": "StartPin"
-    }
-  ]
+    "TackTrackerRace": [{
+            "id": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "original_id": "1439711445",
+            "url": "https://tacktracker.com/cloud/regattas/show/1331607597/1",
+            "regatta": "5e37e7f6-88ff-43b5-b649-168f21108a31",
+            "regatta_original_id": "1331607597",
+            "start": "2018-11-11T10:00:00Z",
+            "state": "Complete",
+            "name": "Race 1",
+            "type": "YachtRace",
+            "span": "17820",
+            "course": "\"A B A B\"",
+            "event_notes": "{\"Notes\":{}}",
+            "upload_params": "{\"cid\":\"0\",\"locked\":\"1\",\"private\":\"1\",\"raceid\":\"1439711445\",\"rgid\":\"1331607597\",\"seq\":\"1\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Race 1\",\"Comment\":{},\"Message\":{}}"
+        }
+    ],
+    "TackTrackerBoat": [{
+            "id": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "details": "Circolo Velico Raven",
+            "color": "Yellow",
+            "unknown_1": "",
+            "unknown_2": "",
+            "unknown_3": "1",
+            "unknown_4": "SmallMono",
+            "unknown_5": "1,0,1,0,1,1,1",
+            "unknown_6": "1,0,1,0,1,1,1",
+            "name": "Corto Maltese"
+        }
+    ],
+    "TackTrackerDefault": [{
+            "id": "b7509a5d-fefc-45fb-b071-4184d70eea12",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "lon": "12.28249000",
+            "lat": "44.48176000",
+            "color": "Yellow",
+            "trim": "5"
+        }
+    ],
+    "TackTrackerFinish": [{
+            "id": "f8b535eb-563c-472e-a891-0f4944a9862a",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "finish_mark_name": "FinishBoat",
+            "finish_mark_lat": "44.48776024",
+            "finish_mark_lon": "12.29436510",
+            "finish_mark_type": "FinishBoat",
+            "finish_pin_name": "FinishPin",
+            "finish_pin_lat": "44.48784188",
+            "finish_pin_lon": "12.29196137",
+            "finish_pin_type": "FinishPin"
+        }
+    ],
+    "TackTrackerMark": [{
+            "id": "85e3bb33-e35a-4057-8455-5a40dbd8e7cc",
+            "name": "\"A\"",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "lon": "12.30993213",
+            "lat": "44.48873987",
+            "type": "Rounding"
+        }, {
+            "id": "2e56efe7-8378-4e59-ba21-488fa8ed4fe2",
+            "name": "\"B\"",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "lon": "12.29436510",
+            "lat": "44.48882151",
+            "type": "Rounding"
+        }
+    ],
+    "TackTrackerPosition": [{
+            "id": "792d5ef3-c74c-4354-a558-daffac5dc3e6",
+            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "time": "2018-11-11T14:32:32Z",
+            "lat": "044.456067",
+            "lon": "0012.28346"
+        }, {
+            "id": "5ab3a220-4c23-4ec3-b722-db7eab336d31",
+            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "time": "2018-11-11T14:32:37Z",
+            "lat": "044.470051",
+            "lon": "0012.31523"
+        }, {
+            "id": "226e41ee-36bf-4fa2-9367-774cd977537b",
+            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "time": "2018-11-11T14:32:44Z",
+            "lat": "044.470216",
+            "lon": "0012.31525"
+        }
+    ],
+    "TackTrackerStart": [{
+            "id": "dfa7b146-d30f-4636-967d-570ab6528971",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "start_mark_name": "StartBoat",
+            "start_mark_lat": "44.48789943",
+            "start_mark_lon": "12.29441088",
+            "start_mark_type": "StartBoat",
+            "start_pin_name": "StartPin",
+            "start_pin_lat": "44.48969297",
+            "start_pin_lon": "12.29421744",
+            "start_pin_type": "StartPin"
+        }
+    ],
+    "TackTrackerRegatta": [{
+            "id": "5e37e7f6-88ff-43b5-b649-168f21108a31",
+            "url": "https://tacktracker.com/cloud/regattas/show/1331607597",
+            "original_id": "1331607597"
+        }
+    ]
 }

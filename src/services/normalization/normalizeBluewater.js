@@ -12,7 +12,7 @@ const {
   createTurfPoint,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadFileToS3');
+const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async ({BluewaterRace, BluewaterPosition, BluewaterMap, BluewaterBoat, BluewaterBoatHandicap}, transaction,) => {
   const BLUEWATER_SOURCE = 'BLUEWATER';
@@ -142,6 +142,7 @@ const normalizeRace = async ({BluewaterRace, BluewaterPosition, BluewaterMap, Bl
     BLUEWATER_SOURCE,
     transaction,
   );
+  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

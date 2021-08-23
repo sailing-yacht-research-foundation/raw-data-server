@@ -1,6 +1,4 @@
 const turf = require('@turf/turf');
-const sinon = require('sinon');
-
 const {
   getLatFromTurfPoint,
   getLonFromTurfPoint,
@@ -19,7 +17,8 @@ const {
   createRace,
   pointToCountry,
 } = require('../gisUtils');
-const elasticsearch = require('../elasticSearch');
+const elasticsearch = require('elasticsearch');
+const esUtil = require('../elasticsearch');
 
 describe('gis_utils.js', () => {
   it('when getLonFromTurfPoint is called should return lon from turf point', () => {
@@ -375,11 +374,9 @@ describe('gis_utils.js', () => {
     });
   });
   it('#createRace should create and return correct race meta data', async () => {
-    const indexRaceMethod = sinon.replace(
-      elasticsearch,
-      'indexRace',
-      sinon.fake.resolves(true),
-    );
+    const elasticsearchclient = new elasticsearch.Client();
+    const esIndexSpy = jest.spyOn(elasticsearchclient, 'index');
+    const indexRaceSpy = jest.spyOn(esUtil, 'indexRace');
 
     const id = 'testraceid';
     const name = 'Race 1';
@@ -517,7 +514,7 @@ describe('gis_utils.js', () => {
     };
     expect(r).toEqual(expectedResult);
 
-    expect(indexRaceMethod.callCount).toBe(1);
+    expect(esIndexSpy).toHaveBeenCalledTimes(1);
     const expectedIndexedBody = {
       id,
       name,
@@ -545,8 +542,6 @@ describe('gis_utils.js', () => {
       handicap_rules: handicapRules,
       unstructured_text: unstructuredText,
     };
-    const call = indexRaceMethod.getCall(0);
-    expect(call.args[0]).toBe(id);
-    expect(call.args[1]).toEqual(expectedIndexedBody);
+    expect(indexRaceSpy).toHaveBeenCalledWith(id, expectedIndexedBody);
   });
 });

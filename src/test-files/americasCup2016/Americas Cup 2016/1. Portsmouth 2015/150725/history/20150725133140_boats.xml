@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BoatConfig>
+  <Modified>2015-07-25T02:33:11+0100</Modified>
+  <Version>12</Version>
+  <Snapshot>216</Snapshot>
+  <Settings>
+    <RaceBoatType Type="AC45" />
+    <BoatDimension BoatLength="14.019" HullLength="13.449" />
+    <ZoneSize MarkZoneSize="40.347" CourseZoneSize="53.796" />
+    <ZoneLimits Limit1="200" Limit2="100" Limit3="53.796" Limit4="0" Limit5="-100" />
+  </Settings>
+  <BoatShapes>
+    <BoatShape ShapeID="0">
+      <Vertices>
+        <Vtx Seq="3" Y="25" X="0" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="14">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-1" />
+        <Vtx Seq="2" Y="0.75" X="-1" />
+        <Vtx Seq="3" Y="0.75" X="-0.25" />
+        <Vtx Seq="4" Y="3.5" X="-0.25" />
+        <Vtx Seq="5" Y="4.5" X="-1" />
+        <Vtx Seq="6" Y="6.5" X="-1" />
+        <Vtx Seq="7" Y="7" X="-0.5" />
+        <Vtx Seq="8" Y="7" X="0.5" />
+        <Vtx Seq="9" Y="6.5" X="1" />
+        <Vtx Seq="10" Y="4.5" X="1" />
+        <Vtx Seq="11" Y="3.5" X="0.25" />
+        <Vtx Seq="12" Y="0.75" X="0.25" />
+        <Vtx Seq="13" Y="0.75" X="1" />
+        <Vtx Seq="14" Y="0" X="1" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="15">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-3.46" />
+        <Vtx Seq="2" Y="13.449" X="-3.46" />
+        <Vtx Seq="3" Y="14.019" X="0" />
+        <Vtx Seq="4" Y="13.449" X="3.46" />
+        <Vtx Seq="5" Y="0" X="3.46" />
+      </Vertices>
+      <Catamaran>
+        <Vtx Seq="1" Y="1.769" X="-2.752" />
+        <Vtx Seq="2" Y="0" X="-2.813" />
+        <Vtx Seq="3" Y="0" X="-3.34" />
+        <Vtx Seq="4" Y="5.351" X="-3.46" />
+        <Vtx Seq="5" Y="10.544" X="-3.387" />
+        <Vtx Seq="6" Y="13.449" X="-3.075" />
+        <Vtx Seq="7" Y="10.851" X="-2.793" />
+        <Vtx Seq="8" Y="6.669" X="-2.699" />
+        <Vtx Seq="9" Y="6.669" X="2.699" />
+        <Vtx Seq="10" Y="10.851" X="2.793" />
+        <Vtx Seq="11" Y="13.449" X="3.075" />
+        <Vtx Seq="12" Y="10.544" X="3.387" />
+        <Vtx Seq="13" Y="5.351" X="3.46" />
+        <Vtx Seq="14" Y="0" X="3.34" />
+        <Vtx Seq="15" Y="0" X="2.813" />
+        <Vtx Seq="16" Y="1.769" X="2.752" />
+      </Catamaran>
+      <Bowsprit>
+        <Vtx Seq="1" Y="6.669" X="-0.2" />
+        <Vtx Seq="2" Y="11.377" X="-0.2" />
+        <Vtx Seq="3" Y="14.019" X="0" />
+        <Vtx Seq="4" Y="11.377" X="0.2" />
+        <Vtx Seq="5" Y="6.669" X="0.2" />
+      </Bowsprit>
+      <Trampoline>
+        <Vtx Seq="1" Y="2" X="-2.699" />
+        <Vtx Seq="2" Y="6.438" X="-2.699" />
+        <Vtx Seq="3" Y="6.438" X="2.699" />
+        <Vtx Seq="4" Y="2" X="2.699" />
+      </Trampoline>
+    </BoatShape>
+    <BoatShape ShapeID="18">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-1.04" />
+        <Vtx Seq="2" Y="0.11" X="-1.18" />
+        <Vtx Seq="3" Y="0.42" X="-1.28" />
+        <Vtx Seq="4" Y="3.74" X="-1.29" />
+        <Vtx Seq="5" Y="5.36" X="-1.21" />
+        <Vtx Seq="6" Y="6.29" X="-1.08" />
+        <Vtx Seq="7" Y="7.15" X="-0.84" />
+        <Vtx Seq="8" Y="7.63" X="-0.62" />
+        <Vtx Seq="9" Y="7.94" X="-0.34" />
+        <Vtx Seq="10" Y="8.06" X="0" />
+        <Vtx Seq="11" Y="7.94" X="0.34" />
+        <Vtx Seq="12" Y="7.63" X="0.62" />
+        <Vtx Seq="13" Y="7.15" X="0.84" />
+        <Vtx Seq="14" Y="6.29" X="1.08" />
+        <Vtx Seq="15" Y="5.36" X="1.21" />
+        <Vtx Seq="16" Y="3.74" X="1.29" />
+        <Vtx Seq="17" Y="0.42" X="1.28" />
+        <Vtx Seq="18" Y="0.11" X="1.18" />
+        <Vtx Seq="19" Y="0" X="1.04" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="24">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-2.5" />
+        <Vtx Seq="2" Y="7" X="-2.5" />
+        <Vtx Seq="3" Y="12.6" X="-2.2" />
+        <Vtx Seq="4" Y="12.6" X="2.2" />
+        <Vtx Seq="5" Y="7" X="2.5" />
+        <Vtx Seq="6" Y="0" X="2.5" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="34">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-1.16" />
+        <Vtx Seq="2" Y="5.51" X="-1.16" />
+        <Vtx Seq="3" Y="5.846" X="-0.84" />
+        <Vtx Seq="4" Y="5.846" X="0.84" />
+        <Vtx Seq="5" Y="5.51" X="1.16" />
+        <Vtx Seq="6" Y="0" X="1.16" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="35">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-1.461" />
+        <Vtx Seq="2" Y="6" X="-1.461" />
+        <Vtx Seq="3" Y="7" X="-1.44" />
+        <Vtx Seq="4" Y="8" X="-1.38" />
+        <Vtx Seq="5" Y="9" X="-1.17" />
+        <Vtx Seq="6" Y="10" X="-0.76" />
+        <Vtx Seq="7" Y="10.6" X="-0.34" />
+        <Vtx Seq="8" Y="10.61" X="0" />
+        <Vtx Seq="9" Y="10.6" X="0.34" />
+        <Vtx Seq="10" Y="10" X="0.76" />
+        <Vtx Seq="11" Y="9" X="1.17" />
+        <Vtx Seq="12" Y="8" X="1.38" />
+        <Vtx Seq="13" Y="7" X="1.44" />
+        <Vtx Seq="14" Y="6" X="1.461" />
+        <Vtx Seq="15" Y="0" X="1.461" />
+      </Vertices>
+    </BoatShape>
+  </BoatShapes>
+  <Boats>
+    <Boat Ack="1" IPAddress="172.20.1.121" Type="RC" SourceID="121" ShapeID="35" StoweName="PRO" ShortName="PRO" ShorterName="PRO" BoatName="REGARDLESS" HullNum="RG02" Skipper="Iain Murray" Helmsman="Iain Murray" Flag="Stowe,Mark,Chatter,Ack,WindSource" PeliID="121" RadioIP="172.20.2.121">
+      <GPSposition Z="3.8" Y="4.15" X="0" />
+      <FlagPosition Z="0" Y="3.77" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.122" Type="Mark" SourceID="122" ShapeID="34" StoweName="SL1" ShortName="SL1" ShorterName="SL1" BoatName="Start Line 1" HullNum="Mark-02" Skipper="" Flag="Mark,WindSource" PeliID="122" RadioIP="172.20.2.122">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.123" Type="Mark" SourceID="123" ShapeID="34" StoweName="SL2" ShortName="SL2" ShorterName="SL2" BoatName="Start Line 2" HullNum="Mark-03" Skipper="" Flag="Mark,WindSource" PeliID="123" RadioIP="172.20.2.123">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.124" Type="Mark" SourceID="124" ShapeID="34" StoweName="LG1" ShortName="LG1" ShorterName="LG1" BoatName="Lee Gate 1" HullNum="Mark-04" Skipper="" Flag="Mark,WindSource" PeliID="124" RadioIP="172.20.2.124">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.125" Type="Mark" SourceID="125" ShapeID="34" StoweName="LG2" ShortName="LG2" ShorterName="LG2" BoatName="Lee Gate 2" HullNum="Mark-05" Skipper="" Flag="Mark,WindSource" PeliID="125" RadioIP="172.20.2.125">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.126" Type="Mark" SourceID="126" ShapeID="34" StoweName="WG1" ShortName="WG1" ShorterName="WG1" BoatName="Wind Gate 1" HullNum="Mark-06" Skipper="" Flag="Mark,WindSource" PeliID="126" RadioIP="172.20.2.126">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.127" Type="Mark" SourceID="127" ShapeID="34" StoweName="WG2" ShortName="WG2" ShorterName="WG2" BoatName="Wind Gate 2" HullNum="Mark-07" Skipper="" Flag="Mark,WindSource" PeliID="127" RadioIP="172.20.2.127">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.128" Type="Mark" SourceID="128" ShapeID="34" StoweName="FL1" ShortName="FL1" ShorterName="FL1" BoatName="Finish Line 1" HullNum="Mark-08" Skipper="" Flag="Mark,WindSource" PeliID="128" RadioIP="172.20.2.128">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.130" Type="Mark" SourceID="130" ShapeID="34" StoweName="SP1" ShortName="SP1" ShorterName="Sp1" BoatName="Spare" HullNum="Mark-10" Skipper="" Flag="Stowe,Mark,WindSource" PeliID="130" RadioIP="172.20.2.130">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.132" Type="Mark" SourceID="131" ShapeID="34" StoweName="M1" ShortName="M1" ShorterName="M1" BoatName="Mark1" HullNum="Mark-01" Skipper="" Flag="Mark,WindSource" PeliID="132" RadioIP="172.20.2.131">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.133" Type="Mark" SourceID="133" ShapeID="34" StoweName="FL2" ShortName="FL2" ShorterName="FL2" BoatName="Finish Line 2" HullNum="Mark-09" Skipper="" Flag="Mark,WindSource" PeliID="133" RadioIP="172.20.2.129">
+      <GPSposition Z="5.445" Y="1.12" X="0" />
+      <FlagPosition Z="0" Y="0.74" X="0" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" CompOff="180" WindOff="0" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.101" Type="Yacht" SourceID="101" ShapeID="15" StoweName="USA" ShortName="ORACLE" ShorterName="USA" BoatName="ORACLE TEAM USA" HullNum="AC4515" Skipper="SPITHILL" Helmsman="SPITHILL" Country="USA" Flag="Stowe,Ack" PeliID="101" RadioIP="172.20.2.101">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.763" Y="-0.332" X="-0.008" />
+      <MastTop Z="21.496" Y="3.7" X="0" />
+      <FlagPosition Z="0" Y="6.2" X="0" />
+      <NavDevice Type="NovAtelSpan" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.102" Type="Yacht" SourceID="102" ShapeID="15" StoweName="SWE" ShortName="ARTEMIS" ShorterName="SWE" BoatName="ARTEMIS RACING" HullNum="AC4517" Skipper="OUTTERIDGE" Helmsman="OUTTERIDGE" Country="SWE" Flag="Stowe,Ack" PeliID="102" RadioIP="172.20.2.102">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.718" Y="-0.353" X="-0.024" />
+      <MastTop Z="21.496" Y="3.7" X="0" />
+      <FlagPosition Z="0" Y="6.2" X="0" />
+      <NavDevice Type="NovAtelSpan" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.103" Type="Yacht" SourceID="103" ShapeID="15" StoweName="NZL" ShortName="ETNZ" ShorterName="NZL" BoatName="EMIRATES TEAM NZ" HullNum="AC4503" Skipper="ASHBY" Helmsman="BURLING" Country="NZL" Flag="Stowe,Ack" PeliID="103" RadioIP="172.20.2.103">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.888" Y="-0.288" X="-0.007" />
+      <MastTop Z="21.496" Y="3.7" X="0" />
+      <FlagPosition Z="0" Y="6.2" X="0" />
+      <NavDevice Type="NovAtelSpan" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.104" Type="Yacht" SourceID="104" ShapeID="15" StoweName="JPN" ShortName="JAPAN" ShorterName="JPN" BoatName="SOFTBANK TEAM JAPAN" HullNum="AC4504" Skipper="BARKER" Helmsman="BARKER" Country="JPN" Flag="Stowe,Ack" PeliID="104" RadioIP="172.20.2.104">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.806" Y="-0.316" X="-0.014" />
+      <MastTop Z="21.496" Y="3.7" X="0" />
+      <FlagPosition Z="0" Y="6.2" X="0" />
+      <NavDevice Type="NovAtelSpan" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.105" Type="Yacht" SourceID="105" ShapeID="15" StoweName="FRA" ShortName="FRANCE" ShorterName="FRA" BoatName="GROUPAMA TEAM FRANCE" HullNum="AC4505" Skipper="CAMMAS" Helmsman="CAMMAS" Country="FRA" Flag="Stowe,Ack" PeliID="105" RadioIP="172.20.2.105">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.869" Y="-0.297" X="-0.026" />
+      <MastTop Z="21.496" Y="3.7" X="0" />
+      <FlagPosition Z="0" Y="6.2" X="0" />
+      <NavDevice Type="NovAtelSpan" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.106" Type="Yacht" SourceID="106" ShapeID="15" StoweName="GBR" ShortName="GBR" ShorterName="GBR" BoatName="LAND ROVER BAR" HullNum="AC4516" Skipper="ANSLIE" Helmsman="ANSLIE" Country="GBR" Flag="Stowe,Ack" PeliID="106" RadioIP="172.20.2.106">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.667" Y="-0.371" X="-0.007" />
+      <MastTop Z="21.496" Y="3.7" X="0" />
+      <FlagPosition Z="0" Y="6.2" X="0" />
+      <NavDevice Type="NovAtelSpan" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.110" Type="Marshall" SourceID="110" ShapeID="24" StoweName="CAM" ShortName="CAM" ShorterName="CAM" BoatName="Cambria" HullNum="TV01" Skipper=" " Helmsman=" " Flag="Stowe,Mark" PeliID="110" RadioIP="172.20.2.110">
+      <GPSposition Z="5" Y="1" X="0" />
+      <FlagPosition Z="0" Y="1" X="0" />
+      <NavDevice Type="NovAtelGps" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.111" Type="Marshall" SourceID="111" ShapeID="18" StoweName="SHA" ShortName="SHA" ShorterName="SHA" BoatName="SHAMROCK" HullNum="XR01" Skipper="" Flag="Stowe,Mark" PeliID="111" RadioIP="172.20.2.111">
+      <GPSposition Z="5" Y="1" X="0" />
+      <FlagPosition Z="0" Y="1" X="0" />
+      <NavDevice Type="NovAtelGps" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.113" Type="Umpire" SourceID="113" ShapeID="18" StoweName="VIG" ShortName="VIG" ShorterName="VIG" BoatName="VIGILENT" HullNum="XR02" Skipper="" Flag="Stowe,Ack" PeliID="113" RadioIP="172.20.2.113">
+      <GPSposition Z="0" Y="0" X="0" />
+      <NavDevice Type="NovAtelGps" />
+    </Boat>
+    <Boat Ack="1" IPAddress="172.20.1.114" Type="Umpire" SourceID="114" ShapeID="18" StoweName="RES" ShortName="RES" ShorterName="RES" BoatName="RESOLUTE" HullNum="XR03" Skipper="" Flag="Stowe,Ack" PeliID="114" RadioIP="172.20.2.114">
+      <GPSposition Z="0" Y="0" X="0" />
+      <NavDevice Type="NovAtelGps" />
+    </Boat>
+    <Boat Ack="0" IPAddress="172.20.1.140" Type="Helicopter" SourceID="140" ShapeID="14" StoweName="HL1" ShortName="HEL1" ShorterName="HL1" BoatName="HELICOPTER" Flag="Stowe" PeliID="140" RadioIP="172.20.2.140" />
+    <Boat Ack="0" IPAddress="172.20.1.182" Type="ClientData" SourceID="182" ShapeID="0" StoweName="UMN" ShortName="UMN1" ShorterName="UMN1" BoatName="UMon1" PeliID="182" />
+    <Boat Ack="0" IPAddress="172.20.1.183" Type="ClientData" SourceID="183" ShapeID="0" StoweName="UMN" ShortName="UMN2" ShorterName="UMN2" BoatName="UMon2" PeliID="183" />
+    <Boat Ack="0" IPAddress="172.20.1.202" Type="ClientData" SourceID="184" ShapeID="0" StoweName="UMN" ShortName="UMN3" ShorterName="UMN3" BoatName="UMon3" PeliID="184" />
+    <Boat Ack="0" IPAddress="172.20.1.197" Type="ClientData" SourceID="197" ShapeID="0" StoweName="SFX" ShortName="SAILFX_NBC" ShorterName="SFX2" BoatName="SAILFX_NBC" Flag="Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind" />
+    <Boat Ack="0" IPAddress="172.20.1.198" Type="ClientData" SourceID="198" ShapeID="0" StoweName="BRG" ShortName="MDSS_DATA" ShorterName="BRG" BoatName="MDSS_DATA" Flag="Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind,AvgWind,Restrict" />
+    <Boat Ack="0" IPAddress="172.20.1.199" Type="ClientData" SourceID="199" ShapeID="0" StoweName="MTE" ShortName="Matte" ShorterName="MTE" BoatName="Matte" Flag="Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind" RadioIP="" />
+    <Boat Ack="0" IPAddress="172.20.1.200" Type="ClientData" SourceID="200" ShapeID="0" StoweName="SFX" ShortName="SailFX" ShorterName="SFX" BoatName="SailFX" Flag="Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.201" Type="ProApp" SourceID="201" ShapeID="0" StoweName="PRO" ShortName="PRO1" ShorterName="PRO1" BoatName="PRO1" Flag="Stowe,Rounding,YachtEvents,Ack,CourseWind,AvgWind" RadioIP="" />
+    <Boat Ack="0" IPAddress="172.20.1.202" Type="MDSS" SourceID="202" ShapeID="0" StoweName="MDS" ShortName="MDSS" ShorterName="MDS" BoatName="MDSS" Flag="Stowe" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.203" Type="ProApp" SourceID="203" ShapeID="0" StoweName="PRO" ShortName="PRO2" ShorterName="PRO2" BoatName="PRO2" Flag="Stowe,Rounding,YachtEvents,Ack,CourseWind,AvgWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.204" Type="UmpApp" SourceID="204" ShapeID="0" StoweName="UMP" ShortName="UMP1" ShorterName="UMP1" BoatName="UMP1" Flag="Stowe,PenDist,YachtEvents,Ack,CourseWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.205" Type="UmpApp" SourceID="205" ShapeID="0" StoweName="UMP" ShortName="UMP2" ShorterName="UMP2" BoatName="UMP2" Flag="Stowe,PenDist,YachtEvents,Ack,CourseWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.206" Type="ProApp" SourceID="206" ShapeID="0" StoweName="PRO" ShortName="PROSurface" ShorterName="PROS" BoatName="PROSurface" Flag="Stowe,Rounding,YachtEvents,Ack,CourseWind,AvgWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.207" Type="UmpApp" SourceID="207" ShapeID="0" StoweName="UMP" ShortName="UMPTIM" ShorterName="UMPT" BoatName="UMPTIM" Flag="Stowe,PenDist,YachtEvents,Ack,CourseWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.183" Type="ProApp" SourceID="208" ShapeID="0" StoweName="PRO" ShortName="PROTIM" ShorterName="PROT" BoatName="PROTIM" Flag="Stowe,Rounding,YachtEvents,Ack,CourseWind,AvgWind" />
+    <Boat Ack="1" IPAddress="172.20.1.209" Type="ProApp" SourceID="209" ShapeID="0" StoweName="PRO" ShortName="Pro John LT" ShorterName="PRO-MEL" BoatName="Pro John LT" Flag="Stowe,Rounding,YachtEvents,Ack,CourseWind,AvgWind" />
+    <Boat Ack="0" IPAddress="172.20.1.214" Type="ClientData" SourceID="214" ShapeID="0" StoweName="ARL" ShortName="ARL4" ShorterName="ARL4" BoatName="ARL 2D 4" Flag="Stowe,Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind,AvgWind" RadioIP="" />
+    <Boat Ack="0" IPAddress="172.20.1.215" Type="ClientData" SourceID="215" ShapeID="0" StoweName="ARL" ShortName="ARL5" ShorterName="ARL5" BoatName="ARL 3D 1" Flag="Stowe,Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind,AvgWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.223" Type="UmpApp" SourceID="223" ShapeID="0" StoweName="UMP" ShortName="UMPSURFACE" ShorterName="UMPS" BoatName="UMPSURFACE" Flag="Stowe,PenDist,YachtEvents,Ack,CourseWind" RadioIP="" />
+    <Boat Ack="1" IPAddress="172.20.1.224" Type="UmpApp" SourceID="224" ShapeID="0" StoweName="UMP" ShortName="UMP3" ShorterName="UMP3" BoatName="UMP3" Flag="Stowe,PenDist,YachtEvents,Ack,CourseWind" RadioIP="" />
+    <Boat Ack="0" IPAddress="172.20.1.225" Type="ClientData" SourceID="225" ShapeID="0" StoweName="MDS" ShortName="MDSS" ShorterName="MDS" BoatName="MDSS-SPARE" Flag="Chatter,Rounding,PenLine,PenDist,YachtEvents,CourseWind" />
+    <Boat Ack="1" IPAddress="172.20.1.188" Type="ProApp" SourceID="228" ShapeID="0" StoweName="PS2" ShortName="ProStan2" ShorterName="PRO-S2" BoatName="ProStan2" Flag="Stowe,Rounding,YachtEvents,Ack,CourseWind,AvgWind" />
+    <Boat Ack="0" IPAddress="172.20.1.233" Type="ClientData" SourceID="233" ShapeID="0" StoweName="MWS" ShortName="Web Service" ShorterName="MWS" BoatName="MDSS Web Service" Flag="Stowe,Chatter,Rounding,YachtEvents,CourseWind,AvgWind" RadioIP="" />
+  </Boats>
+</BoatConfig>

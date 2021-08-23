@@ -105,13 +105,13 @@ Set an `Authorization` header containing md5 hash of current date with format: y
   - Query:
     - status (optional): `BOTH` [default] | `SUCCESS` | `FAILED`
   - Route Parameter:
-    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK`
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
 
 - `/api/v1/check-url`
 
   - Method: POST
   - Body (application/json):
-    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK`
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
     - url (required if originalId is not provided): URL of the race/event
     - originalId (required if url is not provided): Original ID of race/event
 
@@ -119,6 +119,23 @@ Set an `Authorization` header containing md5 hash of current date with format: y
 
   - Method: POST
   - Body (application/json):
-    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK`
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
     - url (required): URL of the failed scraper
     - error (required): Error detail
+
+## Development Deployment
+- This service was deployed to AWS development environment using terraform
+- The terraform files includes s3 backend to keep the terraform state, customized vpc was deployed, other network components needed for the deployment of the raw data server application
+- The VPC has 3 public subnets and 1 private subnet. with nat gateway in the public subnet
+- The ecs service was deployed in the private subnet
+- Before you run the tf file make sure the aws access key and secret access key is present in the .env file
+- The mq server was deployed manually within the same vpc as the raw-data server so they can communicate with the container in ECS without any issues
+- For the deployment of the this service you need to run
+docker-compose -f deployment/docker-compose.yml run --rm terraform init
+docker-compose -f deployment/docker-compose.yml run --rm terraform validate
+docker-compose -f deployment/docker-compose.yml run --rm terraform plan
+docker-compose -f deployment/docker-compose.yml run --rm terraform apply
+when you run terraform apply you will need to input the some values for the mq server
+- The credentials for the mq server are used in the terraform variable file 
+- After running the terraform apply, the docker image was built and pushed to elastic container registry
+- The service can be accessed from this url - http://raw-data-server-lb-1246447046.us-east-1.elb.amazonaws.com/

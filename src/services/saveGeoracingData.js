@@ -4,11 +4,13 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeGeoracing');
+const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveGeoracingData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceUrl = [];
+  let raceMetadatas;
 
   try {
     if (data.GeoracingRace) {
@@ -73,10 +75,7 @@ const saveGeoracingData = async (data) => {
     if (data.GeoracingPosition) {
       const positions = data.GeoracingPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.georacingPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -109,7 +108,9 @@ const saveGeoracingData = async (data) => {
       );
     }
 
-    await normalizeRace(data, transaction);
+    if (data.GeoracingRace) {
+      raceMetadatas = await normalizeRace(data, transaction);
+    }
     await transaction.commit();
   } catch (error) {
     console.log(error);
@@ -151,6 +152,11 @@ const saveGeoracingData = async (data) => {
           validate: true,
         },
       );
+    }
+  }
+  if (raceMetadatas) {
+    for(raceMetadata of raceMetadatas) {
+      await triggerWeatherSlicer(raceMetadata);
     }
   }
   return errorMessage;

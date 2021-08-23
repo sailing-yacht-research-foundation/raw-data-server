@@ -1,11 +1,17 @@
-const sinon = require('sinon');
-const elasticsearch = require('../elasticsearch');
+const elasticsearch = require('elasticsearch');
+const { indexRace } = require('../elasticsearch');
 
 describe('elasticsearch.js', () => {
   describe('When indexRace is called', () => {
+    let elasticsearchclient, esIndexSpy;
+    beforeAll(() => {
+      elasticsearchclient = new elasticsearch.Client();
+      esIndexSpy = jest.spyOn(elasticsearchclient, 'index');
+    })
     afterEach(() => {
-      sinon.restore();
-    });
+      jest.restoreAllMocks();
+    })
+
     it('should index race data', async () => {
       const raceId = 'raceid';
       const raceData = {
@@ -13,20 +19,15 @@ describe('elasticsearch.js', () => {
         name: 'test race',
       };
       const fakedResp = { id: raceId };
-      const indexMethod = sinon.replace(
-        elasticsearch.elasticsearchclient,
-        'index',
-        sinon.fake.yields(null, fakedResp),
-      );
+      elasticsearchclient.index.mockImplementation((_, callback) => callback(null, fakedResp));
 
-      const r = await elasticsearch.indexRace('raceid', raceData);
-      expect(indexMethod.callCount).toBe(1);
-      expect(indexMethod.getCall(0).args[0]).toEqual({
+      const r = await indexRace('raceid', raceData);
+      expect(esIndexSpy).toHaveBeenCalledWith({
         index: 'races',
         id: raceId,
         type: 'race',
         body: raceData,
-      });
+      }, expect.anything());
       expect(r).toEqual(fakedResp);
     });
 
@@ -37,23 +38,18 @@ describe('elasticsearch.js', () => {
         name: 'test race',
       };
       const fakedError = 'Faked error';
-      const indexMethod = sinon.replace(
-        elasticsearch.elasticsearchclient,
-        'index',
-        sinon.fake.yields(fakedError),
-      );
+      elasticsearchclient.index.mockImplementation((_, callback) => callback(fakedError));
 
       try {
-        await elasticsearch.indexRace('raceid', raceData);
+        await indexRace('raceid', raceData);
       } catch (err) {
         expect(err).toEqual(fakedError);
-        expect(indexMethod.callCount).toBe(1);
-        expect(indexMethod.getCall(0).args[0]).toEqual({
+        expect(esIndexSpy).toHaveBeenCalledWith({
           index: 'races',
           id: raceId,
           type: 'race',
           body: raceData,
-        });
+        }, expect.anything());
       }
     });
   });
