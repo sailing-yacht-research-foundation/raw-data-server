@@ -126,6 +126,8 @@ Set an `Authorization` header containing md5 hash of current date with format: y
 - `/api/v1/americas-cup-2021`
 
   - Method: POST
+  - Query:
+    - bucketName (required): Bucket name which has americas cup 2021 race jsons
   - Trigger the saving and normalization of Americas Cup 2021 Data.
 
 
