@@ -7,14 +7,6 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         primaryKey: true,
       },
-      race: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      race_original_id: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
       date: {
         type: Sequelize.TEXT,
         allowNull: false,
@@ -31,11 +23,19 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      timestamp: {
+        type: Sequelize.DOUBLE,
+        allowNull: false,
+      },
       instant: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
       average: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      filename: {
         type: Sequelize.TEXT,
         allowNull: false,
       },

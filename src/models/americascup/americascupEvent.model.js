@@ -7,23 +7,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         primaryKey: true,
       },
-      race: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
       race_original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
       boat_name: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      boat: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      boat_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
@@ -43,6 +31,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      timestamp: {
+        type: Sequelize.DOUBLE,
+        allowNull: false,
+      },
       event: {
         type: Sequelize.TEXT,
         allowNull: true,
@@ -54,6 +46,10 @@ module.exports = (sequelize, Sequelize) => {
       opt2: {
         type: Sequelize.TEXT,
         allowNull: true,
+      },
+      filename: {
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
     },
     {

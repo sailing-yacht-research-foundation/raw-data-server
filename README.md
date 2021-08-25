@@ -130,6 +130,12 @@ Set an `Authorization` header containing md5 hash of current date with format: y
     - bucketName (required): Bucket name which has americas cup 2021 race jsons
   - Trigger the saving and normalization of Americas Cup 2021 Data.
 
+- `/api/v1/americas-cup-2016`
+
+  - Method: POST
+  - Body (application/json):
+    - bucketName (required): bucket name in s3 where the raw data will be downloaded
+    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/americasCup2016
 
 ## Development Deployment
 - This service was deployed to AWS development environment using terraform
@@ -144,6 +150,6 @@ docker-compose -f deployment/docker-compose.yml run --rm terraform validate
 docker-compose -f deployment/docker-compose.yml run --rm terraform plan
 docker-compose -f deployment/docker-compose.yml run --rm terraform apply
 when you run terraform apply you will need to input the some values for the mq server
-- The credentials for the mq server are used in the terraform variable file 
+- The credentials for the mq server are used in the terraform variable file
 - After running the terraform apply, the docker image was built and pushed to elastic container registry
 - The service can be accessed from this url - http://raw-data-server-lb-1246447046.us-east-1.elb.amazonaws.com/

@@ -7,24 +7,20 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         primaryKey: true,
       },
-      race: {
-        type: Sequelize.UUID,
-        allowNull: false,
-      },
-      race_original_id: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
       boat_name: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
       boat: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       boat_original_id: {
         type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      boat_type: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       date: {
@@ -35,8 +31,16 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      local_time: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       zone: {
         type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      timestamp: {
+        type: Sequelize.DOUBLE,
         allowNull: false,
       },
       lat: {
@@ -115,13 +119,17 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      filename: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
     },
     {
       tableName: 'AmericasCupPositions',
       timestamps: false,
       indexes: [
           {
-              fields: ['race'],
+              fields: ['timestamp', 'boat','boat_type'],
           },
       ],
     },
