@@ -123,6 +123,12 @@ Set an `Authorization` header containing md5 hash of current date with format: y
     - url (required): URL of the failed scraper
     - error (required): Error detail
 
+- `/api/v1/americas-cup-2021`
+
+  - Method: POST
+  - Trigger the saving and normalization of Americas Cup 2021 Data.
+
+
 ## Development Deployment
 - This service was deployed to AWS development environment using terraform
 - The terraform files includes s3 backend to keep the terraform state, customized vpc was deployed, other network components needed for the deployment of the raw data server application
