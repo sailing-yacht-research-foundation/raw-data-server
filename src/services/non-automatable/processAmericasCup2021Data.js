@@ -465,54 +465,8 @@ const createWriter = async (
   }
   await writer.close();
 };
-
-const reduceFile = async (jsonData) => {
-  const fs = require('fs');
-  let jsonObj = jsonData;
-
-  var bKeys = Object.keys(jsonObj.race.buoys);
-  for (const key of bKeys) {
-    jsonObj.race.buoys[key].coordIntepolator.xCerp.valHistory.splice(50);
-    jsonObj.race.buoys[key].coordIntepolator.yCerp.valHistory.splice(50);
-    jsonObj.race.buoys[key].headingInterp.valHistory.splice(50);
-  }
-
-  var bKeys = Object.keys(jsonObj.race.boats);
-  for (const key of bKeys) {
-    jsonObj.race.boats[key].coordIntep.xCerp.valHistory.splice(50);
-    jsonObj.race.boats[key].coordIntep.yCerp.valHistory.splice(50);
-    jsonObj.race.boats[key].headingIntep.valHistory.splice(50);
-    jsonObj.race.boats[key].heelInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].pitchInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].speedInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].elevInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].sowInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].vmgInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].twsInterp.valHistory.splice(50);
-    jsonObj.race.boats[key].twdInterp.valHistory.splice(50);
-  }
-
-  var wpKey = Object.keys(jsonObj.race.windPoints);
-  for (const key of wpKey) {
-    jsonObj.race.windPoints[key].coordIntepolator.xCerp.valHistory.splice(50);
-    jsonObj.race.windPoints[key].coordIntepolator.yCerp.valHistory.splice(50);
-    jsonObj.race.windPoints[key].headingInterp.valHistory.splice(50);
-    jsonObj.race.windPoints[key].windSpeed.valHistory.splice(50);
-  }
-  var jsonContent = JSON.stringify(jsonObj);
-
-  fs.writeFile('output.json', jsonContent, 'utf8', function (err) {
-    if (err) {
-      console.log('An error occured while writing JSON Object to File.');
-      return console.log(err);
-    }
-
-    console.log('JSON file has been saved.');
-  });
-};
 module.exports = {
   getRaces,
   getObjectToRaceMapping,
   processAmericasCup2021Data,
-  reduceFile,
 };

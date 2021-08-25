@@ -3,7 +3,6 @@ const {
   getRaces,
   getObjectToRaceMapping,
   processAmericasCup2021Data,
-  reduceFile,
 } = require('../../non-automatable/processAmericasCup2021Data');
 const normalizeObj = require('../../normalization/non-automatable/normalizeAmericascup2021');
 jest
