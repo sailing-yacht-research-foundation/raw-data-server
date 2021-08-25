@@ -193,25 +193,21 @@ const processAmericasCup2021Data = async (optionalPath) => {
       sim_time,
     } = races[i];
     const boats = boatsMap.get(race_id);
-    const finalBoats = boats
-      ? await Promise.all(
-          boats.map(async (row) => {
-            return Object.assign({}, row, {
-              leftFoilPosition: boatLeftFoilPositionMap.get(row.id),
-              leftFoilState: boatLeftFoilStateMap.get(row.id),
-              rightFoilPosition: boatRightFoilPositionMap.get(row.id),
-              rightFoilState: boatRightFoilStateMap.get(row.id),
-              penalty: boatPenaltyMap.get(row.id),
-              protest: boatProtestMap.get(row.id),
-              rank: boatRankMap.get(row.id),
-              rudderAngle: boatRudderAngleMap.get(row.id),
-              sow: boatSowMap.get(row.id),
-              status: boatStatusMap.get(row.id),
-              leg: boatLegMap.get(row.id),
-            });
-          }),
-        )
-      : [];
+    const finalBoats = boats?.map((row) => {
+      return Object.assign({}, row, {
+        leftFoilPosition: boatLeftFoilPositionMap.get(row.id),
+        leftFoilState: boatLeftFoilStateMap.get(row.id),
+        rightFoilPosition: boatRightFoilPositionMap.get(row.id),
+        rightFoilState: boatRightFoilStateMap.get(row.id),
+        penalty: boatPenaltyMap.get(row.id),
+        protest: boatProtestMap.get(row.id),
+        rank: boatRankMap.get(row.id),
+        rudderAngle: boatRudderAngleMap.get(row.id),
+        sow: boatSowMap.get(row.id),
+        status: boatStatusMap.get(row.id),
+        leg: boatLegMap.get(row.id),
+      });
+    });
     await writer.appendRow({
       id: race_id,
       original_id: race_original_id,
@@ -244,257 +240,71 @@ const processAmericasCup2021Data = async (optionalPath) => {
   }
   await writer.close();
 
-  const posWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BoatPosition,
     positionPath,
-    {
-      useDataPageV2: false,
-    },
+    'race_id',
+    races,
+    'americasCup2021BoatPosition',
   );
-  for (let i = 0; i < races.length; i++) {
-    const { id: race_id } = races[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BoatPosition.findAll({
-        where: { race_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = data.length;
-      page++;
-      while (data.length > 0) {
-        await posWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await posWriter.close();
-
-  const twdWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BoatTwd,
     twdPath,
-    {
-      useDataPageV2: false,
-    },
+    'boat_id',
+    boatList,
+    'americasCup2021BoatTwd',
   );
-  for (let i = 0; i < boatList.length; i++) {
-    const boat_id = boatList[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BoatTwd.findAll({
-        where: { boat_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = boatList.length;
-      page++;
-      while (data.length > 0) {
-        await twdWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await twdWriter.close();
-
-  const twsWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BoatTws,
     twsPath,
-    {
-      useDataPageV2: false,
-    },
+    'boat_id',
+    boatList,
+    'americasCup2021BoatTws',
   );
-  for (let i = 0; i < boatList.length; i++) {
-    const boat_id = boatList[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BoatTws.findAll({
-        where: { boat_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = boatList.length;
-      page++;
-      while (data.length > 0) {
-        await twsWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await twsWriter.close();
-
-  const vmgWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BoatVmg,
     vmgPath,
-    {
-      useDataPageV2: false,
-    },
+    'boat_id',
+    boatList,
+    'americasCup2021BoatVmg',
   );
-  for (let i = 0; i < boatList.length; i++) {
-    const boat_id = boatList[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BoatVmg.findAll({
-        where: { boat_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = boatList.length;
-      page++;
-      while (data.length > 0) {
-        await vmgWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await vmgWriter.close();
-
-  const boundaryPacketWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BoundaryPacket,
     boundaryPacketPath,
-    {
-      useDataPageV2: false,
-    },
+    'race_id',
+    races,
+    'americasCup2021BoundaryPacket',
   );
-  for (let i = 0; i < races.length; i++) {
-    const { id: race_id } = races[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BoundaryPacket.findAll({
-        where: { race_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = races.length;
-      page++;
-      while (data.length > 0) {
-        await boundaryPacketWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await boundaryPacketWriter.close();
 
-  const buoyPositionWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BuoyPosition,
     buoyPositionPath,
-    {
-      useDataPageV2: false,
-    },
+    'race_id',
+    races,
+    'americasCup2021BuoyPosition',
   );
-  for (let i = 0; i < races.length; i++) {
-    const { id: race_id } = races[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BuoyPosition.findAll({
-        where: { race_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = races.length;
-      page++;
-      while (data.length > 0) {
-        await buoyPositionWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await buoyPositionWriter.close();
 
-  const buoyPositionStateWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021BuoyPositionState,
     buoyPositionStatePath,
-    {
-      useDataPageV2: false,
-    },
+    'race_id',
+    races,
+    'americasCup2021BuoyPositionState',
   );
-  for (let i = 0; i < races.length; i++) {
-    const { id: race_id } = races[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021BuoyPositionState.findAll({
-        where: { race_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = races.length;
-      page++;
-      while (data.length > 0) {
-        await buoyPositionStateWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await buoyPositionStateWriter.close();
-
-  const windDataWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021WindData,
     windDataPath,
-    {
-      useDataPageV2: false,
-    },
+    'race_id',
+    races,
+    'americasCup2021WindData',
   );
-  for (let i = 0; i < races.length; i++) {
-    const { id: race_id } = races[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021WindData.findAll({
-        where: { race_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = races.length;
-      page++;
-      while (data.length > 0) {
-        await windDataWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await windDataWriter.close();
-
-  const windPointWriter = await parquet.ParquetWriter.openFile(
+  await createWriter(
     americasCup2021WindPoint,
     windPointPath,
-    {
-      useDataPageV2: false,
-    },
+    'race_id',
+    races,
+    'americasCup2021WindPoint',
   );
-  for (let i = 0; i < races.length; i++) {
-    const { id: race_id } = races[i];
-    const perPage = 50000;
-    let page = 1;
-    let pageSize = 0;
-    do {
-      const data = await db.americasCup2021WindPoint.findAll({
-        where: { race_id },
-        raw: true,
-        offset: (page - 1) * perPage,
-        limit: perPage,
-      });
-      pageSize = races.length;
-      page++;
-      while (data.length > 0) {
-        await windPointWriter.appendRow(data.pop());
-      }
-    } while (pageSize === perPage);
-  }
-  await windPointWriter.close();
 
   const mainUrl = await uploadUtil.uploadFileToS3(
     parquetPath,
@@ -618,6 +428,42 @@ const processAmericasCup2021Data = async (optionalPath) => {
     windDataUrl,
     windPointUrl,
   };
+};
+
+const createWriter = async (
+  parquetSchema,
+  parquetPath,
+  baseId,
+  collection,
+  dbName,
+) => {
+  const writer = await parquet.ParquetWriter.openFile(
+    parquetSchema,
+    parquetPath,
+    {
+      useDataPageV2: false,
+    },
+  );
+  for (let i = 0; i < collection.length; i++) {
+    const id = collection[i]?.id ? collection[i].id : collection[i];
+    const perPage = 50000;
+    let page = 1;
+    let pageSize = 0;
+    do {
+      const data = await db[dbName].findAll({
+        where: { [baseId]: id },
+        raw: true,
+        offset: (page - 1) * perPage,
+        limit: perPage,
+      });
+      pageSize = data.length;
+      page++;
+      while (data.length > 0) {
+        await writer.appendRow(data.pop());
+      }
+    } while (pageSize === perPage);
+  }
+  await writer.close();
 };
 
 const reduceFile = async (jsonData) => {
