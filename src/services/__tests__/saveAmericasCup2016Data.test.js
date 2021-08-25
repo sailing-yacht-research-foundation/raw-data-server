@@ -4,16 +4,21 @@ const db = require('../../models');
 const saveAmericasCup2016Data = require('../non-automatable/saveAmericasCup2016Data');
 const { AMERICAS_CUP_TABLE_SUFFIX } = require('../../constants');
 const unzipFileUtil = require('../../utils/unzipFile');
+const { normalizeRace } = require('../normalization/non-automatable/normalizeAmericascup2016');
 const expectedJson1 = require('../../test-files/americasCup2016/objectsToSave_1.json');
 const expectedJson2 = require('../../test-files/americasCup2016/objectsToSave_2.json');
 
 jest.mock('../../utils/unzipFile');
+jest.mock('../normalization/non-automatable/normalizeAmericascup2016', () => ({
+  normalizeRace: jest.fn().mockResolvedValue({ id: '123' }),
+}));
 
 describe('Storing AmericasCup2016 data to DB', () => {
   const bulkCreateSpies = {};
 
   beforeAll(async () => {
     await db.sequelize.sync();
+
     jest.spyOn(temp, 'mkdirSync').mockReturnValue(path.join(__dirname, '..', '..', 'test-files', 'americasCup2016'));
     jest.spyOn(unzipFileUtil, 'downloadAndExtract').mockResolvedValue(true);
 
@@ -50,6 +55,7 @@ describe('Storing AmericasCup2016 data to DB', () => {
           expect.anything(),
         );
       }
+      expect(normalizeRace).toHaveBeenCalledTimes(1);
 
       const passedData2 = expectedJson2[dataKey];
       if (passedData2) {

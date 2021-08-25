@@ -294,6 +294,7 @@ exports.createRace = async function (
   boatIdentifiers,
   handicapRules,
   unstructuredText,
+  skipElasticSearch = false,
 ) {
   const name = nameT.replace('_', ' ');
   const startCountry = exports.pointToCountry(startPoint);
@@ -437,38 +438,39 @@ exports.createRace = async function (
   };
 
   // Only used by ElasticSearch
+  if (!skipElasticSearch) {
+    const boatIdentifiersFiltered = exports.filterList(boatIdentifiers);
+    const boatNamesFiltered = exports.filterList(boatNames);
 
-  const boatIdentifiersFiltered = exports.filterList(boatIdentifiers);
-  const boatNamesFiltered = exports.filterList(boatNames);
+    const body = {
+      id,
+      name,
+      event,
+      source,
+      url,
+      start_country: startCountry,
+      start_year: startYear,
+      start_month: startMonth,
+      start_day: startDay,
+      approx_start_time_ms: approxStartTimeMs,
+      approx_end_time_ms: approxEndTimeMs,
+      approx_duration_ms: approxDurationMs,
+      approx_start_point: approxStartPoint,
+      approx_mid_point: approxMidPoint,
+      approx_end_point: approxEndPoint,
+      bounding_box: boundingBox,
+      approx_area_sq_km: approxAreaSqKm,
+      approx_distance_km: approxDistanceKm,
+      num_boats: numBoats,
+      avg_time_between_positions: avgTimeBetweenPositions,
+      boat_models: boatModelsFiltered,
+      boat_identifiers: boatIdentifiersFiltered,
+      boat_names: boatNamesFiltered,
+      handicap_rules: handicapRules,
+      unstructured_text: unstructuredText,
+    };
 
-  const body = {
-    id,
-    name,
-    event,
-    source,
-    url,
-    start_country: startCountry,
-    start_year: startYear,
-    start_month: startMonth,
-    start_day: startDay,
-    approx_start_time_ms: approxStartTimeMs,
-    approx_end_time_ms: approxEndTimeMs,
-    approx_duration_ms: approxDurationMs,
-    approx_start_point: approxStartPoint,
-    approx_mid_point: approxMidPoint,
-    approx_end_point: approxEndPoint,
-    bounding_box: boundingBox,
-    approx_area_sq_km: approxAreaSqKm,
-    approx_distance_km: approxDistanceKm,
-    num_boats: numBoats,
-    avg_time_between_positions: avgTimeBetweenPositions,
-    boat_models: boatModelsFiltered,
-    boat_identifiers: boatIdentifiersFiltered,
-    boat_names: boatNamesFiltered,
-    handicap_rules: handicapRules,
-    unstructured_text: unstructuredText,
-  };
-
-  await elasticsearch.indexRace(id, body);
+    await elasticsearch.indexRace(id, body);
+  }
   return raceMetadata;
 };
