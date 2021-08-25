@@ -295,7 +295,7 @@ router.post('/register-failed-url', async function (req, res) {
   res.json({ success: errorMessage == '', errorMessage });
 });
 
-router.post('/america-cup-2021-save', async function (req, res) {
+router.post('/americas-cup-2021', async function (req, res) {
   let errorMessage = '';
   try {
     let fileNames = await s3Util.listAllKeys(req.query.bucketName);
@@ -307,8 +307,10 @@ router.post('/america-cup-2021-save', async function (req, res) {
       );
       let destructuredFileName = fileNames[count].split('-');
       let raceData = JSON.parse(rawData);
-      raceData.eventName = destructuredFileName[1];
-      raceData.raceName = destructuredFileName[2].replace('.json', '');
+      raceData.eventName = destructuredFileName[1].replace('_', ' ');
+      raceData.raceName = destructuredFileName[2]
+        .replace('.json', '')
+        .replace('_', ' ');
       let race = await db.americasCup2021Race.findOne({
         where: { original_id: raceData.race.raceId },
       });
