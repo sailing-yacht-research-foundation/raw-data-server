@@ -321,7 +321,6 @@ router.post('/americas-cup-2021', async function (req, res) {
           console.log(`Race ${fileNames[count]} already exists`);
         }
       } catch (err) {
-        await transaction.rollback();
         errorMessage += `\n${databaseErrorHandler(err)}`;
       }
 
@@ -335,7 +334,9 @@ router.post('/americas-cup-2021', async function (req, res) {
 
 router.post('/americas-cup-2016', async function (req, res) {
   if (!req.body.bucketName && !req.body.fileName) {
-    res.status(400).json({ message: 'Must specify bucketName and fileName in body' });
+    res
+      .status(400)
+      .json({ message: 'Must specify bucketName and fileName in body' });
     return;
   }
   let errorMessage = '';

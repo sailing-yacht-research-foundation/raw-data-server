@@ -13,7 +13,6 @@ const saveAmericasCup2021Data = async (data) => {
     let race = {};
     let boatPositions = [];
     let boats = [];
-    let raceMetadatas;
     let teams = [];
     if (data.race) {
       let raceId = uuidv4();
@@ -859,7 +858,6 @@ const saveAmericasCup2021Data = async (data) => {
   } catch (error) {
     console.log(error.toString());
     await transaction.rollback();
-    errorMessage = databaseErrorHandler(error);
   }
 };
 
