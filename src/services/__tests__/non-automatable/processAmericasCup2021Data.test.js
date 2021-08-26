@@ -117,4 +117,36 @@ describe('Processing exist AmericasCup2021 Data from DB to Parquet', () => {
     expect(uploadSpy).toHaveBeenCalledTimes(10);
     expect(fileUrl).toEqual(mockS3UploadResultPath);
   });
+
+  it('It should delete db data after processing parquet', async () => {
+    await processAmericasCup2021Data();
+    expect(await db.americasCup2021Race.count({})).toEqual(0);
+    expect(await db.americasCup2021Boat.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatPosition.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatLeftFoilState.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatLeftFoilPosition.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatLeg.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatPenalty.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatProtest.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatRank.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatRightFoilPosition.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatRightFoilState.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatRudderAngle.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatSow.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatStatus.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatTwd.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatTws.count({})).toEqual(0);
+    expect(await db.americasCup2021BoatVmg.count({})).toEqual(0);
+    expect(await db.americasCup2021BoundaryPacket.count({})).toEqual(0);
+    expect(await db.americasCup2021Buoy.count({})).toEqual(0);
+    expect(await db.americasCup2021BuoyPosition.count({})).toEqual(0);
+    expect(await db.americasCup2021BuoyPositionState.count({})).toEqual(0);
+    expect(await db.americasCup2021RaceStatus.count({})).toEqual(0);
+    expect(await db.americasCup2021Ranking.count({})).toEqual(0);
+    expect(await db.americasCup2021RoundingTime.count({})).toEqual(0);
+    expect(await db.americasCup2021Team.count({})).toEqual(0);
+    expect(await db.americasCup2021WindData.count({})).toEqual(0);
+    expect(await db.americasCup2021WindPoint.count({})).toEqual(0);
+    expect(await db.americasCup2021Boat.count({})).toEqual(0);
+  });
 });

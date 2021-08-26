@@ -403,17 +403,87 @@ const processAmericasCup2021Data = async (optionalPath) => {
 
   // Delete parqueted data from DB
   const where = { id: { [Op.in]: raceList } };
+  const whereRace = { race_id: { [Op.in]: raceList } };
   await db.americasCup2021Race.destroy({
     where,
   });
   await db.americasCup2021Boat.destroy({
-    where,
+    where: whereRace,
   });
   await db.americasCup2021BoatPosition.destroy({
-    where,
+    where: whereRace,
+  });
+  await db.americasCup2021BoatLeftFoilState.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatLeftFoilPosition.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatLeg.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatPenalty.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatProtest.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatRank.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatRightFoilPosition.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatRightFoilState.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatRudderAngle.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatSow.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatStatus.destroy({
+    where: whereRace,
   });
   await db.americasCup2021BoatTwd.destroy({
-    where,
+    where: whereRace,
+  });
+  await db.americasCup2021BoatTws.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoatVmg.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BoundaryPacket.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021Buoy.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BuoyPosition.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021BuoyPositionState.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021RaceStatus.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021Ranking.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021RoundingTime.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021Team.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021WindData.destroy({
+    where: whereRace,
+  });
+  await db.americasCup2021WindPoint.destroy({
+    where: whereRace,
   });
 
   return {
