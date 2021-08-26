@@ -19,7 +19,7 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
     targetDir = temp.mkdirSync('americascup_rawdata');
     await downloadAndExtract({ s3, bucketName, fileName, targetDir });
 
-    const existingRacesInDB = await db.americascupRace.findAll({
+    const existingRacesInDB = await db.americasCupRace.findAll({
       attributes: ['original_id']
     }).then((races) => races.map((r) => r.original_id));
 
@@ -100,7 +100,7 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
         const csvPath = path.join(regattaPath, dayDirName, CSV_DIR_NAME);
         const csvFileNames = fs.readdirSync(csvPath);
         const eventCsvFileNames = csvFileNames.filter((n) => n.split('_')[1] === 'events.csv');
-        const boats = await db.americascupBoat.findAll({
+        const boats = await db.americasCupBoat.findAll({
           raw: true,
         });
         for (const eventFileName of eventCsvFileNames) {
@@ -284,7 +284,7 @@ const _mapRaceCourseLimitData = (rawJson, raceId, raceOriginalId) => {
 
 const _mapAvgWindData = async (csvPath, csvFileNames, fileTimestamp) => {
   const avgWindFileName = `${fileTimestamp}_avg_wind.csv`;
-  const avgWindInDB = await db.americascupAvgWind.findOne({
+  const avgWindInDB = await db.americasCupAvgWind.findOne({
     where: {
       filename: avgWindFileName,
     },
@@ -309,7 +309,7 @@ const _mapAvgWindData = async (csvPath, csvFileNames, fileTimestamp) => {
 }
 
 const _mapEventsData = async (csvPath, eventFileName) => {
-  const eventInDB = await db.americascupEvent.findOne({
+  const eventInDB = await db.americasCupEvent.findOne({
     where: {
       filename: eventFileName,
     },
@@ -341,7 +341,7 @@ const _mapPositionsData = async (csvPath, csvFileNames, fileTimestamp, boats) =>
   const positionFileNames = csvFileNames.filter((n) => n.indexOf(positionFileNamePrefix) === 0);
   const allPositionJson = [];
   for (positionFileName of positionFileNames) {
-    const posInDB = await db.americascupPosition.findOne({
+    const posInDB = await db.americasCupPosition.findOne({
       where: {
         filename: positionFileName,
       },
@@ -404,7 +404,7 @@ const _saveToDatabase = async(objectsToSave, transaction) => {
         const clonedData = [].concat(dataToSave);
         while (clonedData.length > 0) {
           const splicedArray = clonedData.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-          await db[`americascup${suffix}`].bulkCreate(splicedArray, {
+          await db[`americasCup${suffix}`].bulkCreate(splicedArray, {
             ignoreDuplicates: true,
             validate: true,
             transaction,
@@ -434,7 +434,7 @@ const _getMilliSecsFromLocalTime = (dateStr, secs, zone) => {
 const _normalizeRaces = async (regatta) => {
   console.log(`Normalizing races for regatta ${regatta.original_id}`);
   console.log('Getting race');
-  const races = await db.americascupRace.findAll({
+  const races = await db.americasCupRace.findAll({
     where: {
       [Op.and]: [
         { regatta_original_id: regatta.original_id, },
@@ -445,21 +445,21 @@ const _normalizeRaces = async (regatta) => {
   for (race of races) {
     console.log(`Fetching race data for ${race.original_id}`);
     console.log('Getting boats');
-    const boats = await db.americascupBoat.findAll({
+    const boats = await db.americasCupBoat.findAll({
       where: {
         original_id: race.participants
       },
       raw: true,
     });
     console.log('Getting marks');
-    const marks = await db.americascupMark.findAll({
+    const marks = await db.americasCupMark.findAll({
       where: {
         race: race.id,
       },
       raw: true,
     });
     console.log(`Getting events race ${race.original_id}`);
-    const finishEvent = await db.americascupEvent.findOne({
+    const finishEvent = await db.americasCupEvent.findOne({
       where: {
         [Op.and]: [
           { race_original_id: race.original_id },
@@ -476,7 +476,7 @@ const _normalizeRaces = async (regatta) => {
     const raceStartTime = new Date(race.start_time).getTime();
     const newStartTime = raceStartTime - (10 * 60 * 1000);  // Subtract 10mins to get positions before race start
     console.log('Getting positions for participants', race.participants);
-    const positions = await db.americascupPosition.findAll({
+    const positions = await db.americasCupPosition.findAll({
       where: {
         [Op.and]: [
           {
