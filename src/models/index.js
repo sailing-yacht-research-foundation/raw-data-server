@@ -679,7 +679,7 @@ db.americasCup2021WindPoint =
 
 // === Americas Cup ===
 for (key of AMERICAS_CUP_TABLE_SUFFIX) {
-  db[`americascup${key}`] = require(`./americascup/americascup${key}.model`)(
+  db[`americasCup${key}`] = require(`./americascup/americasCup${key}.model`)(
     sequelize,
     Sequelize,
   );

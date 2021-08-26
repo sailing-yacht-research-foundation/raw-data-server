@@ -23,13 +23,13 @@ describe('Storing AmericasCup2016 data to DB', () => {
     jest.spyOn(unzipFileUtil, 'downloadAndExtract').mockResolvedValue(true);
 
     for (key of AMERICAS_CUP_TABLE_SUFFIX) {
-      const spy = jest.spyOn(db[`americascup${key}`], 'bulkCreate');
+      const spy = jest.spyOn(db[`americasCup${key}`], 'bulkCreate');
       bulkCreateSpies[key] = spy;
     }
   });
   afterAll(async () => {
     for (key of AMERICAS_CUP_TABLE_SUFFIX) {
-      await db[`americascup${key}`].destroy({ truncate: true });
+      await db[`americasCup${key}`].destroy({ truncate: true });
     }
     await db.sequelize.close();
     jest.restoreAllMocks();
