@@ -161,7 +161,6 @@ const processSwiftsureData = async (optionalPath) => {
   );
 
   if (!optionalPath) {
-    console.log('parquetPath', parquetPath);
     fs.unlink(parquetPath, (err) => {
       if (err) {
         console.log(err);
