@@ -17,6 +17,7 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
   const CSV_DIR_NAME = 'csv';
   try {
     targetDir = temp.mkdirSync('americascup_rawdata');
+    console.log(`Downloading file ${fileName} from s3`);
     await downloadAndExtract({ s3, bucketName, fileName, targetDir });
 
     const existingRacesInDB = await db.americasCupRace.findAll({
@@ -34,7 +35,6 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
       const dayDirNames = listDirectories(regattaPath);
       let regattaData;
       for (const dayDirName of dayDirNames) {
-        console.log('Processing day directory', dayDirName);
         const xmlPath = path.join(regattaPath, dayDirName, XML_DIR_NAME);
         const xmlFiles = fs.readdirSync(xmlPath);
 
@@ -49,7 +49,6 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
 
         const raceFileNames = xmlFiles.filter((n) => n.split('_')[1] === 'race.xml');
         for (const raceFileName of raceFileNames) {
-          console.log('Processing race file', raceFileName);
           const objectsToSave = {};
           const raceFilePath = path.join(xmlPath, raceFileName);
           const fileTimestamp = raceFileName.split('_')[0];
@@ -104,7 +103,6 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
           raw: true,
         });
         for (const eventFileName of eventCsvFileNames) {
-          console.log(`Processing event file ${eventFileName}`);
           const objectsToSave = {};
           try {
             const fileTimestamp = eventFileName.split('_')[0];
@@ -141,6 +139,7 @@ const saveAmericasCup2016Data = async (bucketName, fileName) => {
       // The normalization is per regatta since the position file is not per race. Need all data saved first to be complete
       await _normalizeRaces(regattaData);
     }
+    console.log('Finished saving all regattas');
   } catch (err) {
     console.log('An error occured', err);
   } finally {
@@ -433,7 +432,6 @@ const _getMilliSecsFromLocalTime = (dateStr, secs, zone) => {
 
 const _normalizeRaces = async (regatta) => {
   console.log(`Normalizing races for regatta ${regatta.original_id}`);
-  console.log('Getting race');
   const races = await db.americasCupRace.findAll({
     where: {
       [Op.and]: [
@@ -443,22 +441,18 @@ const _normalizeRaces = async (regatta) => {
     },
   });
   for (race of races) {
-    console.log(`Fetching race data for ${race.original_id}`);
-    console.log('Getting boats');
     const boats = await db.americasCupBoat.findAll({
       where: {
         original_id: race.participants
       },
       raw: true,
     });
-    console.log('Getting marks');
     const marks = await db.americasCupMark.findAll({
       where: {
         race: race.id,
       },
       raw: true,
     });
-    console.log(`Getting events race ${race.original_id}`);
     const finishEvent = await db.americasCupEvent.findOne({
       where: {
         [Op.and]: [
@@ -475,7 +469,6 @@ const _normalizeRaces = async (regatta) => {
 
     const raceStartTime = new Date(race.start_time).getTime();
     const newStartTime = raceStartTime - (10 * 60 * 1000);  // Subtract 10mins to get positions before race start
-    console.log('Getting positions for participants', race.participants);
     const positions = await db.americasCupPosition.findAll({
       where: {
         [Op.and]: [
@@ -489,7 +482,6 @@ const _normalizeRaces = async (regatta) => {
       },
       raw: true,
     });
-    console.log('positions.length', positions.length)
 
     const objectsToPass = {
       AmericasCupRegatta: regatta,
@@ -505,7 +497,6 @@ const _normalizeRaces = async (regatta) => {
       console.log(`Failed in normalizing race ${race.id}`, err);
     }
   }
-  console.log('Finished normalizing races');
 }
 
 module.exports = saveAmericasCup2016Data;
