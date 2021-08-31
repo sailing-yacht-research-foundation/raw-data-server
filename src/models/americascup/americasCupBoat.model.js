@@ -10,7 +10,10 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+      },
+      year: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       shape_original_id: {
         type: Sequelize.TEXT,
@@ -22,7 +25,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       ack: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       ip_address: {
         type: Sequelize.TEXT,
@@ -64,10 +67,20 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      model: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
     },
     {
       tableName: 'AmericasCupBoats',
       timestamps: false,
+      indexes: [
+        {
+          unique: true,
+          fields: ['original_id', 'year'],
+        },
+      ],
     },
   );
   return americasCupBoat;

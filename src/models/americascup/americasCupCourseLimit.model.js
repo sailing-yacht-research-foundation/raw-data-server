@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       seq_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       race: {
@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       race_original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       lat: {
@@ -29,12 +29,18 @@ module.exports = (sequelize, Sequelize) => {
       },
       time_created: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {
       tableName: 'AmericasCupCourseLimits',
       timestamps: false,
+      indexes: [
+        {
+          unique: true,
+          fields: ['seq_id', 'race_original_id'],
+        },
+      ],
     },
   );
   return americasCupCourseLimit;

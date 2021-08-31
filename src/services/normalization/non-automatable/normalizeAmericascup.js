@@ -23,8 +23,8 @@ const normalizeRace = async (
   },
   transaction,
 ) => {
-  console.log('normalizing start');
-  const SOURCE = 'AMERICASCUP2016';
+  console.log('Normalizing start');
+  const SOURCE = 'AMERICASCUP';
   const regatta = AmericasCupRegatta;
   const race = AmericasCupRace;
   const boats = AmericasCupBoat?.filter((b) => (b.type === 'Yacht'));
@@ -72,7 +72,6 @@ const normalizeRace = async (
 
   let startPoint;
   if (startMarks.length > 1) {
-    console.log('getting startPoint using marks');
     startPoint = findCenter(
       startMarks[0].lat,
       startMarks[0].lon,
@@ -89,7 +88,6 @@ const normalizeRace = async (
 
   let endPoint;
   if (finishMarks.length > 1) {
-    console.log('getting endPoint using marks');
     endPoint = findCenter(
       finishMarks[0].lat,
       finishMarks[0].lon,
@@ -115,7 +113,7 @@ const normalizeRace = async (
   const event = regatta.id;
   boats?.forEach((b) => {
     boatNames.push(b.boat_name);
-    boatModels.push(b.hull_num);
+    boatModels.push(b.model);
     boatIdentifiers.push(b.stowe_name);
     unstructuredText.push(b.short_name);
     unstructuredText.push(b.shorter_name);
@@ -162,6 +160,7 @@ const normalizeRace = async (
       fields: Object.keys(raceMetadata),
       transaction,
     });
+    console.log('uploading geojson');
     await uploadUtil.uploadGeoJsonToS3(
       race.id,
       tracksGeojson,

@@ -10,7 +10,14 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+      },
+      year: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      part: {
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       seq: {
         type: Sequelize.TEXT,
@@ -28,6 +35,12 @@ module.exports = (sequelize, Sequelize) => {
     {
       tableName: 'AmericasCupBoatShapes',
       timestamps: false,
+      indexes: [
+        {
+          unique: true,
+          fields: ['original_id', 'year'],
+        },
+      ],
     },
   );
   return americasCupBoatShape;

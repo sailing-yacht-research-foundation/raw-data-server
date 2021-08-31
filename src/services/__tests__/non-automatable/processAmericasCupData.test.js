@@ -6,18 +6,18 @@ const {
   getObjectToRaceMapping,
   processAmericasCupData,
 } = require('../../non-automatable/processAmericasCupData');
-const saveAmericasCup2016Data = require('../../non-automatable/saveAmericasCup2016Data');
+const saveAmericasCupData = require('../../non-automatable/saveAmericasCupData');
 const uploadUtil = require('../../uploadUtil');
 const expectedJson1 = require('../../../test-files/americasCup2016/objectsToSave_1.json');
 
-jest.mock('../../normalization/non-automatable/normalizeAmericascup2016', () => ({
+jest.mock('../../normalization/non-automatable/normalizeAmericascup', () => ({
   normalizeRace: jest.fn().mockResolvedValue({ id: '123' }),
 }));
 jest.mock('../../../utils/unzipFile', () => ({
   downloadAndExtract: jest.fn().mockResolvedValue(true),
 }));
 
-describe('Processing non-existent AmericasCup2021 Data from DB to Parquet', () => {
+describe('Processing non-existent AmericasCup2016 Data from DB to Parquet', () => {
   beforeAll(async () => {
     await db.sequelize.sync();
   });
@@ -32,14 +32,14 @@ describe('Processing non-existent AmericasCup2021 Data from DB to Parquet', () =
   });
 });
 
-describe('Processing exist AmericasCup2021 Data from DB to Parquet', () => {
+describe('Processing exist AmericasCup2016 Data from DB to Parquet', () => {
   let raceID;
   const americasCupKeys = Object.keys(db).filter((i) => i.indexOf('americasCup') === 0);
   beforeAll(async () => {
     await db.sequelize.sync();
     jest.spyOn(temp, 'mkdirSync').mockReturnValue(path.join(__dirname, '..', '..', '..', 'test-files', 'americasCup2016'));
 
-    await saveAmericasCup2016Data('bucketName', 'fileName');
+    await saveAmericasCupData('bucketName', 'fileName', '2016');
     raceID = expectedJson1.AmericasCupRace.original_id;
   });
   afterAll(async () => {
