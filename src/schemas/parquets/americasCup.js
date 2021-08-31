@@ -48,7 +48,8 @@ const americasCupAvgWind = new parquet.ParquetSchema({
 const americasCupBoat = new parquet.ParquetSchema({
   id: { type: 'UTF8' },
   original_id: { type: 'UTF8' },
-  shape_original_id: { type: 'UTF8' },
+  year: { type: 'UTF8' },
+  shape_original_id: { type: 'UTF8', optional: true  },
   type: { type: 'UTF8' },
   ack: { type: 'UTF8' },
   ip_address: { type: 'UTF8', optional: true },
@@ -61,11 +62,14 @@ const americasCupBoat = new parquet.ParquetSchema({
   flag: { type: 'UTF8', optional: true },
   peli_id: { type: 'UTF8', optional: true },
   radio_ip: { type: 'UTF8', optional: true },
+  model: { type: 'UTF8', optional: true },
 });
 
 const americasCupBoatShape = new parquet.ParquetSchema({
   id: { type: 'UTF8' },
   original_id: { type: 'UTF8' },
+  year: { type: 'UTF8' },
+  part: { type: 'UTF8' },
   seq: { type: 'UTF8' },
   y: { type: 'UTF8' },
   x: { type: 'UTF8' },
@@ -89,9 +93,9 @@ const americasCupCombined = new parquet.ParquetSchema({
   race_original_id: { type: 'UTF8' },
   type: { type: 'UTF8' },
   name: { type: 'UTF8', optional: true },
-  start_time: { type: 'UTF8' },
-  postpone: { type: 'UTF8' },
-  creation_time_date: { type: 'UTF8' },
+  start_time: { type: 'UTF8', optional: true },
+  postpone: { type: 'UTF8', optional: true },
+  creation_time_date: { type: 'UTF8', optional: true },
   regatta: { type: 'UTF8' },
   regatta_original_id: { type: 'UTF8' },
   participants: { type: 'UTF8' },
@@ -113,7 +117,7 @@ const americasCupCombined = new parquet.ParquetSchema({
       seq_id: { type: 'UTF8' },
       lat: { type: 'UTF8' },
       lon: { type: 'UTF8' },
-      time_created: { type: 'UTF8' },
+      time_created: { type: 'UTF8', optional: true },
     },
   },
   events: {

@@ -22,15 +22,15 @@ module.exports = (sequelize, Sequelize) => {
       },
       start_time: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       postpone: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       creation_time_date: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       regatta: {
         type: Sequelize.TEXT,

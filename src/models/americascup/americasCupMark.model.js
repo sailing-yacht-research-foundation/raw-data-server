@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       race: {
@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       race_original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       compound_mark: {
@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       compound_mark_original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       seq_id: {
@@ -47,6 +47,13 @@ module.exports = (sequelize, Sequelize) => {
     {
       tableName: 'AmericasCupMarks',
       timestamps: false,
+      indexes: [
+        {
+          name: 'race_index',
+          unique: true,
+          fields: ['original_id', 'compound_mark_original_id', 'race_original_id'],
+        },
+      ],
     },
   );
   return americasCupMark;

@@ -130,12 +130,13 @@ Set an `Authorization` header containing md5 hash of current date with format: y
     - bucketName (required): Bucket name which has americas cup 2021 race jsons
   - Trigger the saving and normalization of Americas Cup 2021 Data.
 
-- `/api/v1/americas-cup-2016`
+- `/api/v1/americas-cup`
 
   - Method: POST
   - Body (application/json):
     - bucketName (required): bucket name in s3 where the raw data will be downloaded
-    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/americasCup2016
+    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/americasCup2013 or ./src/test-files/americasCup2016
+    - year (required): Year when the americas cup event happened
 
 ## Development Deployment
 - This service was deployed to AWS development environment using terraform

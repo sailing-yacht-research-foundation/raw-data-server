@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<BoatConfig>
+  <BoatShapes>
+    <BoatShape ShapeID="0">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-3.46" />
+        <Vtx Seq="2" Y="13.449" X="-3.46" />
+        <Vtx Seq="3" Y="14.019" X="0" />
+        <Vtx Seq="4" Y="13.449" X="3.46" />
+        <Vtx Seq="5" Y="0" X="3.46" />
+      </Vertices>
+      <Catamaran>
+        <Vtx Seq="1" Y="1.769" X="-2.752" />
+        <Vtx Seq="2" Y="0" X="-2.813" />
+        <Vtx Seq="3" Y="0" X="-3.34" />
+        <Vtx Seq="4" Y="5.351" X="-3.46" />
+        <Vtx Seq="5" Y="10.544" X="-3.387" />
+        <Vtx Seq="6" Y="13.449" X="-3.075" />
+        <Vtx Seq="7" Y="10.851" X="-2.793" />
+        <Vtx Seq="8" Y="6.669" X="-2.699" />
+        <Vtx Seq="9" Y="6.669" X="2.699" />
+        <Vtx Seq="10" Y="10.851" X="2.793" />
+        <Vtx Seq="11" Y="13.449" X="3.075" />
+        <Vtx Seq="12" Y="10.544" X="3.387" />
+        <Vtx Seq="13" Y="5.351" X="3.46" />
+        <Vtx Seq="14" Y="0" X="3.34" />
+        <Vtx Seq="15" Y="0" X="2.813" />
+        <Vtx Seq="16" Y="1.769" X="2.752" />
+      </Catamaran>
+      <Bowsprit>
+        <Vtx Seq="1" Y="6.669" X="-0.2" />
+        <Vtx Seq="2" Y="11.377" X="-0.2" />
+        <Vtx Seq="3" Y="14.019" X="0" />
+        <Vtx Seq="4" Y="11.377" X="0.2" />
+        <Vtx Seq="5" Y="6.669" X="0.2" />
+      </Bowsprit>
+      <Trampoline>
+        <Vtx Seq="1" Y="2" X="-2.699" />
+        <Vtx Seq="2" Y="6.438" X="-2.699" />
+        <Vtx Seq="3" Y="6.438" X="2.699" />
+        <Vtx Seq="4" Y="2" X="2.699" />
+      </Trampoline>
+    </BoatShape>
+    <BoatShape ShapeID="1">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-2.659" />
+        <Vtx Seq="2" Y="18.359" X="-2.659" />
+        <Vtx Seq="3" Y="18.359" X="2.659" />
+        <Vtx Seq="4" Y="0" X="2.659" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="2">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-1.278" />
+        <Vtx Seq="2" Y="8.876" X="-1.278" />
+        <Vtx Seq="3" Y="8.876" X="1.278" />
+        <Vtx Seq="4" Y="0" X="1.278" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="3">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-1.1" />
+        <Vtx Seq="2" Y="8.3" X="-1.1" />
+        <Vtx Seq="3" Y="8.3" X="1.1" />
+        <Vtx Seq="4" Y="0" X="1.1" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="4">
+      <Vertices>
+        <Vtx Seq="1" Y="0" X="-0.75" />
+        <Vtx Seq="2" Y="3" X="-0.75" />
+        <Vtx Seq="3" Y="3" X="0.75" />
+        <Vtx Seq="4" Y="0" X="0.75" />
+      </Vertices>
+    </BoatShape>
+    <BoatShape ShapeID="5" />
+  </BoatShapes>
+  <Boats>
+    <Boat IPAddress="172.20.1.121" Type="RC" SourceID="121" ShapeID="1" StoweName="PRO" ShortName="PRO" BoatName="Regardless" Skipper="Alistair McRae" Flag="Mark,Stowe">
+      <GPSposition Z="6.840" Y="7.800" X="0.000" />
+      <FlagPosition Z="0.000" Y="7.800" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" />
+    </Boat>
+    <Boat IPAddress="172.20.1.122" Type="Mark" SourceID="122" ShapeID="2" StoweName="CON" ShortName="Constellation" BoatName="Constellation " Skipper="Gabriel Fernandez" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" />
+    </Boat>
+    <Boat IPAddress="172.20.1.123" Type="Mark" SourceID="123" ShapeID="2" StoweName="MIS" ShortName="Mischief" BoatName="Mischief" Skipper="Piet Van Os" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" />
+    </Boat>
+    <Boat IPAddress="172.20.1.124" Type="Mark" SourceID="124" ShapeID="2" ShortName="Atalanta" BoatName="Atalanta" Skipper="Joey Pasquali" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" />
+    </Boat>
+    <Boat IPAddress="172.20.1.125" Type="Mark" SourceID="125" ShapeID="2" StoweName="VOL" ShortName="Volunteer" BoatName="Volunteer" Skipper="George Santon" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="0" />
+    </Boat>
+    <Boat IPAddress="172.20.1.126" Type="Mark" SourceID="126" ShapeID="2" StoweName="MS2" ShortName="Defender" BoatName="Defender" Skipper="Kyle Gunderson" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="NONE" />
+    </Boat>
+    <Boat IPAddress="172.20.1.127" Type="Mark" SourceID="127" ShapeID="2" StoweName="REL" ShortName="Reliance" BoatName="Reliance" Skipper="Stan Gibbs" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="NONE" />
+    </Boat>
+    <Boat IPAddress="172.20.1.128" Type="Mark" SourceID="128" ShapeID="2" ShortName="Shamrock" BoatName="Shamrock" Skipper="Stan Gibbs" Flag="Mark">
+      <GPSposition Z="5.334" Y="3.804" X="0.000" />
+      <FlagPosition Z="0.000" Y="3.426" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" />
+    </Boat>
+    <Boat IPAddress="172.20.1.129" Type="Marshall" SourceID="129" ShapeID="3" StoweName="WEA" ShortName="Weatherly" BoatName="Weatherly" Skipper="Mattias Dahlstrom">
+      <GPSposition Z="5.170" Y="3.804" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="0" />
+    </Boat>
+    <Boat IPAddress="172.20.1.130" Type="Umpire" SourceID="130" ShapeID="3" StoweName="VIG" ShortName="Vigilant" BoatName="Vigilant" Flag="Stowe">
+      <GPSposition Z="5.170" Y="3.804" X="0.000" />
+      <NavDevice Type="NovAtelGps" />
+      <BoatInstruments Type="MaretronWindSonic" />
+    </Boat>
+    <Boat IPAddress="172.20.1.101" Type="Yacht" SourceID="101" ShapeID="0" StoweName="KOR" ShortName="TEAM KOREA" BoatName="TEAM KOREA" Skipper="Chris Draper" Country="KOR" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.738" Y="0.625" X="0.001" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.102" Type="Yacht" SourceID="102" ShapeID="0" StoweName="AR1" ShortName="ARTEMIS" BoatName="ARTEMIS" Skipper="Terry Hutchinson" Country="SWE" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.732" Y="0.620" X="0.002" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.103" Type="Yacht" SourceID="103" ShapeID="0" StoweName="TNZ" ShortName="ETNZ" BoatName="EMIRATES TEAM NZ" Skipper="Dean Barker" Country="NZL" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.663" Y="0.561" X="-0.032" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.104" Type="Yacht" SourceID="104" ShapeID="0" StoweName="OR4" ShortName="OR SPITHILL" BoatName="ORACLE RACING SPITHILL" Skipper="James Spithill" Country="USA" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.724" Y="0.612" X="-0.004" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.105" Type="Yacht" SourceID="105" ShapeID="0" StoweName="OR5" ShortName="OR COUTTS" BoatName="ORACLE RACING COUTTS" Skipper="Russel Coutts" Country="USA" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.725" Y="0.614" X="0.013" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.106" Type="Yacht" SourceID="106" ShapeID="0" StoweName="CHN" ShortName="CHINA TEAM" BoatName="CHINA TEAM" Skipper="Mitch Booth" Country="CHN" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.655" Y="0.555" X="-0.023" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.107" Type="Yacht" SourceID="107" ShapeID="0" StoweName="NRG" ShortName="ENERGY TEAM" BoatName="ENERGY TEAM" Skipper="Loick Peyron" Country="FRA" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.691" Y="0.550" X="0.000" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.108" Type="Yacht" SourceID="108" ShapeID="0" StoweName="GCR" ShortName="GREEN COMM" BoatName="GREEN COMM" Skipper="Vissilij Zbogar" Country="ESP" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.691" Y="0.584" X="-0.008" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.109" Type="Yacht" SourceID="109" ShapeID="0" StoweName="ALF" ShortName="ALEPH" BoatName="ALEPH" Skipper="Bertrand Pace" Country="FRA" Flag="Stowe">
+      <PolarFile Name="YachtIDpolar.txt" />
+      <GPSposition Z="1.730" Y="0.617" X="-0.001" />
+      <MastTop Z="21.496" Y="4.233" X="0.000" />
+      <NavDevice Type="NovAtelSpan" />
+      <BoatInstruments Type="NONE" />
+      <VehicleToBodyRotation Z="180" Y="0" X="0" />
+      <InsCoordinate Z="0.133" Y="1.798" X="3.21065" />
+      <ImuOrientation Mode="4" />
+    </Boat>
+    <Boat IPAddress="172.20.1.140" Type="Helicopter" SourceID="140" ShapeID="5" ShortName="HEL" BoatName="Helicopter" />
+    <Boat IPAddress="172.20.1.201" Type="ProApp" SourceID="201" ShapeID="5" StoweName="PRO" ShortName="PROAPP" BoatName="PRO John Craig" />
+    <Boat IPAddress="172.20.1.202" Type="MDSS" SourceID="202" ShapeID="5" ShortName="MDSS" BoatName="MDSS" />
+    <Boat IPAddress="172.20.1.203" Type="ProApp" SourceID="203" ShapeID="5" StoweName="PRO" ShortName="PRO" BoatName="PRO BACKUP" />
+    <Boat IPAddress="172.20.1.204" Type="UmpApp" SourceID="204" ShapeID="5" StoweName="UMP" ShortName="UMPAPP1" BoatName="UMP 1" />
+    <Boat IPAddress="172.20.1.205" Type="UmpApp" SourceID="205" ShapeID="5" StoweName="UMP" ShortName="UMPAPP2" BoatName="UMP 2" />
+    <Boat IPAddress="172.20.1.206" Type="ProApp" SourceID="206" ShapeID="5" StoweName="PRO" ShortName="PROAPP_GWW" BoatName="Graeme Pro" />
+    <Boat IPAddress="172.20.1.207" Type="UmpApp" SourceID="207" ShapeID="5" StoweName="UMP" ShortName="UMPAPP_GWW" BoatName="Graeme Ump" />
+    <Boat IPAddress="172.20.1.208" Type="ProApp" SourceID="208" ShapeID="5" StoweName="PV1" ShortName="PV1" BoatName="ProViewer 1" />
+    <Boat IPAddress="172.20.1.209" Type="ProApp" SourceID="209" ShapeID="5" StoweName="PV2" ShortName="PV2" BoatName="ProViewer 2" />
+    <Boat IPAddress="172.20.1.210" Type="ProApp" SourceID="210" ShapeID="5" StoweName="PV3" ShortName="PV3" BoatName="ProViewer 3" />
+    <Boat IPAddress="172.20.1.211" Type="ClientData" SourceID="211" ShapeID="5" StoweName="LBi" ShortName="LBi" BoatName="LBi" />
+    <Boat IPAddress="172.20.1.214" Type="ClientData" SourceID="214" ShapeID="5" StoweName="ARL" ShortName="ARL4" BoatName="ARL 2D 4" />
+    <Boat IPAddress="172.20.1.215" Type="ClientData" SourceID="215" ShapeID="5" StoweName="ARL" ShortName="ARL5" BoatName="ARL 3D 1" />
+  </Boats>
+</BoatConfig>
