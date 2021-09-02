@@ -683,8 +683,43 @@ for (key of AMERICAS_CUP_TABLE_SUFFIX) {
     sequelize,
     Sequelize,
   );
-};
+}
 // === End of Americas Cup ===
+
+db.sapCompetitor = require('./sap/SapCompetitor.model')(sequelize, Sequelize);
+db.sapCompetitorBoat = require('./sap/SapCompetitorBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorBoatPosition = require('./sap/SapCompetitorBoatPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorLeg = require('./sap/SapCompetitorLeg.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorManeuver = require('./sap/SapCompetitorManeuver.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapMark = require('./sap/SapMark.model')(sequelize, Sequelize);
+db.sapCompetitorMarkPosition = require('./sap/SapCompetitorMarkPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorMarkPassing = require('./sap/SapCompetitorMarkPassing.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCourse = require('./sap/SapCourse.model')(sequelize, Sequelize);
+db.sapRace = require('./sap/SapRace.model')(sequelize, Sequelize);
+db.sapTargetTimeLeg = require('./sap/SapTargetTimeLeg.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapWindSummary = require('./sap/SapWindSummary.model')(sequelize, Sequelize);
+// === End of SAP ===
 
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
