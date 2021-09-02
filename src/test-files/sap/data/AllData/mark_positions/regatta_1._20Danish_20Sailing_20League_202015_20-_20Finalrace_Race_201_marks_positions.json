@@ -1,0 +1,398 @@
+{
+    "name": "Race 1",
+    "regatta": "1. Danish Sailing League 2015 - Final",
+    "marks": [
+        {
+            "name": "Topmærke",
+            "id": "546c1b10-f284-0132-84ba-60a44ce903c3",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.694542,
+                    "lng-deg": 12.60693
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.694542,
+                    "lng-deg": 12.606932
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.694542,
+                    "lng-deg": 12.606939
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.694546,
+                    "lng-deg": 12.606946
+                },
+                {
+                    "timepoint-ms": 1443251085000,
+                    "lat-deg": 55.694542,
+                    "lng-deg": 12.606947
+                },
+                {
+                    "timepoint-ms": 1443251088000,
+                    "lat-deg": 55.694538,
+                    "lng-deg": 12.606948
+                },
+                {
+                    "timepoint-ms": 1443251091000,
+                    "lat-deg": 55.694538,
+                    "lng-deg": 12.606951
+                },
+                {
+                    "timepoint-ms": 1443251094000,
+                    "lat-deg": 55.694534,
+                    "lng-deg": 12.606955
+                },
+                {
+                    "timepoint-ms": 1443251097000,
+                    "lat-deg": 55.694534,
+                    "lng-deg": 12.606962
+                },
+                {
+                    "timepoint-ms": 1443251100000,
+                    "lat-deg": 55.694527,
+                    "lng-deg": 12.606969
+                }
+            ]
+        },
+        {
+            "name": "Gatemærke (1)",
+            "id": "67726810-f284-0132-84bd-60a44ce903c3 (1)",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.694519,
+                    "lng-deg": 12.60691
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.694519,
+                    "lng-deg": 12.60691
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.694515,
+                    "lng-deg": 12.60691
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.694515,
+                    "lng-deg": 12.606911
+                },
+                {
+                    "timepoint-ms": 1443251084000,
+                    "lat-deg": 55.694511,
+                    "lng-deg": 12.606912
+                },
+                {
+                    "timepoint-ms": 1443251087000,
+                    "lat-deg": 55.694511,
+                    "lng-deg": 12.606915
+                },
+                {
+                    "timepoint-ms": 1443251090000,
+                    "lat-deg": 55.694511,
+                    "lng-deg": 12.606918
+                },
+                {
+                    "timepoint-ms": 1443251093000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606923
+                },
+                {
+                    "timepoint-ms": 1443251096000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606928
+                },
+                {
+                    "timepoint-ms": 1443251099000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606934
+                }
+            ]
+        },
+        {
+            "name": "Maal (2)",
+            "id": "e7d97cb0-45a3-0133-e843-60a44ce903c3 (2)",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.693695,
+                    "lng-deg": 12.601421
+                },
+                {
+                    "timepoint-ms": 1443251128000,
+                    "lat-deg": 55.693695,
+                    "lng-deg": 12.601159
+                },
+                {
+                    "timepoint-ms": 1443251131000,
+                    "lat-deg": 55.693722,
+                    "lng-deg": 12.601216
+                },
+                {
+                    "timepoint-ms": 1443251134000,
+                    "lat-deg": 55.693729,
+                    "lng-deg": 12.601242
+                },
+                {
+                    "timepoint-ms": 1443251137000,
+                    "lat-deg": 55.693726,
+                    "lng-deg": 12.601255
+                },
+                {
+                    "timepoint-ms": 1443251140000,
+                    "lat-deg": 55.693714,
+                    "lng-deg": 12.60126
+                },
+                {
+                    "timepoint-ms": 1443251142000,
+                    "lat-deg": 55.693707,
+                    "lng-deg": 12.601279
+                },
+                {
+                    "timepoint-ms": 1443251145000,
+                    "lat-deg": 55.693703,
+                    "lng-deg": 12.601272
+                },
+                {
+                    "timepoint-ms": 1443251148000,
+                    "lat-deg": 55.693699,
+                    "lng-deg": 12.601262
+                },
+                {
+                    "timepoint-ms": 1443251151000,
+                    "lat-deg": 55.693695,
+                    "lng-deg": 12.601258
+                }
+            ]
+        },
+        {
+            "name": "Start-Finish (2)",
+            "id": "2eb88520-f284-0132-84b6-60a44ce903c3 (2)",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606932
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606933
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606938
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606939
+                },
+                {
+                    "timepoint-ms": 1443251085000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606941
+                },
+                {
+                    "timepoint-ms": 1443251088000,
+                    "lat-deg": 55.694511,
+                    "lng-deg": 12.606939
+                },
+                {
+                    "timepoint-ms": 1443251091000,
+                    "lat-deg": 55.694511,
+                    "lng-deg": 12.60694
+                },
+                {
+                    "timepoint-ms": 1443251094000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606948
+                },
+                {
+                    "timepoint-ms": 1443251097000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606954
+                },
+                {
+                    "timepoint-ms": 1443251100000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.60696
+                }
+            ]
+        },
+        {
+            "name": "Start-Finish (1)",
+            "id": "2eb88520-f284-0132-84b6-60a44ce903c3 (1)",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606886
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606882
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.60688
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606879
+                },
+                {
+                    "timepoint-ms": 1443251085000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606894
+                },
+                {
+                    "timepoint-ms": 1443251088000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.6069
+                },
+                {
+                    "timepoint-ms": 1443251091000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606901
+                },
+                {
+                    "timepoint-ms": 1443251094000,
+                    "lat-deg": 55.694511,
+                    "lng-deg": 12.606907
+                },
+                {
+                    "timepoint-ms": 1443251097000,
+                    "lat-deg": 55.694485,
+                    "lng-deg": 12.606784
+                },
+                {
+                    "timepoint-ms": 1443251100000,
+                    "lat-deg": 55.694489,
+                    "lng-deg": 12.606801
+                }
+            ]
+        },
+        {
+            "name": "Gatemærke (2)",
+            "id": "67726810-f284-0132-84bd-60a44ce903c3 (2)",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606899
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606898
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.6069
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606902
+                },
+                {
+                    "timepoint-ms": 1443251086000,
+                    "lat-deg": 55.694508,
+                    "lng-deg": 12.606903
+                },
+                {
+                    "timepoint-ms": 1443251089000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606906
+                },
+                {
+                    "timepoint-ms": 1443251092000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606909
+                },
+                {
+                    "timepoint-ms": 1443251095000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606913
+                },
+                {
+                    "timepoint-ms": 1443251098000,
+                    "lat-deg": 55.694504,
+                    "lng-deg": 12.606918
+                },
+                {
+                    "timepoint-ms": 1443251101000,
+                    "lat-deg": 55.6945,
+                    "lng-deg": 12.606925
+                }
+            ]
+        },
+        {
+            "name": "Maal (1)",
+            "id": "e7d97cb0-45a3-0133-e843-60a44ce903c3 (1)",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.693699,
+                    "lng-deg": 12.600493
+                },
+                {
+                    "timepoint-ms": 1443251100000,
+                    "lat-deg": 55.693699,
+                    "lng-deg": 12.600493
+                },
+                {
+                    "timepoint-ms": 1443251161000,
+                    "lat-deg": 55.694054,
+                    "lng-deg": 12.600193
+                },
+                {
+                    "timepoint-ms": 1443251163000,
+                    "lat-deg": 55.693932,
+                    "lng-deg": 12.600411
+                },
+                {
+                    "timepoint-ms": 1443251166000,
+                    "lat-deg": 55.693882,
+                    "lng-deg": 12.600447
+                },
+                {
+                    "timepoint-ms": 1443251169000,
+                    "lat-deg": 55.693878,
+                    "lng-deg": 12.600448
+                },
+                {
+                    "timepoint-ms": 1443251173000,
+                    "lat-deg": 55.69408,
+                    "lng-deg": 12.600225
+                },
+                {
+                    "timepoint-ms": 1443251176000,
+                    "lat-deg": 55.694111,
+                    "lng-deg": 12.600188
+                },
+                {
+                    "timepoint-ms": 1443251179000,
+                    "lat-deg": 55.694115,
+                    "lng-deg": 12.600177
+                },
+                {
+                    "timepoint-ms": 1443251182000,
+                    "lat-deg": 55.694118,
+                    "lng-deg": 12.600164
+                }
+            ]
+        }
+    ]
+}

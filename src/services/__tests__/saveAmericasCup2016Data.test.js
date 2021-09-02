@@ -4,7 +4,9 @@ const db = require('../../models');
 const saveAmericasCup2016Data = require('../non-automatable/saveAmericasCup2016Data');
 const { AMERICAS_CUP_TABLE_SUFFIX } = require('../../constants');
 const unzipFileUtil = require('../../utils/unzipFile');
-const { normalizeRace } = require('../normalization/non-automatable/normalizeAmericascup2016');
+const {
+  normalizeRace,
+} = require('../normalization/non-automatable/normalizeAmericascup2016');
 const expectedJson1 = require('../../test-files/americasCup2016/objectsToSave_1.json');
 const expectedJson2 = require('../../test-files/americasCup2016/objectsToSave_2.json');
 
@@ -19,7 +21,11 @@ describe('Storing AmericasCup2016 data to DB', () => {
   beforeAll(async () => {
     await db.sequelize.sync();
 
-    jest.spyOn(temp, 'mkdirSync').mockReturnValue(path.join(__dirname, '..', '..', 'test-files', 'americasCup2016'));
+    jest
+      .spyOn(temp, 'mkdirSync')
+      .mockReturnValue(
+        path.join(__dirname, '..', '..', 'test-files', 'americasCup2016'),
+      );
     jest.spyOn(unzipFileUtil, 'downloadAndExtract').mockResolvedValue(true);
 
     for (key of AMERICAS_CUP_TABLE_SUFFIX) {
