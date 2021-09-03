@@ -27,17 +27,8 @@ const readCsvFileToJson = async (path) => {
   return;
 };
 
-const listFiles = (path) => {
-  let fileNames = [];
-  fs.readdirSync(path).forEach((file) => {
-    fileNames.push(file);
-  });
-  return fileNames;
-};
-
 module.exports = {
   listDirectories,
   readXmlFileToJson,
   readCsvFileToJson,
-  listFiles,
 };

@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       race_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       race_original_id: {

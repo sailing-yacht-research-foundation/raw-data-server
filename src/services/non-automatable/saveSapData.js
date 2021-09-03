@@ -3,7 +3,7 @@ const { s3 } = require('../uploadUtil');
 const fs = require('fs');
 const path = require('path');
 const temp = require('temp').track();
-const { listDirectories, listFiles } = require('../../utils/fileUtils');
+const { listDirectories } = require('../../utils/fileUtils');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
 
@@ -11,7 +11,6 @@ const { downloadAndExtract } = require('../../utils/unzipFile');
 
 const saveSapData = async (bucketName, fileName) => {
   try {
-    const transaction = await db.sequelize.transaction();
     let targetDir = temp.mkdirSync('sap_rawdata');
     console.log(`Downloading file ${fileName} from s3`);
     await downloadAndExtract({ s3, bucketName, fileName, targetDir });
@@ -33,9 +32,11 @@ const saveSapData = async (bucketName, fileName) => {
     const targetTimePath = path.join(allDataPath, 'targettime');
     const timePath = path.join(allDataPath, 'times');
     const windSummaryPath = path.join(allDataPath, 'wind_summary');
-    const competitorPositionFiles = listFiles(competitorPositionPath);
+    const competitorPositionFiles = fs.readdirSync(competitorPositionPath);
 
     for (const competitorPositionFile of competitorPositionFiles) {
+      const transaction = await db.sequelize.transaction();
+      console.log(`Processing ${competitorPositionFile}`);
       try {
         if (competitorPositionFile.endsWith('.json')) {
           const regattaName = competitorPositionFile
@@ -563,6 +564,7 @@ const saveSapData = async (bucketName, fileName) => {
           }
         }
         await transaction.commit();
+        console.log(`Finished saving race ${competitorPositionFile}`);
       } catch (error) {
         console.log('Error processing race', error);
         await transaction.rollback();

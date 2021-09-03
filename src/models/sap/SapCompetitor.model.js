@@ -45,7 +45,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       flag_image_uri: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       time_on_time_factor: {
         type: Sequelize.DOUBLE,

@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       race_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       race_original_id: {
@@ -61,7 +61,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       boat_class_icon_url: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {

@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       race_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       race_original_id: {
@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       competitor_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       competitor_original_id: {
@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       competitor_boat_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       competitor_boat_original_id: {
