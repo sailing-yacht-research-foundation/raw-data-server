@@ -2,12 +2,12 @@ const fs = require('fs');
 const xml2json = require('xml2json');
 const csvtojson = require('csvtojson');
 
-
 const listDirectories = (dirPath) => {
-  return fs.readdirSync(dirPath, { withFileTypes: true })
-      .filter(dirent => dirent.isDirectory())
-      .map(dirent => dirent.name);
-}
+  return fs
+    .readdirSync(dirPath, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
+};
 
 const readXmlFileToJson = (path) => {
   const pathExist = fs.existsSync(path);
@@ -17,7 +17,7 @@ const readXmlFileToJson = (path) => {
     return JSON.parse(jsonString);
   }
   return;
-}
+};
 
 const readCsvFileToJson = async (path) => {
   const pathExist = fs.existsSync(path);
@@ -25,10 +25,10 @@ const readCsvFileToJson = async (path) => {
     return await csvtojson().fromFile(path);
   }
   return;
-}
+};
 
 module.exports = {
   listDirectories,
   readXmlFileToJson,
   readCsvFileToJson,
-}
+};
