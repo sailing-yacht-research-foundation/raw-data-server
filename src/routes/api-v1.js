@@ -22,12 +22,8 @@ const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
 const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
 const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
-<<<<<<< HEAD
 const saveAmericasCupData = require('../services/non-automatable/saveAmericasCupData');
-=======
-const saveAmericasCup2016Data = require('../services/non-automatable/saveAmericasCup2016Data');
 const saveSapData = require('../services/non-automatable/saveSapData');
->>>>>>> f752c1d (Finish model and schema creation, file access logic, idempotentcy, api endpoint, data saving, file size reduction for tests, and unit testing)
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
