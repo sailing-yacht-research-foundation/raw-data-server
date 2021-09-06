@@ -107,7 +107,7 @@ const processAmericasCupData = async (optionalPath) => {
       creation_time_date,
       regatta,
       regatta_original_id,
-      participants,
+      participants: participants.toString(),
       compound_marks: compoundMarksMap.get(race_id),
       course_limits: courseLimitsMap.get(race_id),
       events: eventsMap.get(race_id),

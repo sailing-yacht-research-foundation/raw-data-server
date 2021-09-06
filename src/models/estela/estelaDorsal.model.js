@@ -56,7 +56,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       track_csv: {
-        type: Sequelize.TEXT('long'),
+        type: Sequelize.TEXT,
         allowNull: true,
       },
     },

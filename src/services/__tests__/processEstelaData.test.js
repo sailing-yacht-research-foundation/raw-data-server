@@ -33,13 +33,13 @@ describe('Processing non-existent Estela Data from DB to Parquet', () => {
 
 describe('Processing exist Estela Data from DB to Parquet', () => {
   const raceID1 = 'f6373964-9496-46ba-b907-fa90f8c6fb62';
-  const raceID2 = 'random';
+  const raceID2 = 'ad47179e-0bc5-11ec-9a03-0242ac130003';
   beforeAll(async () => {
     await saveEstelaData(jsonData);
     await saveEstelaData({
       EstelaRace: [
         {
-          id: 'x5273964-9496-46ba-b907-fa90f8c6fb63',
+          id: '89b0b920-0bc5-11ec-9a03-0242ac130003',
           original_id: '6986',
           initLon: '3.1180188',
           initLat: '41.8491494',

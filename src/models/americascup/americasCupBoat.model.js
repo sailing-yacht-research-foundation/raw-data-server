@@ -10,10 +10,12 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_id_year_constraint',
       },
       year: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_id_year_constraint',
       },
       shape_original_id: {
         type: Sequelize.TEXT,
@@ -75,12 +77,6 @@ module.exports = (sequelize, Sequelize) => {
     {
       tableName: 'AmericasCupBoats',
       timestamps: false,
-      indexes: [
-        {
-          unique: true,
-          fields: ['original_id', 'year'],
-        },
-      ],
     },
   );
   return americasCupBoat;

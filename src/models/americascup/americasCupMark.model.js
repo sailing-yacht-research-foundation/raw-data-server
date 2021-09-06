@@ -10,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_compound_mark_race_constraint',
       },
       race: {
         type: Sequelize.UUID,
@@ -18,6 +19,7 @@ module.exports = (sequelize, Sequelize) => {
       race_original_id: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_compound_mark_race_constraint',
       },
       compound_mark: {
         type: Sequelize.UUID,
@@ -26,6 +28,7 @@ module.exports = (sequelize, Sequelize) => {
       compound_mark_original_id: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_compound_mark_race_constraint',
       },
       seq_id: {
         type: Sequelize.TEXT,
@@ -47,13 +50,6 @@ module.exports = (sequelize, Sequelize) => {
     {
       tableName: 'AmericasCupMarks',
       timestamps: false,
-      indexes: [
-        {
-          name: 'race_index',
-          unique: true,
-          fields: ['original_id', 'compound_mark_original_id', 'race_original_id'],
-        },
-      ],
     },
   );
   return americasCupMark;

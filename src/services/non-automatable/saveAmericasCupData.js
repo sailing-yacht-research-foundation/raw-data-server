@@ -401,7 +401,7 @@ const _saveToDatabase = async(objectsToSave, transaction) => {
       const dataToSave = objectsToSave[`AmericasCup${suffix}`];
       if (dataToSave) {
         const tableName = `americasCup${suffix}`;
-        const excludedFields = ['id', 'original_id', 'race', 'race_original_id', 'boat', 'boat_original_id', 'compound_mark', 'compound_mark_original_id'];
+        const excludedFields = ['id', 'original_id', 'race', 'race_original_id', 'boat', 'boat_original_id', 'compound_mark', 'compound_mark_original_id', 'part', 'seq_id', 'year'];
         const fieldsToUpdate = Object.keys(db[tableName].rawAttributes).filter((k) => !excludedFields.includes(k));
         const clonedData = [].concat(dataToSave);
         while (clonedData.length > 0) {
@@ -439,7 +439,7 @@ const _normalizeRaces = async (regatta, year) => {
     where: {
       [Op.and]: [
         { regatta_original_id: regatta.original_id, },
-        db.sequelize.literal("id NOT IN (SELECT id FROM ReadyAboutRaceMetadatas WHERE SOURCE = 'AMERICASCUP')"),
+        db.sequelize.literal(`id NOT IN (SELECT id FROM "ReadyAboutRaceMetadatas" WHERE SOURCE = 'AMERICASCUP')`),
       ]
     },
   });
@@ -539,7 +539,6 @@ const _normalizeRaces = async (regatta, year) => {
       AmericasCupPosition: positions,
     }
     try {
-      console.log(`Normalizing race ${race.original_id}`);
       await normalizeRace(objectsToPass);
     } catch(err) {
       console.log(`Failed in normalizing race ${race.id}`, err);

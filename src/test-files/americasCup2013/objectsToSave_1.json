@@ -13,6 +13,7 @@
         "original_id": "11081401",
         "name": "Race 1",
         "type": "Fleet",
+        "start_time": "2011-08-14T15:00:00+01:00",
         "regatta_original_id": "8",
         "participants": ["101", "102", "103", "104", "105", "106", "107", "108", "109"]
     },

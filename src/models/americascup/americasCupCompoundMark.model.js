@@ -10,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_id_race_original_id_constraint',
       },
       seq_id: {
         type: Sequelize.TEXT,
@@ -26,6 +27,7 @@ module.exports = (sequelize, Sequelize) => {
       race_original_id: {
         type: Sequelize.STRING,
         allowNull: false,
+        unique: 'original_id_race_original_id_constraint',
       },
       rounding: {
         type: Sequelize.TEXT,
@@ -39,12 +41,6 @@ module.exports = (sequelize, Sequelize) => {
     {
       tableName: 'AmericasCupCompoundMarks',
       timestamps: false,
-      indexes: [
-        {
-          unique: true,
-          fields: ['original_id', 'race_original_id'],
-        },
-      ],
     },
   );
   return americasCupCompoundMark;

@@ -41,14 +41,8 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       participants: {
-        type: Sequelize.TEXT,
+        type: Sequelize.ARRAY(Sequelize.TEXT),
         allowNull: false,
-        get() {
-          return this.getDataValue('participants').split(';')
-        },
-        set(val) {
-          this.setDataValue('participants', val.join(';'));
-        },
       },
     },
     {

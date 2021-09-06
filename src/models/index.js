@@ -2,9 +2,9 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
 const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
-  port: dbConfig.PORT,
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+  host: dbConfig.host,
+  port: dbConfig.port,
   dialect: dbConfig.dialect,
   operatorsAliases: '0',
   logging: false,

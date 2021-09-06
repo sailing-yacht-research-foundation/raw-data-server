@@ -33,22 +33,19 @@ services:
     command:
       ['./wait-for-it.sh', '-t', '120', 'rds-db:3306', '--', 'npm', 'start']
   rds-db:
-    image: mysql:5.7
+    image: postgis/postgis
     restart: always
     environment:
-      MYSQL_DATABASE: rawdata
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+      POSTGRES_DB: sources
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - 3306:3306
+      - 5432:5432
     expose:
-      - 3306
+      - 5432
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
       - rds-db:/var/lib/rds
-    command:
-      ['--innodb_lock_wait_timeout=180', '--max_allowed_packet=100M']
   rabbit-mq:
     image: rabbitmq:3.7-management
     build:
