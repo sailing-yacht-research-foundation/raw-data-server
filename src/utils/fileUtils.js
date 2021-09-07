@@ -1,5 +1,5 @@
 const fs = require('fs');
-const xml2json = require('xml2json');
+const parseStringPromise = require('xml2js').parseStringPromise;
 const csvtojson = require('csvtojson');
 
 const listDirectories = (dirPath) => {
@@ -9,12 +9,15 @@ const listDirectories = (dirPath) => {
     .map((dirent) => dirent.name);
 };
 
-const readXmlFileToJson = (path) => {
+const readXmlFileToJson = async (path) => {
   const pathExist = fs.existsSync(path);
   if (pathExist) {
     const xml = fs.readFileSync(path);
-    const jsonString = xml2json.toJson(xml);
-    return JSON.parse(jsonString);
+    const jsonObj = await parseStringPromise(xml, {
+      explicitArray: false,
+      mergeAttrs: true,
+    });
+    return jsonObj;
   }
   return;
 };

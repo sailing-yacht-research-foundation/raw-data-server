@@ -48,12 +48,15 @@ Or create a new .env file inside deployment folder with these variables:
 And run `docker-compose -f deployment/docker-compose.yml --env-file deployment/.env config`
 
 If you get an error message: "CannotPullContainerError: inspect image has been retried x time(s)", you will also need to push the docker image to the ECR using the push commands from the AWS console after terraform successfully created the infrastructure.
-The commands should be:
+You can simply run the shell script deploy.sh:
 
-1. Run `aws ecr get-login-password --region [region_name] | docker login --username AWS --password-stdin [aws_account_id].dkr.ecr.us-west-1.amazonaws.com`
-2. Run `docker build -t raw-data-server .` if you haven't built it already
-3. Run `docker tag raw-data-server:latest [aws_account_id].dkr.ecr.us-west-1.amazonaws.com/raw-data-server:latest`
-4. Run `docker push [aws_account_id].dkr.ecr.us-west-1.amazonaws.com/raw-data-server:latest`
+1. Check the variable in side the deploy.sh if it is correct, change it as needed before running the script
+  AWS_ECR_REGISTRY=335855654610.dkr.ecr.us-east-1.amazonaws.com
+  AWS_REGION=us-east-1
+  ECR_REPO_NAME=raw-data-server
+  ECR_TAG=latest
+
+2. Run script `./deploy.sh`. This will build the docker image tag it and upload to AWS ECR.
 
 If this is the first time run, you will need to run terraform init and apply (commands below)
 

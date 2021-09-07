@@ -90,13 +90,13 @@ describe('fileUtil.js', () => {
       jest.restoreAllMocks();
     });
 
-    it('should return undefined if path does not exist', () => {
-      const result = readXmlFileToJson('doesnotexistpath');
+    it('should return undefined if path does not exist', async () => {
+      const result = await readXmlFileToJson('doesnotexistpath');
       expect(result).toBeUndefined();
     });
 
-    it('should return json representation of xml if path exist', () => {
-      const result = readXmlFileToJson(existingPath);
+    it('should return json representation of xml if path exist', async() => {
+      const result = await readXmlFileToJson(existingPath);
       expect(result).toEqual(expectedJson)
     })
   });

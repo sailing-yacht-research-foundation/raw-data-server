@@ -43,7 +43,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
         if (!regattaData) {
           const regattaFileName = xmlFiles.find((n) => n.indexOf('regatta') > -1);
           const regattaFilePath = path.join(xmlPath, regattaFileName);
-          const regattaJson = _mapRegattaData(regattaFilePath);
+          const regattaJson = await _mapRegattaData(regattaFilePath);
           if (regattaJson) {
             regattaData = regattaJson;
           }
@@ -56,7 +56,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
           const fileTimestamp = raceFileName.split('_')[0];
           try {
             let raceOriginalId;
-            const rawRaceJson = readXmlFileToJson(raceFilePath);
+            const rawRaceJson = await readXmlFileToJson(raceFilePath);
             raceOriginalId = rawRaceJson.Race?.RaceID;
             if (raceOriginalId && existingRacesInDB.includes(raceOriginalId)) {
               console.log(`Race id ${raceOriginalId} already saved in database. Skipping`);
@@ -71,7 +71,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
 
             // Map Boat Data
             const boatFilePath = path.join(xmlPath, `${fileTimestamp}_boats.xml`);
-            const boatRawJson = readXmlFileToJson(boatFilePath);
+            const boatRawJson = await readXmlFileToJson(boatFilePath);
             if (boatRawJson) {
               const boatMapping = _mapBoatData(boatRawJson, year);
               objectsToSave.AmericasCupBoat = boatMapping.boats;
@@ -139,8 +139,8 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
   }
 };
 
-const _mapRegattaData = (regattaFilePath) => {
-  const rawRegattaJson = readXmlFileToJson(regattaFilePath);
+const _mapRegattaData = async (regattaFilePath) => {
+  const rawRegattaJson = await readXmlFileToJson(regattaFilePath);
   if (rawRegattaJson) {
     return {
       id: uuidv4(),
