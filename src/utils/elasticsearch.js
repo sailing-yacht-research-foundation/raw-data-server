@@ -1,26 +1,18 @@
-const elasticsearch = require('elasticsearch');
+const axios = require('axios');
 
-const elasticsearchclient = new elasticsearch.Client({
-  hosts: [process.env.ES_HOST],
+
+const basicAuth = Buffer.from(
+  `${process.env.AWS_ES_USERNAME}:${process.env.AWS_ES_PASSWORD}`,
+).toString('base64');
+
+let api = axios.create({
+  baseURL: process.env.AWS_ES_HOST,
+  headers: {
+    Authorization: 'Basic ' + basicAuth,
+  },
 });
 
-exports.elasticsearchclient = elasticsearchclient;
 
-exports.indexRace = (id, raceData) =>
-  new Promise((resolve, reject) => {
-    elasticsearchclient.index(
-      {
-        index: 'races',
-        id: id,
-        type: 'race',
-        body: raceData,
-      },
-      function (err, resp) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(resp);
-        }
-      },
-    );
-  });
+exports.indexRace = async (id, body) => {
+  return await api.put(`races/race/${id}`, body);
+}

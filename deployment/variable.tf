@@ -45,7 +45,7 @@ variable "s3_bucket" {
 
 variable "mq_host" {
   type = string
-  
+
 }
 
 variable "mq_port" {
@@ -54,12 +54,12 @@ variable "mq_port" {
 
 variable "mq_user" {
   type = string
-  
+
 }
 
 variable "mq_password" {
   type = string
-  
+
 }
 
 variable "mq_topic" {
@@ -70,10 +70,19 @@ variable "mq_timeout" {
   default = 2700000
 }
 
-variable "es_host" {
+variable "aws_es_host" {
   default = "335855654610:readyabout-dev"
   type = string
+}
 
+variable "aws_es_username" {
+  default = ""
+  type = string
+}
+
+variable "aws_es_password" {
+  default = ""
+  type = string
 }
 
 variable "geojson_s3_bucket" {
