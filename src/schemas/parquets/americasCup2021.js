@@ -33,7 +33,7 @@ const americasCup2021Combined = new parquet.ParquetSchema({
   race_name: { type: 'UTF8' },
   terrain_config_location_lon: { type: 'UTF8' },
   terrain_config_location_lat: { type: 'UTF8' },
-  boundary_center_set: { type: 'INT64' },
+  boundary_center_set: { type: 'BOOLEAN' },
   current_leg: { type: 'INT64' },
   min_race_time: { type: 'DOUBLE' },
   max_race_time: { type: 'DOUBLE' },

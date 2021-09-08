@@ -130,7 +130,7 @@
   ],
   "GeoracingWeather": [
     {
-      "id": "weather1",
+      "id": "f534ac86-0bc2-11ec-9a03-0242ac130003",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "race_original_id": 97711,
       "wind_direction": "West",
@@ -144,7 +144,7 @@
   ],
   "GeoracingCourse": [
     {
-      "id": "course1",
+      "id": "2b4bdda8-0bc3-11ec-9a03-0242ac130003",
       "original_id": "course1",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "race_original_id": 97711,
@@ -157,11 +157,11 @@
   ],
   "GeoracingCourseObject": [
     {
-      "id": "obj1",
+      "id": "34faac8a-0bc3-11ec-9a03-0242ac130003",
       "original_id": "obj1",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "race_original_id": 97711,
-      "course": "course1",
+      "course": "2b4bdda8-0bc3-11ec-9a03-0242ac130003",
       "course_original_id": "course1",
       "name": "objname",
       "short_name": "objn",
@@ -184,13 +184,13 @@
   ],
   "GeoracingCourseElement": [
     {
-      "id": "element1",
+      "id": "94901310-0bc3-11ec-9a03-0242ac130003",
       "original_id": "element1",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "race_original_id": 97711,
-      "course": "course1",
+      "course": "2b4bdda8-0bc3-11ec-9a03-0242ac130003",
       "course_original_id": "course1",
-      "course_object": "obj1",
+      "course_object": "34faac8a-0bc3-11ec-9a03-0242ac130003",
       "course_object_original_id": "obj1",
       "name": "el1",
       "visible": "1",
@@ -304,7 +304,7 @@
 ],
   "GeoracingLine": [
     {
-      "id": "line1",
+      "id": "c2748c02-0bc3-11ec-9a03-0242ac130003",
       "original_id": "line1",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "race_original_id": "97711",
@@ -318,7 +318,7 @@
   ],
   "GeoracingSplittime": [
     {
-      "id": "spt1",
+      "id": "c9223ebe-0bc3-11ec-9a03-0242ac130003",
       "original_id": "spt1",
       "race": "ecd58518-3ad9-4139-a46c-222ee7f4ae4f",
       "race_original_id": "97711",
@@ -334,11 +334,11 @@
   ],
   "GeoracingSplittimeObject": [
     {
-      "id": "spo1",
+      "id": "d0d78178-0bc3-11ec-9a03-0242ac130003",
       "original_id": "spo1",
       "actor": "e56312ed-fb0a-4dbe-ba6c-0dfab853022a",
       "actor_original_id": null,
-      "splittime": "spt1",
+      "splittime": "c9223ebe-0bc3-11ec-9a03-0242ac130003",
       "splittime_original_id": "spt1",
       "capital": "1",
       "max_speed": "1",

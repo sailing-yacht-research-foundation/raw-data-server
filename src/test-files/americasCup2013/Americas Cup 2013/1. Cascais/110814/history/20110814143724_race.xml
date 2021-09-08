@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Race>
   <CreationTimeDate>2011-08-14Y13:37:37</CreationTimeDate>
-  <RaceStartTime Start="2011-08-14Y15:00:00" Postpone="false">
+  <RaceStartTime Start="2011-08-14T15:00:00+01:00" Postpone="false">
   </RaceStartTime>
   <RaceID>11081401</RaceID>
   <RaceType>Fleet</RaceType>

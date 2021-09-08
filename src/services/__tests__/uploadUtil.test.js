@@ -44,7 +44,7 @@ describe('uploadFileToS3 test', () => {
   });
 
   describe('Uploading geojson file to S3', () => {
-    const raceId = 123;
+    const raceId = '1b140104-0bc8-11ec-9a03-0242ac130003';
     const source = 'BLUEWATER';
 
     beforeAll(async () => {

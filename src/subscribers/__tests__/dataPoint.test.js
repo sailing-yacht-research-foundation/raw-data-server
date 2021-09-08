@@ -64,7 +64,7 @@ describe('Processing Live Data Points', () => {
     expect(initPoints.length).toEqual(0);
     await saveLiveDataPoint([
       {
-        id: '1',
+        id: 'ea31cb70-0bc7-11ec-9a03-0242ac130003',
         location: { type: 'Point', coordinates: [39.807222, -76.984722] },
         speed: 5,
         heading: 50,
@@ -85,15 +85,24 @@ describe('Processing Live Data Points', () => {
     ]);
     const secondPoints = await getAllLiveDataPoint();
     expect(secondPoints.length).toEqual(1);
-    const getData = await getLiveDataPoint('1');
+    const getData = await getLiveDataPoint('ea31cb70-0bc7-11ec-9a03-0242ac130003');
     expect(getData).toEqual({
-      id: '1',
-      location: { type: 'Point', coordinates: [39.807222, -76.984722] },
+      id: 'ea31cb70-0bc7-11ec-9a03-0242ac130003',
+      location: {
+        type: 'Point',
+        crs: {
+          properties: {
+            name: "EPSG:4326",
+          },
+          type: "name",
+        },
+        coordinates: [39.807222, -76.984722]
+      },
       speed: 5,
       heading: 50,
       accuracy: 0,
       altitude: 0,
-      at: new Date('2021-06-21T12:55:55.000Z'),
+      at: new Date('2021-06-21T12:55:55.971Z'),
       tws: 2,
       twa: 45,
       stw: 7,

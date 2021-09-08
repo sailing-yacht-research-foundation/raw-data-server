@@ -43,7 +43,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
         if (!regattaData) {
           const regattaFileName = xmlFiles.find((n) => n.indexOf('regatta') > -1);
           const regattaFilePath = path.join(xmlPath, regattaFileName);
-          const regattaJson = _mapRegattaData(regattaFilePath);
+          const regattaJson = await _mapRegattaData(regattaFilePath);
           if (regattaJson) {
             regattaData = regattaJson;
           }
@@ -56,7 +56,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
           const fileTimestamp = raceFileName.split('_')[0];
           try {
             let raceOriginalId;
-            const rawRaceJson = readXmlFileToJson(raceFilePath);
+            const rawRaceJson = await readXmlFileToJson(raceFilePath);
             raceOriginalId = rawRaceJson.Race?.RaceID;
             if (raceOriginalId && existingRacesInDB.includes(raceOriginalId)) {
               console.log(`Race id ${raceOriginalId} already saved in database. Skipping`);
@@ -71,7 +71,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
 
             // Map Boat Data
             const boatFilePath = path.join(xmlPath, `${fileTimestamp}_boats.xml`);
-            const boatRawJson = readXmlFileToJson(boatFilePath);
+            const boatRawJson = await readXmlFileToJson(boatFilePath);
             if (boatRawJson) {
               const boatMapping = _mapBoatData(boatRawJson, year);
               objectsToSave.AmericasCupBoat = boatMapping.boats;
@@ -139,8 +139,8 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
   }
 };
 
-const _mapRegattaData = (regattaFilePath) => {
-  const rawRegattaJson = readXmlFileToJson(regattaFilePath);
+const _mapRegattaData = async (regattaFilePath) => {
+  const rawRegattaJson = await readXmlFileToJson(regattaFilePath);
   if (rawRegattaJson) {
     return {
       id: uuidv4(),
@@ -401,7 +401,7 @@ const _saveToDatabase = async(objectsToSave, transaction) => {
       const dataToSave = objectsToSave[`AmericasCup${suffix}`];
       if (dataToSave) {
         const tableName = `americasCup${suffix}`;
-        const excludedFields = ['id', 'original_id', 'race', 'race_original_id', 'boat', 'boat_original_id', 'compound_mark', 'compound_mark_original_id'];
+        const excludedFields = ['id', 'original_id', 'race', 'race_original_id', 'boat', 'boat_original_id', 'compound_mark', 'compound_mark_original_id', 'part', 'seq_id', 'year'];
         const fieldsToUpdate = Object.keys(db[tableName].rawAttributes).filter((k) => !excludedFields.includes(k));
         const clonedData = [].concat(dataToSave);
         while (clonedData.length > 0) {
@@ -439,7 +439,7 @@ const _normalizeRaces = async (regatta, year) => {
     where: {
       [Op.and]: [
         { regatta_original_id: regatta.original_id, },
-        db.sequelize.literal("id NOT IN (SELECT id FROM ReadyAboutRaceMetadatas WHERE SOURCE = 'AMERICASCUP')"),
+        db.sequelize.literal(`id NOT IN (SELECT id FROM "ReadyAboutRaceMetadatas" WHERE SOURCE = 'AMERICASCUP')`),
       ]
     },
   });
@@ -539,7 +539,6 @@ const _normalizeRaces = async (regatta, year) => {
       AmericasCupPosition: positions,
     }
     try {
-      console.log(`Normalizing race ${race.original_id}`);
       await normalizeRace(objectsToPass);
     } catch(err) {
       console.log(`Failed in normalizing race ${race.id}`, err);

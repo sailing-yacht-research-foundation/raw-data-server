@@ -40,14 +40,8 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       track_ids: {
-          type: Sequelize.TEXT,
-          allowNull: false,
-          get() {
-            return this.getDataValue('track_ids').split(';')
-          },
-          set(val) {
-            this.setDataValue('track_ids', val.join(';'));
-          },
+        type: Sequelize.ARRAY(Sequelize.TEXT),
+        allowNull: true,
       },
     },
     {

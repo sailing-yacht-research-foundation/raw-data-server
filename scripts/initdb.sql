@@ -1,2 +1,3 @@
-CREATE DATABASE IF NOT EXISTS test_db;
-GRANT ALL PRIVILEGES ON test_db.* TO 'user' identified by 'password';
+CREATE EXTENSION IF NOT EXISTS POSTGIS;
+SELECT 'CREATE DATABASE test_db;'
+WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'test_db')\gexec

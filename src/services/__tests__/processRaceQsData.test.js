@@ -34,7 +34,7 @@ describe('Processing non-existent RaceQs Data from DB to Parquet', () => {
 
 describe('Processing exist RaceQs Data from DB to Parquet', () => {
   const event1 = '846a774c-fefb-4729-b5bf-8746e2e64f4a';
-  const event2 = 'random';
+  const event2 = 'b9770312-0bc5-11ec-9a03-0242ac130003';
   beforeAll(async () => {
     await saveRaceQsData(jsonData);
   });

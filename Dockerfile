@@ -1,15 +1,14 @@
 FROM node:16-alpine
 
-RUN apk update && apk add bash
+RUN apk update && apk add make python3
 
 WORKDIR /usr/src/app
 
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+COPY ["package.json", "yarn.lock", "npm-shrinkwrap.json*", "./"]
 
-RUN npm install --production --silent && mv node_modules ../
+RUN yarn install --production && mv node_modules ../
 
 COPY . .
-RUN chmod +x ./wait-for-it.sh
 
 EXPOSE 3000
-CMD ["./wait-for-it.sh", "-t", "120", "localhost:3306", "--", "npm", "start"]
+CMD ["yarn", "start"]
