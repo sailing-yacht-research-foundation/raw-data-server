@@ -20,8 +20,8 @@ const normalizeRace = async (
   const race = SapRace[0];
   const positions = SapPosition;
   const boats = SapBoat;
-  const name = race.name;
-  const event = race.id;
+  const name = `${race.regatta} - ${race.name}`;
+  const event = null;
   const startTime = race.start_of_tracking_ms;
   const endTime = race.end_of_tracking_ms;
 

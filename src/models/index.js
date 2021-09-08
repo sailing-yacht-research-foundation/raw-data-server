@@ -678,12 +678,12 @@ db.americasCup2021WindPoint =
 // === End of Americascup2021 ===
 
 // === Americas Cup ===
-for (key of AMERICAS_CUP_TABLE_SUFFIX) {
-  db[`americasCup${key}`] = require(`./americascup/americasCup${key}.model`)(
-    sequelize,
-    Sequelize,
-  );
-}
+// for (key of AMERICAS_CUP_TABLE_SUFFIX) {
+//   db[`americasCup${key}`] = require(`./americascup/americasCup${key}.model`)(
+//     sequelize,
+//     Sequelize,
+//   );
+// }
 // === End of Americas Cup ===
 
 db.sapCompetitor = require('./sap/SapCompetitor.model')(sequelize, Sequelize);
