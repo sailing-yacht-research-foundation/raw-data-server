@@ -8,6 +8,9 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
 
 const { downloadAndExtract } = require('../../utils/unzipFile');
+const {
+  normalizeRace,
+} = require('../normalization/non-automatable/normalizeSap');
 
 const saveSapData = async (bucketName, fileName) => {
   try {
@@ -151,7 +154,7 @@ const saveSapData = async (bucketName, fileName) => {
               competitors.push({
                 id: competitorId,
                 original_id: competitor.id,
-                regatta: regattaName,
+                regatta: competitorPositionsData.regatta,
                 name: competitor.name,
                 short_name: competitor.shortName,
                 display_color: competitor.displayColor,
@@ -177,8 +180,8 @@ const saveSapData = async (bucketName, fileName) => {
                 original_id: boat.id,
                 race_id: raceId,
                 race_original_id: raceInfo.id,
-                race_name: raceName,
-                regatta: regattaName,
+                race_name: competitorPositionsData.name,
+                regatta: competitorPositionsData.regatta,
                 name: boat.name,
                 sail_number: boat.sailId,
                 color: boat.color,
@@ -199,10 +202,10 @@ const saveSapData = async (bucketName, fileName) => {
             });
           } else {
             competitors = await db.sapCompetitor.findAll({
-              where: { regatta: regattaName },
+              where: { regatta: competitorPositionsData.regatta },
             });
             boats = await db.sapCompetitorBoat.findAll({
-              where: { regatta: regattaName },
+              where: { regatta: competitorPositionsData.regatta },
             });
           }
 
@@ -228,7 +231,10 @@ const saveSapData = async (bucketName, fileName) => {
             end_of_race_ms: timeData['endOfRace-ms'],
             delay_to_live_ms: timeData['delayToLive-ms'],
           };
-          await db.sapRace.create(race);
+          await db.sapRace.create(race, {
+            validate: true,
+            transaction,
+          });
 
           let boatPositions = [];
           for (const competitor of competitorPositionsData.competitors) {
@@ -562,9 +568,17 @@ const saveSapData = async (bucketName, fileName) => {
               transaction,
             });
           }
+          if (race) {
+            let normalizeData = {
+              SapRace: [race],
+              SapBoat: boats,
+              SapPosition: boatPositions,
+            };
+            await normalizeRace(normalizeData, transaction);
+          }
+          await transaction.commit();
+          console.log(`Finished saving race ${competitorPositionFile}`);
         }
-        await transaction.commit();
-        console.log(`Finished saving race ${competitorPositionFile}`);
       } catch (error) {
         console.log('Error processing race', error);
         await transaction.rollback();
