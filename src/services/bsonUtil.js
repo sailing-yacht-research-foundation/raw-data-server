@@ -3,6 +3,7 @@
  * The bson util is for reading bson file and transfer it to javascript object.
  */
 const BSON = require('bson');
+const fs = require('fs');
 
 function _getNextObjectSize(buffer) {
   // this is how BSON
@@ -25,8 +26,7 @@ function deserializeBson(buffer, options) {
       throw new Error('Corrupted BSON file: the last object is incomplete.');
     } else if (_buffer[nextSize - 1] !== 0) {
       throw new Error(
-        `Corrupted BSON file: the ${
-          _result.length + 1
+        `Corrupted BSON file: the ${_result.length + 1
         }-th object does not end with 0.`,
       );
     }
@@ -44,4 +44,18 @@ function deserializeBson(buffer, options) {
   return _result;
 }
 
-module.exports = deserializeBson;
+/**
+ * Deserialize Bson file (the file of mongodb)
+ * @param {string} fileName
+ * @param {*} options
+ * @returns JavaScript Object Taken from Bson File
+ */
+function deserializeBsonFromFile(fileName, options) {
+  const fileBuffer = fs.readFileSync(fileName);
+
+  return deserializeBson(fileBuffer, options);
+}
+module.exports = {
+  deserializeBson: deserializeBson,
+  deserializeBsonFromFile: deserializeBsonFromFile,
+};

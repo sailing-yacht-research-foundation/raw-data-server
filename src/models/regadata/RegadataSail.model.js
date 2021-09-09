@@ -15,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.UUID,
         allowNull: false,
       },
+      race_original_id: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       sail: {
         type: Sequelize.TEXT,
         allowNull: false,

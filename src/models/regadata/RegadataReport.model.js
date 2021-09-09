@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       original_id: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       race_id: {
         type: Sequelize.UUID,
@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       country: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       sail_id: {
         type: Sequelize.UUID,
@@ -65,7 +65,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       timestamp: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       lat_dms: {
         type: Sequelize.TEXT,
@@ -77,79 +77,79 @@ module.exports = (sequelize, Sequelize) => {
       },
       lat_dec: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       lon_dec: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '1hour_heading': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '1hour_speed': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '1hour_vmg': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '1hour_distance': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       lastreport_heading: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       lastreport_speed: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       lastreport_vmg: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       lastreport_distance: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '24hour_heading': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '24hour_speed': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '24hour_vmg': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       '24hour_distance': {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       dtf: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       dtl: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       total_distance: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       dtl_diff: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       color: {
-        type: Sequelize.DOUBLE,
-        allowNull: false,
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
     },
     {
