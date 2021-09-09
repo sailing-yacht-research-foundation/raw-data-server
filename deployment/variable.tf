@@ -30,16 +30,14 @@ variable "app_container_port" {
 
 variable "s3_access_key_id" {
   type = string
-  default = ""
 }
 
 variable "s3_secret_key" {
   type = string
-  default = ""
 }
 
 variable "s3_bucket" {
-  type = string
+  type    = string
   default = "raw-data-server-project"
 }
 
@@ -72,16 +70,14 @@ variable "mq_timeout" {
 
 variable "aws_es_host" {
   default = "335855654610:readyabout-dev"
-  type = string
+  type    = string
 }
 
 variable "aws_es_username" {
-  default = ""
   type = string
 }
 
 variable "aws_es_password" {
-  default = ""
   type = string
 }
 

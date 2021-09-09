@@ -10,15 +10,15 @@ terraform {
     bucket = "syrf-rawdata-terraform-state"
     key    = "global/s3/terraform.tfstate"
     region = "us-east-1"
-  
+
     dynamodb_table = "terraform-state-locking"
     encrypt        = true
   }
 }
 # Providing a reference to our default VPC
 resource "aws_vpc" "syrf-vpc" {
-  cidr_block = "10.16.0.0/16"
-  enable_dns_support = true
+  cidr_block           = "10.16.0.0/16"
+  enable_dns_support   = true
   enable_dns_hostnames = true
 
   tags = {
@@ -70,7 +70,7 @@ resource "aws_nat_gateway" "syrf-NATgw" {
   allocation_id = aws_eip.syrf-nateIP.id
   #subnet_id = aws_subnet.public_1.id
   subnet_id = aws_subnet.public_subnet[0].id
-  
+
 
 }
 
