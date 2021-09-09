@@ -13,7 +13,7 @@ services:
       AWS_S3_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET}
       DB_HOST: rds-db
-      DB_PORT: 3306
+      DB_PORT: 5432
       DB_USER: user
       DB_PASSWORD: password
       DB_NAME: rawdata
@@ -31,7 +31,7 @@ services:
       - rds-db
       - rabbit-mq
     command:
-      ['./wait-for-it.sh', '-t', '120', 'rds-db:3306', '--', 'npm', 'start']
+      ['./wait-for-it.sh', '-t', '120', 'rds-db:5432', '--', 'npm', 'start']
   rds-db:
     image: postgis/postgis
     restart: always

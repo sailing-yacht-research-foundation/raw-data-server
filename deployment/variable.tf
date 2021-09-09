@@ -30,22 +30,20 @@ variable "app_container_port" {
 
 variable "s3_access_key_id" {
   type = string
-  default = ""
 }
 
 variable "s3_secret_key" {
   type = string
-  default = ""
 }
 
 variable "s3_bucket" {
-  type = string
+  type    = string
   default = "raw-data-server-project"
 }
 
 variable "mq_host" {
   type = string
-  
+
 }
 
 variable "mq_port" {
@@ -54,12 +52,12 @@ variable "mq_port" {
 
 variable "mq_user" {
   type = string
-  
+
 }
 
 variable "mq_password" {
   type = string
-  
+
 }
 
 variable "mq_topic" {
@@ -70,10 +68,17 @@ variable "mq_timeout" {
   default = 2700000
 }
 
-variable "es_host" {
+variable "aws_es_host" {
   default = "335855654610:readyabout-dev"
-  type = string
+  type    = string
+}
 
+variable "aws_es_username" {
+  type = string
+}
+
+variable "aws_es_password" {
+  type = string
 }
 
 variable "geojson_s3_bucket" {

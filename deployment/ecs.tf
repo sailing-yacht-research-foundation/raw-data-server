@@ -67,7 +67,9 @@ resource "aws_ecs_task_definition" "rds_task" {
         { "name": "AWS_S3_ACCESS_KEY_ID", "value": "${var.s3_access_key_id}" },
         { "name": "AWS_S3_SECRET_ACCESS_KEY", "value": "${var.s3_secret_key}" },
         { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" },
-        { "name": "ES_HOST", "value": "${var.es_host}" },
+        { "name": "AWS_ES_HOST", "value": "${var.aws_es_host}" },
+        { "name": "AWS_ES_USERNAME", "value": "${var.aws_es_username}" },
+        { "name": "AWS_ES_PASSWORD", "value": "${var.aws_es_password}" },
         { "name": "AWS_GEOJSON_S3_BUCKET", "value": "${var.geojson_s3_bucket}" },
         { "name": "AWS_YELLOWBRICK_KML_S3_BUCKET", "value": "${var.yellowbrick_kml_s3_bucket}" },
         { "name": "MQ_HOST", "value": "${var.mq_host}" },
@@ -119,7 +121,7 @@ resource "aws_ecs_task_definition" "rds_task" {
   requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 12288       # Specifying the memory our container requires
-  cpu                      = 4096         # Specifying the CPU our container requires
+  cpu                      = 4096        # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
   volume {
