@@ -154,6 +154,8 @@ const saveSapData = async (bucketName, fileName) => {
               competitors.push({
                 id: competitorId,
                 original_id: competitor.id,
+                race_id: raceId,
+                race_original_id: raceInfo.id,
                 regatta: competitorPositionsData.regatta,
                 name: competitor.name,
                 short_name: competitor.shortName,
