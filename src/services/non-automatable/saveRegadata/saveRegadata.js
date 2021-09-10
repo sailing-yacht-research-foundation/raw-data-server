@@ -13,9 +13,13 @@ const createSailForRegadata = require('./createSailForRegadata');
 const createReportForRegadata = require('./createReportForRegadata');
 
 /**
- * Save old regadata into database
- * @param {string} bucketName
- * @param {string} fileName
+ * 1. Download the tar.gz file from internet.
+ * 2. Extract the file into the temporary folder.
+ * 3. Process the files and save race, sail and report information to related tables.
+ * 4. Once race is done, a commit is called and push everything into database.
+ * 5. Finally the temp folder will be clear
+ * @param {string} bucketName name of the bucket of s3
+ * @param {string} fileName file name to be downloaded
  */
 const saveRegadata = async (bucketName, fileName) => {
   try {
@@ -27,7 +31,6 @@ const saveRegadata = async (bucketName, fileName) => {
     const sailFiles = fs
       .readdirSync(allDataPath)
       .filter((t) => t.indexOf('_sails.bson') >= 0);
-    console.log(allDataPath);
     for (const sailFile of sailFiles) {
       await processSailFile(allDataPath, sailFile);
     }
