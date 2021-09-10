@@ -481,13 +481,20 @@ const saveSapData = async (bucketName, fileName) => {
               name: courseData.name,
               course_name: course.name,
               passing_instruction: course.passingInstruction,
-              class: '',
-              passing_instruction: '',
-              short_name: '',
-              left_class: '',
-              left_type: '',
-              right_class: '',
-              right_type: '',
+              class: course.controlPoint['@class'],
+              short_name: course.controlPoint.shortName,
+              left_class: course.controlPoint?.left
+                ? course.controlPoint.left['@class']
+                : undefined,
+              left_type: course.controlPoint?.left
+                ? course.controlPoint.left.type
+                : undefined,
+              right_class: course.controlPoint?.right
+                ? course.controlPoint.right['@class']
+                : undefined,
+              right_type: course.controlPoint?.right
+                ? course.controlPoint.right.type
+                : undefined,
             });
           }
 

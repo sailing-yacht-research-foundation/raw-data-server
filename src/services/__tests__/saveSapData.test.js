@@ -74,6 +74,7 @@ describe('Storing SAP data to DB', () => {
     await saveSapData('databacklog', 'SAP-TEST.zip');
     expect(createRace).toHaveBeenCalledWith(
       expect.objectContaining(expectedRace),
+      expect.anything(),
     );
     expect(createRace).toHaveBeenCalledTimes(1);
     expect(createCompetitor).toHaveBeenCalledTimes(1);
