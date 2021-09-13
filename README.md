@@ -141,6 +141,13 @@ Set an `Authorization` header containing md5 hash of current date with format: y
     - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/americasCup2013 or ./src/test-files/americasCup2016
     - year (required): Year when the americas cup event happened
 
+- `/api/v1/regadata`
+
+  - Method: POST
+  - Body (application/gzip): For example regadata.tar.gz
+    - bucketName (required): bucket name in s3 where the raw data will be downloaded
+    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/regadata
+
 ## Development Deployment
 - This service was deployed to AWS development environment using terraform
 - The terraform files includes s3 backend to keep the terraform state, customized vpc was deployed, other network components needed for the deployment of the raw data server application

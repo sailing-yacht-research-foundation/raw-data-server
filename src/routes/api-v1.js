@@ -24,6 +24,7 @@ const saveAmericasCup2021Data = require('../services/non-automatable/saveAmerica
 const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
 const saveAmericasCupData = require('../services/non-automatable/saveAmericasCupData');
 const saveSapData = require('../services/non-automatable/saveSapData');
+const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegadata');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
@@ -365,6 +366,23 @@ router.post('/sap', async function (req, res) {
   }
 
   res.json({ success: errorMessage == '', errorMessage });
+});
+
+router.post('/regadata', async function (req, res) {
+  let errorMessage = '';
+  if (!req.body.bucketName && !req.body.fileName) {
+    res
+      .status(400)
+      .json({ message: 'Must specify bucketName and fileName in body' });
+    return;
+  }
+  try {
+    saveRegadata(req.body.bucketName, req.body.fileName);
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.json({ success: !!errorMessage, errorMessage });
 });
 
 module.exports = router;

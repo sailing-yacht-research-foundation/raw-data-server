@@ -721,6 +721,23 @@ db.sapTargetTimeLeg = require('./sap/SapTargetTimeLeg.model')(
 db.sapWindSummary = require('./sap/SapWindSummary.model')(sequelize, Sequelize);
 // === End of SAP ===
 
+// === Start Regadata ===
+db.regadataRace = require('./regadata/RegadataRace.model')(
+  sequelize,
+  Sequelize,
+);
+
+db.regadataSail = require('./regadata/RegadataSail.model')(
+  sequelize,
+  Sequelize,
+);
+
+db.regadataReport = require('./regadata/RegadataReport.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Regadata ===
+
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
   require('./normalizedTable/readyAboutRaceMetadata.model')(
