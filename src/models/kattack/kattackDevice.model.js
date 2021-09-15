@@ -60,11 +60,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       is_logging: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       is_blocked: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       device_row_id: {

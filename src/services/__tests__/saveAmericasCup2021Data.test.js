@@ -3,8 +3,6 @@ const saveAmericasCup2021Data = require('../non-automatable/saveAmericasCup2021D
 const data = require('../../test-files/americasCup2021.json');
 const mock = require('../../test-files/americasCup2021Mock');
 
-jest.setTimeout(90000);
-
 describe('Storing americascup2021 data to DB', () => {
   let createRace,
     createRaceStatus,
@@ -188,7 +186,7 @@ describe('Storing americascup2021 data to DB', () => {
     expect(createRanking).toHaveBeenCalledTimes(1);
     expect(createRoundingTime).toHaveBeenCalledTimes(1);
     expect(createWindData).toHaveBeenCalledTimes(1);
-    expect(createWindPoint).toHaveBeenCalledTimes(3);
+    expect(createWindPoint).toHaveBeenCalledTimes(1);
     expect(createBoundaryPacket).toHaveBeenCalledTimes(1);
   });
 });

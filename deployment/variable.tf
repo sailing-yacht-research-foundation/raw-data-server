@@ -3,6 +3,11 @@ variable "aws_region" {
   description = "Which region should the resources be deployed into?"
 }
 
+
+variable "aws_subnets_cidr" {
+  default     = ["10.16.1.0/24", "10.16.16.0/24", "10.16.32.0/24"]
+  description = "List of Cidr blocks"
+}
 variable "aws_availability_zones" {
   default     = ["us-east-1a", "us-east-1b", "us-east-1c"]
   description = "Availability zone list"
@@ -32,11 +37,13 @@ variable "s3_secret_key" {
 }
 
 variable "s3_bucket" {
-  type = string
+  type    = string
+  default = "raw-data-server-project"
 }
 
 variable "mq_host" {
   type = string
+
 }
 
 variable "mq_port" {
@@ -45,10 +52,12 @@ variable "mq_port" {
 
 variable "mq_user" {
   type = string
+
 }
 
 variable "mq_password" {
   type = string
+
 }
 
 variable "mq_topic" {
@@ -59,7 +68,16 @@ variable "mq_timeout" {
   default = 2700000
 }
 
-variable "es_host" {
+variable "aws_es_host" {
+  default = "335855654610:readyabout-dev"
+  type    = string
+}
+
+variable "aws_es_username" {
+  type = string
+}
+
+variable "aws_es_password" {
   type = string
 }
 

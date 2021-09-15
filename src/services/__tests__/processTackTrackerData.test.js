@@ -34,7 +34,7 @@ describe('Processing non-existent TackTracker Data from DB to Parquet', () => {
 
 describe('Processing exist TackTracker Data from DB to Parquet', () => {
   const raceID1 = jsonData.TackTrackerRace[0].id;
-  const raceID2 = 'random';
+  const raceID2 = 'c0992792-0bc5-11ec-9a03-0242ac130003';
   beforeAll(async () => {
     await saveTackTrackerData(jsonData);
   });

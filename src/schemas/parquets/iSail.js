@@ -71,6 +71,7 @@ const iSailRace = new parquet.ParquetSchema({
   stop: { type: 'UTF8', optional: true },
   wind_direction: { type: 'UTF8', optional: true },
   url: { type: 'UTF8', optional: true },
+  track_ids: { type: 'UTF8' },
 });
 
 const iSailPosition = new parquet.ParquetSchema({

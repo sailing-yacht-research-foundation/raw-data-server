@@ -28,7 +28,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       boundary_center_set: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BOOLEAN,
         allowNull: true,
       },
       current_leg: {

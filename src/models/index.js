@@ -2,9 +2,9 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
 const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-  host: dbConfig.HOST,
-  port: dbConfig.PORT,
+const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+  host: dbConfig.host,
+  port: dbConfig.port,
   dialect: dbConfig.dialect,
   operatorsAliases: '0',
   logging: false,
@@ -679,12 +679,64 @@ db.americasCup2021WindPoint =
 
 // === Americas Cup ===
 for (key of AMERICAS_CUP_TABLE_SUFFIX) {
-  db[`americascup${key}`] = require(`./americascup/americascup${key}.model`)(
+  db[`americasCup${key}`] = require(`./americascup/americasCup${key}.model`)(
     sequelize,
     Sequelize,
   );
-};
+}
 // === End of Americas Cup ===
+
+db.sapCompetitor = require('./sap/SapCompetitor.model')(sequelize, Sequelize);
+db.sapCompetitorBoat = require('./sap/SapCompetitorBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorBoatPosition = require('./sap/SapCompetitorBoatPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorLeg = require('./sap/SapCompetitorLeg.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorManeuver = require('./sap/SapCompetitorManeuver.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapMark = require('./sap/SapMark.model')(sequelize, Sequelize);
+db.sapCompetitorMarkPosition = require('./sap/SapCompetitorMarkPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCompetitorMarkPassing = require('./sap/SapCompetitorMarkPassing.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapCourse = require('./sap/SapCourse.model')(sequelize, Sequelize);
+db.sapRace = require('./sap/SapRace.model')(sequelize, Sequelize);
+db.sapTargetTimeLeg = require('./sap/SapTargetTimeLeg.model')(
+  sequelize,
+  Sequelize,
+);
+db.sapWindSummary = require('./sap/SapWindSummary.model')(sequelize, Sequelize);
+// === End of SAP ===
+
+// === Start Regadata ===
+db.regadataRace = require('./regadata/RegadataRace.model')(
+  sequelize,
+  Sequelize,
+);
+
+db.regadataSail = require('./regadata/RegadataSail.model')(
+  sequelize,
+  Sequelize,
+);
+
+db.regadataReport = require('./regadata/RegadataReport.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Regadata ===
 
 // === Normalized Table ===
 db.readyAboutRaceMetadata =

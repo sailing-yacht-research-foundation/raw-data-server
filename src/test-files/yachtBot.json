@@ -41,7 +41,7 @@
       "race_original_id": "362",
       "name": "WM",
       "buoy_type": "generic",
-      "connected_buoy": "",
+      "connected_buoy": null,
       "connected_buoy_original_id": "",
       "metas": ""
     }
@@ -78,12 +78,12 @@
       "yacht_or_buoy": "yacht",
       "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
       "yacht_original_id": "DC-DK-AAEA",
-      "buoy": "",
-      "buoy_original_id": "",
+      "buoy": null,
+      "buoy_original_id": null,
       "time": "1347990204000",
       "lat": "41.8541743333333",
       "lon": "-87.5495515",
-      "gps_quality": ""
+      "gps_quality": null
     },
     {
       "id": "65b37dd6-00d4-4ce6-ba4f-223f08a64e94",
@@ -92,12 +92,12 @@
       "yacht_or_buoy": "yacht",
       "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
       "yacht_original_id": "DC-DK-AAEA",
-      "buoy": "",
-      "buoy_original_id": "",
+      "buoy": null,
+      "buoy_original_id": null,
       "time": "1347990204500",
       "lat": "41.8541715",
       "lon": "-87.5495773333333",
-      "gps_quality": ""
+      "gps_quality": null
     },
     {
       "id": "f6d4eba3-53fa-4b64-ab86-51fa304ba42c",
@@ -106,12 +106,12 @@
       "yacht_or_buoy": "yacht",
       "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
       "yacht_original_id": "DC-DK-AAEA",
-      "buoy": "",
-      "buoy_original_id": "",
+      "buoy": null,
+      "buoy_original_id": null,
       "time": "1347990205000",
       "lat": "41.8541715",
       "lon": "-87.5496023333333",
-      "gps_quality": ""
+      "gps_quality": null
     },
     {
       "id": "5d616159-aedb-45f4-b088-705f8b3fc53e",
@@ -120,12 +120,12 @@
       "yacht_or_buoy": "yacht",
       "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
       "yacht_original_id": "DC-DK-AAEA",
-      "buoy": "",
-      "buoy_original_id": "",
+      "buoy": null,
+      "buoy_original_id": null,
       "time": "1347990205500",
       "lat": "41.8541706666667",
       "lon": "-87.5496271666667",
-      "gps_quality": ""
+      "gps_quality": null
     },
     {
       "id": "09347576-bb10-4c85-a9de-3761290c307d",
@@ -134,12 +134,12 @@
       "yacht_or_buoy": "yacht",
       "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
       "yacht_original_id": "DC-DK-AAEA",
-      "buoy": "",
-      "buoy_original_id": "",
+      "buoy": null,
+      "buoy_original_id": null,
       "time": "1347990206000",
       "lat": "41.8541708333333",
       "lon": "-87.5496521666667",
-      "gps_quality": ""
+      "gps_quality": null
     }
   ]
 }

@@ -32,7 +32,7 @@ describe('Processing non-existent Metasail Data from DB to Parquet', () => {
 
 describe('Processing exist Metasail Data from DB to Parquet', () => {
   const race1 = jsonData.MetasailRace[0].id;
-  const race2 = 'random';
+  const race2 = 'b35ab726-0bc5-11ec-9a03-0242ac130003';
   beforeAll(async () => {
     await saveMetasailData(jsonData);
   });

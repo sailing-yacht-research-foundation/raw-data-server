@@ -24,7 +24,7 @@ describe('Processing non-existent iSail Data from DB to Parquet', () => {
     await db.sequelize.sync();
   });
   it('should not get any event participants', async () => {
-    const eventID = 'random-id';
+    const eventID = 'ddfd5dea-0bbf-11ec-9a03-0242ac130003';
     const participants = await getParticipants([eventID]);
     expect(participants.size).toEqual(0);
   });

@@ -48,12 +48,15 @@ Or create a new .env file inside deployment folder with these variables:
 And run `docker-compose -f deployment/docker-compose.yml --env-file deployment/.env config`
 
 If you get an error message: "CannotPullContainerError: inspect image has been retried x time(s)", you will also need to push the docker image to the ECR using the push commands from the AWS console after terraform successfully created the infrastructure.
-The commands should be:
+You can simply run the shell script deploy.sh:
 
-1. Run `aws ecr get-login-password --region [region_name] | docker login --username AWS --password-stdin [aws_account_id].dkr.ecr.us-west-1.amazonaws.com`
-2. Run `docker build -t raw-data-server .` if you haven't built it already
-3. Run `docker tag raw-data-server:latest [aws_account_id].dkr.ecr.us-west-1.amazonaws.com/raw-data-server:latest`
-4. Run `docker push [aws_account_id].dkr.ecr.us-west-1.amazonaws.com/raw-data-server:latest`
+1. Check the variable in side the deploy.sh if it is correct, change it as needed before running the script
+  AWS_ECR_REGISTRY=335855654610.dkr.ecr.us-east-1.amazonaws.com
+  AWS_REGION=us-east-1
+  ECR_REPO_NAME=raw-data-server
+  ECR_TAG=latest
+
+2. Run script `./deploy.sh`. This will build the docker image tag it and upload to AWS ECR.
 
 If this is the first time run, you will need to run terraform init and apply (commands below)
 
@@ -122,3 +125,42 @@ Set an `Authorization` header containing md5 hash of current date with format: y
     - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
     - url (required): URL of the failed scraper
     - error (required): Error detail
+
+- `/api/v1/americas-cup-2021`
+
+  - Method: POST
+  - Query:
+    - bucketName (required): Bucket name which has americas cup 2021 race jsons
+  - Trigger the saving and normalization of Americas Cup 2021 Data.
+
+- `/api/v1/americas-cup`
+
+  - Method: POST
+  - Body (application/json):
+    - bucketName (required): bucket name in s3 where the raw data will be downloaded
+    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/americasCup2013 or ./src/test-files/americasCup2016
+    - year (required): Year when the americas cup event happened
+
+- `/api/v1/regadata`
+
+  - Method: POST
+  - Body (application/gzip): For example regadata.tar.gz
+    - bucketName (required): bucket name in s3 where the raw data will be downloaded
+    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/regadata
+
+## Development Deployment
+- This service was deployed to AWS development environment using terraform
+- The terraform files includes s3 backend to keep the terraform state, customized vpc was deployed, other network components needed for the deployment of the raw data server application
+- The VPC has 3 public subnets and 1 private subnet. with nat gateway in the public subnet
+- The ecs service was deployed in the private subnet
+- Before you run the tf file make sure the aws access key and secret access key is present in the .env file
+- The mq server was deployed manually within the same vpc as the raw-data server so they can communicate with the container in ECS without any issues
+- For the deployment of the this service you need to run
+docker-compose -f deployment/docker-compose.yml run --rm terraform init
+docker-compose -f deployment/docker-compose.yml run --rm terraform validate
+docker-compose -f deployment/docker-compose.yml run --rm terraform plan
+docker-compose -f deployment/docker-compose.yml run --rm terraform apply
+when you run terraform apply you will need to input the some values for the mq server
+- The credentials for the mq server are used in the terraform variable file
+- After running the terraform apply, the docker image was built and pushed to elastic container registry
+- The service can be accessed from this url - http://raw-data-server-lb-1246447046.us-east-1.elb.amazonaws.com/

@@ -1,0 +1,569 @@
+{
+    "bycompetitor": [
+        {
+            "competitor": {
+                "competitor": {
+                    "idtype": "java.util.UUID",
+                    "id": "850dd4c0-d52b-0132-e035-60a44ce903c3",
+                    "name": "Aarhus Sejlklub",
+                    "shortName": "ASK",
+                    "displayColor": null,
+                    "searchTag": null,
+                    "nationality": "DEN",
+                    "nationalityISO2": "DK",
+                    "nationalityISO3": "DNK",
+                    "flagImageUri": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/ask.png",
+                    "team": {
+                        "name": "Aarhus",
+                        "coach": null,
+                        "sailors": [
+                            {
+                                "name": "Aarhus",
+                                "description": "",
+                                "nationality": {
+                                    "IOC": "DEN"
+                                }
+                            }
+                        ]
+                    },
+                    "timeOnTimeFactor": 0,
+                    "timeOnDistanceAllowanceInSecondsPerNauticalMile": 0
+                },
+                "boat": {
+                    "idtype": "java.lang.String",
+                    "id": "94c730da-c0c0-44c8-b31e-0d3363e668a2#1",
+                    "name": "Boot 1",
+                    "sailId": "1",
+                    "color": "#141414",
+                    "boatClass": {
+                        "name": "J/70",
+                        "typicallyStartsUpwind": true,
+                        "hullLengthInMeters": 6.93,
+                        "hullBeamInMeters": 2.25,
+                        "displayName": "J/70",
+                        "iconUrl": "/gwt/src/main/resources/com/sap/sailing/gwt/ui/client/images/boatclass/J70.png",
+                        "aliasNames": [
+                            "J70",
+                            "J-70"
+                        ]
+                    }
+                }
+            },
+            "markpassings": [
+                {
+                    "waypointName": "Start-Finish",
+                    "zeroBasedWaypointIndex": 0,
+                    "timeasmillis": 1443253090673,
+                    "timeasiso": "2015-09-26T07:38:10.673+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 1,
+                    "timeasmillis": 1443253286159,
+                    "timeasiso": "2015-09-26T07:41:26.159+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 2,
+                    "timeasmillis": 1443253403658,
+                    "timeasiso": "2015-09-26T07:43:23.658+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 3,
+                    "timeasmillis": 1443253559338,
+                    "timeasiso": "2015-09-26T07:45:59.338+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 4,
+                    "timeasmillis": 1443253693592,
+                    "timeasiso": "2015-09-26T07:48:13.592+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 5,
+                    "timeasmillis": 1443253850165,
+                    "timeasiso": "2015-09-26T07:50:50.165+0000"
+                },
+                {
+                    "waypointName": "Maal",
+                    "zeroBasedWaypointIndex": 6,
+                    "timeasmillis": 1443253879382,
+                    "timeasiso": "2015-09-26T07:51:19.382+0000"
+                }
+            ]
+        },
+        {
+            "competitor": {
+                "competitor": {
+                    "idtype": "java.util.UUID",
+                    "id": "84b21d00-d52b-0132-e021-60a44ce903c3",
+                    "name": "Sejlklubben Lynæs ",
+                    "shortName": "LYNÆS",
+                    "displayColor": null,
+                    "searchTag": null,
+                    "nationality": "DEN",
+                    "nationalityISO2": "DK",
+                    "nationalityISO3": "DNK",
+                    "flagImageUri": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/linaes.png",
+                    "team": {
+                        "name": "Sejlklubben Lynæs ",
+                        "coach": null,
+                        "sailors": [
+                            {
+                                "name": "Sejlklubben Lynæs ",
+                                "description": "",
+                                "nationality": {
+                                    "IOC": "DEN"
+                                }
+                            }
+                        ]
+                    },
+                    "timeOnTimeFactor": 0,
+                    "timeOnDistanceAllowanceInSecondsPerNauticalMile": 0
+                },
+                "boat": {
+                    "idtype": "java.lang.String",
+                    "id": "94c730da-c0c0-44c8-b31e-0d3363e668a2#6",
+                    "name": "Boot 6",
+                    "sailId": "6",
+                    "color": "#BE2C36",
+                    "boatClass": {
+                        "name": "J/70",
+                        "typicallyStartsUpwind": true,
+                        "hullLengthInMeters": 6.93,
+                        "hullBeamInMeters": 2.25,
+                        "displayName": "J/70",
+                        "iconUrl": "/gwt/src/main/resources/com/sap/sailing/gwt/ui/client/images/boatclass/J70.png",
+                        "aliasNames": [
+                            "J70",
+                            "J-70"
+                        ]
+                    }
+                }
+            },
+            "markpassings": [
+                {
+                    "waypointName": "Start-Finish",
+                    "zeroBasedWaypointIndex": 0,
+                    "timeasmillis": 1443253088157,
+                    "timeasiso": "2015-09-26T07:38:08.157+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 1,
+                    "timeasmillis": 1443253266244,
+                    "timeasiso": "2015-09-26T07:41:06.244+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 2,
+                    "timeasmillis": 1443253400783,
+                    "timeasiso": "2015-09-26T07:43:20.783+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 3,
+                    "timeasmillis": 1443253597712,
+                    "timeasiso": "2015-09-26T07:46:37.712+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 4,
+                    "timeasmillis": 1443253726195,
+                    "timeasiso": "2015-09-26T07:48:46.195+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 5,
+                    "timeasmillis": 1443253885188,
+                    "timeasiso": "2015-09-26T07:51:25.188+0000"
+                },
+                {
+                    "waypointName": "Maal",
+                    "zeroBasedWaypointIndex": 6,
+                    "timeasmillis": 1443253914299,
+                    "timeasiso": "2015-09-26T07:51:54.299+0000"
+                }
+            ]
+        },
+        {
+            "competitor": {
+                "competitor": {
+                    "idtype": "java.util.UUID",
+                    "id": "8515a420-d52b-0132-e037-60a44ce903c3",
+                    "name": "Horsens Sejlklub",
+                    "shortName": "HSH",
+                    "displayColor": null,
+                    "searchTag": null,
+                    "nationality": "DEN",
+                    "nationalityISO2": "DK",
+                    "nationalityISO3": "DNK",
+                    "flagImageUri": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/hsh.png",
+                    "team": {
+                        "name": "Horsens Sejlklub",
+                        "coach": null,
+                        "sailors": [
+                            {
+                                "name": "Horsens Sejlklub",
+                                "description": "",
+                                "nationality": {
+                                    "IOC": "DEN"
+                                }
+                            }
+                        ]
+                    },
+                    "timeOnTimeFactor": 0,
+                    "timeOnDistanceAllowanceInSecondsPerNauticalMile": 0
+                },
+                "boat": {
+                    "idtype": "java.lang.String",
+                    "id": "94c730da-c0c0-44c8-b31e-0d3363e668a2#4",
+                    "name": "Boot 4",
+                    "sailId": "4",
+                    "color": "#006A36",
+                    "boatClass": {
+                        "name": "J/70",
+                        "typicallyStartsUpwind": true,
+                        "hullLengthInMeters": 6.93,
+                        "hullBeamInMeters": 2.25,
+                        "displayName": "J/70",
+                        "iconUrl": "/gwt/src/main/resources/com/sap/sailing/gwt/ui/client/images/boatclass/J70.png",
+                        "aliasNames": [
+                            "J70",
+                            "J-70"
+                        ]
+                    }
+                }
+            },
+            "markpassings": [
+                {
+                    "waypointName": "Start-Finish",
+                    "zeroBasedWaypointIndex": 0,
+                    "timeasmillis": 1443253093616,
+                    "timeasiso": "2015-09-26T07:38:13.616+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 1,
+                    "timeasmillis": 1443253289000,
+                    "timeasiso": "2015-09-26T07:41:29.000+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 2,
+                    "timeasmillis": 1443253423535,
+                    "timeasiso": "2015-09-26T07:43:43.535+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 3,
+                    "timeasmillis": 1443253584278,
+                    "timeasiso": "2015-09-26T07:46:24.278+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 4,
+                    "timeasmillis": 1443253721178,
+                    "timeasiso": "2015-09-26T07:48:41.178+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 5,
+                    "timeasmillis": 1443253865290,
+                    "timeasiso": "2015-09-26T07:51:05.290+0000"
+                },
+                {
+                    "waypointName": "Maal",
+                    "zeroBasedWaypointIndex": 6,
+                    "timeasmillis": 1443253893373,
+                    "timeasiso": "2015-09-26T07:51:33.373+0000"
+                }
+            ]
+        },
+        {
+            "competitor": {
+                "competitor": {
+                    "idtype": "java.util.UUID",
+                    "id": "84a54810-d52b-0132-e01d-60a44ce903c3",
+                    "name": "Roskilde Sejlklub",
+                    "shortName": "RS",
+                    "displayColor": null,
+                    "searchTag": null,
+                    "nationality": "DEN",
+                    "nationalityISO2": "DK",
+                    "nationalityISO3": "DNK",
+                    "flagImageUri": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/rs.png",
+                    "team": {
+                        "name": "Roskilde",
+                        "coach": null,
+                        "sailors": [
+                            {
+                                "name": "Roskilde",
+                                "description": "",
+                                "nationality": {
+                                    "IOC": "DEN"
+                                }
+                            }
+                        ]
+                    },
+                    "timeOnTimeFactor": 0,
+                    "timeOnDistanceAllowanceInSecondsPerNauticalMile": 0
+                },
+                "boat": {
+                    "idtype": "java.lang.String",
+                    "id": "94c730da-c0c0-44c8-b31e-0d3363e668a2#2",
+                    "name": "Boot 2",
+                    "sailId": "2",
+                    "color": "#606060",
+                    "boatClass": {
+                        "name": "J/70",
+                        "typicallyStartsUpwind": true,
+                        "hullLengthInMeters": 6.93,
+                        "hullBeamInMeters": 2.25,
+                        "displayName": "J/70",
+                        "iconUrl": "/gwt/src/main/resources/com/sap/sailing/gwt/ui/client/images/boatclass/J70.png",
+                        "aliasNames": [
+                            "J70",
+                            "J-70"
+                        ]
+                    }
+                }
+            },
+            "markpassings": [
+                {
+                    "waypointName": "Start-Finish",
+                    "zeroBasedWaypointIndex": 0,
+                    "timeasmillis": 1443253097530,
+                    "timeasiso": "2015-09-26T07:38:17.530+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 1,
+                    "timeasmillis": 1443253295460,
+                    "timeasiso": "2015-09-26T07:41:35.460+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 2,
+                    "timeasmillis": 1443253417000,
+                    "timeasiso": "2015-09-26T07:43:37.000+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 3,
+                    "timeasmillis": 1443253543422,
+                    "timeasiso": "2015-09-26T07:45:43.422+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 4,
+                    "timeasmillis": 1443253682000,
+                    "timeasiso": "2015-09-26T07:48:02.000+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 5,
+                    "timeasmillis": 1443253827530,
+                    "timeasiso": "2015-09-26T07:50:27.530+0000"
+                },
+                {
+                    "waypointName": "Maal",
+                    "zeroBasedWaypointIndex": 6,
+                    "timeasmillis": 1443253853077,
+                    "timeasiso": "2015-09-26T07:50:53.077+0000"
+                }
+            ]
+        },
+        {
+            "competitor": {
+                "competitor": {
+                    "idtype": "java.util.UUID",
+                    "id": "84d3d710-d52b-0132-e027-60a44ce903c3",
+                    "name": "Sønderborg Yacht-Club",
+                    "shortName": "SYC",
+                    "displayColor": null,
+                    "searchTag": null,
+                    "nationality": "DEN",
+                    "nationalityISO2": "DK",
+                    "nationalityISO3": "DNK",
+                    "flagImageUri": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/syc.png",
+                    "team": {
+                        "name": "Sønderborg",
+                        "coach": null,
+                        "sailors": [
+                            {
+                                "name": "Sønderborg",
+                                "description": "",
+                                "nationality": {
+                                    "IOC": "DEN"
+                                }
+                            }
+                        ]
+                    },
+                    "timeOnTimeFactor": 0,
+                    "timeOnDistanceAllowanceInSecondsPerNauticalMile": 0
+                },
+                "boat": {
+                    "idtype": "java.lang.String",
+                    "id": "94c730da-c0c0-44c8-b31e-0d3363e668a2#3",
+                    "name": "Boot 3",
+                    "sailId": "3",
+                    "color": "#0169EF",
+                    "boatClass": {
+                        "name": "J/70",
+                        "typicallyStartsUpwind": true,
+                        "hullLengthInMeters": 6.93,
+                        "hullBeamInMeters": 2.25,
+                        "displayName": "J/70",
+                        "iconUrl": "/gwt/src/main/resources/com/sap/sailing/gwt/ui/client/images/boatclass/J70.png",
+                        "aliasNames": [
+                            "J70",
+                            "J-70"
+                        ]
+                    }
+                }
+            },
+            "markpassings": [
+                {
+                    "waypointName": "Start-Finish",
+                    "zeroBasedWaypointIndex": 0,
+                    "timeasmillis": 1443253094618,
+                    "timeasiso": "2015-09-26T07:38:14.618+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 1,
+                    "timeasmillis": 1443253276546,
+                    "timeasiso": "2015-09-26T07:41:16.546+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 2,
+                    "timeasmillis": 1443253390000,
+                    "timeasiso": "2015-09-26T07:43:10.000+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 3,
+                    "timeasmillis": 1443253556053,
+                    "timeasiso": "2015-09-26T07:45:56.053+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 4,
+                    "timeasmillis": 1443253684000,
+                    "timeasiso": "2015-09-26T07:48:04.000+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 5,
+                    "timeasmillis": 1443253840000,
+                    "timeasiso": "2015-09-26T07:50:40.000+0000"
+                },
+                {
+                    "waypointName": "Maal",
+                    "zeroBasedWaypointIndex": 6,
+                    "timeasmillis": 1443253865819,
+                    "timeasiso": "2015-09-26T07:51:05.819+0000"
+                }
+            ]
+        },
+        {
+            "competitor": {
+                "competitor": {
+                    "idtype": "java.util.UUID",
+                    "id": "84dbdd60-d52b-0132-e029-60a44ce903c3",
+                    "name": "Skovshoved Sejlklub",
+                    "shortName": "SKS",
+                    "displayColor": null,
+                    "searchTag": null,
+                    "nationality": "DEN",
+                    "nationalityISO2": "DK",
+                    "nationalityISO3": "DNK",
+                    "flagImageUri": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/sks.png",
+                    "team": {
+                        "name": "Skovshoved Sejlklub",
+                        "coach": null,
+                        "sailors": [
+                            {
+                                "name": "Skovshoved Sejlklub",
+                                "description": "",
+                                "nationality": {
+                                    "IOC": "DEN"
+                                }
+                            }
+                        ]
+                    },
+                    "timeOnTimeFactor": 0,
+                    "timeOnDistanceAllowanceInSecondsPerNauticalMile": 0
+                },
+                "boat": {
+                    "idtype": "java.lang.String",
+                    "id": "94c730da-c0c0-44c8-b31e-0d3363e668a2#5",
+                    "name": "Boot 5",
+                    "sailId": "5",
+                    "color": "#FEE66D",
+                    "boatClass": {
+                        "name": "J/70",
+                        "typicallyStartsUpwind": true,
+                        "hullLengthInMeters": 6.93,
+                        "hullBeamInMeters": 2.25,
+                        "displayName": "J/70",
+                        "iconUrl": "/gwt/src/main/resources/com/sap/sailing/gwt/ui/client/images/boatclass/J70.png",
+                        "aliasNames": [
+                            "J70",
+                            "J-70"
+                        ]
+                    }
+                }
+            },
+            "markpassings": [
+                {
+                    "waypointName": "Start-Finish",
+                    "zeroBasedWaypointIndex": 0,
+                    "timeasmillis": 1443253093935,
+                    "timeasiso": "2015-09-26T07:38:13.935+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 1,
+                    "timeasmillis": 1443253282224,
+                    "timeasiso": "2015-09-26T07:41:22.224+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 2,
+                    "timeasmillis": 1443253381000,
+                    "timeasiso": "2015-09-26T07:43:01.000+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 3,
+                    "timeasmillis": 1443253528147,
+                    "timeasiso": "2015-09-26T07:45:28.147+0000"
+                },
+                {
+                    "waypointName": "Gatemærke",
+                    "zeroBasedWaypointIndex": 4,
+                    "timeasmillis": 1443253671000,
+                    "timeasiso": "2015-09-26T07:47:51.000+0000"
+                },
+                {
+                    "waypointName": "Topmærke",
+                    "zeroBasedWaypointIndex": 5,
+                    "timeasmillis": 1443253820296,
+                    "timeasiso": "2015-09-26T07:50:20.296+0000"
+                },
+                {
+                    "waypointName": "Maal",
+                    "zeroBasedWaypointIndex": 6,
+                    "timeasmillis": 1443253843416,
+                    "timeasiso": "2015-09-26T07:50:43.416+0000"
+                }
+            ]
+        }
+    ],
+    "bywaypoint": null
+}

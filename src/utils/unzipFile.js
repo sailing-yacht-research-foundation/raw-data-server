@@ -4,6 +4,7 @@ const { pipeline } = require('stream');
 const { promisify } = require('util');
 const fs = require('fs');
 const extract = require('extract-zip');
+const tar = require('tar-fs');
 
 async function gunzipFile(sourceStream, destinationStream) {
   //   const fileContents = fs.createReadStream(sourcePath);
@@ -46,11 +47,30 @@ async function downloadAndExtract({ s3, bucketName, fileName, targetDir }) {
 }
 
 async function unzipFile(zipPath, targetDir) {
-  await extract(zipPath, { dir: targetDir })
+  await extract(zipPath, { dir: targetDir });
+}
+async function downloadAndExtractTar({ s3, bucketName, fileName, targetDir }) {
+  const options = {
+    Bucket: bucketName,
+    Key: fileName,
+  };
+  const s3Object = await s3.getObject(options);
+  const sourceStream = s3Object.createReadStream();
+  return new Promise((resolve, reject) => {
+    sourceStream
+      .pipe(zlib.createGunzip())
+      .pipe(tar.extract(targetDir))
+      .on('error', reject)
+      .on('finish', () => {
+        console.log(targetDir);
+        resolve(targetDir);
+      });
+  });
 }
 
 module.exports = {
   gunzipFile,
   downloadAndExtract,
   unzipFile,
-}
+  downloadAndExtractTar,
+};

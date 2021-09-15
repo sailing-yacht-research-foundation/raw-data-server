@@ -9,7 +9,7 @@ resource "aws_efs_file_system" "rds_fs" {
 resource "aws_efs_mount_target" "mount" {
   count          = length(var.aws_availability_zones)
   file_system_id = aws_efs_file_system.rds_fs.id
-  subnet_id      = aws_default_subnet.default_subnet[count.index].id
+  subnet_id      = aws_subnet.public_subnet[count.index].id
 
   security_groups = [aws_security_group.service_security_group.id]
 }

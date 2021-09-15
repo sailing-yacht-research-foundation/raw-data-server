@@ -100,24 +100,12 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false,
         },
         boat_models: {
-            type: Sequelize.TEXT,
+            type: Sequelize.ARRAY(Sequelize.TEXT),
             allowNull: false,
-            get() {
-              return this.getDataValue('boat_models').split(';')
-            },
-            set(val) {
-              this.setDataValue('boat_models', val.join(';'));
-            },
         },
         handicap_rules: {
-            type: Sequelize.TEXT,
+            type: Sequelize.ARRAY(Sequelize.TEXT),
             allowNull: false,
-            get() {
-              return this.getDataValue('handicap_rules').split(';')
-            },
-            set(val) {
-              this.setDataValue('handicap_rules', val.join(';'));
-            },
         },
         great_circle: {
             type: Sequelize.GEOMETRY,
