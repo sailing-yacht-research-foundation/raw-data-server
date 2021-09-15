@@ -29,6 +29,7 @@ const createSailForRegadata = async (transaction, race, sailData = []) => {
     map.set(sail.sail, id);
   }
 
+  const allSails = newSails.concat();
   while (newSails.length > 0) {
     const splicedArray = newSails.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
     await db.regadataSail.bulkCreate(splicedArray, {
@@ -38,7 +39,7 @@ const createSailForRegadata = async (transaction, race, sailData = []) => {
     });
   }
 
-  return map;
+  return [map, allSails];
 };
 
 module.exports = createSailForRegadata;

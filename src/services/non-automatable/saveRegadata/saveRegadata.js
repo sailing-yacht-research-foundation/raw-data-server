@@ -11,7 +11,9 @@ const isRegadataRaceExist = require('./isRegadataRaceExist');
 const createRaceForRegadata = require('./createRaceForRegadata');
 const createSailForRegadata = require('./createSailForRegadata');
 const createReportForRegadata = require('./createReportForRegadata');
-
+const {
+  normalizeRegadata,
+} = require('../../normalization/non-automatable/normalizeRegadata');
 /**
  * 1. Download the tar.gz file from internet.
  * 2. Extract the file into the temporary folder.
@@ -23,7 +25,7 @@ const createReportForRegadata = require('./createReportForRegadata');
  */
 const saveRegadata = async (bucketName, fileName) => {
   try {
-    let targetDir = temp.mkdirSync('regadata_rawdata');
+    const targetDir = temp.mkdirSync('regadata_rawdata');
     console.log(`Downloading file ${fileName} from s3`);
     await downloadAndExtractTar({ s3, bucketName, fileName, targetDir });
     const allDataDir = listDirectories(targetDir)[0];
@@ -77,7 +79,7 @@ const processSailFile = async (rootDirt, sailFile) => {
       const sailData = await deserializeBsonFromFile(
         path.join(rootDirt, sailFile),
       );
-      const mapSailId = await createSailForRegadata(
+      const [mapSailId, regaDataSails] = await createSailForRegadata(
         transaction,
         race,
         sailData,
@@ -85,9 +87,18 @@ const processSailFile = async (rootDirt, sailFile) => {
       const reportPath = path.join(rootDirt, `${raceName}_reports.bson`);
       const reportData = await deserializeBsonFromFile(reportPath);
 
-      await createReportForRegadata(transaction, race, mapSailId, reportData);
+      const regadataReports = await createReportForRegadata(
+        transaction,
+        race,
+        mapSailId,
+        reportData,
+      );
       console.log(
         `For race = ${raceName}, sailData.length = ${sailData.length} reportData.length = ${reportData.length}`,
+      );
+      await normalizeRegadata(
+        { regadataRace: race, regaDataSails, regadataReports },
+        transaction,
       );
     }
     await transaction.commit();
