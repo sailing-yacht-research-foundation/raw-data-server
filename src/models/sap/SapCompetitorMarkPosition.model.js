@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       timepoint_ms: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         allowNull: false,
       },
       lat_deg: {

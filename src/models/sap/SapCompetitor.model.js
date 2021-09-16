@@ -11,6 +11,15 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      race_id: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        primaryKey: true,
+      },
+      race_original_id: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       regatta: {
         type: Sequelize.TEXT,
         allowNull: false,
