@@ -2,6 +2,7 @@ name: Terraform Apply
 on:
   push:
     branches:
+      - develop
       - dev-test
 
 jobs:
