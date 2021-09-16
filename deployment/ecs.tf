@@ -121,7 +121,7 @@ resource "aws_ecs_task_definition" "rds_task" {
   requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
   memory                   = 12288       # Specifying the memory our container requires
-  cpu                      = 4096        # Specifying the CPU our container requires
+  cpu                      = 4096         # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
   volume {
@@ -138,6 +138,47 @@ resource "aws_ecs_task_definition" "rds_task" {
       }
     }
   }
+}
+
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity       = 2
+  min_capacity       = 1
+  resource_id        = "service/Raw-Data-Server-ECS_Cluster/Raw-Data-Server-Service"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+ }
+ 
+ 
+ resource "aws_appautoscaling_policy" "ecs_target_cpu" {
+  name               = "application-scaling-policy-cpu"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = 80
+  }
+  depends_on = [aws_appautoscaling_target.ecs_target]
+}
+
+resource "aws_appautoscaling_policy" "ecs_target_memory" {
+  name               = "application-scaling-policy-memory"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+    target_value = 80
+  }
+  depends_on = [aws_appautoscaling_target.ecs_target]
 }
 
 resource "aws_security_group" "service_security_group" {
