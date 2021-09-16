@@ -9,6 +9,7 @@ const {
   findAverageLength,
   createRace,
   allPositionsToFeatureCollection,
+  parseGeoStringToDecimal,
 } = require('../../../utils/gisUtils');
 const uploadUtil = require('../../uploadUtil');
 
@@ -18,9 +19,13 @@ const normalizeRegadata = async (
 ) => {
   const SOURCE = 'REGADATA';
   const race = regadataRace;
-  const boatPositions = regadataReports
+  let allLatLongSameValue = true;
+  let boatPositions = regadataReports
     .filter((t) => t.lat_dec && t.lon_dec && t.timestamp)
     .map((t) => {
+      if (t.lat_dec !== t.lon_dec) {
+        allLatLongSameValue = false;
+      }
       return {
         ...t,
         // convert unix timestamp
@@ -37,6 +42,24 @@ const normalizeRegadata = async (
   if (!race || !boatPositions?.length) {
     console.log(`No boat position for ${race.original_id}. Skipping`);
     return;
+  }
+
+  if (allLatLongSameValue) {
+    console.log(
+      `Race ${race.original_id} has the same lat and lon for all values, which is wrong values. Start parsing lat lon values from lat_dms and lon_dms`,
+    );
+    boatPositions = boatPositions.map((t) => {
+      t.lat_dms = t.lat_dms.replace('.', ' ');
+      t.lon_dms = t.lon_dms.replace('.', ' ');
+
+      const newLat = parseGeoStringToDecimal(t.lat_dms);
+      const newLon = parseGeoStringToDecimal(t.lon_dms);
+      return {
+        ...t,
+        lat: isNaN(newLat) ? newLat : t.lat,
+        lon: isNaN(newLon) ? newLon : t.lon,
+      };
+    });
   }
 
   const raceNamePrefix = race.original_id.replace(/[0-9]+.+/g, '').split('');
