@@ -528,14 +528,6 @@ db.swiftsureSponsor = require('./swiftsure/swiftsureSponsor.model')(
   sequelize,
   Sequelize,
 );
-db.swiftsureFailedUrl = require('./swiftsure/swiftsureFailedUrl.model')(
-  sequelize,
-  Sequelize,
-);
-db.swiftsureSuccessfulUrl = require('./swiftsure/swiftsureSuccessfulUrl.model')(
-  sequelize,
-  Sequelize,
-);
 // === End of Swiftsure ===
 
 // === Americascup2021 ===
