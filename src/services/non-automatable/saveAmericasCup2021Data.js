@@ -1,8 +1,8 @@
-const { v4: uuidv4, v4 } = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
-const databaseErrorHandler = require('../../utils/databaseErrorHandler');
+const s3Util = require('../s3Util');
 const {
   normalizeRace,
 } = require('../normalization/non-automatable/normalizeAmericascup2021');
@@ -39,7 +39,7 @@ const saveAmericasCup2021Data = async (data) => {
         scene_center_utm_lat: data.race.sceneCenterUTM.y,
         sim_time: data.race.simTime,
       };
-      await db.americasCup2021Race.create(race);
+      await db.americasCup2021Race.create(race, { transaction });
 
       let raceStatus = data.race.raceStatusInterp.valHistory.map((row) => {
         return {
@@ -67,15 +67,15 @@ const saveAmericasCup2021Data = async (data) => {
           abbreviation: row.abbr,
           flag_id: row.flag_id,
           color: row.color,
-          boat_name: row?.boatmodel?.name,
-          top_mast_offset_x: row?.boatmodel?.topMastOffset.x,
-          top_mast_offset_y: row?.boatmodel?.topMastOffset.y,
-          top_mast_offset_z: row?.boatmodel?.topMastOffset.z,
-          default_bow_offset: row?.boatmodel?.defaultbowoffset,
-          jib_target: row?.boatmodel?.jibtarget,
-          main_sail_target: row?.boatmodel?.mainsailtarget,
-          left_foil: row?.boatmodel?.leftfoil,
-          right_foil: row?.boatmodel?.rightfoil,
+          boat_name: row.boatmodel?.name,
+          top_mast_offset_x: row.boatmodel?.topMastOffset.x,
+          top_mast_offset_y: row.boatmodel?.topMastOffset.y,
+          top_mast_offset_z: row.boatmodel?.topMastOffset.z,
+          default_bow_offset: row.boatmodel?.defaultbowoffset,
+          jib_target: row.boatmodel?.jibtarget,
+          main_sail_target: row.boatmodel?.mainsailtarget,
+          left_foil: row.boatmodel?.leftfoil,
+          right_foil: row.boatmodel?.rightfoil,
         };
       });
 
@@ -699,7 +699,7 @@ const saveAmericasCup2021Data = async (data) => {
       let roundingTimesKeys = Object.keys(data.race.roundingTimesByMarkId);
       roundingTimesKeys.map((rkey) => {
         let keys = Object.keys(data.race.roundingTimesByMarkId[rkey]);
-        for (key of keys) {
+        for (const key of keys) {
           let roundingTime = {
             id: uuidv4(),
             race_id: raceId,
@@ -856,9 +856,40 @@ const saveAmericasCup2021Data = async (data) => {
     }
     await transaction.commit();
   } catch (error) {
-    console.log(error.toString());
+    console.log(error);
     await transaction.rollback();
   }
 };
 
-module.exports = saveAmericasCup2021Data;
+const downloadAndProcessFiles = async (bucketName) => {
+  let fileNames = await s3Util.listAllKeys(bucketName);
+  for (const index in fileNames) {
+    try {
+      const fileName = fileNames[index];
+      console.log(`Processing file ${fileName} ${index} of ${fileNames.length-1}`);
+      let rawData = await s3Util.getObject(fileName, bucketName);
+      let destructuredFileName = fileName.split('-');
+      let raceData = JSON.parse(rawData);
+      raceData.eventName = destructuredFileName[1].replace('_', ' ');
+      raceData.raceName = destructuredFileName[2]
+        .replace('.json', '')
+        .replace('_', ' ');
+      let race = await db.americasCup2021Race.findOne({
+        where: { original_id: raceData.race.raceId.toString() },
+      });
+      if (!race) {
+        await saveAmericasCup2021Data(raceData);
+      } else {
+        console.log(`Race ${fileName} already exists`);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  console.log('Finished saving all races');
+};
+
+module.exports = {
+  saveAmericasCup2021Data: saveAmericasCup2021Data,
+  downloadAndProcessFiles: downloadAndProcessFiles,
+};

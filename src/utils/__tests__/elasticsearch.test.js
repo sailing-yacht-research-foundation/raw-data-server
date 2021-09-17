@@ -1,55 +1,56 @@
-const elasticsearch = require('elasticsearch');
-const { indexRace } = require('../elasticsearch');
+const axios = require('axios');
+
+jest.mock('axios', () => ({
+  create: jest.fn().mockReturnThis(),
+  put: jest.fn(),
+}));
 
 describe('elasticsearch.js', () => {
   describe('When indexRace is called', () => {
-    let elasticsearchclient, esIndexSpy;
+    let oldEnvHost;
     beforeAll(() => {
-      elasticsearchclient = new elasticsearch.Client();
-      esIndexSpy = jest.spyOn(elasticsearchclient, 'index');
+      oldEnvHost = process.env.AWS_ES_HOST;
+      process.env.AWS_ES_HOST = 'http://test-elasticsearch';
     })
     afterEach(() => {
+      process.env.AWS_ES_HOST = oldEnvHost;
       jest.restoreAllMocks();
     })
 
     it('should index race data', async () => {
+      const { indexRace } = require('../elasticsearch');
       const raceId = 'raceid';
       const raceData = {
         id: raceId,
         name: 'test race',
       };
       const fakedResp = { id: raceId };
-      elasticsearchclient.index.mockImplementation((_, callback) => callback(null, fakedResp));
+      axios.put.mockResolvedValueOnce(fakedResp)
 
       const r = await indexRace('raceid', raceData);
-      expect(esIndexSpy).toHaveBeenCalledWith({
-        index: 'races',
-        id: raceId,
-        type: 'race',
-        body: raceData,
-      }, expect.anything());
+      expect(axios.put).toHaveBeenCalledWith(
+        `races/race/${raceId}`,
+        raceData);
       expect(r).toEqual(fakedResp);
     });
 
     it('should throw error in case of failure', async () => {
+      const { indexRace } = require('../elasticsearch');
       const raceId = 'raceid';
       const raceData = {
         id: raceId,
         name: 'test race',
       };
       const fakedError = 'Faked error';
-      elasticsearchclient.index.mockImplementation((_, callback) => callback(fakedError));
+      axios.put.mockRejectedValueOnce(fakedError);
 
       try {
         await indexRace('raceid', raceData);
       } catch (err) {
         expect(err).toEqual(fakedError);
-        expect(esIndexSpy).toHaveBeenCalledWith({
-          index: 'races',
-          id: raceId,
-          type: 'race',
-          body: raceData,
-        }, expect.anything());
+        expect(axios.put).toHaveBeenCalledWith(
+          `races/race/${raceId}`,
+          raceData);
       }
     });
   });
