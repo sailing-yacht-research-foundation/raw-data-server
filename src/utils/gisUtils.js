@@ -401,10 +401,14 @@ exports.createRace = async function (
   };
   // Remove NaN in greatCircle values
   greatCircle.coordinates = greatCircle.coordinates.map((v1) => {
-    return v1.map((v2) => v2.filter((v3) => !isNaN(v3)))
+    return v1
+      .map((v2) => v2.filter((v3) => !isNaN(v3)))
       .filter((i) => i.length === 2);
   });
-  if (greatCircle.coordinates === 0 || greatCircle.coordinates[0].length === 0) {
+  if (
+    greatCircle.coordinates === 0 ||
+    greatCircle.coordinates[0].length === 0
+  ) {
     greatCircle = null;
   }
   const raceMetadata = {
@@ -473,4 +477,29 @@ exports.createRace = async function (
     await elasticsearch.indexRace(id, body);
   }
   return raceMetadata;
+};
+
+const convertDMSToDD = function (degrees, minutes, seconds, direction) {
+  var dd = Number(degrees) + Number(minutes) / 60 + Number(seconds) / (60 * 60);
+
+  if (direction == 'S' || direction == 'W') {
+    dd = dd * -1;
+  } // Don't do anything for N or E
+  return dd;
+};
+
+exports.convertDMSToDD = convertDMSToDD;
+
+/**
+ * Sample input format 36°57'9" N
+ * When You have different format.
+ * For example: 45 04.70' N
+ * You should replace the (.) by ' '.
+ * To make sure the string split function operates correctly
+ * @param {*} input
+ * @returns
+ */
+exports.parseGeoStringToDecimal = function (input) {
+  var parts = input.split(/[^\d\w\.]+/);
+  return convertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
 };

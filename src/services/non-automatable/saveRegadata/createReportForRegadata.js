@@ -30,29 +30,30 @@ const createReportForRegadata = async (
       race_id: race.id,
       race_original_id: race.original_id,
       sail_id: map.get(report.sail),
-      lat_dec: race.lat_dec || null,
-      lon_dec: race.lon_dec || null,
-      '1hour_heading': race['1hour_heading'] || null,
-      '1hour_speed': race['1hour_speed'] || null,
-      '1hour_vmg': race['1hour_vmg'] || null,
-      '1hour_distance': race['1hour_distance'] || null,
-      lastreport_heading: race.lastreport_heading || null,
-      lastreport_speed: race.lastreport_speed || null,
-      lastreport_vmg: race.lastreport_vmg || null,
-      lastreport_distance: race.lastreport_distance || null,
-      '24hour_heading': race['24hour_heading'] || null,
-      '24hour_speed': race['24hour_speed'] || null,
-      '24hour_vmg': race['24hour_vmg'] || null,
-      '24hour_distance': race['24hour_distance'] || null,
-      dtf: race.dtf || null,
-      dtl: race.dtl || null,
-      total_distance: race.total_distance || null,
-      dtl_diff: race.dtl_diff || null,
+      lat_dec: report.lat_dec || null,
+      lon_dec: report.lon_dec || null,
+      '1hour_heading': report['1hour_heading'] || null,
+      '1hour_speed': report['1hour_speed'] || null,
+      '1hour_vmg': report['1hour_vmg'] || null,
+      '1hour_distance': report['1hour_distance'] || null,
+      lastreport_heading: report.lastreport_heading || null,
+      lastreport_speed: report.lastreport_speed || null,
+      lastreport_vmg: report.lastreport_vmg || null,
+      lastreport_distance: report.lastreport_distance || null,
+      '24hour_heading': report['24hour_heading'] || null,
+      '24hour_speed': report['24hour_speed'] || null,
+      '24hour_vmg': report['24hour_vmg'] || null,
+      '24hour_distance': report['24hour_distance'] || null,
+      dtf: report.dtf || null,
+      dtl: report.dtl || null,
+      total_distance: report.total_distance || null,
+      dtl_diff: report.dtl_diff || null,
       timestamp: typeof report.timestamp === 'number' ? report.timestamp : null,
     };
     newReports.push(currentReport);
   }
 
+  const allReports = newReports.concat();
   while (newReports.length > 0) {
     const splicedArray = newReports.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
     await db.regadataReport.bulkCreate(splicedArray, {
@@ -61,6 +62,7 @@ const createReportForRegadata = async (
       transaction,
     });
   }
+  return allReports;
 };
 
 module.exports = createReportForRegadata;
