@@ -16,6 +16,8 @@ const {
   validateBoundingBox,
   createRace,
   pointToCountry,
+  convertDMSToDD,
+  parseGeoStringToDecimal,
 } = require('../gisUtils');
 const elasticsearch = require('elasticsearch');
 const esUtil = require('../elasticsearch');
@@ -543,5 +545,21 @@ describe('gis_utils.js', () => {
       unstructured_text: unstructuredText,
     };
     expect(indexRaceSpy).toHaveBeenCalledWith(id, expectedIndexedBody);
+  });
+
+  it('#convertDMSToDD should convert the  DMS parts into Decimal', () => {
+    const degrees = '35';
+    const minutes = '57';
+    const seconds = '9';
+    const direction = 'N';
+    const result = convertDMSToDD(degrees, minutes, seconds, direction);
+    expect(typeof result).toBe('number');
+    expect(result.toFixed(2)).toBe('35.95');
+  });
+
+  it('#parseGeoStringToDecimal should convert the  DMS string into Decimal', () => {
+    const result = parseGeoStringToDecimal(`36°57'9" N`);
+    expect(typeof result).toBe('number');
+    expect(result.toFixed(2)).toBe('36.95');
   });
 });
