@@ -17,7 +17,6 @@ const {
   createRace,
   pointToCountry,
 } = require('../gisUtils');
-const elasticsearch = require('elasticsearch');
 const esUtil = require('../elasticsearch');
 
 describe('gis_utils.js', () => {
@@ -374,9 +373,7 @@ describe('gis_utils.js', () => {
     });
   });
   it('#createRace should create and return correct race meta data', async () => {
-    const elasticsearchclient = new elasticsearch.Client();
-    const esIndexSpy = jest.spyOn(elasticsearchclient, 'index');
-    const indexRaceSpy = jest.spyOn(esUtil, 'indexRace');
+    const indexRaceSpy = jest.spyOn(esUtil, 'indexRace').mockResolvedValue({});
 
     const id = 'testraceid';
     const name = 'Race 1';
@@ -514,7 +511,6 @@ describe('gis_utils.js', () => {
     };
     expect(r).toEqual(expectedResult);
 
-    expect(esIndexSpy).toHaveBeenCalledTimes(1);
     const expectedIndexedBody = {
       id,
       name,

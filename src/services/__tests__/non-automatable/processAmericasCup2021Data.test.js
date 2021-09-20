@@ -8,7 +8,7 @@ const normalizeObj = require('../../normalization/non-automatable/normalizeAmeri
 jest
   .spyOn(normalizeObj, 'normalizeRace')
   .mockImplementation(() => Promise.resolve());
-const saveAmericasCup2021Data = require('../../non-automatable/saveAmericasCup2021Data');
+const { saveAmericasCup2021Data } = require('../../non-automatable/saveAmericasCup2021Data');
 const uploadUtil = require('../../uploadUtil');
 const jsonData = require('../../../test-files/americasCup2021NormalizeData.json');
 const inputData = require('../../../test-files/americasCup2021.json');

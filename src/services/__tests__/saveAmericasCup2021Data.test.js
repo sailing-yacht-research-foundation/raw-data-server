@@ -1,5 +1,5 @@
 const db = require('../../models');
-const saveAmericasCup2021Data = require('../non-automatable/saveAmericasCup2021Data');
+const { saveAmericasCup2021Data } = require('../non-automatable/saveAmericasCup2021Data');
 const data = require('../../test-files/americasCup2021.json');
 const mock = require('../../test-files/americasCup2021Mock');
 
@@ -160,6 +160,7 @@ describe('Storing americascup2021 data to DB', () => {
     await saveAmericasCup2021Data(data);
     expect(createRace).toHaveBeenCalledWith(
       expect.objectContaining(mock.mockExpectRaceObject),
+      expect.anything(),
     );
     expect(createRace).toHaveBeenCalledTimes(1);
     expect(createRaceStatus).toHaveBeenCalledTimes(1);

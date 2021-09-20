@@ -20,7 +20,9 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
-const saveAmericasCup2021Data = require('../services/non-automatable/saveAmericasCup2021Data');
+const {
+  downloadAndProcessFiles,
+} = require('../services/non-automatable/saveAmericasCup2021Data');
 const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
 const saveAmericasCupData = require('../services/non-automatable/saveAmericasCupData');
 const saveSapData = require('../services/non-automatable/saveSapData');
@@ -28,7 +30,6 @@ const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegad
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
-const s3Util = require('../services/s3Util');
 
 var router = express.Router();
 
@@ -298,40 +299,19 @@ router.post('/register-failed-url', async function (req, res) {
 });
 
 router.post('/americas-cup-2021', async function (req, res) {
-  let errorMessage = '';
-  try {
-    let fileNames = await s3Util.listAllKeys(req.query.bucketName);
-    let count = 0;
-    while (count < fileNames.length) {
-      let rawData = await s3Util.getObject(
-        fileNames[count],
-        req.query.bucketName,
-      );
-      let destructuredFileName = fileNames[count].split('-');
-      let raceData = JSON.parse(rawData);
-      raceData.eventName = destructuredFileName[1].replace('_', ' ');
-      raceData.raceName = destructuredFileName[2]
-        .replace('.json', '')
-        .replace('_', ' ');
-      let race = await db.americasCup2021Race.findOne({
-        where: { original_id: raceData.race.raceId },
-      });
-      try {
-        if (!race) {
-          await saveAmericasCup2021Data(raceData);
-        } else {
-          console.log(`Race ${fileNames[count]} already exists`);
-        }
-      } catch (err) {
-        errorMessage += `\n${databaseErrorHandler(err)}`;
-      }
-
-      count++;
-    }
-  } catch (err) {
-    errorMessage += `\n${databaseErrorHandler(err)}`;
+  if (!req.body.bucketName) {
+    res.status(400).json({ message: 'Must specify bucketName' });
+    return;
   }
-  res.json({ success: errorMessage == '', errorMessage });
+  try {
+    downloadAndProcessFiles(req.body.bucketName);
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.json({
+    message: `Successfully started processing of files`,
+  });
 });
 
 router.post('/americas-cup', async function (req, res) {
@@ -341,18 +321,18 @@ router.post('/americas-cup', async function (req, res) {
       .json({ message: 'Must specify bucketName, fileName and year in body' });
     return;
   }
-  let errorMessage = '';
   try {
     saveAmericasCupData(req.body.bucketName, req.body.fileName, req.body.year);
   } catch (err) {
     console.error(err);
   }
 
-  res.json({ success: errorMessage == '', errorMessage });
+  res.json({
+    message: `Successfully started processing of files`,
+  });
 });
 
 router.post('/sap', async function (req, res) {
-  let errorMessage = '';
   if (!req.body.bucketName && !req.body.fileName) {
     res
       .status(400)
@@ -365,11 +345,12 @@ router.post('/sap', async function (req, res) {
     console.log(err);
   }
 
-  res.json({ success: errorMessage == '', errorMessage });
+  res.json({
+    message: `Successfully started processing of files`,
+  });
 });
 
 router.post('/regadata', async function (req, res) {
-  let errorMessage = '';
   if (!req.body.bucketName && !req.body.fileName) {
     res
       .status(400)
@@ -382,7 +363,9 @@ router.post('/regadata', async function (req, res) {
     console.log(err);
   }
 
-  res.json({ success: !!errorMessage, errorMessage });
+  res.json({
+    message: `Successfully started processing of files`,
+  });
 });
 
 module.exports = router;
