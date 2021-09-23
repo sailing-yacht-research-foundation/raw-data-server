@@ -13,6 +13,7 @@ describe('Storing SAP data to DB', () => {
     createCompetitorBoatPosition,
     createCompetitorLeg,
     createCompetitorManeuver,
+    createMark,
     createCompetitorMarkPassing,
     createCompetitorMarkPositon,
     createCourse,
@@ -39,6 +40,10 @@ describe('Storing SAP data to DB', () => {
       db.sapCompetitorManeuver,
       'bulkCreate',
     );
+    createMark = jest.spyOn(
+      db.sapMark,
+      'bulkCreate',
+    );
     createCompetitorMarkPassing = jest.spyOn(
       db.sapCompetitorMarkPassing,
       'bulkCreate',
@@ -58,6 +63,7 @@ describe('Storing SAP data to DB', () => {
     await db.sapCompetitorBoatPosition.destroy({ truncate: true });
     await db.sapCompetitorLeg.destroy({ truncate: true });
     await db.sapCompetitorManeuver.destroy({ truncate: true });
+    await db.sapMark.destroy({ truncate: true });
     await db.sapCompetitorMarkPassing.destroy({ truncate: true });
     await db.sapCompetitorMarkPosition.destroy({ truncate: true });
     await db.sapCourse.destroy({ truncate: true });
@@ -82,6 +88,7 @@ describe('Storing SAP data to DB', () => {
     expect(createCompetitorBoatPosition).toHaveBeenCalledTimes(1);
     expect(createCompetitorLeg).toHaveBeenCalledTimes(1);
     expect(createCompetitorManeuver).toHaveBeenCalledTimes(1);
+    expect(createMark).toHaveBeenCalledTimes(1);
     expect(createCompetitorMarkPassing).toHaveBeenCalledTimes(1);
     expect(createCompetitorMarkPositon).toHaveBeenCalledTimes(1);
     expect(createCourse).toHaveBeenCalledTimes(1);

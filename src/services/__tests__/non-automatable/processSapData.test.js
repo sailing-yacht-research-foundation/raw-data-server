@@ -20,12 +20,6 @@ jest.mock('../../../utils/unzipFile');
 describe('Processing non-existent AmericasCup2021 Data from DB to Parquet', () => {
   beforeAll(async () => {
     await db.sequelize.sync();
-    jest
-      .spyOn(temp, 'mkdirSync')
-      .mockReturnValue(
-        path.join(__dirname, '..', '..', '..', 'test-files', 'sap'),
-      );
-    jest.spyOn(unzipFileUtil, 'downloadAndExtract').mockResolvedValue(true);
   });
   it('should not get any races', async () => {
     const races = await getRaces();
@@ -43,6 +37,12 @@ describe('Processing existing SAP Data from DB to Parquet', () => {
   let raceID;
   const sapKeys = Object.keys(db).filter((i) => i.indexOf('sap') === 0);
   beforeAll(async () => {
+    jest
+      .spyOn(temp, 'mkdirSync')
+      .mockReturnValue(
+        path.join(__dirname, '..', '..', '..', 'test-files', 'sap'),
+      );
+    jest.spyOn(unzipFileUtil, 'downloadAndExtract').mockResolvedValue(true);
     await saveSapData('databacklog', 'SAP-TEST.zip');
     raceID = expectedRace.original_id;
     race = await db.sapRace.findOne({

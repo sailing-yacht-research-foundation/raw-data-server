@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       original_id: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: 'original_compound_mark_race_constraint',
       },
       race: {
