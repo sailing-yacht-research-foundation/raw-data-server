@@ -22,7 +22,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
 
     const existingRacesInDB = await db.americasCupRace.findAll({
       attributes: ['original_id']
-    }).then((races) => races.map((r) => r.original_id));
+    }).then((races) => races.map((r) => r.original_id.toString()));
 
     const dirName = listDirectories(targetDir)[0];
     const dirPath = path.join(targetDir, dirName);
@@ -34,6 +34,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
       const dayDirNames = listDirectories(regattaPath);
       let regattaData;
       for (const dayDirName of dayDirNames) {
+        console.log('Processing day directory', dayDirName);
         const xmlPath = path.join(regattaPath, dayDirName, XML_DIR_NAME);
         if (!fs.existsSync(xmlPath)) {
           continue;
@@ -102,7 +103,7 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
             const fileTimestamp = eventFileName.split('_')[0];
             const eventList = await _mapEventsData(csvPath, eventFileName);
             if (!eventList?.length) {
-              console.log('No event or already saved in database. Skipping.');
+              console.log(`No event or already saved in database for filename ${eventFileName}. Skipping.`);
               continue;
             }
             objectsToSave.AmericasCupEvent = eventList;
@@ -112,15 +113,15 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
               objectsToSave.AmericasCupAvgWind = avgWindData;
             }
 
-            const positionData = await _mapPositionsData(csvPath, csvFileNames, fileTimestamp, boats, regattaData);
-            if (positionData?.length) {
-              objectsToSave.AmericasCupPosition = positionData;
-            }
-
+            const transaction = await db.sequelize.transaction();
             try {
-              await _saveToDatabase(objectsToSave);
+              await _mapAndSavePositionsData(csvPath, csvFileNames, fileTimestamp, boats, transaction);
+
+              await _saveToDatabase(objectsToSave, transaction);
+              await transaction.commit();
             } catch (err) {
               console.log('Failed bulk saving', err)
+              await transaction.rollback();
             }
           } catch (err) {
             console.log(`Failed processing event csv file ${eventFileName}`, err);
@@ -129,7 +130,9 @@ const saveAmericasCupData = async (bucketName, fileName, year) => {
       }
 
       // The normalization is per regatta since the position file is not per race. Need all data saved first to be complete
-      await _normalizeRaces(regattaData, year);
+      if (regattaData) {
+        await _normalizeRaces(regattaData, year);
+      }
     }
     console.log('Finished saving all regattas');
   } catch (err) {
@@ -187,12 +190,12 @@ const _mapBoatData = (rawJson, year) => {
     type: boat.Type,
     ack: boat.Ack,
     ip_address: boat.IPAddress,
-    stowe_name: boat.StoweName,
-    short_name: boat.ShortName,
-    shorter_name: boat.ShorterName,
-    boat_name: boat.BoatName,
+    stowe_name: boat.StoweName?.trim(),
+    short_name: boat.ShortName?.trim(),
+    shorter_name: boat.ShorterName?.trim(),
+    boat_name: boat.BoatName?.trim(),
     hull_num: boat.HullNum,
-    skipper: boat.Skipper,
+    skipper: boat.Skipper?.trim(),
     flag: boat.Flag,
     peli_id: boat.PeliID,
     radio_ip: boat.RadioIP,
@@ -235,7 +238,7 @@ const _mapRaceData = (rawJson, regattaId, regattaOriginalId) => {
       id: compoundMarkId,
       original_id: cm.CompoundMarkID,
       seq_id: markSequence?.SeqID,
-      name: cm.Name,
+      name: cm.Name?.trim(),
       race: race.id,
       race_original_id: race.original_id,
       rounding: markSequence?.Rounding,
@@ -252,7 +255,7 @@ const _mapRaceData = (rawJson, regattaId, regattaOriginalId) => {
         compound_mark: compoundMarkId,
         compound_mark_original_id: cm.CompoundMarkID,
         seq_id: m.SeqID,
-        name: m.Name,
+        name: m.Name?.trim(),
         lat: m.TargetLat,
         lon: m.TargetLng,
       });
@@ -270,7 +273,11 @@ const _mapRaceData = (rawJson, regattaId, regattaOriginalId) => {
 };
 
 const _mapRaceCourseLimitData = (rawJson, raceId, raceOriginalId) => {
-  return rawJson.Race?.CourseLimit?.Limit?.map((cl) => ({
+  let courseLimit = rawJson.Race?.CourseLimit?.Limit;
+  if (courseLimit && !(courseLimit instanceof Array)) {
+    courseLimit = [courseLimit];
+  }
+  return courseLimit?.map((cl) => ({
     id: uuidv4(),
     seq_id: cl.SeqID,
     race: raceId,
@@ -335,10 +342,9 @@ const _mapEventsData = async (csvPath, eventFileName) => {
   }));
 }
 
-const _mapPositionsData = async (csvPath, csvFileNames, fileTimestamp, boats) => {
+const _mapAndSavePositionsData = async (csvPath, csvFileNames, fileTimestamp, boats, transaction) => {
   const positionFileNamePrefix = `${fileTimestamp}-NAV-`;
   const positionFileNames = csvFileNames.filter((n) => n.indexOf(positionFileNamePrefix) === 0);
-  const allPositionJson = [];
   for (positionFileName of positionFileNames) {
     const posInDB = await db.americasCupPosition.findOne({
       where: {
@@ -352,13 +358,16 @@ const _mapPositionsData = async (csvPath, csvFileNames, fileTimestamp, boats) =>
     const positionFilePath = path.join(csvPath, positionFileName);
     const positionJson = await readCsvFileToJson(positionFilePath);
     const mappedPositionJson = positionJson.map((pos) => {
-      const boat = boats.find((b) => b.stowe_name === pos.Boat || b.short_name === pos.Boat);
+      const boat = boats.find((b) => b.stowe_name === pos.Boat || b.short_name === pos.Boat || b.boat_name === pos.Boat);
+      if (!boat?.id) {
+        console.log(`No boat found with name ${pos.Boat}`);
+      }
       return {
         id: uuidv4(),
         boat_name: pos.Boat,
-        boat: boat?.id || '',
-        boat_original_id: boat?.original_id || '',
-        boat_type: boat?.type || '',
+        boat: boat?.id || null,
+        boat_original_id: boat?.original_id || null,
+        boat_type: boat?.type || null,
         date: pos.Date,
         secs: pos.Secs,
         local_time: pos.LocalTime,
@@ -386,9 +395,11 @@ const _mapPositionsData = async (csvPath, csvFileNames, fileTimestamp, boats) =>
         filename: positionFileName,
       }
     });
-    appendArray(allPositionJson, mappedPositionJson);
+    const objectsToSave = {
+      "AmericasCupPosition": mappedPositionJson
+    }
+    await _saveToDatabase(objectsToSave, transaction);
   }
-  return allPositionJson;
 }
 
 const _saveToDatabase = async(objectsToSave, transaction) => {
@@ -431,6 +442,48 @@ const _getMilliSecsFromLocalTime = (dateStr, secs, zone) => {
   const utcSeconds = parseInt(secs) + zone * -3600;
   date.setUTCSeconds(utcSeconds);
   return date.getTime();
+}
+
+const _getRaceStartTimeMs = (race, raceEvents) => {
+  let startTimeInMs;
+
+  if (race.start_time) {
+    let raceStartTime = new Date(race.start_time);
+    if (raceStartTime?.toString() !== 'Invalid Date' && !isNaN(raceStartTime)) {
+      startTimeInMs = raceStartTime.getTime();
+    } else {  // Americas Cup 2013 has a race timestamp format of 2011-08-14Y15:00:00 (without timezone)
+      let startTimeString = race.start_time.replace('Y', 'T');
+      const tz = raceEvents.map((e) => e.zone).find((e) => !!e);
+      if (tz) {
+        startTimeString += tz + ':00';
+      }
+      raceStartTime = new Date(startTimeString);
+      if (raceStartTime?.toString() !== 'Invalid Date' && !isNaN(raceStartTime)) {
+        startTimeInMs = raceStartTime.getTime();
+      }
+    }
+  }
+
+  if (!startTimeInMs) {
+    const lastIndexOfStart = raceEvents.map((e) => e.event === 'RaceStarted').lastIndexOf(true);
+    const startEvent = raceEvents[lastIndexOfStart];
+    if (!startEvent) {  // if there is no RaceStart Event try to get from RaceStartTimeAnnounce on opt1 and opt2
+      // Get the last announcement to get latest time
+      const lastIndexOfAnnounce = raceEvents.map((e) => e.event === 'RaceStartTimeAnnounced').lastIndexOf(true);
+      const announceEvent = raceEvents[lastIndexOfAnnounce];
+      if (announceEvent) {
+        const dateParts = announceEvent.opt1.split(':');  // opt 1 format is dd:mm:yyyy. Eg. 06:08:2011
+        const time = announceEvent.opt2;  // opt2 is hh24:mm Eg. 14:55
+        const zone = announceEvent.zone;  // zone is the offset zone Eg. +02
+        const dateString = `${dateParts.reverse().join('-')}T${time}:00${zone}:00`;
+        startTimeInMs = new Date(dateString).getTime();
+      }
+    } else {
+      startTimeInMs = startEvent.timestamp;
+    }
+  }
+
+  return startTimeInMs;
 }
 
 const _normalizeRaces = async (regatta, year) => {
@@ -476,45 +529,22 @@ const _normalizeRaces = async (regatta, year) => {
       raw: true,
     });
     if (!raceEvents?.length) {
-      console.log('No race events. Skipping');
+      console.log(`No race events for race ${race.original_id}. Skipping`);
       continue;
     }
 
-    let startEvent, finishEvent;
-    raceEvents.forEach((e) => {
-      if (e.event === 'RaceStarted') {
-        startEvent = e;
-      } else if (e.event === 'RaceTerminated') {
-        finishEvent = e;
-      }
-    });
-
-    let newStartTime;
-    if (!startEvent) {  // if there is no RaceStart Event try to get from RaceStartTimeAnnounce on opt1 and opt2
-      // Get the last announcement to get latest time
-      const lastIndex = raceEvents.map((e) => e.event === 'RaceStartTimeAnnounced').lastIndexOf(true);
-      const announceEvent = raceEvents[lastIndex];
-      if (announceEvent) {
-        const dateParts = announceEvent.opt1.split(':');  // opt 1 format is dd:mm:yyyy. Eg. 06:08:2011
-        const time = announceEvent.opt2;  // opt2 is hh24:mm Eg. 14:55
-        const zone = announceEvent.zone;  // opt2 is hh24:mm Eg. 14:55
-        const dateString = `${dateParts.reverse().join('-')}T${time}:00${zone}:00`;
-        newStartTime = new Date(dateString).getTime();
-      }
-    } else {
-      newStartTime = startEvent.timestamp;
-    }
-
+    let newStartTime = _getRaceStartTimeMs(race, raceEvents);
     if (newStartTime) {
       race.start_time = newStartTime;
       newStartTime -= (10 * 60 * 1000);  // Subtract 10mins to get positions before race start
     } else {
-      console.log('Race has no RaceStart or RaceStartTimeAnnounced event. Skipping');
+      console.log(`Race ${race.original_id} has no valid race start time event. Skipping`);
       continue;
     }
 
+    const finishEvent = raceEvents.find((e) => e.event === 'RaceTerminated');
     if (!finishEvent) {
-      console.log('Race has no RaceTerminated event. Skipping');
+      console.log(`Race ${race.original_id} has no RaceTerminated event. Skipping`);
       continue;
     }
 
@@ -541,7 +571,7 @@ const _normalizeRaces = async (regatta, year) => {
     try {
       await normalizeRace(objectsToPass);
     } catch(err) {
-      console.log(`Failed in normalizing race ${race.id}`, err);
+      console.log(`Failed in normalizing race ${race.original_id}`, err);
     }
   }
 }

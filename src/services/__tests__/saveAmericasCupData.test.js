@@ -57,7 +57,7 @@ describe('Storing AmericasCup to DB', () => {
             expect.anything(),
           );
           // The 4 keys here are saved on each race.xml file plus the regatta. Since we have 2 files, it should be saved twice.
-          let expectedCallTimes = ['Race', 'CompoundMark', 'Mark', 'CourseLimit', 'Regatta'].includes(key) ? 2 : 1;
+          let expectedCallTimes = ['Race', 'CompoundMark', 'Mark', 'CourseLimit', 'Regatta', 'Position'].includes(key) ? 2 : 1;
           expect(bulkCreateSpies[key]).toHaveBeenCalledTimes(expectedCallTimes);
         }
         expect(normalizeRace).toHaveBeenCalledTimes(1);

@@ -322,7 +322,7 @@ router.post('/americas-cup', async function (req, res) {
     return;
   }
   try {
-    saveAmericasCupData(req.body.bucketName, req.body.fileName, req.body.year);
+    saveAmericasCupData(req.body.bucketName, req.body.fileName, req.body.year.toString());
   } catch (err) {
     console.error(err);
   }
