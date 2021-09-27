@@ -9,7 +9,7 @@ const {
 
 describe('Processing Live Data Points', () => {
   beforeAll(async () => {
-    // await db.sequelize.sync();
+    await db.sequelize.sync();
   });
   afterAll(async () => {
     await db.liveDataPoint.destroy({
