@@ -11,53 +11,41 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.GEOMETRY('POINT', 4326),
         allowNull: false,
       },
-      speed: {
+      sog: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
-      heading: {
+      cog: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
-      },
-      accuracy: {
-        type: Sequelize.DOUBLE,
-        allowNull: false,
-      },
-      altitude: {
-        type: Sequelize.DOUBLE,
-        allowNull: false,
-      },
-      at: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      tws: {
-        type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       twa: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
-      stw: {
+      set_drift: {
         type: Sequelize.DOUBLE,
+        allowNull: true,
+      },
+      elapsed_time: {
+        type: Sequelize.DOUBLE,
+        allowNull: true,
+      },
+      timestamp: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      competition_unit_id: {
+        type: Sequelize.UUID,
         allowNull: false,
       },
-      race_unit_id: {
+      vessel_participant_id: {
         type: Sequelize.UUID,
         allowNull: false,
       },
-      boat_participant_group_id: {
+      participant_id: {
         type: Sequelize.UUID,
-        allowNull: true,
-      },
-      boat_id: {
-        type: Sequelize.UUID,
-        allowNull: true,
-      },
-      device_id: {
-        type: Sequelize.UUID,
-        allowNull: true,
+        allowNull: false,
       },
       user_id: {
         type: Sequelize.UUID,

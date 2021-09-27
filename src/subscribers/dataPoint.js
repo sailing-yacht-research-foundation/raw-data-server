@@ -21,34 +21,16 @@ const getLiveDataPoint = async (id) => {
 };
 
 const convertLiveDataToInsertData = (data) => {
-  const {
-    lat,
-    lon,
-    speed,
-    heading,
-    accuracy,
-    altitude,
-    at,
-    tws,
-    twa,
-    stw,
-    raceData,
-  } = data;
+  const { lat, lon, sog, cog, twa, setDrift, raceData } = data;
   return {
     id: uuidv4(),
     location: { type: 'Point', coordinates: [lat, lon] },
-    speed,
-    heading,
-    accuracy,
-    altitude,
-    at,
-    tws,
+    sog,
+    cog,
     twa,
-    stw,
-    race_unit_id: raceData.raceUnitId,
-    boat_participant_group_id: raceData.boatParticipantGroupId,
-    boat_id: raceData.boatId,
-    device_id: raceData.deviceId,
+    set_drift: setDrift,
+    competition_unit_id: raceData.competitionUnitId,
+    vessel_participant_id: raceData.vesselParticipantId,
     user_id: raceData.userId,
     public_id: raceData.publicId,
   };
