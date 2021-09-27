@@ -24,13 +24,21 @@ const convertLiveDataToInsertData = (data) => {
   const { lat, lon, sog, cog, twa, setDrift, raceData } = data;
   return {
     id: uuidv4(),
-    location: { type: 'Point', coordinates: [lat, lon] },
+    location: {
+      crs: {
+        type: 'name',
+        properties: { name: 'EPSG:4326' },
+      },
+      type: 'Point',
+      coordinates: [lon, lat],
+    },
     sog,
     cog,
     twa,
     set_drift: setDrift,
     competition_unit_id: raceData.competitionUnitId,
     vessel_participant_id: raceData.vesselParticipantId,
+    participant_id: raceData.participantId,
     user_id: raceData.userId,
     public_id: raceData.publicId,
   };
