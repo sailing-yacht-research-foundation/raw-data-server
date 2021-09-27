@@ -7,6 +7,15 @@ const createMQSubscriber = (connDetail, onConnect, subscriptions = []) => {
     onConnect();
   });
 
+  if (process.env.NODE_ENV === 'production') {
+    const tls = {
+      checkServerIdentity: () => {
+        return null;
+      },
+    };
+    stompClient.useTLS(tls);
+  }
+
   stompClient
     .retryInterval(1000)
     .incrementalRetryInterval(1000)
