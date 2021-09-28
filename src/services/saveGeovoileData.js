@@ -22,7 +22,6 @@ const saveFailedUrl = async (url, error) => {
 const saveGeovoileRace = async (raceData, transaction) => {
   const id = uuidv4();
   const race = { ...raceData, id };
-  console.log(race);
   await db.geovoileRace.create(race, { transaction });
   return race;
 };
@@ -85,17 +84,20 @@ const saveGeovoileData = async (data) => {
         };
       });
       sailors.push(...currentSailors);
-      const currentBoatPositions = (t.locations || []).map((location) => {
-        {
-          return {
-            ...location,
-            race_id: race.id,
-            race_original_id: race.original_id,
-            boat_id: boatId,
-            boat_original_id: t.original_id,
-          };
-        }
-      });
+      const currentBoatPositions = (t.track?.locations || []).map(
+        (location) => {
+          {
+            return {
+              ...location,
+              race_id: race.id,
+              race_original_id: race.original_id,
+              boat_id: boatId,
+              boat_original_id: t.original_id,
+              id: uuidv4(),
+            };
+          }
+        },
+      );
 
       positions.push(...currentBoatPositions);
       return {
@@ -112,6 +114,7 @@ const saveGeovoileData = async (data) => {
 
     await saveGeovoileBoats(boats, transaction);
     await saveGeovoilSailors(sailors, transaction);
+
     await saveGeovoileBoatPositions(positions, transaction);
     await transaction.commit();
   } catch (error) {
@@ -129,9 +132,8 @@ const saveGeovoileData = async (data) => {
       data.geovoileRace.url,
     );
   }
-  const sig = data.sig;
-  // save sig data
-  // await triggerWeatherSlicer(raceMetadata);
+
+  //TODO/: await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 
