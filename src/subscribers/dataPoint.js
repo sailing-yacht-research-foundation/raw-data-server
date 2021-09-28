@@ -45,12 +45,16 @@ const convertLiveDataToInsertData = (data) => {
 };
 
 const dataPointSubscriberAction = async (payload, headers) => {
-  if (headers.isbatch === 'true') {
-    const data = payload.messages.map(convertLiveDataToInsertData);
-    await saveLiveDataPoint(data);
-  } else {
-    const data = convertLiveDataToInsertData(payload);
-    await saveLiveDataPoint([data]);
+  try {
+    if (headers.isbatch === 'true') {
+      const data = payload.messages.map(convertLiveDataToInsertData);
+      await saveLiveDataPoint(data);
+    } else {
+      const data = convertLiveDataToInsertData(payload);
+      await saveLiveDataPoint([data]);
+    }
+  } catch (error) {
+    console.error(`Error handling live data server data stream`);
   }
 };
 
