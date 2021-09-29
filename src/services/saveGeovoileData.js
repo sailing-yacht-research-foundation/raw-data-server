@@ -78,7 +78,7 @@ const saveGeovoileData = async (data) => {
         return {
           ...sailor,
           race_id: race.id,
-          race_original_id: race.race_original_id,
+          race_original_id: race.original_id,
           boat_id: boatId,
           boat_original_id: t.original_id,
           id: uuidv4(),
@@ -105,7 +105,7 @@ const saveGeovoileData = async (data) => {
         id: boatId,
         original_id: t.original_id,
         race_id: race.id,
-        race_original_id: race.race_original_id,
+        race_original_id: race.original_id,
         name: t.name,
         short_name: t.short_name,
         hulls: t.hulls,
@@ -128,7 +128,6 @@ const saveGeovoileData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
-  await saveFailedUrl(data.geovoileRace.url, errorMessage);
   if (errorMessage) {
     await saveFailedUrl(data.geovoileRace.url, errorMessage);
   } else {
