@@ -36,7 +36,7 @@ const saveGeovoileBoats = async (boats, transaction) => {
   return boats;
 };
 
-const saveGeovoilSailors = async (sailors, transaction) => {
+const saveGeovoileSailors = async (sailors, transaction) => {
   await db.geovoileBoatSailor.bulkCreate(sailors, {
     ignoreDuplicates: true,
     validate: true,
@@ -113,7 +113,7 @@ const saveGeovoileData = async (data) => {
     });
 
     await saveGeovoileBoats(boats, transaction);
-    await saveGeovoilSailors(sailors, transaction);
+    await saveGeovoileSailors(sailors, transaction);
 
     await saveGeovoileBoatPositions(positions, transaction);
     await transaction.commit();

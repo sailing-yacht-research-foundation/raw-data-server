@@ -1,7 +1,7 @@
 const axios = require('axios');
 const db = require('../../models');
 const saveGeovoileData = require('../saveGeovoileData');
-const jsonData = require('../../test-files/geovoil-modern.json');
+const jsonData = require('../../test-files/geovoile-modern.json');
 
 describe('Storing Modern Geovoile data data to DB', () => {
   let createRace,
