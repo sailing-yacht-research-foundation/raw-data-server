@@ -1,7 +1,7 @@
 const axios = require('axios');
 const db = require('../../models');
 const saveGeovoileData = require('../saveGeovoileData');
-const jsonData = require('../../test-files/geovoile-modern.json');
+const jsonData = require('../../test-files/save-geovoile-modern.json');
 
 describe('Storing Modern Geovoile data data to DB', () => {
   let createRace,
@@ -51,5 +51,8 @@ describe('Storing Modern Geovoile data data to DB', () => {
     expect(createGeovoileBoat).toHaveBeenCalledTimes(1);
     expect(createGeovoileBoatSailor).toHaveBeenCalledTimes(1);
     expect(createPosition).toHaveBeenCalledTimes(1);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

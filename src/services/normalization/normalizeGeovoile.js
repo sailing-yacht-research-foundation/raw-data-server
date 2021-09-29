@@ -1,7 +1,6 @@
 const turf = require('@turf/turf');
 const db = require('../../models');
 const {
-  createTurfPoint,
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
   collectFirstNPositionsFromBoatsToPositions,
@@ -11,7 +10,7 @@ const {
   createRace,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
+const uploadUtil = require('../uploadUtil');
 
 const normalizeGeovoile = async (
   { geovoileRace, boats, sailors, positions },
@@ -28,8 +27,8 @@ const normalizeGeovoile = async (
   const name = race.name;
   const event = null;
   const url = race.url;
-  const startTime = race.startTime;
-  const endTime = race.endTime;
+  const startTime = race.startTime * 1000;
+  const endTime = race.endTime * 1000;
   const boundingBox = turf.bbox(
     positionsToFeatureCollection('lat', 'lon', allPositions),
   );
@@ -39,8 +38,8 @@ const normalizeGeovoile = async (
   });
   const boatsToSortedPositions = createBoatToPositionDictionary(
     allPositions,
-    'boat_original_id',
-    'timecode',
+    'boat_id',
+    'timestamp',
   );
 
   const first3Positions = collectFirstNPositionsFromBoatsToPositions(
@@ -65,7 +64,7 @@ const normalizeGeovoile = async (
     if (b.name) {
       boatNames.push(b.name);
     }
-    boatIds.push(b.original_id);
+    boatIds.push(b.id);
   });
   for (const sailor of sailors || []) {
     unstructuredText.push(`${sailor.first_name} ${sailor.last_name}`);
@@ -93,12 +92,17 @@ const normalizeGeovoile = async (
   const tracksGeojson = JSON.stringify(
     allPositionsToFeatureCollection(boatsToSortedPositions),
   );
-
   await db.readyAboutRaceMetadata.create(raceMetadata, {
     fields: Object.keys(raceMetadata),
     transaction,
   });
-  await uploadGeoJsonToS3(race.id, tracksGeojson, GEOVOILE_SOURCE, transaction);
+  console.log('uploading geojson');
+  await uploadUtil.uploadGeoJsonToS3(
+    race.id,
+    tracksGeojson,
+    GEOVOILE_SOURCE,
+    transaction,
+  );
   return raceMetadata;
 };
 
