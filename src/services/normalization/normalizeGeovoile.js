@@ -35,7 +35,7 @@ const normalizeGeovoile = async (
   );
   allPositions.forEach((p) => {
     p.time = p.timecode;
-    p.timestamp = p.timecode; // Needed for function allPositionsToFeatureCollection
+    p.timestamp = p.timecode * 1000; // Needed for function allPositionsToFeatureCollection
   });
   const boatsToSortedPositions = createBoatToPositionDictionary(
     allPositions,
@@ -70,6 +70,7 @@ const normalizeGeovoile = async (
   for (const sailor of sailors || []) {
     unstructuredText.push(`${sailor.first_name} ${sailor.last_name}`);
   }
+
   const raceMetadata = await createRace(
     id,
     name,
@@ -92,12 +93,13 @@ const normalizeGeovoile = async (
   const tracksGeojson = JSON.stringify(
     allPositionsToFeatureCollection(boatsToSortedPositions),
   );
-  // await db.readyAboutRaceMetadata.create(raceMetadata, {
-  //   fields: Object.keys(raceMetadata),
-  //   transaction,
-  // });
-  // await uploadGeoJsonToS3(race.id, tracksGeojson, GEOVOILE_SOURCE, transaction);
-  // return raceMetadata;
+
+  await db.readyAboutRaceMetadata.create(raceMetadata, {
+    fields: Object.keys(raceMetadata),
+    transaction,
+  });
+  await uploadGeoJsonToS3(race.id, tracksGeojson, GEOVOILE_SOURCE, transaction);
+  return raceMetadata;
 };
 
 exports.normalizeGeovoile = normalizeGeovoile;

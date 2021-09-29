@@ -117,11 +117,11 @@ const saveGeovoileData = async (data) => {
     await saveGeovoileSailors(sailors, transaction);
 
     await saveGeovoileBoatPositions(positions, transaction);
-    await transaction.commit();
     raceMetadata = await normalizeGeovoile(
       { geovoileRace: race, boats: boats, sailors: sailors, positions },
       transaction,
     );
+    await transaction.commit();
   } catch (error) {
     console.log(error);
     await transaction.rollback();
