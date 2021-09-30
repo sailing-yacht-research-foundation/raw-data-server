@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: true,
       },
       legNum: {
@@ -27,9 +27,17 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      raceState: {
+      scrapedUrl: {
         type: Sequelize.TEXT,
         allowNull: false,
+      },
+      raceState: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      eventState: {
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       prerace: {
         type: Sequelize.INTEGER,
@@ -45,7 +53,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       isGame: {
         type: Sequelize.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {

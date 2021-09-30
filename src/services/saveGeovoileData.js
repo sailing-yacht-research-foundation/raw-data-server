@@ -125,11 +125,21 @@ const saveGeovoileData = async (data) => {
 
   if (errorMessage) {
     await saveFailedUrl(data.geovoileRace.url, errorMessage);
+    if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
+      await saveFailedUrl(data.geovoileRace.scrapedUrl, errorMessage);
+    }
   } else {
     await saveSuccessfulUrl(
       data.geovoileRace.original_id,
       data.geovoileRace.url,
     );
+
+    if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
+      await saveSuccessfulUrl(
+        data.geovoileRace.original_id,
+        data.geovoileRace.scrapedUrl,
+      );
+    }
   }
 
   //TODO/: await triggerWeatherSlicer(raceMetadata);
