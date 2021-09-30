@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       race_original_id: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: true,
       },
       first_name: {
