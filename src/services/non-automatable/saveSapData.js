@@ -171,72 +171,92 @@ const saveSapData = async (bucketName, fileName) => {
             where: { regatta: competitorPositionsData.regatta },
           });
           transaction = await db.sequelize.transaction();
-          if (!existingRegatta) {
-            for (const competitor of entriesData.competitors) {
-              let competitorId = uuidv4();
-              competitors.push({
-                id: competitorId,
-                original_id: competitor.id,
-                race_id: raceId,
-                race_original_id: raceInfo.id,
-                regatta: competitorPositionsData.regatta,
-                name: competitor.name,
-                short_name: competitor.shortName,
-                display_color: competitor.displayColor,
-                search_tag: competitor.searchTag,
-                nationality: competitor.nationality,
-                nationality_iso2: competitor.nationalityISO2,
-                nationality_iso3: competitor.nationalityISO3,
-                flag_image_uri: competitor.flagImageUri,
-                time_on_time_factor: competitor.timeOnTimeFactor,
-                time_on_distance_allowance_in_seconds_per_nautical_mile:
-                  competitor.timeOnDistanceAllowanceInSecondsPerNauticalMile,
-              });
-            }
-            await db.sapCompetitor.bulkCreate(competitors, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-            let boatEntries = entriesData.boats;
-            if (!boatEntries) { // In some files the boat is inside the compeitors object
-              boatEntries = entriesData.competitors.map((c) => c.boat);
-            }
-            for (const boat of boatEntries) {
-              let boatId = uuidv4();
-              boats.push({
-                id: boatId,
-                original_id: boat.id,
-                race_id: raceId,
-                race_original_id: raceInfo.id,
-                race_name: competitorPositionsData.name,
-                regatta: competitorPositionsData.regatta,
-                name: boat.name,
-                sail_number: boat.sailId,
-                color: boat.color,
-                boat_class_name: boat.boatClass.name,
-                boat_class_typically_start_upwind:
-                  boat.boatClass.typicallyStartsUpwind,
-                boat_class_hull_length_in_meters:
-                  boat.boatClass.hullLengthInMeters,
-                boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
-                boat_class_display_name: boat.boatClass.displayName,
-                boat_class_icon_url: boat.boatClass.iconUrl,
-              });
-            }
-            await db.sapCompetitorBoat.bulkCreate(boats, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          } else {
-            competitors = await db.sapCompetitor.findAll({
+          let competitorsInDB, boatsInDB;
+          if (existingRegatta) {
+            competitorsInDB = await db.sapCompetitor.findAll({
               where: { regatta: competitorPositionsData.regatta },
             });
-            boats = await db.sapCompetitorBoat.findAll({
+            boatsInDB = await db.sapCompetitorBoat.findAll({
               where: { regatta: competitorPositionsData.regatta },
             });
           }
+          // check if there are competitors not yet in database
+          let competitorsToBeMapped = entriesData.competitors;
+          if (competitorsInDB?.length) {
+            competitorsToBeMapped = entriesData.competitors.filter((c) => !competitorsInDB.some((cDb) => cDb.original_id === c.id))
+          }
+          const competitorsToBeSaved = [];
+          for (const c of competitorsToBeMapped) {
+            let competitor = c.competitor || c; // In some files the competitor object is nested inside the competitors object
+            let competitorId = uuidv4();
+            competitorsToBeSaved.push({
+              id: competitorId,
+              original_id: competitor.id,
+              race_id: raceId,
+              race_original_id: raceInfo.id,
+              regatta: competitorPositionsData.regatta,
+              name: competitor.name,
+              short_name: competitor.shortName,
+              display_color: competitor.displayColor,
+              search_tag: competitor.searchTag,
+              nationality: competitor.nationality,
+              nationality_iso2: competitor.nationalityISO2,
+              nationality_iso3: competitor.nationalityISO3,
+              flag_image_uri: competitor.flagImageUri,
+              time_on_time_factor: competitor.timeOnTimeFactor,
+              time_on_distance_allowance_in_seconds_per_nautical_mile:
+                competitor.timeOnDistanceAllowanceInSecondsPerNauticalMile,
+            });
+          }
+          if (competitorsToBeSaved.length) {
+            await db.sapCompetitor.bulkCreate(competitorsToBeSaved, {
+              ignoreDuplicates: true,
+              validate: true,
+              transaction,
+            });
+          }
+          // combine the list of competitors
+          competitors = competitorsInDB?.length ? competitorsToBeSaved.concat(competitorsInDB) : competitorsToBeSaved;
+
+          let boatEntries = entriesData.boats;
+          if (!boatEntries) { // In some files the boat is inside the competitors object
+            boatEntries = entriesData.competitors.map((c) => c.boat);
+          }
+          // check if there are boats not yet in database
+          let boatsToBeMapped = boatEntries;
+          if (boatsInDB?.length) {
+            boatsToBeMapped = boatEntries.filter((b) => !boatsInDB.some((bDb) => bDb.original_id === b.id))
+          }
+          const boatsToBeSaved = [];
+          for (const boat of boatsToBeMapped) {
+            let boatId = uuidv4();
+            boatsToBeSaved.push({
+              id: boatId,
+              original_id: boat.id,
+              race_id: raceId,
+              race_original_id: raceInfo.id,
+              race_name: competitorPositionsData.name,
+              regatta: competitorPositionsData.regatta,
+              name: boat.name,
+              sail_number: boat.sailId,
+              color: boat.color,
+              boat_class_name: boat.boatClass.name,
+              boat_class_typically_start_upwind:
+                boat.boatClass.typicallyStartsUpwind,
+              boat_class_hull_length_in_meters:
+                boat.boatClass.hullLengthInMeters,
+              boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
+              boat_class_display_name: boat.boatClass.displayName,
+              boat_class_icon_url: boat.boatClass.iconUrl,
+            });
+          }
+          await db.sapCompetitorBoat.bulkCreate(boatsToBeSaved, {
+            ignoreDuplicates: true,
+            validate: true,
+            transaction,
+          });
+          // combine the list of boats
+          boats = boatsInDB?.length ? boatsToBeSaved.concat(boatsInDB) : boatsToBeSaved;
 
           let race = {
             id: raceId,
@@ -624,7 +644,7 @@ const saveSapData = async (bucketName, fileName) => {
       }
     }
   } catch (e) {
-    console.log('An error has occured', e.message);
+    console.log('An error has occured', e);
   } finally {
     temp.cleanupSync();
   }
