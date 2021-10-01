@@ -61,7 +61,7 @@ variable "mq_password" {
 }
 
 variable "mq_topic" {
-  default = "/topic/rawdata.topic"
+  default = "/topic/stream.data"
 }
 
 variable "mq_timeout" {

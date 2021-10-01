@@ -6,6 +6,18 @@ const createMQSubscriber = (connDetail, onConnect, subscriptions = []) => {
   stompClient.on('connect', () => {
     onConnect();
   });
+  stompClient.on('error', (error) => {
+    console.error(`MQ Client Error: ${error.message}`);
+  });
+
+  if (process.env.NODE_ENV === 'production') {
+    const tls = {
+      checkServerIdentity: () => {
+        return null;
+      },
+    };
+    stompClient.useTLS(tls);
+  }
 
   stompClient
     .retryInterval(1000)
