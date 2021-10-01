@@ -30,6 +30,7 @@ const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegad
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
+const saveGeovoileData = require('../services/saveGeovoileData');
 
 var router = express.Router();
 
@@ -96,6 +97,7 @@ router.post(
     }
 
     const jsonData = {};
+
     await new Promise((resolve, reject) => {
       const errorHandler = (err) => {
         reject(err);
@@ -109,10 +111,21 @@ router.post(
       parser.on('error', errorHandler);
       stream.pipe(parser);
       parser.on('data', async function (row) {
-        if (jsonData[row.path[0]] === undefined) {
-          jsonData[row.path[0]] = [];
+        // during streaming the row, if the data is object then row.path[1]
+        // is the object property (not a number)
+        // if the data is array then row.path[1] is the index number of object.
+        if (isNaN(row.path[1])) {
+          if (!jsonData[row.path[0]]) {
+            jsonData[row.path[0]] = {};
+          }
+          jsonData[row.path[0]][row.path[1]] = row.value;
+        } else {
+          // case array
+          if (jsonData[row.path[0]] === undefined) {
+            jsonData[row.path[0]] = [];
+          }
+          jsonData[row.path[0]].push(row.value);
         }
-        jsonData[row.path[0]].push(row.value);
       });
       stream.on('close', () => {
         resolve(true);
@@ -162,6 +175,8 @@ router.post(
           break;
         case isScraperExist(jsonData, TRACKER_MAP.swiftsure):
           saveSwiftsureData(jsonData);
+        case isScraperExist(jsonData, TRACKER_MAP.geovoile):
+          saveGeovoileData(jsonData);
           break;
       }
     } catch (err) {
@@ -322,7 +337,11 @@ router.post('/americas-cup', async function (req, res) {
     return;
   }
   try {
-    saveAmericasCupData(req.body.bucketName, req.body.fileName, req.body.year.toString());
+    saveAmericasCupData(
+      req.body.bucketName,
+      req.body.fileName,
+      req.body.year.toString(),
+    );
   } catch (err) {
     console.error(err);
   }

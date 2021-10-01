@@ -730,6 +730,33 @@ db.regadataReport = require('./regadata/RegadataReport.model')(
 );
 // === End of Regadata ===
 
+// === Geovoile ===
+db.geovoileRace = require('./geovoile/GeovoileRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.geovoileBoat = require('./geovoile/GeovoileBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.geovoileBoatPosition = require('./geovoile/GeovoileBoatPosition.model')(
+  sequelize,
+  Sequelize,
+);
+db.geovoileBoatSailor = require('./geovoile/GeovoileBoatSailor.model')(
+  sequelize,
+  Sequelize,
+);
+db.geovoileSuccessfulUrl = require('./geovoile/geovoileSuccessfulUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.geovoileFailedUrl = require('./geovoile/GeovoileFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+// === End of Geovoile ===
+
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
   require('./normalizedTable/readyAboutRaceMetadata.model')(
