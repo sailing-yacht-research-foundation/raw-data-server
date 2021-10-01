@@ -32,11 +32,11 @@ resource "aws_ecs_service" "rds_service" {
     container_port   = var.app_container_port
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.target_group_db.arn
-    container_name   = "rds-db"
-    container_port   = 3306
-  }
+  #load_balancer {
+  #  target_group_arn = aws_lb_target_group.target_group_db.arn
+  #  container_name   = "rds-db"
+  #  container_port   = 3306
+  #}
 
   network_configuration {
     subnets          = aws_subnet.public_subnet.*.id
@@ -73,35 +73,10 @@ resource "aws_ecs_task_definition" "rds_task" {
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "memory": 6144,
-      "cpu": 2048
-    },
-    {
-      "name": "rds-db",
-      "image": "mysql:5.7",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 3306,
-          "hostPort": 3306
-        }
-      ],
-      "environment": [
-        { "name": "MYSQL_DATABASE", "value": "${var.db_name}" },
-        { "name": "MYSQL_USER", "value": "${var.db_username}" },
-        { "name": "MYSQL_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
-        { "name": "MYSQL_ROOT_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" }
-      ],
-      "command": ["--max_allowed_packet=100M"],
-      "memory": 6144,
-      "cpu": 2048,
-      "mountPoints": [
-          {
-              "containerPath": "/var/lib/mysql",
-              "sourceVolume": "rds-storage"
-          }
-      ]
+      "memory": 12288,
+      "cpu": 4096
     }
+    
   ]
   DEFINITION
   requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
