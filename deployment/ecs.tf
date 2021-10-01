@@ -59,26 +59,12 @@ resource "aws_ecs_task_definition" "rds_task" {
           "hostPort": 3000
         }
       ],
-      "environment": [
-        { "name": "DB_HOST", "value": "localhost" },
-        { "name": "DB_USER", "value": "${var.db_username}" },
-        { "name": "DB_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
-        { "name": "DB_NAME", "value": "${var.db_name}" },
-        { "name": "AWS_S3_ACCESS_KEY_ID", "value": "${var.s3_access_key_id}" },
-        { "name": "AWS_S3_SECRET_ACCESS_KEY", "value": "${var.s3_secret_key}" },
-        { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" },
-        { "name": "AWS_ES_HOST", "value": "${var.aws_es_host}" },
-        { "name": "AWS_ES_USERNAME", "value": "${var.aws_es_username}" },
-        { "name": "AWS_ES_PASSWORD", "value": "${var.aws_es_password}" },
-        { "name": "AWS_GEOJSON_S3_BUCKET", "value": "${var.geojson_s3_bucket}" },
-        { "name": "AWS_YELLOWBRICK_KML_S3_BUCKET", "value": "${var.yellowbrick_kml_s3_bucket}" },
-        { "name": "MQ_HOST", "value": "${var.mq_host}" },
-        { "name": "MQ_PORT", "value": "${var.mq_port}" },
-        { "name": "MQ_USER", "value": "${var.mq_user}" },
-        { "name": "MQ_PASSWORD", "value": "${var.mq_password}" },
-        { "name": "MQ_TOPIC", "value": "${var.mq_topic}" },
-        { "name": "MQ_TIMEOUT", "value": "${var.mq_timeout}" }
-      ],
+      "environmentFiles": [
+               {
+                   "value": "arn:aws:s3:::syrf-dev-env-variables/raw-data-server.env",
+                   "type": "s3"
+               }
+           ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
