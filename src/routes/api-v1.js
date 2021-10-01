@@ -31,6 +31,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
 const saveGeovoileData = require('../services/saveGeovoileData');
+const saveOldGeovoilleData = require('../services/non-automatable/saveOldGeovoilleData');
 
 var router = express.Router();
 
@@ -378,6 +379,24 @@ router.post('/regadata', async function (req, res) {
   }
   try {
     saveRegadata(req.body.bucketName, req.body.fileName);
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.json({
+    message: `Successfully started processing of files`,
+  });
+});
+
+router.post('/oldgeovoille', async function (req, res) {
+  if (!req.body.bucketName && !req.body.fileName) {
+    res
+      .status(400)
+      .json({ message: 'Must specify bucketName and fileName in body' });
+    return;
+  }
+  try {
+    saveOldGeovoilleData(req.body.bucketName, req.body.fileName);
   } catch (err) {
     console.log(err);
   }

@@ -2,19 +2,24 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
 const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
-const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
-  host: dbConfig.host,
-  port: dbConfig.port,
-  dialect: dbConfig.dialect,
-  operatorsAliases: '0',
-  logging: false,
-  pool: {
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle,
+const sequelize = new Sequelize(
+  dbConfig.database,
+  dbConfig.username,
+  dbConfig.password,
+  {
+    host: dbConfig.host,
+    port: dbConfig.port,
+    dialect: dbConfig.dialect,
+    operatorsAliases: '0',
+    logging: false,
+    pool: {
+      max: dbConfig.pool.max,
+      min: dbConfig.pool.min,
+      acquire: dbConfig.pool.acquire,
+      idle: dbConfig.pool.idle,
+    },
   },
-});
+);
 
 const db = {};
 
@@ -757,6 +762,22 @@ db.geovoileFailedUrl = require('./geovoile/GeovoileFailedUrl.model')(
 );
 // === End of Geovoile ===
 
+// === Start Old Geovoille ===
+db.oldGeovoilleRace = require('./old-geovoille/OldGeovoilleRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.oldGeovoilleBoat = require('./old-geovoille/OldGeovoilleBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.oldGeovoilleBoatPosition =
+  require('./old-geovoille/OldGeovoilleBoatPosition.model')(
+    sequelize,
+    Sequelize,
+  );
+
+// === End of Old Geovoille ===
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
   require('./normalizedTable/readyAboutRaceMetadata.model')(
