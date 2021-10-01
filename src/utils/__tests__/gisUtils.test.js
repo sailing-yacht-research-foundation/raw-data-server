@@ -16,8 +16,9 @@ const {
   validateBoundingBox,
   createRace,
   pointToCountry,
+  convertDMSToDD,
+  parseGeoStringToDecimal,
 } = require('../gisUtils');
-const elasticsearch = require('elasticsearch');
 const esUtil = require('../elasticsearch');
 
 describe('gis_utils.js', () => {
@@ -374,9 +375,7 @@ describe('gis_utils.js', () => {
     });
   });
   it('#createRace should create and return correct race meta data', async () => {
-    const elasticsearchclient = new elasticsearch.Client();
-    const esIndexSpy = jest.spyOn(elasticsearchclient, 'index');
-    const indexRaceSpy = jest.spyOn(esUtil, 'indexRace');
+    const indexRaceSpy = jest.spyOn(esUtil, 'indexRace').mockResolvedValue({});
 
     const id = 'testraceid';
     const name = 'Race 1';
@@ -514,7 +513,6 @@ describe('gis_utils.js', () => {
     };
     expect(r).toEqual(expectedResult);
 
-    expect(esIndexSpy).toHaveBeenCalledTimes(1);
     const expectedIndexedBody = {
       id,
       name,
@@ -543,5 +541,21 @@ describe('gis_utils.js', () => {
       unstructured_text: unstructuredText,
     };
     expect(indexRaceSpy).toHaveBeenCalledWith(id, expectedIndexedBody);
+  });
+
+  it('#convertDMSToDD should convert the  DMS parts into Decimal', () => {
+    const degrees = '35';
+    const minutes = '57';
+    const seconds = '9';
+    const direction = 'N';
+    const result = convertDMSToDD(degrees, minutes, seconds, direction);
+    expect(typeof result).toBe('number');
+    expect(result.toFixed(2)).toBe('35.95');
+  });
+
+  it('#parseGeoStringToDecimal should convert the  DMS string into Decimal', () => {
+    const result = parseGeoStringToDecimal(`36°57'9" N`);
+    expect(typeof result).toBe('number');
+    expect(result.toFixed(2)).toBe('36.95');
   });
 });

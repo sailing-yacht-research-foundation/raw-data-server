@@ -33,10 +33,17 @@ const normalizeRace = async (
   );
 
   if (!race || !boatPositions?.length) {
-    console.log('No race or boat positions so skipping.');
+    console.log('No race or boat positions so skipping.', race?.original_id);
     return;
   }
-  const startTime = new Date(race.start_time).getTime();
+  let startDate = new Date(race.start_time);
+  let startTime;
+  if (startDate?.toString() !== 'Invalid Date' && !isNaN(startDate)) {
+    startTime = startDate.getTime();
+  } else {
+    startDate = new Date(race.start_time.replace('Y', 'T'));
+    startTime = startDate.getTime();
+  }
   let endTime;
 
   boatPositions.forEach((p) => {

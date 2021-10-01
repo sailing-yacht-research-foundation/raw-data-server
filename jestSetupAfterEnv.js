@@ -8,14 +8,6 @@ jest.mock('aws-sdk', () => {
   return { S3: jest.fn(() => mockS3Instance) };
 });
 
-jest.mock('elasticsearch', () => {
-  const esInstance = {
-    index: jest.fn().mockImplementation((_, callback) => callback(null, 'someData')),
-    get: Promise.resolve({ found: true, _source: "found"}),
-  };
-  return { Client: jest.fn(() => esInstance) };
-});
-
 jest.setTimeout(60000);
 afterAll(() => {
   jest.restoreAllMocks();

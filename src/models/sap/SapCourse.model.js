@@ -41,19 +41,19 @@ module.exports = (sequelize, Sequelize) => {
       },
       left_class: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       left_type: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       right_class: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       right_type: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {

@@ -21,46 +21,40 @@ const getLiveDataPoint = async (id) => {
 };
 
 const convertLiveDataToInsertData = (data) => {
-  const {
-    lat,
-    lon,
-    speed,
-    heading,
-    accuracy,
-    altitude,
-    at,
-    tws,
-    twa,
-    stw,
-    raceData,
-  } = data;
+  const { lat, lon, sog, cog, twa, setDrift, raceData } = data;
   return {
     id: uuidv4(),
-    location: { type: 'Point', coordinates: [lat, lon] },
-    speed,
-    heading,
-    accuracy,
-    altitude,
-    at,
-    tws,
+    location: {
+      crs: {
+        type: 'name',
+        properties: { name: 'EPSG:4326' },
+      },
+      type: 'Point',
+      coordinates: [lon, lat],
+    },
+    sog,
+    cog,
     twa,
-    stw,
-    race_unit_id: raceData.raceUnitId,
-    boat_participant_group_id: raceData.boatParticipantGroupId,
-    boat_id: raceData.boatId,
-    device_id: raceData.deviceId,
+    set_drift: setDrift,
+    competition_unit_id: raceData.competitionUnitId,
+    vessel_participant_id: raceData.vesselParticipantId,
+    participant_id: raceData.participantId,
     user_id: raceData.userId,
     public_id: raceData.publicId,
   };
 };
 
 const dataPointSubscriberAction = async (payload, headers) => {
-  if (headers.isbatch === 'true') {
-    const data = payload.messages.map(convertLiveDataToInsertData);
-    await saveLiveDataPoint(data);
-  } else {
-    const data = convertLiveDataToInsertData(payload);
-    await saveLiveDataPoint([data]);
+  try {
+    if (headers.isbatch === 'true') {
+      const data = payload.messages.map(convertLiveDataToInsertData);
+      await saveLiveDataPoint(data);
+    } else {
+      const data = convertLiveDataToInsertData(payload);
+      await saveLiveDataPoint([data]);
+    }
+  } catch (error) {
+    console.error(`Error handling live data server data stream`);
   }
 };
 
