@@ -17,23 +17,23 @@ module.exports = (sequelize, Sequelize) => {
       },
       class: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       alt: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       q: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       boatOrSponsor: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       arrival: {
         type: Sequelize.TEXT,
