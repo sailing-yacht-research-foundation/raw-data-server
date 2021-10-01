@@ -32,11 +32,11 @@ resource "aws_ecs_service" "rds_service" {
     container_port   = var.app_container_port
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.target_group_db.arn
-    container_name   = "rds-db"
-    container_port   = 3306
-  }
+  #load_balancer {
+  #  target_group_arn = aws_lb_target_group.target_group_db.arn
+  #  container_name   = "rds-db"
+  #  container_port   = 3306
+  #}
 
   network_configuration {
     subnets          = aws_subnet.public_subnet.*.id
