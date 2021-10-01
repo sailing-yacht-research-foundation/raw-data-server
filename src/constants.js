@@ -14,6 +14,7 @@ const TRACKER_MAP = {
   yachtbot: 'yachtBot',
   yellowbrick: 'yellowbrick',
   swiftsure: 'swiftsure',
+  geovoile: 'geovoile',
 };
 
 const AMERICAS_CUP_TABLE_SUFFIX = ['AvgWind', 'Boat', 'BoatShape', 'CompoundMark', 'CourseLimit', 'Event', 'Mark', 'Race', 'Regatta', 'Position'];
