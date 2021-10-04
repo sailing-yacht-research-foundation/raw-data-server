@@ -1,6 +1,5 @@
 {
     "geovoileRace": {
-        "id": "1d3bcb79-eeba-4454-ac19-2bda903bc698",
         "original_id": "68ea0b5c-f860-463f-a438-76a1e7cd7dd1",
         "legNum": 1,
         "numLegs": 1,
@@ -18,8 +17,7 @@
         "prerace": 0,
         "name": "Vendée Globe 2020",
         "isGame": false,
-        "url": "https://tracking2020.vendeeglobe.org/fr/?v=3",
-        "scrapedUrl": "https://tracking2020.vendeeglobe.org/fr/?v=3"
+        "url": "https://tracking2020.vendeeglobe.org/fr/?v=3"
     },
     "boats": [
         {

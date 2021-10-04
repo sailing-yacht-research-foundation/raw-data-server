@@ -4,6 +4,7 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
 
 const saveSuccessfulUrl = async (original_id, url) => {
   await db.geovoileSuccessfulUrl.create({ url, original_id, id: uuidv4() });
@@ -65,7 +66,7 @@ const saveGeovoileData = async (data) => {
   }
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-
+  let raceMetadata;
   try {
     const race = await saveGeovoileRace(data.geovoileRace, transaction);
 
@@ -116,6 +117,10 @@ const saveGeovoileData = async (data) => {
     await saveGeovoileSailors(sailors, transaction);
 
     await saveGeovoileBoatPositions(positions, transaction);
+    raceMetadata = await normalizeGeovoile(
+      { geovoileRace: race, boats: boats, sailors: sailors, positions },
+      transaction,
+    );
     await transaction.commit();
   } catch (error) {
     console.log(error);
@@ -142,7 +147,10 @@ const saveGeovoileData = async (data) => {
     }
   }
 
-  //TODO/: await triggerWeatherSlicer(raceMetadata);
+  if (raceMetadata) {
+    await triggerWeatherSlicer(raceMetadata);
+  }
+
   return errorMessage;
 };
 
