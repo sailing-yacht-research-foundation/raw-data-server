@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const oldGeovoiledBoatPosition = sequelize.define(
-    'OldGeovoiledBoatPosition',
+  const oldGeovoileBoatPosition = sequelize.define(
+    'OldGeovoileBoatPosition',
     {
       id: {
         type: Sequelize.UUID,
@@ -33,9 +33,9 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'OldGeovoiledBoatPositions',
+      tableName: 'OldGeovoileBoatPositions',
       timestamps: false,
     },
   );
-  return oldGeovoiledBoatPosition;
+  return oldGeovoileBoatPosition;
 };
