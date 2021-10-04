@@ -53,35 +53,35 @@ module.exports = (sequelize, Sequelize) => {
       },
       average_sog_kts: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       tacks: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       jibes: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       penalty_circle: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       time_since_gun_ms: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       distance_since_gun_m: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       distance_traveled_m: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       distance_traveled_including_gate_start: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       rank: {
         type: Sequelize.INTEGER,
@@ -89,11 +89,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       gap_to_leader_s: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       gap_to_leader_m: {
         type: Sequelize.DOUBLE,
-        allowNull: false,
+        allowNull: true,
       },
       started: {
         type: Sequelize.BOOLEAN,

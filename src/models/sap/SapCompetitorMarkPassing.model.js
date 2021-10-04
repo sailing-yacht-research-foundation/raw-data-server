@@ -33,7 +33,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       waypoint_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       zero_based_waypoint_index: {
         type: Sequelize.INTEGER,

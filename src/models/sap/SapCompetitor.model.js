@@ -30,7 +30,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       short_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       display_color: {
         type: Sequelize.TEXT,
