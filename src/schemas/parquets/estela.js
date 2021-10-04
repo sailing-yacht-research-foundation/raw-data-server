@@ -94,7 +94,6 @@ const estelaCombined = new parquet.ParquetSchema({
       pivot_club_original_id: { type: 'UTF8', optional: true },
       class: { type: 'UTF8', optional: true },
       active: { type: 'UTF8', optional: true },
-      track_csv: { type: 'UTF8', optional: true },
     },
   },
   players: {
