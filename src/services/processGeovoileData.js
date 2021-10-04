@@ -48,14 +48,6 @@ const processGeovoileData = async (optionalPath) => {
   const currentYear = String(currentDate.getUTCFullYear());
   const currentMonth = String(currentDate.getUTCMonth() + 1).padStart(2, '0');
   const fullDateFormat = yyyymmddFormat(currentDate);
-
-  let parquetPath = optionalPath
-    ? optionalPath.main
-    : (await temp.open('geovoile')).path;
-  let positionPath = optionalPath
-    ? optionalPath.position
-    : (await temp.open('geovoile_pos')).path;
-
   const races = await getRaces();
   if (races.length === 0) {
     return '';
@@ -64,6 +56,13 @@ const processGeovoileData = async (optionalPath) => {
 
   const mapBoats = await getBoats(raceList);
   const mapSailors = await getSailors(raceList);
+
+  let parquetPath = optionalPath
+    ? optionalPath.main
+    : (await temp.open('geovoile')).path;
+  let positionPath = optionalPath
+    ? optionalPath.position
+    : (await temp.open('geovoile_pos')).path;
 
   const writer = await parquet.ParquetWriter.openFile(
     modernGeovoileCombined,
