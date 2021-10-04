@@ -762,22 +762,19 @@ db.geovoileFailedUrl = require('./geovoile/GeovoileFailedUrl.model')(
 );
 // === End of Geovoile ===
 
-// === Start Old Geovoille ===
-db.oldGeovoilleRace = require('./old-geovoille/OldGeovoilleRace.model')(
+// === Start Old Geovoile ===
+db.oldGeovoileRace = require('./old-geovoile/OldGeovoileRace.model')(
   sequelize,
   Sequelize,
 );
-db.oldGeovoilleBoat = require('./old-geovoille/OldGeovoilleBoat.model')(
+db.oldGeovoileBoat = require('./old-geovoile/OldGeovoileBoat.model')(
   sequelize,
   Sequelize,
 );
-db.oldGeovoilleBoatPosition =
-  require('./old-geovoille/OldGeovoilleBoatPosition.model')(
-    sequelize,
-    Sequelize,
-  );
+db.oldGeovoileBoatPosition =
+  require('./old-geovoile/OldGeovoileBoatPosition.model')(sequelize, Sequelize);
 
-// === End of Old Geovoille ===
+// === End of Old Geovoile ===
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
   require('./normalizedTable/readyAboutRaceMetadata.model')(

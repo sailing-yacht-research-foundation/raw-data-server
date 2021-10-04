@@ -31,7 +31,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
 const saveGeovoileData = require('../services/saveGeovoileData');
-const saveOldGeovoilleData = require('../services/non-automatable/saveOldGeovoilleData');
+const saveOldGeovoileData = require('../services/non-automatable/saveOldGeovoileData');
 
 var router = express.Router();
 
@@ -388,7 +388,9 @@ router.post('/regadata', async function (req, res) {
   });
 });
 
-router.post('/oldgeovoille', async function (req, res) {
+router.post('/old-geovoile', async function (req, res) {
+  data.raw_tracks.tracks.splice(1);
+  data.raw_tracks.tracks[0].loc.splice(10, 6737);
   if (!req.body.bucketName && !req.body.fileName) {
     res
       .status(400)
@@ -396,7 +398,7 @@ router.post('/oldgeovoille', async function (req, res) {
     return;
   }
   try {
-    saveOldGeovoilleData(req.body.bucketName, req.body.fileName);
+    saveOldGeovoileData(req.body.bucketName, req.body.fileName);
   } catch (err) {
     console.log(err);
   }
