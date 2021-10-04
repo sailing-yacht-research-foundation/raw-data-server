@@ -389,8 +389,6 @@ router.post('/regadata', async function (req, res) {
 });
 
 router.post('/old-geovoile', async function (req, res) {
-  data.raw_tracks.tracks.splice(1);
-  data.raw_tracks.tracks[0].loc.splice(10, 6737);
   if (!req.body.bucketName && !req.body.fileName) {
     res
       .status(400)
