@@ -3,7 +3,6 @@ const { s3 } = require('../uploadUtil');
 const fs = require('fs');
 const path = require('path');
 const temp = require('temp').track();
-const { listDirectories } = require('../../utils/fileUtils');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
 
@@ -25,12 +24,13 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
     const skippedFiles = fs.readdirSync(skippedPath);
 
     for (const file of files) {
+      const transaction = await db.sequelize.transaction();
+      let race = {};
       try {
         console.log(`Start processing file ${file}`);
-        const transaction = await db.sequelize.transaction();
-        racePath = path.join(geovoileGoogleScrapedPath, file);
+        var racePath = path.join(geovoileGoogleScrapedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
-        let race = {
+        race = {
           id: uuidv4(),
           name: raceData.name,
           url: raceData.url,
@@ -110,10 +110,11 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
     }
 
     for (const file of skippedFiles) {
+      let race = {};
+      const transaction = await db.sequelize.transaction();
       try {
         if (!file.includes('json')) continue;
         console.log(`Start processing file ${file}`);
-        const transaction = await db.sequelize.transaction();
         racePath = path.join(skippedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
         let raceName =
@@ -123,7 +124,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             .match(/\/(?:.(?!\/))+$/)[0]
             .replace(/(\.....)/, '')
             .replace('/', '');
-        let race = {
+        race = {
           id: uuidv4(),
           name: raceName,
           url: raceData.name_details.url,
