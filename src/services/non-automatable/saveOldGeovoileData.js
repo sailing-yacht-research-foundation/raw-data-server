@@ -33,7 +33,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         let boats = [];
         let boatPositions = [];
         console.log(`Start processing file ${file}`);
-        var racePath = path.join(geovoileGoogleScrapedPath, file);
+        let racePath = path.join(geovoileGoogleScrapedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
         race = {
           id: uuidv4(),
@@ -65,11 +65,11 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             transaction,
           });
           boats.push(boat);
-          var endTime = extractEndtimeFromDuration(
+          let endTime = extractEndtimeFromDuration(
             track.duration_or_retired,
             race.start_time,
           );
-          var arrivalTime = parseTimestamp(track.duration_or_retired, false);
+          let arrivalTime = parseTimestamp(track.duration_or_retired, false);
           let interval;
 
           if (endTime) {
@@ -135,7 +135,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         let boatPositions = [];
         if (!file.includes('json')) continue;
         console.log(`Start processing file ${file}`);
-        racePath = path.join(skippedPath, file);
+        let racePath = path.join(skippedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
         let raceName =
           raceData.name_details.url.match(/(?<=www\.)(.+?)(?=\.com)/)[0] +
@@ -175,6 +175,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             transaction,
           });
           boats.push(boat);
+          let endTime;
           const initialTimestamp = track.loc[0]['0'];
           const initialLat = track.loc[0]['1']; //lat
           const initialLon = track.loc[0]['2']; //lon
@@ -207,12 +208,15 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           }
         }
 
+        await normalizeRace(
+          {
+            OldGeovoileRace: [race],
+            OldGeovoileBoat: boats,
+            OldGeovoilePosition: boatPositions,
+          },
+          transaction,
+        );
         await transaction.commit();
-        await normalizeRace({
-          OldGeovoileRace: [race],
-          OldGeovoileBoat: boats,
-          OldGeovoilePosition: boatPositions,
-        });
         console.log(`Done processing file ${file}`);
       } catch (e) {
         await transaction.rollback();
@@ -227,7 +231,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
 };
 
 const parseTimestamp = function (rawString, isHtml) {
-  var datetimeString = '';
+  let datetimeString = '';
   if (isHtml) {
     datetimeString = rawString
       .split('datetime')[1]
@@ -236,19 +240,19 @@ const parseTimestamp = function (rawString, isHtml) {
   } else {
     datetimeString = rawString;
   }
-  var sliced = datetimeString.match(
+  let sliced = datetimeString.match(
     /([\d]{2}[:]{1}[\d]{2}[:]{1}[\d]{2}|[\d]{2}:[\d]{2})/,
   );
 
   if (sliced === null) return null;
 
-  var [hour, minute, second] = sliced[0].split(':');
+  let [hour, minute, second] = sliced[0].split(':');
   if (second == null) second = '00';
   const dateString = datetimeString
     .match(/([\d]{8}|[\d]{2}\/[\d]{2}\/[\d]{4}|[\d]{4}\/[\d]{2}\/[\d]{2})/)[0]
     .replace(/[/]/g, '');
-  var yearSlice = datetimeString.match(/([\d]{4}\/[\d]{2}\/[\d]{2}|[\d]{4} )/);
-  var yearFirst =
+  let yearSlice = datetimeString.match(/([\d]{4}\/[\d]{2}\/[\d]{2}|[\d]{4} )/);
+  let yearFirst =
     datetimeString.match(/([\d]{4}\/[\d]{2}\/[\d]{2}|[\d]{8})/) != null;
   if (parseInt(yearSlice) > 2000 && yearFirst == true) {
     yearFirst = false;
@@ -267,7 +271,7 @@ const parseTimestamp = function (rawString, isHtml) {
 };
 
 const extractEndtimeFromDuration = function (datetimeString, startTime) {
-  var sliced = datetimeString.match(
+  let sliced = datetimeString.match(
     /[\d]{2}[h]{1} [\d]{2}[m][i][n]{1} [\d]{2}[s]{1}/,
   );
 
@@ -276,7 +280,7 @@ const extractEndtimeFromDuration = function (datetimeString, startTime) {
   const [hour, minute, second] = sliced[0].replace(/[A-z]/g, '').split(' ');
   if (!hour || !minute || !second) return null;
 
-  var date = new Date(startTime);
+  let date = new Date(startTime);
   date.setHours(date.getHours() + parseInt(hour));
   date.setMinutes(date.getMinutes() + parseInt(minute));
   date.setSeconds(date.getSeconds() + parseInt(second));
