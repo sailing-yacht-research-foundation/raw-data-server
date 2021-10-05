@@ -17,6 +17,7 @@
   "dependencies": {
     "@syrf/transport-library": "^1.0.7",
     "@turf/turf": "^6.5.0",
+    "all-the-cities": "^3.1.0",
     "aws-sdk": "^2.903.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
@@ -26,8 +27,10 @@
     "express": "^4.17.1",
     "express-status-monitor": "^1.3.3",
     "extract-zip": "^2.0.1",
+    "geokdbush": "^1.1.0",
     "jsonfile": "^6.1.0",
     "JSONStream": "^1.3.5",
+    "kdbush": "^3.0.0",
     "multer": "^1.4.2",
     "parquetjs-lite": "^0.8.7",
     "pg": "^8.7.1",

@@ -1,6 +1,15 @@
 const turf = require('@turf/turf');
 const elasticsearch = require('./elasticsearch');
+const cities = require('all-the-cities');
+const KDBush = require('kdbush');
+const geokdbush = require('geokdbush');
+
 const { world } = require('./world');
+const cityIndex = new KDBush(
+  cities,
+  (p) => p.loc.coordinates[0],
+  (p) => p.loc.coordinates[1],
+);
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -147,6 +156,11 @@ exports.pointToCountry = function (point) {
     }
   });
   return countryName;
+};
+
+exports.pointToCity = function (point) {
+  const nearestCity = geokdbush.around(cityIndex, point[0], point[1], 1);
+  return nearestCity[0].name;
 };
 
 exports.collectFirstNPositionsFromBoatsToPositions = function (
@@ -298,6 +312,7 @@ exports.createRace = async function (
 ) {
   const name = nameT.replace('_', ' ');
   const startCountry = exports.pointToCountry(startPoint);
+  const startCity = exports.pointToCity(startPoint);
 
   const startDate = new Date(startTimeMs);
 
@@ -418,6 +433,7 @@ exports.createRace = async function (
     source,
     url,
     start_country: startCountry,
+    start_city: startCity,
     start_year: startYear,
     start_month: startMonth,
     start_day: startDay,
@@ -453,6 +469,7 @@ exports.createRace = async function (
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,
