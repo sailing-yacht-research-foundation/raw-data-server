@@ -5,6 +5,9 @@ const path = require('path');
 const temp = require('temp').track();
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
+const {
+  normalizeRace,
+} = require('../normalization/non-automatable/normalizeOldGeovoile');
 
 const { downloadAndExtract } = require('../../utils/unzipFile');
 
@@ -27,6 +30,8 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
       const transaction = await db.sequelize.transaction();
       let race = {};
       try {
+        let boats = [];
+        let boatPositions = [];
         console.log(`Start processing file ${file}`);
         var racePath = path.join(geovoileGoogleScrapedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
@@ -59,8 +64,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             validate: true,
             transaction,
           });
-
-          let boatPositions = [];
+          boats.push(boat);
           var endTime = extractEndtimeFromDuration(
             track.duration_or_retired,
             race.start_time,
@@ -73,8 +77,9 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           } else if (arrivalTime) {
             interval = (arrivalTime - race.start_time) / track.track.length;
           } else {
-            interval = 100;
+            interval = 50000;
           }
+          let time = race.start_time;
           for (const position of track.track) {
             let boatPosition = {
               id: uuidv4(),
@@ -83,8 +88,9 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
               boat_original_id: boat.original_id,
               lat: position.lat,
               lon: position.lon,
-              timestamp: race.start_time + interval,
+              timestamp: parseInt(time.toFixed(0)),
             };
+            time += interval;
             boatPositions.push(boatPosition);
           }
 
@@ -100,7 +106,19 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
               transaction,
             });
           }
+          if (race.end_time < endTime || !race.end_time) {
+            race.end_time = endTime;
+          }
         }
+
+        await normalizeRace(
+          {
+            OldGeovoileRace: [race],
+            OldGeovoileBoat: boats,
+            OldGeovoilePosition: boatPositions,
+          },
+          transaction,
+        );
         await transaction.commit();
         console.log(`Done processing file ${file}`);
       } catch (e) {
@@ -113,6 +131,8 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
       let race = {};
       const transaction = await db.sequelize.transaction();
       try {
+        let boats = [];
+        let boatPositions = [];
         if (!file.includes('json')) continue;
         console.log(`Start processing file ${file}`);
         racePath = path.join(skippedPath, file);
@@ -154,10 +174,10 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             validate: true,
             transaction,
           });
+          boats.push(boat);
           const initialTimestamp = track.loc[0]['0'];
           const initialLat = track.loc[0]['1']; //lat
           const initialLon = track.loc[0]['2']; //lon
-          let boatPositions = [];
           for (const loc of track.loc.slice(1)) {
             let boatPosition = {
               id: uuidv4(),
@@ -182,9 +202,17 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
               transaction,
             });
           }
+          if (race.end_time < endTime || !race.end_time) {
+            race.end_time = endTime;
+          }
         }
 
         await transaction.commit();
+        await normalizeRace({
+          OldGeovoileRace: [race],
+          OldGeovoileBoat: boats,
+          OldGeovoilePosition: boatPositions,
+        });
         console.log(`Done processing file ${file}`);
       } catch (e) {
         await transaction.rollback();
