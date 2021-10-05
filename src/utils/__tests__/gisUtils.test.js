@@ -16,6 +16,7 @@ const {
   validateBoundingBox,
   createRace,
   pointToCountry,
+  pointToCity,
   convertDMSToDD,
   parseGeoStringToDecimal,
 } = require('../gisUtils');
@@ -423,6 +424,7 @@ describe('gis_utils.js', () => {
       },
     };
     const startCountry = pointToCountry(startPoint);
+    const startCity = pointToCity(startPoint);
     const positionsLength = 100;
     const positions = [];
     let runningDiffCount = 0;
@@ -489,6 +491,7 @@ describe('gis_utils.js', () => {
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,
@@ -520,6 +523,7 @@ describe('gis_utils.js', () => {
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,
