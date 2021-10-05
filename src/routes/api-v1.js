@@ -63,7 +63,8 @@ const upload = multer({ storage, fileFilter });
 router.use(validateSecret);
 router.get('/', function (req, res) {
   res.json({
-    message: 'You are authorized to use this api',
+    message: 'ok',
+    version: process.env.npm_package_version,
   });
 });
 
