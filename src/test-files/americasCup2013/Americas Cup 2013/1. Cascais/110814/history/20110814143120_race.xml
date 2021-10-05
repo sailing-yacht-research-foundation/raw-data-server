@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Race>
+  <RaceID>11081401</RaceID>
+  <RaceType>Fleet</RaceType>
+  <Participants>
+    <Yacht SourceID="101" Entry="Port" />
+    <Yacht SourceID="102" Entry="Port" />
+    <Yacht SourceID="103" Entry="Port" />
+    <Yacht SourceID="104" Entry="Stbd" />
+    <Yacht SourceID="105" Entry="Stbd" />
+    <Yacht SourceID="106" Entry="Port" />
+    <Yacht SourceID="107" Entry="Port" />
+    <Yacht SourceID="108" Entry="Port" />
+    <Yacht SourceID="109" Entry="Stbd" />
+  </Participants>
+  <CompoundMarkSequence>
+    <Corner SeqID="1" CompoundMarkID="1" Rounding="SP" ZoneSize="3" />
+    <Corner SeqID="2" CompoundMarkID="2" Rounding="Port" ZoneSize="6" />
+    <Corner SeqID="3" CompoundMarkID="3" Rounding="SP" ZoneSize="6" />
+    <Corner SeqID="4" CompoundMarkID="4" Rounding="PS" ZoneSize="3" />
+    <Corner SeqID="5" CompoundMarkID="5" Rounding="SP" ZoneSize="6" />
+    <Corner SeqID="6" CompoundMarkID="6" Rounding="Stbd" ZoneSize="3" />
+    <Corner SeqID="7" CompoundMarkID="7" Rounding="PS" ZoneSize="6" />
+  </CompoundMarkSequence>
+  <Course>
+    <CompoundMark CompoundMarkID="1" Name="Mark0">
+      <Mark SeqID="1" Name="Regardless" TargetLat="38.6975610" TargetLng="-9.4062840" SourceID="121" />
+      <Mark SeqID="2" Name="Defender" TargetLat="38.6975610" TargetLng="-9.4062840" SourceID="126" />
+    </CompoundMark>
+    <CompoundMark CompoundMarkID="2" Name="Mark1">
+      <Mark SeqID="1" Name="Constellation " TargetLat="38.6954150" TargetLng="-9.4104520" SourceID="122" />
+    </CompoundMark>
+    <CompoundMark CompoundMarkID="3" Name="Mark2">
+      <Mark SeqID="1" Name="Atalanta" TargetLat="38.6724230" TargetLng="-9.3976970" SourceID="124" />
+      <Mark SeqID="2" Name="Volunteer" TargetLat="38.6724230" TargetLng="-9.3976970" SourceID="125" />
+    </CompoundMark>
+    <CompoundMark CompoundMarkID="4" Name="Mark1">
+      <Mark SeqID="1" Name="Constellation " TargetLat="38.6954150" TargetLng="-9.4104520" SourceID="122" />
+      <Mark SeqID="2" Name="Mischief" TargetLat="38.6954150" TargetLng="-9.4104520" SourceID="123" />
+    </CompoundMark>
+    <CompoundMark CompoundMarkID="5" Name="Mark2">
+      <Mark SeqID="1" Name="Atalanta" TargetLat="38.6724230" TargetLng="-9.3976970" SourceID="124" />
+      <Mark SeqID="2" Name="Volunteer" TargetLat="38.6724230" TargetLng="-9.3976970" SourceID="125" />
+    </CompoundMark>
+    <CompoundMark CompoundMarkID="6" Name="Mark1">
+      <Mark SeqID="1" Name="Constellation " TargetLat="38.6954150" TargetLng="-9.4104520" SourceID="122" />
+    </CompoundMark>
+    <CompoundMark CompoundMarkID="7" Name="Mark0">
+      <Mark SeqID="1" Name="Regardless" TargetLat="38.6975610" TargetLng="-9.4062840" SourceID="121" />
+      <Mark SeqID="2" Name="Defender" TargetLat="38.6975610" TargetLng="-9.4062840" SourceID="126" />
+    </CompoundMark>
+  </Course>
+  <CourseLimit>
+    <Limit SeqID="1" Lat="38.6955620" Lon="-9.4149980" />
+    <Limit SeqID="2" Lat="38.6977640" Lon="-9.4129050" />
+    <Limit SeqID="3" Lat="38.7013320" Lon="-9.4020710" />
+    <Limit SeqID="4" Lat="38.6959550" Lon="-9.3988830" />
+    <Limit SeqID="5" Lat="38.6939500" Lon="-9.4038410" />
+    <Limit SeqID="6" Lat="38.6675200" Lon="-9.3883550" />
+    <Limit SeqID="7" Lat="38.6639640" Lon="-9.3987840" />
+  </CourseLimit>
+  <Exclusions />
+</Race>

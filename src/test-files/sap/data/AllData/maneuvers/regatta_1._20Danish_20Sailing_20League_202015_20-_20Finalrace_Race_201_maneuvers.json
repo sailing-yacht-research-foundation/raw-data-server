@@ -1,0 +1,1426 @@
+{
+    "bycompetitor": [
+        {
+            "competitor": "850dd4c0-d52b-0132-e035-60a44ce903c3",
+            "maneuvers": [
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.3111572265625,
+                    "cogBeforeInTrueDegrees": 247.467041015625,
+                    "speedAfterInKnots": 4.0740966796875,
+                    "cogAfterInTrueDegrees": 314.110107421875,
+                    "directionChangeInDegrees": 66.64306640625,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.002792608303672083,
+                        "seaMiles": 0.002792491042500532,
+                        "nauticalMiles": 0.002792943389861628,
+                        "meters": 5.172531158023736,
+                        "kilometers": 0.005172531158023736,
+                        "centralAngleDeg": 0.00004654347172786805,
+                        "centralAngleRad": 8.123368269601916e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693435489666015,
+                        "lon_deg": 12.605647486635315,
+                        "unixtime": 1443253105500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 21.456298828125,
+                    "avgTurningRateInDegreesPerSecond": 12.886962890625,
+                    "lowestSpeedInKnots": 2.74658203125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.0975341796875,
+                    "cogBeforeInTrueDegrees": 345.069580078125,
+                    "speedAfterInKnots": 3.326416015625,
+                    "cogAfterInTrueDegrees": 323.63525390625,
+                    "directionChangeInDegrees": -21.434326171875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693521487992484,
+                        "lon_deg": 12.60558646638052,
+                        "unixtime": 1443253112500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 8.316650390625,
+                    "avgTurningRateInDegreesPerSecond": 5.35858154296875,
+                    "lowestSpeedInKnots": 3.0975341796875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.0283203125,
+                    "cogBeforeInTrueDegrees": 313.857421875,
+                    "speedAfterInKnots": 3.7841796875,
+                    "cogAfterInTrueDegrees": 336.236572265625,
+                    "directionChangeInDegrees": 22.379150390625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693710478954216,
+                        "lon_deg": 12.60531799402222,
+                        "unixtime": 1443253126500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.757080078125,
+                    "avgTurningRateInDegreesPerSecond": 3.7298583984375,
+                    "lowestSpeedInKnots": 3.7841796875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.462646484375,
+                    "cogBeforeInTrueDegrees": 339.224853515625,
+                    "speedAfterInKnots": 5.5694580078125,
+                    "cogAfterInTrueDegrees": 314.75830078125,
+                    "directionChangeInDegrees": -24.466552734375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69414346711802,
+                        "lon_deg": 12.604972952980464,
+                        "unixtime": 1443253148500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 6.800537109375,
+                    "avgTurningRateInDegreesPerSecond": 4.0777587890625,
+                    "lowestSpeedInKnots": 5.462646484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.5084228515625,
+                    "cogBeforeInTrueDegrees": 322.822265625,
+                    "speedAfterInKnots": 5.5084228515625,
+                    "cogAfterInTrueDegrees": 309.04541015625,
+                    "directionChangeInDegrees": -13.77685546875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.694576497191086,
+                        "lon_deg": 12.604306465949685,
+                        "unixtime": 1443253170500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.943603515625,
+                    "avgTurningRateInDegreesPerSecond": 3.4442138671875,
+                    "lowestSpeedInKnots": 5.4931640625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.218505859375,
+                    "cogBeforeInTrueDegrees": 320.38330078125,
+                    "speedAfterInKnots": 5.2642822265625,
+                    "cogAfterInTrueDegrees": 297.94921875,
+                    "directionChangeInDegrees": -22.43408203125,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69480896927534,
+                        "lon_deg": 12.60392496362677,
+                        "unixtime": 1443253183500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.6142578125,
+                    "avgTurningRateInDegreesPerSecond": 2.80426025390625,
+                    "lowestSpeedInKnots": 5.18798828125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 5.218505859375,
+                    "cogBeforeInTrueDegrees": 296.949462890625,
+                    "speedAfterInKnots": 5.0201416015625,
+                    "cogAfterInTrueDegrees": 213.11279296875,
+                    "directionChangeInDegrees": -83.836669921875,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0046330862852601296,
+                        "seaMiles": 0.004632891742715444,
+                        "nauticalMiles": 0.00463364221114029,
+                        "meters": 8.581505375031817,
+                        "kilometers": 0.008581505375031818,
+                        "centralAngleDeg": 0.00007721810475433549,
+                        "centralAngleRad": 0.0000013477101701130413
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69501497549947,
+                        "lon_deg": 12.603145949541494,
+                        "unixtime": 1443253205500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 24.6533203125,
+                    "avgTurningRateInDegreesPerSecond": 12.059326171875,
+                    "lowestSpeedInKnots": 3.5552978515625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.3487548828125,
+                    "cogBeforeInTrueDegrees": 200.203857421875,
+                    "speedAfterInKnots": 4.7607421875,
+                    "cogAfterInTrueDegrees": 218.47412109375,
+                    "directionChangeInDegrees": 18.270263671875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69491047412197,
+                        "lon_deg": 12.603069967587835,
+                        "unixtime": 1443253211500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.60302734375,
+                    "avgTurningRateInDegreesPerSecond": 3.654052734375,
+                    "lowestSpeedInKnots": 4.3487548828125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.8675537109375,
+                    "cogBeforeInTrueDegrees": 219.671630859375,
+                    "speedAfterInKnots": 4.69970703125,
+                    "cogAfterInTrueDegrees": 343.861083984375,
+                    "directionChangeInDegrees": 124.189453125,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.0000839061152613075,
+                        "seaMiles": -0.00008390259205708195,
+                        "nauticalMiles": -0.00008391618318970458,
+                        "meters": -0.15541277126733288,
+                        "kilometers": -0.00015541277126733289,
+                        "centralAngleDeg": -0.0000013984352543551251,
+                        "centralAngleRad": -2.4407299564461304e-8
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.694312970154435,
+                        "lon_deg": 12.602265472526021,
+                        "unixtime": 1443253245500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 26.202392578125,
+                    "avgTurningRateInDegreesPerSecond": 12.232776988636363,
+                    "lowestSpeedInKnots": 3.9520263671875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.638671875,
+                    "cogBeforeInTrueDegrees": 342.8173828125,
+                    "speedAfterInKnots": 3.7841796875,
+                    "cogAfterInTrueDegrees": 212.84912109375,
+                    "directionChangeInDegrees": -129.96826171875,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.0008461789948764451,
+                        "seaMiles": -0.0008461434639571427,
+                        "nauticalMiles": -0.0008462805282331617,
+                        "meters": -1.5673115382878153,
+                        "kilometers": -0.0015673115382878154,
+                        "centralAngleDeg": -0.00001410298324794075,
+                        "centralAngleRad": -2.461434920301699e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69456847151786,
+                        "lon_deg": 12.602032455614754,
+                        "unixtime": 1443253261500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 30.948486328125,
+                    "avgTurningRateInDegreesPerSecond": 14.918060302734375,
+                    "lowestSpeedInKnots": 3.41796875,
+                    "markPassing": false
+                }
+            ]
+        },
+        {
+            "competitor": "84b21d00-d52b-0132-e021-60a44ce903c3",
+            "maneuvers": [
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.180908203125,
+                    "cogBeforeInTrueDegrees": 246.4013671875,
+                    "speedAfterInKnots": 4.6539306640625,
+                    "cogAfterInTrueDegrees": 322.49267578125,
+                    "directionChangeInDegrees": 76.09130859375,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0036142913348061047,
+                        "seaMiles": 0.0036141395712968117,
+                        "nauticalMiles": 0.0036147250150718596,
+                        "meters": 6.694470727913084,
+                        "kilometers": 0.006694470727913084,
+                        "centralAngleDeg": 0.000060238188913435075,
+                        "centralAngleRad": 0.0000010513547319777875
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69332298357098,
+                        "lon_deg": 12.605302906595785,
+                        "unixtime": 1443253112500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 16.094970703125,
+                    "avgTurningRateInDegreesPerSecond": 8.94561767578125,
+                    "lowestSpeedInKnots": 3.021240234375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.570556640625,
+                    "cogBeforeInTrueDegrees": 337.269287109375,
+                    "speedAfterInKnots": 4.3182373046875,
+                    "cogAfterInTrueDegrees": 320.372314453125,
+                    "directionChangeInDegrees": -16.89697265625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69345097523224,
+                        "lon_deg": 12.605165904389892,
+                        "unixtime": 1443253122500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.207763671875,
+                    "avgTurningRateInDegreesPerSecond": 2.816162109375,
+                    "lowestSpeedInKnots": 3.570556640625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.7760009765625,
+                    "cogBeforeInTrueDegrees": 323.28369140625,
+                    "speedAfterInKnots": 4.94384765625,
+                    "cogAfterInTrueDegrees": 240.281982421875,
+                    "directionChangeInDegrees": -83.001708984375,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0018578766011653142,
+                        "seaMiles": 0.0018577985892269543,
+                        "nauticalMiles": 0.0018580995285232653,
+                        "meters": 3.4412003268250873,
+                        "kilometers": 0.003441200326825087,
+                        "centralAngleDeg": 0.0000309646100194219,
+                        "centralAngleRad": 5.404343964349375e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69383249850993,
+                        "lon_deg": 12.604649956337123,
+                        "unixtime": 1443253146500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 24.027099609375,
+                    "avgTurningRateInDegreesPerSecond": 11.75048828125,
+                    "lowestSpeedInKnots": 3.8909912109375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.94384765625,
+                    "cogBeforeInTrueDegrees": 254.718017578125,
+                    "speedAfterInKnots": 4.82177734375,
+                    "cogAfterInTrueDegrees": 247.664794921875,
+                    "directionChangeInDegrees": -7.05322265625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693483476062696,
+                        "lon_deg": 12.603350928982037,
+                        "unixtime": 1443253182500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 3.36181640625,
+                    "avgTurningRateInDegreesPerSecond": 2.35107421875,
+                    "lowestSpeedInKnots": 4.82177734375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 3.90625,
+                    "cogBeforeInTrueDegrees": 242.611083984375,
+                    "speedAfterInKnots": 3.9215087890625,
+                    "cogAfterInTrueDegrees": 227.43896484375,
+                    "directionChangeInDegrees": -15.172119140625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.6933689792645,
+                        "lon_deg": 12.602904383091495,
+                        "unixtime": 1443253197500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.5810546875,
+                    "avgTurningRateInDegreesPerSecond": 2.167445591517857,
+                    "lowestSpeedInKnots": 3.41796875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.72314453125,
+                    "cogBeforeInTrueDegrees": 239.677734375,
+                    "speedAfterInKnots": 4.0740966796875,
+                    "cogAfterInTrueDegrees": 328.634033203125,
+                    "directionChangeInDegrees": 88.956298828125,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.00022825366074919444,
+                        "seaMiles": 0.00022824407641485188,
+                        "nauticalMiles": 0.0002282810489974245,
+                        "meters": 0.42277650274323014,
+                        "kilometers": 0.00042277650274323016,
+                        "centralAngleDeg": 0.0000038042276791532406,
+                        "centralAngleRad": 6.63962984967265e-8
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69331898121232,
+                        "lon_deg": 12.602747851052055,
+                        "unixtime": 1443253203500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 16.776123046875,
+                    "avgTurningRateInDegreesPerSecond": 8.949862393465908,
+                    "lowestSpeedInKnots": 2.7313232421875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.84521484375,
+                    "cogBeforeInTrueDegrees": 336.324462890625,
+                    "speedAfterInKnots": 4.1656494140625,
+                    "cogAfterInTrueDegrees": 318.0322265625,
+                    "directionChangeInDegrees": -18.292236328125,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69381548324649,
+                        "lon_deg": 12.602223940195202,
+                        "unixtime": 1443253237500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.383544921875,
+                    "avgTurningRateInDegreesPerSecond": 2.6131766183035716,
+                    "lowestSpeedInKnots": 3.84521484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.2266845703125,
+                    "cogBeforeInTrueDegrees": 315.06591796875,
+                    "speedAfterInKnots": 5.035400390625,
+                    "cogAfterInTrueDegrees": 121.35498046875,
+                    "directionChangeInDegrees": -193.7109375,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.003164667505953487,
+                        "seaMiles": 0.003164534622076135,
+                        "nauticalMiles": 0.0031650472356758233,
+                        "meters": 5.861667480471625,
+                        "kilometers": 0.005861667480471625,
+                        "centralAngleDeg": 0.00005274445843255812,
+                        "centralAngleRad": 9.205644618294267e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69419648265472,
+                        "lon_deg": 12.601467976347589,
+                        "unixtime": 1443253271500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 27.09228515625,
+                    "avgTurningRateInDegreesPerSecond": 13.322982788085938,
+                    "lowestSpeedInKnots": 3.570556640625,
+                    "markPassing": true
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 3.7994384765625,
+                    "cogBeforeInTrueDegrees": 140.394287109375,
+                    "speedAfterInKnots": 3.753662109375,
+                    "cogAfterInTrueDegrees": 146.876220703125,
+                    "directionChangeInDegrees": 6.48193359375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69354996550851,
+                        "lon_deg": 12.602725471371459,
+                        "unixtime": 1443253317500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 3.746337890625,
+                    "avgTurningRateInDegreesPerSecond": 2.16064453125,
+                    "lowestSpeedInKnots": 3.753662109375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "JIBE",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.21142578125,
+                    "cogBeforeInTrueDegrees": 146.546630859375,
+                    "speedAfterInKnots": 5.0811767578125,
+                    "cogAfterInTrueDegrees": 88.319091796875,
+                    "directionChangeInDegrees": -58.2275390625,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0038950203723137236,
+                        "seaMiles": 0.0038948568210374953,
+                        "nauticalMiles": 0.0038954877373691965,
+                        "meters": 7.214443289607752,
+                        "kilometers": 0.007214443289607752,
+                        "centralAngleDeg": 0.00006491700620522873,
+                        "centralAngleRad": 0.000001133015498818831
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69328298093801,
+                        "lon_deg": 12.603156971744063,
+                        "unixtime": 1443253338500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 20.19287109375,
+                    "avgTurningRateInDegreesPerSecond": 10.109619140625,
+                    "lowestSpeedInKnots": 3.11279296875,
+                    "markPassing": false
+                }
+            ]
+        },
+        {
+            "competitor": "8515a420-d52b-0132-e037-60a44ce903c3",
+            "maneuvers": [
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.150390625,
+                    "cogBeforeInTrueDegrees": 250.51025390625,
+                    "speedAfterInKnots": 4.4403076171875,
+                    "cogAfterInTrueDegrees": 229.163818359375,
+                    "directionChangeInDegrees": -21.346435546875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693103461527016,
+                        "lon_deg": 12.605459941548599,
+                        "unixtime": 1443253107500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 6.2841796875,
+                    "avgTurningRateInDegreesPerSecond": 3.5577392578125,
+                    "lowestSpeedInKnots": 4.08935546875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.486083984375,
+                    "cogBeforeInTrueDegrees": 238.11767578125,
+                    "speedAfterInKnots": 4.0283203125,
+                    "cogAfterInTrueDegrees": 332.314453125,
+                    "directionChangeInDegrees": 94.19677734375,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.00021309489039087354,
+                        "seaMiles": -0.00021308594257084956,
+                        "nauticalMiles": -0.00021312045973217314,
+                        "meters": -0.3946990914239846,
+                        "kilometers": -0.00039469909142398463,
+                        "centralAngleDeg": -0.000003551581506514559,
+                        "centralAngleRad": -6.198679094161949e-8
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.692861475982134,
+                        "lon_deg": 12.604661439546787,
+                        "unixtime": 1443253133500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 16.98486328125,
+                    "avgTurningRateInDegreesPerSecond": 10.865478515625,
+                    "lowestSpeedInKnots": 3.5247802734375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.692626953125,
+                    "cogBeforeInTrueDegrees": 309.19921875,
+                    "speedAfterInKnots": 3.9215087890625,
+                    "cogAfterInTrueDegrees": 336.0498046875,
+                    "directionChangeInDegrees": 26.8505859375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69303146097842,
+                        "lon_deg": 12.604416939431667,
+                        "unixtime": 1443253145500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 7.5146484375,
+                    "avgTurningRateInDegreesPerSecond": 4.47509765625,
+                    "lowestSpeedInKnots": 3.692626953125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.9215087890625,
+                    "cogBeforeInTrueDegrees": 333.96240234375,
+                    "speedAfterInKnots": 3.8604736328125,
+                    "cogAfterInTrueDegrees": 326.546630859375,
+                    "directionChangeInDegrees": -7.415771484375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69311548955771,
+                        "lon_deg": 12.604345902802295,
+                        "unixtime": 1443253150500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.15283203125,
+                    "avgTurningRateInDegreesPerSecond": 3.7078857421875,
+                    "lowestSpeedInKnots": 3.8604736328125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.8980712890625,
+                    "cogBeforeInTrueDegrees": 337.08251953125,
+                    "speedAfterInKnots": 5.462646484375,
+                    "cogAfterInTrueDegrees": 312.978515625,
+                    "directionChangeInDegrees": -24.10400390625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693950494752514,
+                        "lon_deg": 12.603679918687337,
+                        "unixtime": 1443253192500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.328369140625,
+                    "avgTurningRateInDegreesPerSecond": 3.4434291294642856,
+                    "lowestSpeedInKnots": 4.8980712890625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.37109375,
+                    "cogBeforeInTrueDegrees": 312.56103515625,
+                    "speedAfterInKnots": 5.1727294921875,
+                    "cogAfterInTrueDegrees": 330.172119140625,
+                    "directionChangeInDegrees": 17.611083984375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69415648002222,
+                        "lon_deg": 12.6033153897182,
+                        "unixtime": 1443253204500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.77880859375,
+                    "avgTurningRateInDegreesPerSecond": 2.515869140625,
+                    "lowestSpeedInKnots": 5.0048828125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.1727294921875,
+                    "cogBeforeInTrueDegrees": 330.172119140625,
+                    "speedAfterInKnots": 5.31005859375,
+                    "cogAfterInTrueDegrees": 312.890625,
+                    "directionChangeInDegrees": -17.281494140625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69423648528853,
+                        "lon_deg": 12.603227379734818,
+                        "unixtime": 1443253208500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 7.086181640625,
+                    "avgTurningRateInDegreesPerSecond": 4.32037353515625,
+                    "lowestSpeedInKnots": 5.1116943359375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.584716796875,
+                    "cogBeforeInTrueDegrees": 315.560302734375,
+                    "speedAfterInKnots": 5.950927734375,
+                    "cogAfterInTrueDegrees": 340.059814453125,
+                    "directionChangeInDegrees": 24.49951171875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.694446472917605,
+                        "lon_deg": 12.602849481631612,
+                        "unixtime": 1443253220500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.5263671875,
+                    "avgTurningRateInDegreesPerSecond": 3.06243896484375,
+                    "lowestSpeedInKnots": 5.55419921875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 5.4168701171875,
+                    "cogBeforeInTrueDegrees": 328.02978515625,
+                    "speedAfterInKnots": 4.486083984375,
+                    "cogAfterInTrueDegrees": 217.188720703125,
+                    "directionChangeInDegrees": -110.841064453125,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.009908741308378417,
+                        "seaMiles": 0.009908325241931545,
+                        "nauticalMiles": 0.009909930262219115,
+                        "meters": 18.3531908456298,
+                        "kilometers": 0.0183531908456298,
+                        "centralAngleDeg": 0.00016514568847297362,
+                        "centralAngleRad": 0.0000028823360093262364
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.694894967601066,
+                        "lon_deg": 12.602386465294698,
+                        "unixtime": 1443253244500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 24.664306640625,
+                    "avgTurningRateInDegreesPerSecond": 10.9423828125,
+                    "lowestSpeedInKnots": 3.2958984375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 3.9825439453125,
+                    "cogBeforeInTrueDegrees": 191.436767578125,
+                    "speedAfterInKnots": 4.638671875,
+                    "cogAfterInTrueDegrees": 215.474853515625,
+                    "directionChangeInDegrees": 24.0380859375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.694736465812056,
+                        "lon_deg": 12.602317943235994,
+                        "unixtime": 1443253253500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.69091796875,
+                    "avgTurningRateInDegreesPerSecond": 3.0047607421875,
+                    "lowestSpeedInKnots": 3.9825439453125,
+                    "markPassing": false
+                }
+            ]
+        },
+        {
+            "competitor": "84a54810-d52b-0132-e01d-60a44ce903c3",
+            "maneuvers": [
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.2958984375,
+                    "cogBeforeInTrueDegrees": 254.20166015625,
+                    "speedAfterInKnots": 4.547119140625,
+                    "cogAfterInTrueDegrees": 318.2080078125,
+                    "directionChangeInDegrees": 64.00634765625,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.0009298775753577164,
+                        "seaMiles": -0.0009298385299485403,
+                        "nauticalMiles": -0.0009299891517406487,
+                        "meters": -1.7223399090236813,
+                        "kilometers": -0.0017223399090236812,
+                        "centralAngleDeg": -0.000015497959589295273,
+                        "centralAngleRad": -2.7049042217423063e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.6935689714741,
+                        "lon_deg": 12.605985444971402,
+                        "unixtime": 1443253098500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 18.4130859375,
+                    "avgTurningRateInDegreesPerSecond": 9.891815185546875,
+                    "lowestSpeedInKnots": 2.74658203125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.997802734375,
+                    "cogBeforeInTrueDegrees": 334.434814453125,
+                    "speedAfterInKnots": 4.57763671875,
+                    "cogAfterInTrueDegrees": 320.042724609375,
+                    "directionChangeInDegrees": -14.39208984375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693691493943795,
+                        "lon_deg": 12.605842449704339,
+                        "unixtime": 1443253107500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 5.130615234375,
+                    "avgTurningRateInDegreesPerSecond": 2.87841796875,
+                    "lowestSpeedInKnots": 3.997802734375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.8065185546875,
+                    "cogBeforeInTrueDegrees": 315.186767578125,
+                    "speedAfterInKnots": 5.3863525390625,
+                    "cogAfterInTrueDegrees": 235.2392578125,
+                    "directionChangeInDegrees": -79.947509765625,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.000855583747843816,
+                        "seaMiles": -0.0008555478220204557,
+                        "nauticalMiles": -0.0008556864096806102,
+                        "meters": -1.5847312307284902,
+                        "kilometers": -0.0015847312307284902,
+                        "centralAngleDeg": -0.000014259729130730267,
+                        "centralAngleRad": -2.4887922377379205e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69421747932292,
+                        "lon_deg": 12.604934899135165,
+                        "unixtime": 1443253142500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 21.895751953125,
+                    "avgTurningRateInDegreesPerSecond": 5.7744140625,
+                    "lowestSpeedInKnots": 3.814697265625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.8828125,
+                    "cogBeforeInTrueDegrees": 235.37109375,
+                    "speedAfterInKnots": 3.2501220703125,
+                    "cogAfterInTrueDegrees": 331.094970703125,
+                    "directionChangeInDegrees": 95.723876953125,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0020357668688556064,
+                        "seaMiles": 0.0020356813873336427,
+                        "nauticalMiles": 0.0020360111413380705,
+                        "meters": 3.7706926337581064,
+                        "kilometers": 0.0037706926337581063,
+                        "centralAngleDeg": 0.00003392944781426011,
+                        "centralAngleRad": 5.921805777424323e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69348896620857,
+                        "lon_deg": 12.602703426965855,
+                        "unixtime": 1443253206500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 14.43603515625,
+                    "avgTurningRateInDegreesPerSecond": 6.9400634765625,
+                    "lowestSpeedInKnots": 3.082275390625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "PENALTY_CIRCLE",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.41796875,
+                    "cogBeforeInTrueDegrees": 331.76513671875,
+                    "speedAfterInKnots": 4.82177734375,
+                    "cogAfterInTrueDegrees": 328.359375,
+                    "directionChangeInDegrees": 356.59423828125,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.020265387557009188,
+                        "seaMiles": 0.02026453661665936,
+                        "nauticalMiles": 0.02026781920898387,
+                        "meters": 37.53600117503813,
+                        "kilometers": 0.03753600117503813,
+                        "centralAngleDeg": 0.00033775645928348644,
+                        "centralAngleRad": 0.0000058949622843750055
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69379046326642,
+                        "lon_deg": 12.602462405337235,
+                        "unixtime": 1443253228500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 25.631103515625,
+                    "avgTurningRateInDegreesPerSecond": 12.657765355603448,
+                    "lowestSpeedInKnots": 1.46484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.173828125,
+                    "cogBeforeInTrueDegrees": 338.543701171875,
+                    "speedAfterInKnots": 4.302978515625,
+                    "cogAfterInTrueDegrees": 311.484375,
+                    "directionChangeInDegrees": -27.059326171875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69380747852873,
+                        "lon_deg": 12.602308974602455,
+                        "unixtime": 1443253257500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.658203125,
+                    "avgTurningRateInDegreesPerSecond": 3.382415771484375,
+                    "lowestSpeedInKnots": 3.173828125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.791259765625,
+                    "cogBeforeInTrueDegrees": 307.518310546875,
+                    "speedAfterInKnots": 4.669189453125,
+                    "cogAfterInTrueDegrees": 329.52392578125,
+                    "directionChangeInDegrees": 22.005615234375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693965980317884,
+                        "lon_deg": 12.6019934797681,
+                        "unixtime": 1443253269500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.921875,
+                    "avgTurningRateInDegreesPerSecond": 3.6676025390625,
+                    "lowestSpeedInKnots": 4.33349609375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.4779052734375,
+                    "cogBeforeInTrueDegrees": 324.656982421875,
+                    "speedAfterInKnots": 5.5999755859375,
+                    "cogAfterInTrueDegrees": 2.010498046875,
+                    "directionChangeInDegrees": 37.353515625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.694227474741645,
+                        "lon_deg": 12.601756984367272,
+                        "unixtime": 1443253281500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 10.096435546875,
+                    "avgTurningRateInDegreesPerSecond": 6.2255859375,
+                    "lowestSpeedInKnots": 5.4779052734375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 5.0048828125,
+                    "cogBeforeInTrueDegrees": 327.359619140625,
+                    "speedAfterInKnots": 4.94384765625,
+                    "cogAfterInTrueDegrees": 160.762939453125,
+                    "directionChangeInDegrees": -166.5966796875,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.002600256240102777,
+                        "seaMiles": -0.002600147055763303,
+                        "nauticalMiles": -0.002600568245891126,
+                        "meters": -4.816252391390366,
+                        "kilometers": -0.0048162523913903655,
+                        "centralAngleDeg": -0.00004333760400171295,
+                        "centralAngleRad": -7.563838797553614e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69432797376133,
+                        "lon_deg": 12.60167894884944,
+                        "unixtime": 1443253287500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 20.950927734375,
+                    "avgTurningRateInDegreesPerSecond": 13.38958740234375,
+                    "lowestSpeedInKnots": 3.60107421875,
+                    "markPassing": true
+                },
+                {
+                    "maneuverType": "JIBE",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.5623779296875,
+                    "cogBeforeInTrueDegrees": 159.14794921875,
+                    "speedAfterInKnots": 5.3558349609375,
+                    "cogAfterInTrueDegrees": 83.03466796875,
+                    "directionChangeInDegrees": -76.11328125,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.0016564807361544218,
+                        "seaMiles": -0.0016564111807959002,
+                        "nauticalMiles": -0.0016566794979418174,
+                        "meters": -3.0681704301882458,
+                        "kilometers": -0.0030681704301882455,
+                        "centralAngleDeg": -0.000027608012269240363,
+                        "centralAngleRad": -4.818507140292356e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693874491845136,
+                        "lon_deg": 12.601805934683743,
+                        "unixtime": 1443253313500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 15.2490234375,
+                    "avgTurningRateInDegreesPerSecond": 9.33563232421875,
+                    "lowestSpeedInKnots": 3.8909912109375,
+                    "markPassing": false
+                }
+            ]
+        },
+        {
+            "competitor": "84d3d710-d52b-0132-e027-60a44ce903c3",
+            "maneuvers": [
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.8909912109375,
+                    "cogBeforeInTrueDegrees": 230.723876953125,
+                    "speedAfterInKnots": 4.486083984375,
+                    "cogAfterInTrueDegrees": 333.80859375,
+                    "directionChangeInDegrees": 103.084716796875,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.0024600105719927334,
+                        "seaMiles": -0.0024599072765462077,
+                        "nauticalMiles": -0.0024603057496471598,
+                        "meters": -4.55648624834654,
+                        "kilometers": -0.004556486248346541,
+                        "centralAngleDeg": -0.00004100017619987889,
+                        "centralAngleRad": -7.155880685857035e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69321647053609,
+                        "lon_deg": 12.60553793516123,
+                        "unixtime": 1443253107500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 24.345703125,
+                    "avgTurningRateInDegreesPerSecond": 7.952411358173077,
+                    "lowestSpeedInKnots": 3.204345703125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 5.31005859375,
+                    "cogBeforeInTrueDegrees": 323.800048828125,
+                    "speedAfterInKnots": 5.2032470703125,
+                    "cogAfterInTrueDegrees": 303.804931640625,
+                    "directionChangeInDegrees": -19.9951171875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69467548746712,
+                        "lon_deg": 12.603984433229256,
+                        "unixtime": 1443253185500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.427490234375,
+                    "avgTurningRateInDegreesPerSecond": 1.5380859375,
+                    "lowestSpeedInKnots": 5.2032470703125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.7149658203125,
+                    "cogBeforeInTrueDegrees": 301.1572265625,
+                    "speedAfterInKnots": 4.1046142578125,
+                    "cogAfterInTrueDegrees": 231.74560546875,
+                    "directionChangeInDegrees": -69.41162109375,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.004121593087782535,
+                        "seaMiles": 0.004121420022754585,
+                        "nauticalMiles": 0.004122087639388941,
+                        "meters": 7.6341063081483185,
+                        "kilometers": 0.007634106308148318,
+                        "centralAngleDeg": 0.00006869321812970892,
+                        "centralAngleRad": 0.0000011989228301540817
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.695062982850644,
+                        "lon_deg": 12.603097418322413,
+                        "unixtime": 1443253213500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 20.478515625,
+                    "avgTurningRateInDegreesPerSecond": 10.27880859375,
+                    "lowestSpeedInKnots": 3.2806396484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 3.96728515625,
+                    "cogBeforeInTrueDegrees": 231.097412109375,
+                    "speedAfterInKnots": 3.8909912109375,
+                    "cogAfterInTrueDegrees": 218.990478515625,
+                    "directionChangeInDegrees": -12.10693359375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.6948544830088,
+                        "lon_deg": 12.602647938763665,
+                        "unixtime": 1443253231500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.317626953125,
+                    "avgTurningRateInDegreesPerSecond": 2.017822265625,
+                    "lowestSpeedInKnots": 3.814697265625,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.7607421875,
+                    "cogBeforeInTrueDegrees": 219.298095703125,
+                    "speedAfterInKnots": 4.21142578125,
+                    "cogAfterInTrueDegrees": 244.390869140625,
+                    "directionChangeInDegrees": 25.0927734375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69428046932556,
+                        "lon_deg": 12.601661430669482,
+                        "unixtime": 1443253271500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 6.65771484375,
+                    "avgTurningRateInDegreesPerSecond": 3.584681919642857,
+                    "lowestSpeedInKnots": 4.21142578125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.21142578125,
+                    "cogBeforeInTrueDegrees": 244.390869140625,
+                    "speedAfterInKnots": 4.974365234375,
+                    "cogAfterInTrueDegrees": 122.816162109375,
+                    "directionChangeInDegrees": -121.57470703125,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69422747474164,
+                        "lon_deg": 12.601535953581088,
+                        "unixtime": 1443253276500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 24.19189453125,
+                    "avgTurningRateInDegreesPerSecond": 15.19683837890625,
+                    "lowestSpeedInKnots": 4.0435791015625,
+                    "markPassing": true
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 3.60107421875,
+                    "cogBeforeInTrueDegrees": 126.49658203125,
+                    "speedAfterInKnots": 3.41796875,
+                    "cogAfterInTrueDegrees": 153.599853515625,
+                    "directionChangeInDegrees": 27.103271484375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69384347880277,
+                        "lon_deg": 12.602242422291393,
+                        "unixtime": 1443253305500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 6.87744140625,
+                    "avgTurningRateInDegreesPerSecond": 4.5172119140625,
+                    "lowestSpeedInKnots": 3.41796875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "JIBE",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.5400390625,
+                    "cogBeforeInTrueDegrees": 130.177001953125,
+                    "speedAfterInKnots": 6.8817138671875,
+                    "cogAfterInTrueDegrees": 95.108642578125,
+                    "directionChangeInDegrees": -35.068359375,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.010674118389587078,
+                        "seaMiles": -0.010673670185080204,
+                        "nauticalMiles": -0.010675399181330487,
+                        "meters": -19.770839283824063,
+                        "kilometers": -0.019770839283824063,
+                        "centralAngleDeg": -0.00017790197315978464,
+                        "centralAngleRad": -0.0000031049751774328224
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693744488526725,
+                        "lon_deg": 12.60243394877654,
+                        "unixtime": 1443253316500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 15.347900390625,
+                    "avgTurningRateInDegreesPerSecond": 10.385219029017858,
+                    "lowestSpeedInKnots": 2.9296875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 4.608154296875,
+                    "cogBeforeInTrueDegrees": 70.960693359375,
+                    "speedAfterInKnots": 7.0037841796875,
+                    "cogAfterInTrueDegrees": 100.96435546875,
+                    "directionChangeInDegrees": 30.003662109375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693793962713904,
+                        "lon_deg": 12.602800447493792,
+                        "unixtime": 1443253324500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 4.6142578125,
+                    "avgTurningRateInDegreesPerSecond": 3.333740234375,
+                    "lowestSpeedInKnots": 4.608154296875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "JIBE",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.33349609375,
+                    "cogBeforeInTrueDegrees": 92.449951171875,
+                    "speedAfterInKnots": 3.0670166015625,
+                    "cogAfterInTrueDegrees": 121.300048828125,
+                    "directionChangeInDegrees": 28.85009765625,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.002196029220199579,
+                        "seaMiles": 0.0021959370092873715,
+                        "nauticalMiles": 0.002196292722625809,
+                        "meters": 4.067534122302998,
+                        "kilometers": 0.004067534122302998,
+                        "centralAngleDeg": 0.00003660048700332632,
+                        "centralAngleRad": 6.38799006041437e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69361498812248,
+                        "lon_deg": 12.604890936055213,
+                        "unixtime": 1443253370500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 9.5361328125,
+                    "avgTurningRateInDegreesPerSecond": 5.5975341796875,
+                    "lowestSpeedInKnots": 3.0670166015625,
+                    "markPassing": false
+                }
+            ]
+        },
+        {
+            "competitor": "84dbdd60-d52b-0132-e029-60a44ce903c3",
+            "maneuvers": [
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.4332275390625,
+                    "cogBeforeInTrueDegrees": 250.46630859375,
+                    "speedAfterInKnots": 4.5013427734375,
+                    "cogAfterInTrueDegrees": 322.75634765625,
+                    "directionChangeInDegrees": 72.2900390625,
+                    "maneuverLoss": {
+                        "geographicalMiles": -0.00383911659940838,
+                        "seaMiles": -0.0038389553955225455,
+                        "nauticalMiles": -0.003839577256547738,
+                        "meters": -7.110897079126411,
+                        "kilometers": -0.007110897079126411,
+                        "centralAngleDeg": -0.00006398527665680634,
+                        "centralAngleRad": -0.0000011167537504607406
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69351396523465,
+                        "lon_deg": 12.605789937080633,
+                        "unixtime": 1443253101500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 21.708984375,
+                    "avgTurningRateInDegreesPerSecond": 10.10986328125,
+                    "lowestSpeedInKnots": 3.1280517578125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.7841796875,
+                    "cogBeforeInTrueDegrees": 333.984375,
+                    "speedAfterInKnots": 4.364013671875,
+                    "cogAfterInTrueDegrees": 313.670654296875,
+                    "directionChangeInDegrees": -20.313720703125,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693643486593665,
+                        "lon_deg": 12.605634452777021,
+                        "unixtime": 1443253110500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 6.778564453125,
+                    "avgTurningRateInDegreesPerSecond": 3.3856201171875,
+                    "lowestSpeedInKnots": 3.7841796875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.7149658203125,
+                    "cogBeforeInTrueDegrees": 322.789306640625,
+                    "speedAfterInKnots": 5.0811767578125,
+                    "cogAfterInTrueDegrees": 244.09423828125,
+                    "directionChangeInDegrees": -78.695068359375,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0037907972622518624,
+                        "seaMiles": 0.0037906380872871894,
+                        "nauticalMiles": 0.00379125212153459,
+                        "meters": 7.021398929082061,
+                        "kilometers": 0.00702139892908206,
+                        "centralAngleDeg": 0.00006317995437086437,
+                        "centralAngleRad": 0.000001102698225031366
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69403846282538,
+                        "lon_deg": 12.605021945199324,
+                        "unixtime": 1443253136500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 28.67431640625,
+                    "avgTurningRateInDegreesPerSecond": 11.34033203125,
+                    "lowestSpeedInKnots": 3.509521484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 5.2032470703125,
+                    "cogBeforeInTrueDegrees": 224.27490234375,
+                    "speedAfterInKnots": 5.126953125,
+                    "cogAfterInTrueDegrees": 245.10498046875,
+                    "directionChangeInDegrees": 20.830078125,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69391847588254,
+                        "lon_deg": 12.604796974917209,
+                        "unixtime": 1443253144500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 7.042236328125,
+                    "avgTurningRateInDegreesPerSecond": 4.166015625,
+                    "lowestSpeedInKnots": 5.126953125,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 5.3558349609375,
+                    "cogBeforeInTrueDegrees": 238.809814453125,
+                    "speedAfterInKnots": 5.157470703125,
+                    "cogAfterInTrueDegrees": 249.268798828125,
+                    "directionChangeInDegrees": 10.458984375,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69356549298546,
+                        "lon_deg": 12.603687462395174,
+                        "unixtime": 1443253175500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 3.2958984375,
+                    "avgTurningRateInDegreesPerSecond": 1.494140625,
+                    "lowestSpeedInKnots": 5.1116943359375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "STARBOARD",
+                    "speedBeforeInKnots": 4.4708251953125,
+                    "cogBeforeInTrueDegrees": 255.135498046875,
+                    "speedAfterInKnots": 4.3487548828125,
+                    "cogAfterInTrueDegrees": 243.819580078125,
+                    "directionChangeInDegrees": -11.31591796875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69348697550705,
+                        "lon_deg": 12.603279473257514,
+                        "unixtime": 1443253186500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 3.88916015625,
+                    "avgTurningRateInDegreesPerSecond": 1.885986328125,
+                    "lowestSpeedInKnots": 4.1351318359375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "TACK",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.84521484375,
+                    "cogBeforeInTrueDegrees": 247.972412109375,
+                    "speedAfterInKnots": 3.753662109375,
+                    "cogAfterInTrueDegrees": 332.677001953125,
+                    "directionChangeInDegrees": 84.70458984375,
+                    "maneuverLoss": {
+                        "geographicalMiles": 0.0017121142026005596,
+                        "seaMiles": 0.001712042311201769,
+                        "nauticalMiles": 0.00171231963986989,
+                        "meters": 3.1712159730390366,
+                        "kilometers": 0.0031712159730390367,
+                        "centralAngleDeg": 0.000028535236710009328,
+                        "centralAngleRad": 4.980338334256172e-7
+                    },
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69340546149802,
+                        "lon_deg": 12.6027969690059,
+                        "unixtime": 1443253202500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 21.884765625,
+                    "avgTurningRateInDegreesPerSecond": 13.212432861328125,
+                    "lowestSpeedInKnots": 3.2806396484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.5247802734375,
+                    "cogBeforeInTrueDegrees": 341.103515625,
+                    "speedAfterInKnots": 3.8604736328125,
+                    "cogAfterInTrueDegrees": 328.2275390625,
+                    "directionChangeInDegrees": -12.8759765625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69354047300481,
+                        "lon_deg": 12.602684483866444,
+                        "unixtime": 1443253211500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 8.250732421875,
+                    "avgTurningRateInDegreesPerSecond": 2.5751953125,
+                    "lowestSpeedInKnots": 3.509521484375,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "BEAR_AWAY",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.8604736328125,
+                    "cogBeforeInTrueDegrees": 328.2275390625,
+                    "speedAfterInKnots": 3.814697265625,
+                    "cogAfterInTrueDegrees": 356.4404296875,
+                    "directionChangeInDegrees": 28.212890625,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.69358648965158,
+                        "lon_deg": 12.602637461388445,
+                        "unixtime": 1443253214500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 8.690185546875,
+                    "avgTurningRateInDegreesPerSecond": 4.7021484375,
+                    "lowestSpeedInKnots": 3.7078857421875,
+                    "markPassing": false
+                },
+                {
+                    "maneuverType": "HEAD_UP",
+                    "newTack": "PORT",
+                    "speedBeforeInKnots": 3.814697265625,
+                    "cogBeforeInTrueDegrees": 356.4404296875,
+                    "speedAfterInKnots": 3.7994384765625,
+                    "cogAfterInTrueDegrees": 332.2265625,
+                    "directionChangeInDegrees": -24.2138671875,
+                    "maneuverLoss": null,
+                    "positionAndTime": {
+                        "type": "GPSFix",
+                        "lat_deg": 55.693691493943476,
+                        "lon_deg": 12.602606951260226,
+                        "unixtime": 1443253220500
+                    },
+                    "maxTurningRateInDegreesPerSecond": 6.08642578125,
+                    "avgTurningRateInDegreesPerSecond": 4.03564453125,
+                    "lowestSpeedInKnots": 3.753662109375,
+                    "markPassing": false
+                }
+            ]
+        }
+    ]
+}

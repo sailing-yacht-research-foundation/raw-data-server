@@ -1,0 +1,112 @@
+{
+    "TackTrackerRace": [{
+            "id": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "original_id": "1439711445",
+            "url": "https://tacktracker.com/cloud/regattas/show/1331607597/1",
+            "regatta": "5e37e7f6-88ff-43b5-b649-168f21108a31",
+            "regatta_original_id": "1331607597",
+            "start": "2018-11-11T10:00:00Z",
+            "state": "Complete",
+            "name": "Race 1",
+            "type": "YachtRace",
+            "span": "17820",
+            "course": "\"A B A B\"",
+            "event_notes": "{\"Notes\":{}}",
+            "upload_params": "{\"cid\":\"0\",\"locked\":\"1\",\"private\":\"1\",\"raceid\":\"1439711445\",\"rgid\":\"1331607597\",\"seq\":\"1\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Race 1\",\"Comment\":{},\"Message\":{}}"
+        }
+    ],
+    "TackTrackerBoat": [{
+            "id": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "details": "Circolo Velico Raven",
+            "color": "Yellow",
+            "unknown_1": "",
+            "unknown_2": "",
+            "unknown_3": "1",
+            "unknown_4": "SmallMono",
+            "unknown_5": "1,0,1,0,1,1,1",
+            "unknown_6": "1,0,1,0,1,1,1",
+            "name": "Corto Maltese"
+        }
+    ],
+    "TackTrackerDefault": [{
+            "id": "b7509a5d-fefc-45fb-b071-4184d70eea12",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "lon": "12.28249000",
+            "lat": "44.48176000",
+            "color": "Yellow",
+            "trim": "5"
+        }
+    ],
+    "TackTrackerFinish": [{
+            "id": "f8b535eb-563c-472e-a891-0f4944a9862a",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "finish_mark_name": "FinishBoat",
+            "finish_mark_lat": "44.48776024",
+            "finish_mark_lon": "12.29436510",
+            "finish_mark_type": "FinishBoat",
+            "finish_pin_name": "FinishPin",
+            "finish_pin_lat": "44.48784188",
+            "finish_pin_lon": "12.29196137",
+            "finish_pin_type": "FinishPin"
+        }
+    ],
+    "TackTrackerMark": [{
+            "id": "85e3bb33-e35a-4057-8455-5a40dbd8e7cc",
+            "name": "\"A\"",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "lon": "12.30993213",
+            "lat": "44.48873987",
+            "type": "Rounding"
+        }, {
+            "id": "2e56efe7-8378-4e59-ba21-488fa8ed4fe2",
+            "name": "\"B\"",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "lon": "12.29436510",
+            "lat": "44.48882151",
+            "type": "Rounding"
+        }
+    ],
+    "TackTrackerPosition": [{
+            "id": "792d5ef3-c74c-4354-a558-daffac5dc3e6",
+            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "time": "2018-11-11T14:32:32Z",
+            "lat": "044.456067",
+            "lon": "0012.28346"
+        }, {
+            "id": "5ab3a220-4c23-4ec3-b722-db7eab336d31",
+            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "time": "2018-11-11T14:32:37Z",
+            "lat": "044.470051",
+            "lon": "0012.31523"
+        }, {
+            "id": "226e41ee-36bf-4fa2-9367-774cd977537b",
+            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "time": "2018-11-11T14:32:44Z",
+            "lat": "044.470216",
+            "lon": "0012.31525"
+        }
+    ],
+    "TackTrackerStart": [{
+            "id": "dfa7b146-d30f-4636-967d-570ab6528971",
+            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
+            "start_mark_name": "StartBoat",
+            "start_mark_lat": "44.48789943",
+            "start_mark_lon": "12.29441088",
+            "start_mark_type": "StartBoat",
+            "start_pin_name": "StartPin",
+            "start_pin_lat": "44.48969297",
+            "start_pin_lon": "12.29421744",
+            "start_pin_type": "StartPin"
+        }
+    ],
+    "TackTrackerRegatta": [{
+            "id": "5e37e7f6-88ff-43b5-b649-168f21108a31",
+            "url": "https://tacktracker.com/cloud/regattas/show/1331607597",
+            "original_id": "1331607597"
+        }
+    ]
+}

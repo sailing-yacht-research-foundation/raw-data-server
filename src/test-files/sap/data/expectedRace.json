@@ -1,0 +1,18 @@
+{
+    "original_id": "e53baaf0-2891-0133-64da-60a44ce903c3",
+    "regatta": "1. Danish Sailing League 2015 - Final",
+    "name": "Race 1",
+    "scoring_system": "HIGH_POINT_WINNER_GETS_SIX",
+    "ranking_metric": "ONE_DESIGN",
+    "boat_class": "J/70",
+    "can_boats_of_competitors_change_per_race": true,
+    "competitor_registration_type": "CLOSED",
+    "user_start_time_inference": false,
+    "control_tracking_from_start_and_finish_times": false,
+    "start_of_race_ms": 1443253080000,
+    "start_of_tracking_ms": 1443251074000,
+    "newest_tracking_event_ms": 1443253926000,
+    "end_of_tracking_ms": 1443253926000,
+    "end_of_race_ms": 1443253914299,
+    "delay_to_live_ms": 20000
+}

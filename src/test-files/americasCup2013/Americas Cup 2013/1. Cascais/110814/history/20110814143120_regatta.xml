@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RegattaConfig>
+  <RegattaID>8</RegattaID>
+  <RegattaName>Cascias World Series</RegattaName>
+  <CourseName>Cascais</CourseName>
+  <CentralLatitude>38.69259400</CentralLatitude>
+  <CentralLongitude>-9.42057600</CentralLongitude>
+  <CentralAltitude>0.00</CentralAltitude>
+  <UtcOffset>1</UtcOffset>
+  <MagneticVariation>-3.35</MagneticVariation>
+</RegattaConfig>

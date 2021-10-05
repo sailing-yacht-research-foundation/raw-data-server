@@ -1,0 +1,480 @@
+{
+    "name": "Race 1",
+    "regatta": "1. Danish Sailing League 2015 - Final",
+    "competitors": [
+        {
+            "id": "850dd4c0-d52b-0132-e035-60a44ce903c3",
+            "name": "Aarhus Sejlklub",
+            "sailNumber": "1",
+            "color": null,
+            "flagImage": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/ask.png",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.692574,
+                    "lng-deg": 12.604198,
+                    "truebearing-deg": 143.492431640625,
+                    "speed-kts": 4.04
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.692558,
+                    "lng-deg": 12.604221,
+                    "truebearing-deg": 139.691162109375,
+                    "speed-kts": 4.32
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.692543,
+                    "lng-deg": 12.604243,
+                    "truebearing-deg": 140.899658203125,
+                    "speed-kts": 4.21
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.692528,
+                    "lng-deg": 12.604267,
+                    "truebearing-deg": 138.592529296875,
+                    "speed-kts": 4.36
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.692513,
+                    "lng-deg": 12.604293,
+                    "truebearing-deg": 136.395263671875,
+                    "speed-kts": 4.53
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.692497,
+                    "lng-deg": 12.604321,
+                    "truebearing-deg": 134.296875,
+                    "speed-kts": 4.68
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.692486,
+                    "lng-deg": 12.604347,
+                    "truebearing-deg": 127.19970703125,
+                    "speed-kts": 4.04
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.692471,
+                    "lng-deg": 12.604373,
+                    "truebearing-deg": 136.395263671875,
+                    "speed-kts": 4.53
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.692455,
+                    "lng-deg": 12.604404,
+                    "truebearing-deg": 130.693359375,
+                    "speed-kts": 5.02
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.692444,
+                    "lng-deg": 12.604437,
+                    "truebearing-deg": 121.9921875,
+                    "speed-kts": 4.64
+                }
+            ]
+        },
+        {
+            "id": "84b21d00-d52b-0132-e021-60a44ce903c3",
+            "name": "Sejlklubben Lynæs ",
+            "sailNumber": "6",
+            "color": null,
+            "flagImage": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/linaes.png",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.695236,
+                    "lng-deg": 12.606043,
+                    "truebearing-deg": 324.99755859375,
+                    "speed-kts": 4.43
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.695251,
+                    "lng-deg": 12.606025,
+                    "truebearing-deg": 324.99755859375,
+                    "speed-kts": 4.43
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.695271,
+                    "lng-deg": 12.606005,
+                    "truebearing-deg": 325.997314453125,
+                    "speed-kts": 4.47
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.695286,
+                    "lng-deg": 12.605986,
+                    "truebearing-deg": 328.99658203125,
+                    "speed-kts": 4.32
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.695305,
+                    "lng-deg": 12.605967,
+                    "truebearing-deg": 329.996337890625,
+                    "speed-kts": 4.21
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.69532,
+                    "lng-deg": 12.605948,
+                    "truebearing-deg": 323.997802734375,
+                    "speed-kts": 4.21
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.695339,
+                    "lng-deg": 12.605927,
+                    "truebearing-deg": 311.98974609375,
+                    "speed-kts": 3.94
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.695351,
+                    "lng-deg": 12.605898,
+                    "truebearing-deg": 287.99560546875,
+                    "speed-kts": 3.62
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.695358,
+                    "lng-deg": 12.60587,
+                    "truebearing-deg": 278.997802734375,
+                    "speed-kts": 3.45
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.695358,
+                    "lng-deg": 12.60584,
+                    "truebearing-deg": 254.99267578125,
+                    "speed-kts": 3.13
+                }
+            ]
+        },
+        {
+            "id": "8515a420-d52b-0132-e037-60a44ce903c3",
+            "name": "Horsens Sejlklub",
+            "sailNumber": "4",
+            "color": null,
+            "flagImage": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/hsh.png",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.693871,
+                    "lng-deg": 12.603121,
+                    "truebearing-deg": 217.99072265625,
+                    "speed-kts": 5.23
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.693851,
+                    "lng-deg": 12.603094,
+                    "truebearing-deg": 220.989990234375,
+                    "speed-kts": 5.28
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.693836,
+                    "lng-deg": 12.603064,
+                    "truebearing-deg": 225.999755859375,
+                    "speed-kts": 5.13
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.693817,
+                    "lng-deg": 12.603033,
+                    "truebearing-deg": 231.998291015625,
+                    "speed-kts": 4.91
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.69381,
+                    "lng-deg": 12.603001,
+                    "truebearing-deg": 228.9990234375,
+                    "speed-kts": 5.02
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.693794,
+                    "lng-deg": 12.602969,
+                    "truebearing-deg": 227.999267578125,
+                    "speed-kts": 4.91
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.693779,
+                    "lng-deg": 12.602939,
+                    "truebearing-deg": 231.998291015625,
+                    "speed-kts": 4.68
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.693768,
+                    "lng-deg": 12.602907,
+                    "truebearing-deg": 227.999267578125,
+                    "speed-kts": 4.58
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.693752,
+                    "lng-deg": 12.60288,
+                    "truebearing-deg": 221.98974609375,
+                    "speed-kts": 4.64
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.693733,
+                    "lng-deg": 12.602856,
+                    "truebearing-deg": 218.990478515625,
+                    "speed-kts": 4.64
+                }
+            ]
+        },
+        {
+            "id": "84a54810-d52b-0132-e01d-60a44ce903c3",
+            "name": "Roskilde Sejlklub",
+            "sailNumber": "2",
+            "color": null,
+            "flagImage": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/rs.png",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.693504,
+                    "lng-deg": 12.604186,
+                    "truebearing-deg": 51.998291015625,
+                    "speed-kts": 5.66
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.69352,
+                    "lng-deg": 12.604222,
+                    "truebearing-deg": 52.998046875,
+                    "speed-kts": 5.72
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.693539,
+                    "lng-deg": 12.60426,
+                    "truebearing-deg": 53.997802734375,
+                    "speed-kts": 5.66
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.69355,
+                    "lng-deg": 12.604297,
+                    "truebearing-deg": 53.997802734375,
+                    "speed-kts": 5.62
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.693565,
+                    "lng-deg": 12.604334,
+                    "truebearing-deg": 53.997802734375,
+                    "speed-kts": 5.62
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.693581,
+                    "lng-deg": 12.60437,
+                    "truebearing-deg": 52.998046875,
+                    "speed-kts": 5.55
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.693596,
+                    "lng-deg": 12.604407,
+                    "truebearing-deg": 52.998046875,
+                    "speed-kts": 5.45
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.693611,
+                    "lng-deg": 12.604442,
+                    "truebearing-deg": 51.998291015625,
+                    "speed-kts": 5.49
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.693626,
+                    "lng-deg": 12.604477,
+                    "truebearing-deg": 52.998046875,
+                    "speed-kts": 5.45
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.693642,
+                    "lng-deg": 12.604513,
+                    "truebearing-deg": 54.99755859375,
+                    "speed-kts": 5.45
+                }
+            ]
+        },
+        {
+            "id": "84d3d710-d52b-0132-e027-60a44ce903c3",
+            "name": "Sønderborg Yacht-Club",
+            "sailNumber": "3",
+            "color": null,
+            "flagImage": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/syc.png",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.695633,
+                    "lng-deg": 12.606181,
+                    "truebearing-deg": 209.99267578125,
+                    "speed-kts": 5.02
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.695606,
+                    "lng-deg": 12.606163,
+                    "truebearing-deg": 212.991943359375,
+                    "speed-kts": 5.02
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.695587,
+                    "lng-deg": 12.606144,
+                    "truebearing-deg": 213.99169921875,
+                    "speed-kts": 5.07
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.695568,
+                    "lng-deg": 12.606122,
+                    "truebearing-deg": 217.99072265625,
+                    "speed-kts": 5.13
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.695549,
+                    "lng-deg": 12.606096,
+                    "truebearing-deg": 222.989501953125,
+                    "speed-kts": 5.07
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.695534,
+                    "lng-deg": 12.606067,
+                    "truebearing-deg": 226.99951171875,
+                    "speed-kts": 5.02
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.695518,
+                    "lng-deg": 12.606035,
+                    "truebearing-deg": 227.999267578125,
+                    "speed-kts": 5.07
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.695507,
+                    "lng-deg": 12.606002,
+                    "truebearing-deg": 227.999267578125,
+                    "speed-kts": 4.91
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.695496,
+                    "lng-deg": 12.605969,
+                    "truebearing-deg": 230.99853515625,
+                    "speed-kts": 4.91
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.69548,
+                    "lng-deg": 12.605936,
+                    "truebearing-deg": 235.997314453125,
+                    "speed-kts": 4.64
+                }
+            ]
+        },
+        {
+            "id": "84dbdd60-d52b-0132-e029-60a44ce903c3",
+            "name": "Skovshoved Sejlklub",
+            "sailNumber": "5",
+            "color": null,
+            "flagImage": "https://s3-eu-west-1.amazonaws.com/media.sapsailing.com/clubflags/danmark/small/sks.png",
+            "track": [
+                {
+                    "timepoint-ms": 1443251074000,
+                    "lat-deg": 55.694263,
+                    "lng-deg": 12.603415,
+                    "truebearing-deg": 215.9912109375,
+                    "speed-kts": 3.98
+                },
+                {
+                    "timepoint-ms": 1443251075000,
+                    "lat-deg": 55.694248,
+                    "lng-deg": 12.603398,
+                    "truebearing-deg": 210.992431640625,
+                    "speed-kts": 4.15
+                },
+                {
+                    "timepoint-ms": 1443251076000,
+                    "lat-deg": 55.694233,
+                    "lng-deg": 12.603383,
+                    "truebearing-deg": 206.993408203125,
+                    "speed-kts": 4.32
+                },
+                {
+                    "timepoint-ms": 1443251077000,
+                    "lat-deg": 55.694218,
+                    "lng-deg": 12.603369,
+                    "truebearing-deg": 206.993408203125,
+                    "speed-kts": 4.53
+                },
+                {
+                    "timepoint-ms": 1443251078000,
+                    "lat-deg": 55.694199,
+                    "lng-deg": 12.603353,
+                    "truebearing-deg": 214.991455078125,
+                    "speed-kts": 4.21
+                },
+                {
+                    "timepoint-ms": 1443251079000,
+                    "lat-deg": 55.694183,
+                    "lng-deg": 12.603334,
+                    "truebearing-deg": 223.9892578125,
+                    "speed-kts": 3.88
+                },
+                {
+                    "timepoint-ms": 1443251080000,
+                    "lat-deg": 55.694172,
+                    "lng-deg": 12.603311,
+                    "truebearing-deg": 227.999267578125,
+                    "speed-kts": 3.83
+                },
+                {
+                    "timepoint-ms": 1443251081000,
+                    "lat-deg": 55.69416,
+                    "lng-deg": 12.603287,
+                    "truebearing-deg": 227.999267578125,
+                    "speed-kts": 3.88
+                },
+                {
+                    "timepoint-ms": 1443251082000,
+                    "lat-deg": 55.694149,
+                    "lng-deg": 12.603264,
+                    "truebearing-deg": 228.9990234375,
+                    "speed-kts": 3.94
+                },
+                {
+                    "timepoint-ms": 1443251083000,
+                    "lat-deg": 55.694138,
+                    "lng-deg": 12.603241,
+                    "truebearing-deg": 225.999755859375,
+                    "speed-kts": 4.04
+                }
+            ]
+        }
+    ]
+}
