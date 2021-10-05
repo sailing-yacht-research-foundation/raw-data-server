@@ -21,3 +21,13 @@ exports.indexRace = async (id, body) => {
     return Promise.resolve();
   }
 };
+
+exports.updateRace = async (id, body) => {
+  if (api) {
+    return await api.post(`races/_doc/${id}/_update`, {
+      doc: { ...body },
+    });
+  } else {
+    return Promise.resolve();
+  }
+};
