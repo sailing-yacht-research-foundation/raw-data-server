@@ -131,7 +131,9 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         await transaction.commit();
         console.log(`Done processing file ${file}`);
       } catch (e) {
-        await transaction.rollback();
+        if (transaction) {
+          await transaction.rollback();
+        }
         console.log(`Couldn't save race ${race.name}`);
       }
     }
@@ -238,7 +240,9 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         await transaction.commit();
         console.log(`Done processing file ${file}`);
       } catch (e) {
-        await transaction.rollback();
+        if (transaction) {
+          await transaction.rollback();
+        }
         console.log(`Couldn't save race ${race.name}`);
       }
     }
