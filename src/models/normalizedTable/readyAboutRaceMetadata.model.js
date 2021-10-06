@@ -115,6 +115,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.GEOMETRY,
         allowNull: true,
       },
+      open_graph_image: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
     },
     {
       timestamps: false,

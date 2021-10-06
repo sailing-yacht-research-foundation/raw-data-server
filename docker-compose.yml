@@ -23,6 +23,9 @@ services:
       MQ_PASSWORD: guest
       MQ_TOPIC: /topic/rawdata.topic
       MQ_TIMEOUT: 2700000
+      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
+      MAPBOX_ID: ${MAPBOX_ID}
+      OPEN_GRAPH_BUCKET_NAME: ${OPEN_GRAPH_BUCKET_NAME}
     ports:
       - 3000:3000
     volumes:
