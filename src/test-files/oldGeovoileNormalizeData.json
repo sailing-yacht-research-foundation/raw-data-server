@@ -1,0 +1,134 @@
+{
+    "OldGeovoileRace": [
+      {
+        "id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+        "name": "Trimaran IDEC • Trophée Jules Verne 2015",
+        "url": "http://trimaran-idec.geovoile.com/julesverne/2015/tracker/html/?leg=1",
+        "start_time": 1452271800000,
+        "end_time": null
+      }
+    ],
+    "OldGeovoileBoat":[
+      
+        {
+          "id": "7ed6829f-0b3b-4ddf-835d-9d876d041bf1",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "original_id": "line1",
+          "alt": "1",
+          "arrival": "IDEC Sport",
+          "durationOrRetired": "\n    5.7 nautical_mille.abrev\n    +2.0 nautical_mille.abrev\n  ",
+          "boatOrSponsor": "Francis Joyon",
+          "class": "RAC",
+          "name": "2",
+          "q": ""
+        },
+        {
+          "id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "original_id": "line2",
+          "alt": "1",
+          "arrival": "Banque Populaire V",
+          "durationOrRetired": "\n    3.7 nautical_mille.abrev\n    +0.0 nautical_mille.abrev\n  ",
+          "boatOrSponsor": "Loïck Peyron",
+          "class": "RAC",
+          "name": "1",
+          "q": ""
+        }
+      
+    ],
+    "OldGeovoilePosition":[ 
+      
+        {
+          "id": "7e90079c-1a67-40a7-9d38-9a305afa4fef",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.7055,
+          "lon": -5.438179999999947,
+          "timestamp": 1452271918800
+        },
+        {
+          "id": "52bdd9f3-f438-4618-8c75-1c9efe32116f",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.67181,
+          "lon": -5.406259999999946,
+          "timestamp": 1452271918900
+        },
+        {
+          "id": "13ff97fb-6de0-4a2d-b0d7-608f0789e61b",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.64063,
+          "lon": -5.370549999999946,
+          "timestamp": 1452271919000
+        },
+        {
+          "id": "be191384-7eda-4c90-a58a-692786f1f551",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.58638,
+          "lon": -5.303159999999947,
+          "timestamp": 1452271919100
+        },
+        {
+          "id": "7580c17f-a52c-4527-9f1f-54c32a6a3d4b",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.557739999999995,
+          "lon": -5.267439999999946,
+          "timestamp": 1452271919200
+        },
+        {
+          "id": "2d5d013b-aa01-4bc1-9541-230032bcaa56",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.52842,
+          "lon": -5.233239999999946,
+          "timestamp": 1452271919300
+        },
+        {
+          "id": "ab2075d1-e77b-4d2b-b57f-3c2bb1156472",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.49975,
+          "lon": -5.200499999999946,
+          "timestamp": 1452271919400
+        },
+        {
+          "id": "d60c34f7-a3f5-4c66-a02d-4d8115f3c10f",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.496179999999995,
+          "lon": -5.164879999999946,
+          "timestamp": 1452271919500
+        },
+        {
+          "id": "bcd444b2-7a44-4fa9-9b04-4594580399f3",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.489999999999995,
+          "lon": -5.118369999999946,
+          "timestamp": 1452271919600
+        },
+        {
+          "id": "6fb39315-d448-490e-a991-27331c077124",
+          "race_id": "6a6fdc9f-a8cc-4c79-9f87-658f79149dc5",
+          "boat_id": "7a86a54f-3d03-4854-9dfb-0be38d8599b3",
+          "boat_original_id": "line2",
+          "lat": 48.459999999999994,
+          "lon": -5.060039999999947,
+          "timestamp": 1452271919700
+        }
+      
+    ]
+}
+  

@@ -5,6 +5,9 @@ const path = require('path');
 const temp = require('temp').track();
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
+const {
+  normalizeRace,
+} = require('../normalization/non-automatable/normalizeOldGeovoile');
 
 const { downloadAndExtract } = require('../../utils/unzipFile');
 
@@ -24,12 +27,23 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
     const skippedFiles = fs.readdirSync(skippedPath);
 
     for (const file of files) {
-      const transaction = await db.sequelize.transaction();
+      let transaction;
       let race = {};
       try {
+        let boats = [];
+        let boatPositions = [];
         console.log(`Start processing file ${file}`);
-        var racePath = path.join(geovoileGoogleScrapedPath, file);
+        let racePath = path.join(geovoileGoogleScrapedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
+        let existingRace = await db.oldGeovoileRace.findOne({
+          where: { url: raceData.url },
+        });
+
+        if (existingRace) {
+          console.log(`Race ${existingRace.name} exists`);
+          continue;
+        }
+        transaction = await db.sequelize.transaction();
         race = {
           id: uuidv4(),
           name: raceData.name,
@@ -59,13 +73,12 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             validate: true,
             transaction,
           });
-
-          let boatPositions = [];
-          var endTime = extractEndtimeFromDuration(
+          boats.push(boat);
+          let endTime = extractEndtimeFromDuration(
             track.duration_or_retired,
             race.start_time,
           );
-          var arrivalTime = parseTimestamp(track.duration_or_retired, false);
+          let arrivalTime = parseTimestamp(track.duration_or_retired, false);
           let interval;
 
           if (endTime) {
@@ -73,8 +86,9 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           } else if (arrivalTime) {
             interval = (arrivalTime - race.start_time) / track.track.length;
           } else {
-            interval = 100;
+            interval = 50000;
           }
+          let time = race.start_time;
           for (const position of track.track) {
             let boatPosition = {
               id: uuidv4(),
@@ -83,8 +97,9 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
               boat_original_id: boat.original_id,
               lat: position.lat,
               lon: position.lon,
-              timestamp: race.start_time + interval,
+              timestamp: parseInt(time.toFixed(0)),
             };
+            time += interval;
             boatPositions.push(boatPosition);
           }
 
@@ -100,23 +115,49 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
               transaction,
             });
           }
+          if (race.end_time < endTime || !race.end_time) {
+            race.end_time = endTime;
+          }
         }
+
+        await normalizeRace(
+          {
+            OldGeovoileRace: [race],
+            OldGeovoileBoat: boats,
+            OldGeovoilePosition: boatPositions,
+          },
+          transaction,
+        );
         await transaction.commit();
         console.log(`Done processing file ${file}`);
       } catch (e) {
-        await transaction.rollback();
+        if (transaction) {
+          await transaction.rollback();
+        }
         console.log(`Couldn't save race ${race.name}`);
       }
     }
 
     for (const file of skippedFiles) {
       let race = {};
-      const transaction = await db.sequelize.transaction();
+      let transaction;
       try {
+        let boats = [];
+        let boatPositions = [];
         if (!file.includes('json')) continue;
         console.log(`Start processing file ${file}`);
-        racePath = path.join(skippedPath, file);
+        let racePath = path.join(skippedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
+
+        let existingRace = await db.oldGeovoileRace.findOne({
+          where: { url: raceData.name_details.url },
+        });
+
+        if (existingRace) {
+          console.log(`Race ${existingRace.name} exists`);
+          continue;
+        }
+        transaction = await db.sequelize.transaction();
         let raceName =
           raceData.name_details.url.match(/(?<=www\.)(.+?)(?=\.com)/)[0] +
           '-' +
@@ -154,10 +195,11 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             validate: true,
             transaction,
           });
+          boats.push(boat);
+          let endTime;
           const initialTimestamp = track.loc[0]['0'];
           const initialLat = track.loc[0]['1']; //lat
           const initialLon = track.loc[0]['2']; //lon
-          let boatPositions = [];
           for (const loc of track.loc.slice(1)) {
             let boatPosition = {
               id: uuidv4(),
@@ -182,12 +224,25 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
               transaction,
             });
           }
+          if (race.end_time < endTime || !race.end_time) {
+            race.end_time = endTime;
+          }
         }
 
+        await normalizeRace(
+          {
+            OldGeovoileRace: [race],
+            OldGeovoileBoat: boats,
+            OldGeovoilePosition: boatPositions,
+          },
+          transaction,
+        );
         await transaction.commit();
         console.log(`Done processing file ${file}`);
       } catch (e) {
-        await transaction.rollback();
+        if (transaction) {
+          await transaction.rollback();
+        }
         console.log(`Couldn't save race ${race.name}`);
       }
     }
@@ -199,7 +254,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
 };
 
 const parseTimestamp = function (rawString, isHtml) {
-  var datetimeString = '';
+  let datetimeString = '';
   if (isHtml) {
     datetimeString = rawString
       .split('datetime')[1]
@@ -208,19 +263,19 @@ const parseTimestamp = function (rawString, isHtml) {
   } else {
     datetimeString = rawString;
   }
-  var sliced = datetimeString.match(
+  let sliced = datetimeString.match(
     /([\d]{2}[:]{1}[\d]{2}[:]{1}[\d]{2}|[\d]{2}:[\d]{2})/,
   );
 
   if (sliced === null) return null;
 
-  var [hour, minute, second] = sliced[0].split(':');
+  let [hour, minute, second] = sliced[0].split(':');
   if (second == null) second = '00';
   const dateString = datetimeString
     .match(/([\d]{8}|[\d]{2}\/[\d]{2}\/[\d]{4}|[\d]{4}\/[\d]{2}\/[\d]{2})/)[0]
     .replace(/[/]/g, '');
-  var yearSlice = datetimeString.match(/([\d]{4}\/[\d]{2}\/[\d]{2}|[\d]{4} )/);
-  var yearFirst =
+  let yearSlice = datetimeString.match(/([\d]{4}\/[\d]{2}\/[\d]{2}|[\d]{4} )/);
+  let yearFirst =
     datetimeString.match(/([\d]{4}\/[\d]{2}\/[\d]{2}|[\d]{8})/) != null;
   if (parseInt(yearSlice) > 2000 && yearFirst == true) {
     yearFirst = false;
@@ -239,7 +294,7 @@ const parseTimestamp = function (rawString, isHtml) {
 };
 
 const extractEndtimeFromDuration = function (datetimeString, startTime) {
-  var sliced = datetimeString.match(
+  let sliced = datetimeString.match(
     /[\d]{2}[h]{1} [\d]{2}[m][i][n]{1} [\d]{2}[s]{1}/,
   );
 
@@ -248,7 +303,7 @@ const extractEndtimeFromDuration = function (datetimeString, startTime) {
   const [hour, minute, second] = sliced[0].replace(/[A-z]/g, '').split(' ');
   if (!hour || !minute || !second) return null;
 
-  var date = new Date(startTime);
+  let date = new Date(startTime);
   date.setHours(date.getHours() + parseInt(hour));
   date.setMinutes(date.getMinutes() + parseInt(minute));
   date.setSeconds(date.getSeconds() + parseInt(second));
