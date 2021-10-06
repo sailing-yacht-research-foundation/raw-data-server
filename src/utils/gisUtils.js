@@ -315,10 +315,12 @@ exports.createRace = async function (
 ) {
   const name = nameT.replace('_', ' ');
   const startCountry = exports.pointToCountry(startPoint);
-  const startCity = exports.pointToCity(startPoint);
+  const startCity = exports.pointToCity(startPoint.geometry.coordinates);
   let openGraphImage = null;
   try {
-    const imageBuffer = await createMapScreenshot(startPoint);
+    const imageBuffer = await createMapScreenshot(
+      startPoint.geometry.coordinates,
+    );
     const response = await uploadUtil.uploadDataToS3({
       ACL: 'public-read',
       Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
@@ -330,7 +332,9 @@ exports.createRace = async function (
     openGraphImage = response.Location;
   } catch (error) {
     // Logging only, if not successfully created, we can skip the open graph image
-    console.error(`Failed to create mapshot for scraped race: ${id}`);
+    console.error(
+      `Failed to create mapshot for scraped race: ${id}, error: ${error.message}`,
+    );
   }
 
   const startDate = new Date(startTimeMs);
