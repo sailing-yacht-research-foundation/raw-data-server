@@ -35,6 +35,15 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         console.log(`Start processing file ${file}`);
         let racePath = path.join(geovoileGoogleScrapedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
+        let existingRace = await db.oldGeovoileRace.findOne({
+          where: { url: raceData.url },
+        });
+
+        if (existingRace) {
+          console.log(`Race ${existingRace.name} exists`);
+          continue;
+        }
+
         race = {
           id: uuidv4(),
           name: raceData.name,
@@ -137,6 +146,16 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         console.log(`Start processing file ${file}`);
         let racePath = path.join(skippedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
+
+        let existingRace = await db.oldGeovoileRace.findOne({
+          where: { url: raceData.name_details.url },
+        });
+
+        if (existingRace) {
+          console.log(`Race ${existingRace.name} exists`);
+          continue;
+        }
+
         let raceName =
           raceData.name_details.url.match(/(?<=www\.)(.+?)(?=\.com)/)[0] +
           '-' +
