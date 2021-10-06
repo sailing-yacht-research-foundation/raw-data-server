@@ -1,8 +1,11 @@
 const turf = require('@turf/turf');
+const uuid = require('uuid');
 const elasticsearch = require('./elasticsearch');
 const cities = require('all-the-cities');
 const KDBush = require('kdbush');
 const geokdbush = require('geokdbush');
+const uploadUtil = require('../services/uploadUtil');
+const { createMapScreenshot } = require('./createMapScreenshot');
 
 const { world } = require('./world');
 const cityIndex = new KDBush(
@@ -313,6 +316,22 @@ exports.createRace = async function (
   const name = nameT.replace('_', ' ');
   const startCountry = exports.pointToCountry(startPoint);
   const startCity = exports.pointToCity(startPoint);
+  let openGraphImage = null;
+  try {
+    const imageBuffer = await createMapScreenshot(startPoint);
+    const response = await uploadUtil.uploadDataToS3({
+      ACL: 'public-read',
+      Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
+      Key: `public/competition/${id}/${uuid.v4()}.png`,
+      Body: imageBuffer,
+      ContentEncoding: 'base64',
+      ContentType: 'image/png',
+    });
+    openGraphImage = response.Location;
+  } catch (error) {
+    // Logging only, if not successfully created, we can skip the open graph image
+    console.error(`Failed to create mapshot for scraped race: ${id}`);
+  }
 
   const startDate = new Date(startTimeMs);
 
@@ -455,6 +474,7 @@ exports.createRace = async function (
     boat_models: boatModels,
     handicap_rules: handicapRulesFiltered,
     great_circle: greatCircle,
+    open_graph_image: openGraphImage,
   };
 
   // Only used by ElasticSearch
