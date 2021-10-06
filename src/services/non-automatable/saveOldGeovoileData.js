@@ -27,7 +27,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
     const skippedFiles = fs.readdirSync(skippedPath);
 
     for (const file of files) {
-      const transaction = await db.sequelize.transaction();
+      let transaction;
       let race = {};
       try {
         let boats = [];
@@ -43,7 +43,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           console.log(`Race ${existingRace.name} exists`);
           continue;
         }
-
+        transaction = await db.sequelize.transaction();
         race = {
           id: uuidv4(),
           name: raceData.name,
@@ -138,7 +138,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
 
     for (const file of skippedFiles) {
       let race = {};
-      const transaction = await db.sequelize.transaction();
+      let transaction;
       try {
         let boats = [];
         let boatPositions = [];
@@ -155,7 +155,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           console.log(`Race ${existingRace.name} exists`);
           continue;
         }
-
+        transaction = await db.sequelize.transaction();
         let raceName =
           raceData.name_details.url.match(/(?<=www\.)(.+?)(?=\.com)/)[0] +
           '-' +
