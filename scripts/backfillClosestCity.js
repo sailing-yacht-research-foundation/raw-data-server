@@ -6,45 +6,45 @@ const Op = db.Sequelize.Op;
 const { pointToCity } = require('../src/utils/gisUtils');
 
 (async () => {
-  let page = 1;
-  const perPage = 10;
-
   let shouldContinue = true;
   const failedIds = [];
   do {
     const data = await db.readyAboutRaceMetadata.findAll({
+      attributes: ['id', 'approx_start_point'],
       where: { start_city: null, id: { [Op.notIn]: failedIds } },
       raw: true,
-      offset: (page - 1) * perPage,
-      limit: perPage,
+      limit: 10,
       order: [['approx_start_time_ms', 'DESC']],
     });
 
+    console.log(`Retrieved ${data.length} records`);
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        const transaction = await db.sequelize.transaction();
         const { id, approx_start_point: startPoint } = data[i];
+        let closestCity;
         try {
-          const closestCity = pointToCity(startPoint.coordinates);
+          closestCity = pointToCity(startPoint.coordinates);
           await db.readyAboutRaceMetadata.update(
             { start_city: closestCity },
-            { where: { id }, transaction },
+            { where: { id } },
           );
+        } catch (error) {
+          console.error(`Failed updating metadata ${id}:`, error);
+          failedIds.push(id);
+        }
+
+        try {
           await elasticsearch.updateRace(id, {
             start_city: closestCity,
           });
-          await transaction.commit();
         } catch (error) {
-          console.error('Failed updating:', error.message);
-          failedIds.push(id);
-          await transaction.rollback();
+          console.error(`Failed updating elastic search ${id}:`, error);
         }
       }
       console.log('Done updating:', data.map((row) => row.id).join(', '));
     } else {
       shouldContinue = false;
     }
-    page++;
   } while (shouldContinue);
-  console.log('Finished at page: ', page - 1);
+  console.log('Finished backfilling start_city');
 })();
