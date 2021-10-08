@@ -2,6 +2,7 @@ require('dotenv').config();
 const db = require('./models');
 const createMQSubscriber = require('./subscribers/createMQSubscriber');
 const { dataPointSubscriberAction } = require('./subscribers/dataPoint');
+const { startDB } = require('./syrf-schema');
 
 const createServer = require('./server');
 const port = process.env.PORT || 3000;
@@ -16,7 +17,13 @@ const mqTopic = process.env.MQ_TOPIC || '/topic/rawdata.topic';
   try {
     const app = createServer();
 
+    console.log('Migrating raw data server');
     await db.sequelize.sync();
+
+    await startDB();
+    console.log(
+      `Main database (${process.env.DB_NAME}) connected successfully`,
+    );
 
     const onConnect = () => {
       console.log('MQ connected successfully');
