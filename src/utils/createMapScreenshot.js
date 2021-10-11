@@ -25,7 +25,11 @@ exports.createMapScreenshot = async (centerPosition) => {
   const browser = await puppeteer.launch({
     // headless: false, // open this for testing
     ignoreHTTPSErrors: true,
-    args: [`--window-size=${OG_WIDTH},${OG_HEIGHT}`],
+    args: [
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+      `--window-size=${OG_WIDTH},${OG_HEIGHT}`,
+    ],
     defaultViewport: {
       width: OG_WIDTH,
       height: OG_HEIGHT,
