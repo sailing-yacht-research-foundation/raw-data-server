@@ -26,8 +26,6 @@ const normalizeRace = async (
   const race = AmericasCup2021Race[0];
   const positions = AmericasCup2021Position;
   const boats = AmericasCup2021Boat;
-  const name = `${race.event_name} ${race.race_name}`;
-  const event = null;
   const startTime = race.start_time * 1000;
   const endTime = (race.max_race_time - race.min_race_time) * 1000 + startTime;
   const boatModels = AmericasCup2021Model;
@@ -76,8 +74,9 @@ const normalizeRace = async (
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
   const raceMetadata = await createRace(
     race.id,
-    name,
-    event,
+    race.race_name,
+    race.event_name,
+    null, // event id
     SOURCE,
     '', // url
     startTime,

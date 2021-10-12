@@ -14,19 +14,17 @@ describe('Test Endpoints', () => {
   });
   afterAll(async () => {
     jest.resetAllMocks();
-    await app.close();
   });
-  test('GET /', async (done) => {
+  test('GET /', async () => {
     await supertest(app)
       .get('/')
       .expect(200)
       .then((response) => {
         expect(response.text).toBe('SYRF - Raw Data Server');
-        done();
       });
   });
 
-  test('GET /api/v1', async (done) => {
+  test('GET /api/v1', async () => {
     await supertest(app).get('/api/v1').expect(400);
     await supertest(app)
       .get('/api/v1')
@@ -40,10 +38,7 @@ describe('Test Endpoints', () => {
       .set({
         Authorization: secret,
       })
-      .expect(200)
-      .then(() => {
-        done();
-      });
+      .expect(200);
   });
 
   test('POST /api/v1/upload-file', async () => {

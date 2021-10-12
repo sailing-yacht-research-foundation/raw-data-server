@@ -25,7 +25,6 @@ const normalizeGeovoile = async (
   }
   const id = race.id;
   const name = race.name;
-  const event = null;
   const url = race.url;
   const startTime = race.startTime * 1000;
   const endTime = race.endTime * 1000;
@@ -73,7 +72,8 @@ const normalizeGeovoile = async (
   const raceMetadata = await createRace(
     id,
     name,
-    event,
+    null, // event name
+    null, // event id
     GEOVOILE_SOURCE,
     url,
     startTime,

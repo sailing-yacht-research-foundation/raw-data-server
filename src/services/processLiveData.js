@@ -31,29 +31,26 @@ const processLiveData = async (optionalPath) => {
   // TODO: Need to add master data (boats, races, etc) here once available
   const distinctRaces = new Map();
   dataPoints.forEach((row) => {
-    if (!distinctRaces.has(row.race_unit_id)) {
-      // TODO: Replace with actual race data, for now only race_unit_id
-      distinctRaces.set(row.race_unit_id, {
-        race_unit_id: row.race_unit_id,
+    if (!distinctRaces.has(row.competition_unit_id)) {
+      // TODO: Replace with actual race data, for now only competition_unit_id
+      distinctRaces.set(row.competition_unit_id, {
+        competition_unit_id: row.competition_unit_id,
         data_points: [],
       });
     }
-    let race = distinctRaces.get(row.race_unit_id);
+    let race = distinctRaces.get(row.competition_unit_id);
     race.data_points.push({
       id: row.id,
       lat: String(row.location.coordinates[0]),
       lon: String(row.location.coordinates[1]),
-      speed: row.speed,
-      heading: row.heading,
-      accuracy: row.accuracy,
-      altitude: row.altitude,
-      at: row.at.getTime(),
-      tws: row.tws,
+      sog: row.sog,
+      cog: row.cog,
       twa: row.twa,
-      stw: row.stw,
-      boat_participant_group_id: row.boat_participant_group_id,
-      boat_id: row.boat_id,
-      device_id: row.device_id,
+      set_drift: row.set_drift,
+      elapsed_time: row.elapsed_time,
+      timestamp: row.timestamp.getTime(),
+      vessel_participant_id: row.vessel_participant_id,
+      participant_id: row.participant_id,
       user_id: row.user_id,
       public_id: row.public_id,
     });
@@ -62,7 +59,7 @@ const processLiveData = async (optionalPath) => {
   let data = [];
   for (let [key, value] of distinctRaces) {
     data.push({
-      race_unit_id: key,
+      competition_unit_id: key,
       data_points: value.data_points,
     });
   }
