@@ -9,7 +9,8 @@
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
     "test": "jest --coverage --runInBand --detectOpenHandles --forceExit",
     "db:migrate": "sequelize db:migrate",
-    "db:seed": "sequelize db:seed:all"
+    "db:seed": "sequelize db:seed:all",
+    "db:syrf:sync": "node src/syrf-schema/sync"
   },
   "keywords": [],
   "author": "",

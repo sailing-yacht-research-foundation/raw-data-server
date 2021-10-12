@@ -31,6 +31,19 @@ Server that will be used to transform data to parquet format and perform bulk sa
 
 - Run `scripts/initdb.sql` to install test database. This is unnecessary if `docker-compose up` is executed.
 
+## Init the submodules (syrf-schema)
+1. Initialize git submodule by running `git submodule init` and `git submodule update`. We will clone the syrf-schema (schema of main database into src/syrf-schema)
+2. Adding configuration for main database from .env.example. We will have 2 databases in raw-data-server.
+3. There are 2 databases in raw-data-server. The environment vars with the prefix = DB_RAW_DATA are for the raw-data-server database. Where we save the data we scraped from various websites.
+The environment vars with the prefix = DB_ is the connection to main database server, where we will save the processed data from raw data server.
+
+## syrf-schema database migration (local)
+To migrate the database you have to follow these steps.
+1. Create a database in your local postgres sql. For example main 
+2. In postgre admin, right click on Create Script and run `CREATE EXTENSION postgis;` to enable postgis for this database.
+3. Update the .env with DB_NAME = main
+4. Run `npm run db:syrf:sync` to update the database
+
 ## Deployment
 
 Raw data server use dockerized terraform to create instances on the AWS. It's recommended to use aws-vault to generate the temporary credentials using the environment variables.
