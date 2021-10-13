@@ -30,7 +30,7 @@ const { generateMetadataName } = require('../src/utils/gisUtils');
     try {
       records = await db.sequelize.query(
         `
-        SELECT m.id, m.name AS metadata_name, r.name AS race_name, e.name AS event_name, approx_start_time_ms FROM "ReadyAboutRaceMetadatas" m
+        SELECT m.id, r.name AS race_name, e.name AS event_name, approx_start_time_ms FROM "ReadyAboutRaceMetadatas" m
         INNER JOIN "${scraper.raceTable}" r ON r.id = m.id
         INNER JOIN "${scraper.eventTable}" e ON e.id = r.${scraper.eventColumn}
         WHERE SOURCE = '${scraper.source}' ORDER BY approx_start_time_ms
