@@ -70,6 +70,7 @@ const normalizeGeovoile = async (
     unstructuredText.push(`${sailor.first_name} ${sailor.last_name}`);
   }
 
+
   const raceMetadata = await createRace(
     id,
     name,
@@ -103,6 +104,14 @@ const normalizeGeovoile = async (
     GEOVOILE_SOURCE,
     transaction,
   );
+
+  // TODO:
+  // 1. Save calendar event information
+  // 2. Save race information
+  // 3. Save boat information
+  // 4. Save sailor information
+  // 5. Publish the position to rabbit mq using @syrf/transport-library
+  // 6. Call analysis engine to stopCompetition (generate geo json per participant)
   return raceMetadata;
 };
 
