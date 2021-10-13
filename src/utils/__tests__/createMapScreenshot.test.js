@@ -1,3 +1,4 @@
+jest.unmock('../../utils/createMapScreenshot');
 const Jimp = require('jimp');
 const puppeteer = require('puppeteer');
 

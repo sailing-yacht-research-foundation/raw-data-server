@@ -28,7 +28,6 @@ const normalizeRace = async (
   const startTime = parseInt(race.start_time);
   const endTime = parseInt(race.end_time);
   const name = race.name;
-  const event = null;
   const url = race.url;
 
   const boatNames = [];
@@ -70,7 +69,8 @@ const normalizeRace = async (
   const raceMetadata = await createRace(
     id,
     name,
-    event,
+    null, // event name
+    null, // event id
     YACHTBOT_SOURCE,
     url,
     startTime,

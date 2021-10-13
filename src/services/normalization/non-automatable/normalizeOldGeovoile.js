@@ -20,8 +20,6 @@ const normalizeRace = async (
   const race = OldGeovoileRace[0];
   const positions = OldGeovoilePosition;
   const boats = OldGeovoileBoat;
-  const name = race.name;
-  const event = null;
   const startTime = race.start_time;
   let endTime = race.end_time;
 
@@ -70,8 +68,9 @@ const normalizeRace = async (
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
   const raceMetadata = await createRace(
     race.id,
-    name,
-    event,
+    race.name,
+    null, // event name
+    null, // event id
     SOURCE,
     '', // url
     startTime,

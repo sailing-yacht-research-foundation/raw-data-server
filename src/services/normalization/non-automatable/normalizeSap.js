@@ -20,8 +20,6 @@ const normalizeRace = async (
   const race = SapRace[0];
   const positions = SapPosition;
   const boats = SapBoat;
-  const name = `${race.regatta} - ${race.name}`;
-  const event = null;
   const startTime = race.start_of_tracking_ms;
   const endTime = race.end_of_tracking_ms;
 
@@ -67,8 +65,9 @@ const normalizeRace = async (
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
   const raceMetadata = await createRace(
     race.id,
-    name,
-    event,
+    race.name,
+    race.regatta, // event name
+    null, // event id
     SOURCE,
     '', // url
     startTime,
