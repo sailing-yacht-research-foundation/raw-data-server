@@ -12,17 +12,20 @@ services:
       AWS_S3_ACCESS_KEY_ID: ${AWS_S3_ACCESS_KEY_ID}
       AWS_S3_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET}
-      DB_HOST: rds-db
-      DB_PORT: 5432
-      DB_USER: user
-      DB_PASSWORD: password
-      DB_NAME: rawdata
+      DB_RAW_DATA_HOST: rds-db
+      DB_RAW_DATA_PORT: 5432
+      DB_RAW_DATA_USER: user
+      DB_RAW_DATA_PASSWORD: password
+      DB_RAW_DATA_NAME: rawdata
       MQ_HOST: rabbit-mq
       MQ_PORT: 61613
       MQ_USER: guest
       MQ_PASSWORD: guest
       MQ_TOPIC: /topic/rawdata.topic
       MQ_TIMEOUT: 2700000
+      MAPBOX_API_KEY: ${MAPBOX_API_KEY}
+      MAPBOX_ID: ${MAPBOX_ID}
+      OPEN_GRAPH_BUCKET_NAME: ${OPEN_GRAPH_BUCKET_NAME}
     ports:
       - 3000:3000
     volumes:

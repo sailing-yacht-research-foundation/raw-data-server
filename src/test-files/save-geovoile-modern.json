@@ -17,7 +17,8 @@
         "prerace": 0,
         "name": "Vendée Globe 2020",
         "isGame": false,
-        "url": "https://tracking2020.vendeeglobe.org/fr/?v=3"
+        "url": "https://tracking2020.vendeeglobe.org/fr/?v=3",
+        "scrapedUrl": "https://tracking2020.vendeeglobe.org/fr/?v=3"
     },
     "boats": [
         {

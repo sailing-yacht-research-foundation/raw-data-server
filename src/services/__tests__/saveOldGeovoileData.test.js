@@ -45,7 +45,7 @@ describe('Storing old geovoile data to DB', () => {
       expect.anything(),
     );
     expect(createRace).toHaveBeenCalledTimes(3);
-    expect(createBoat).toHaveBeenCalledTimes(93);
-    expect(createBoatPosition).toHaveBeenCalledTimes(93);
+    expect(createBoat).toHaveBeenCalledTimes(17);
+    expect(createBoatPosition).toHaveBeenCalledTimes(17);
   });
 });

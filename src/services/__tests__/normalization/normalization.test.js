@@ -1,6 +1,7 @@
 const db = require('../../../models');
 const uploadUtil = require('../../uploadUtil');
 const elasticsearch = require('../../../utils/elasticsearch');
+const mapScreenshotUtil = require('../../../utils/createMapScreenshot');
 
 const scraperTestMappings = [
   {
@@ -89,7 +90,9 @@ describe('Normalization test', () => {
     await db.readyAboutRaceMetadata.sync();
     await db.readyAboutTrackGeoJsonLookup.sync();
     indexRaceSpy = jest.spyOn(elasticsearch, 'indexRace');
+    mapScreenshotSpy = jest.spyOn(mapScreenshotUtil, 'createMapScreenshot');
     uploadGeoJsonSpy = jest.spyOn(uploadUtil, 'uploadGeoJsonToS3');
+    uploadDataSpy = jest.spyOn(uploadUtil, 'uploadDataToS3');
   });
   afterAll(async () => {
     await db.readyAboutRaceMetadata.destroy({ truncate: true });
@@ -111,6 +114,8 @@ describe('Normalization test', () => {
         await normalizeRace(jsonData);
         expect(createMetadata).toHaveBeenCalledTimes(races.length);
         expect(indexRaceSpy).toHaveBeenCalledTimes(races.length);
+        expect(mapScreenshotSpy).toHaveBeenCalledTimes(races.length);  // For uploading the opengraph image
+        expect(uploadDataSpy).toHaveBeenCalledTimes(races.length);  // For uploading the opengraph image
         races.forEach((race) => {
           expect(uploadGeoJsonSpy).toHaveBeenCalledWith(
             race.id,

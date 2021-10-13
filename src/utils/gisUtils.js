@@ -1,6 +1,18 @@
 const turf = require('@turf/turf');
+const uuid = require('uuid');
 const elasticsearch = require('./elasticsearch');
+const cities = require('all-the-cities');
+const KDBush = require('kdbush');
+const geokdbush = require('geokdbush');
+const uploadUtil = require('../services/uploadUtil');
+const { createMapScreenshot } = require('./createMapScreenshot');
+
 const { world } = require('./world');
+const cityIndex = new KDBush(
+  cities,
+  (p) => p.loc.coordinates[0],
+  (p) => p.loc.coordinates[1],
+);
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -149,6 +161,11 @@ exports.pointToCountry = function (point) {
   return countryName;
 };
 
+exports.pointToCity = function (point) {
+  const nearestCity = geokdbush.around(cityIndex, point[0], point[1], 1);
+  return nearestCity[0].name;
+};
+
 exports.collectFirstNPositionsFromBoatsToPositions = function (
   boatsToPositions,
   n,
@@ -276,9 +293,26 @@ exports.validateBoundingBox = function (bbox) {
   return isNonPolar && isNotNarrow;
 };
 
+exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
+  eventName = eventName?.trim();
+  raceName = raceName?.trim();
+  let name;
+  if (eventName === raceName) {
+    name = eventName;
+  } else {
+    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')].filter(Boolean).join(" - ");
+  }
+  if (!name) {  // if no event or race name
+    const dateFormatter = formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'long', timeZone: 'utc' });
+    name = `Race at ${dateFormatter.format(startTimeMs)}`;  //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
+  }
+  return name;
+}
+
 exports.createRace = async function (
   id,
-  nameT,
+  raceName,
+  eventName,
   event,
   source,
   url,
@@ -296,8 +330,29 @@ exports.createRace = async function (
   unstructuredText,
   skipElasticSearch = false,
 ) {
-  const name = nameT.replace('_', ' ');
+  let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
   const startCountry = exports.pointToCountry(startPoint);
+  const startCity = exports.pointToCity(startPoint.geometry.coordinates);
+  let openGraphImage = null;
+  try {
+    const imageBuffer = await createMapScreenshot(
+      startPoint.geometry.coordinates,
+    );
+    const response = await uploadUtil.uploadDataToS3({
+      ACL: 'public-read',
+      Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
+      Key: `public/competition/${id}/${uuid.v4()}.png`,
+      Body: imageBuffer,
+      ContentEncoding: 'base64',
+      ContentType: 'image/png',
+    });
+    openGraphImage = response?.Location;
+  } catch (error) {
+    // Logging only, if not successfully created, we can skip the open graph image
+    console.error(
+      `Failed to create mapshot for scraped race: ${id}, error: ${error.message}`,
+    );
+  }
 
   const startDate = new Date(startTimeMs);
 
@@ -418,6 +473,7 @@ exports.createRace = async function (
     source,
     url,
     start_country: startCountry,
+    start_city: startCity,
     start_year: startYear,
     start_month: startMonth,
     start_day: startDay,
@@ -439,6 +495,7 @@ exports.createRace = async function (
     boat_models: boatModels,
     handicap_rules: handicapRulesFiltered,
     great_circle: greatCircle,
+    open_graph_image: openGraphImage,
   };
 
   // Only used by ElasticSearch
@@ -453,6 +510,7 @@ exports.createRace = async function (
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,

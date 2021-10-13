@@ -23,7 +23,6 @@ const normalizeRace = async (
   const boats = EstelaDorsal;
   const id = race.id;
   const name = race.name;
-  const event = null;
   const url = race.url;
   const startTime = new Date(race.start_timestamp * 1000).getTime();
   const endTime = new Date(race.end_timestamp * 1000).getTime();
@@ -78,7 +77,8 @@ const normalizeRace = async (
   const raceMetadata = await createRace(
     id,
     name,
-    event,
+    null, // event name
+    null, // event id
     ESTELA_SOURCE,
     url,
     startTime,

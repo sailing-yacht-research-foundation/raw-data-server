@@ -88,7 +88,6 @@ const normalizeRace = async ({BluewaterRace, BluewaterPosition, BluewaterMap, Bl
   const handicapRules = [];
   const boatIdentifiers = [];
   const unstructuredText = [];
-  const event = null;
   for (const i in boats) {
     const b = boats[i];
     boatNames.push(b.name);
@@ -112,7 +111,8 @@ const normalizeRace = async ({BluewaterRace, BluewaterPosition, BluewaterMap, Bl
   const raceMetadata = await createRace(
     race.id,
     race.name,
-    event,
+    null, // event name
+    null, // event id
     BLUEWATER_SOURCE,
     race.referral_url,
     startTime,

@@ -83,7 +83,6 @@ const normalizeRace = async (
   const handicapRules = [];
   const boatIdentifiers = [];
   const unstructuredText = [];
-  const event = null;
   for (const i in boats) {
     const b = boats[i];
     boatNames.push(b.boat_name);
@@ -104,7 +103,8 @@ const normalizeRace = async (
   const raceMetadata = await createRace(
     race.id,
     name,
-    event,
+    null, // event name
+    null, // event id
     SOURCE,
     race.url,
     startTime,

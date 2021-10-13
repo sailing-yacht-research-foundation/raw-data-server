@@ -7,6 +7,8 @@ jest.mock('aws-sdk', () => {
   };
   return { S3: jest.fn(() => mockS3Instance) };
 });
+jest.mock('./src/utils/createMapScreenshot');
+jest.mock('./src/utils/elasticsearch');
 
 jest.setTimeout(60000);
 afterAll(() => {

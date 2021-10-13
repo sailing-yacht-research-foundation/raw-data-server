@@ -9,7 +9,8 @@
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
     "test": "jest --coverage --runInBand --detectOpenHandles --forceExit",
     "db:migrate": "sequelize db:migrate",
-    "db:seed": "sequelize db:seed:all"
+    "db:seed": "sequelize db:seed:all",
+    "db:syrf:sync": "node src/syrf-schema/sync"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +18,8 @@
   "dependencies": {
     "@syrf/transport-library": "^1.0.7",
     "@turf/turf": "^6.5.0",
+    "JSONStream": "^1.3.5",
+    "all-the-cities": "^3.1.0",
     "aws-sdk": "^2.903.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
@@ -26,11 +29,14 @@
     "express": "^4.17.1",
     "express-status-monitor": "^1.3.3",
     "extract-zip": "^2.0.1",
+    "geokdbush": "^1.1.0",
+    "jimp": "^0.16.1",
     "jsonfile": "^6.1.0",
-    "JSONStream": "^1.3.5",
+    "kdbush": "^3.0.0",
     "multer": "^1.4.2",
     "parquetjs-lite": "^0.8.7",
     "pg": "^8.7.1",
+    "puppeteer": "^10.4.0",
     "sequelize": "^6.6.5",
     "sequelize-cli": "^6.2.0",
     "tar-fs": "2.1.1",
@@ -43,7 +49,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.4.0",
-    "jest": "^26.6.3",
+    "jest": "^27.2.5",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "supertest": "^6.1.3"
