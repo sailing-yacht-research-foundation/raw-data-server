@@ -1,17 +1,19 @@
+const uuid = require('uuid');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrfDataAccess/v1/calendarEvent');
 const { errorCodes } = require('../../enums');
 const {
-  setUpdateMeta,
   setCreateMeta,
-  ServiceError,
-  statusCodes,
-  validateSqlDataAuth,
-} = require('../../utils/utils');
+  setUpdateMeta,
+} = require('../../utils/syrfDatabaseUtil');
 const {
   findClosestCity,
   findClosestCountry,
 } = require('../../utils/closestLocation');
+
+const { createMapScreenshot } = require('../../utils/createMapScreenshot');
+const { uploadMapScreenshot } = require('../../services/s3Util');
+const db = require('../../syrf-schema');
 
 exports.upsert = async (
   id,
@@ -41,30 +43,13 @@ exports.upsert = async (
 
   let res = await dataAccess.getById(id);
 
-  if (id && !res)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-
-  if (isNew) {
-    res = {
-      ownerId: user.id,
-      editors: [{ id: user.id }],
-    };
-
-    res = setCreateMeta(res, user);
+  if (id && !res) {
+    throw new Error(`Calendar Event ${id} Not Found`);
   }
 
-  const dataAuth = validateSqlDataAuth(res, user.id);
-
-  if (!dataAuth.isEditor && !dataAuth.isOwner)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
+  if (isNew) {
+    res = setCreateMeta(res, user);
+  }
 
   const startDateObj = new Date(approximateStartTime);
 
@@ -135,10 +120,6 @@ exports.upsert = async (
     res.city = findClosestCity([lon, lat]);
   }
 
-  res.editors = dataAuth.isOwner
-    ? [{ id: user.id }, ...editors.filter((editor) => editor.id !== user.id)]
-    : res.editors;
-
   res = setUpdateMeta(res, user);
 
   const result = await dataAccess.upsert(id, res);
@@ -159,12 +140,9 @@ exports.getAll = async (paging) => {
 exports.getById = async (id) => {
   let result = await dataAccess.getById(id);
 
-  if (!result)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
+  if (!result) {
+    throw new Error('Calendar event not found');
+  }
 
   return result;
 };
@@ -172,23 +150,36 @@ exports.getById = async (id) => {
 exports.delete = async (id, user) => {
   let result = await dataAccess.getById(id);
 
-  if (!result)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-
-  const dataAuth = validateSqlDataAuth(result, user.id);
-
-  if (!dataAuth.isOwner)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
+  if (!result) {
+    throw new Error('Calendar event not found');
+  }
 
   await dataAccess.delete(id);
 
   return result;
+};
+
+exports.generateOpenGraph = async (id, position) => {
+  try {
+    const imageBuffer = await createMapScreenshot(position);
+    const response = await uploadMapScreenshot(
+      imageBuffer,
+      `calendar-event/${id}/${uuid.v4()}.png`,
+    );
+    await dataAccess.addOpenGraph(id, response.Location);
+  } catch (error) {
+    console.error(
+      `Failed to create mapshot for calendar event: ${id}. Error: ${error.message}`,
+    );
+  }
+};
+exports.addOpenGraph = async (id, openGraphImage) => {
+  await db.CalenderEvent.update(
+    { openGraphImage },
+    {
+      where: {
+        id,
+      },
+    },
+  );
 };

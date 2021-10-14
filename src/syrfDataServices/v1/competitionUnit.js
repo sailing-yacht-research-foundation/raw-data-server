@@ -1,13 +1,10 @@
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrfDataAccess/v1/competitionUnit');
 
-const { errorCodes } = require('../../enums');
 const {
   setUpdateMeta,
   setCreateMeta,
-  ServiceError,
-  statusCodes,
-} = require('../../utils/utils');
+} = require('../../utils/syrfDatabaseUtil');
 
 exports.upsert = async (
   id,
@@ -31,12 +28,9 @@ exports.upsert = async (
 
   let res = await dataAccess.getById(id);
 
-  if (id && !res)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
+  if (id && !res) {
+    throw new Error('Competition Unit not found');
+  }
 
   if (isNew) {
     res = {
@@ -87,18 +81,12 @@ exports.getAll = async (paging, calendarEventId) => {
 exports.getById = async (id, calendarEventId) => {
   let result = await dataAccess.getById(id);
 
-  if (!result)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-  if (calendarEventId && result.calendarEventId !== calendarEventId)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
+  if (!result) {
+    throw new Error('Competition Unit not found');
+  }
+  if (calendarEventId && result.calendarEventId !== calendarEventId) {
+    throw new Error('Calendar Event not found');
+  }
 
   return result;
 };
@@ -106,18 +94,12 @@ exports.getById = async (id, calendarEventId) => {
 exports.delete = async (id, calendarEventId) => {
   let result = await dataAccess.getById(id);
 
-  if (!result)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-  if (calendarEventId && result.calendarEventId !== calendarEventId)
-    throw new ServiceError(
-      'Not Found',
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
+  if (!result) {
+    throw new Error('Competition Unit not found');
+  }
+  if (calendarEventId && result.calendarEventId !== calendarEventId) {
+    throw new Error('Calendar Event not found');
+  }
 
   await dataAccess.delete(id);
 

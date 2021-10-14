@@ -28,7 +28,21 @@ const getObject = async (fileName, bucketName) => {
   return object;
 };
 
+const uploadMapScreenshot = async (imageBuffer, fileName) => {
+  const params = {
+    ACL: 'public-read',
+    Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
+    Key: `public/${fileName}`,
+    Body: imageBuffer,
+    ContentEncoding: 'base64',
+    ContentType: 'image/png',
+  };
+  const response = await s3.upload(params).promise();
+  return response;
+};
+
 module.exports = {
   listAllKeys,
   getObject,
+  uploadMapScreenshot,
 };
