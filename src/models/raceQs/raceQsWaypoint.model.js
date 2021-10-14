@@ -113,7 +113,7 @@ module.exports = (sequelize, Sequelize) => {
       },
     },
     {
-      tableName: 'RaceQsWaypoint',
+      tableName: 'RaceQsWaypoints',
       timestamps: false,
     },
   );

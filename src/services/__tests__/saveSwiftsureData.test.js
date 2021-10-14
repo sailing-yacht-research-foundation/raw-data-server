@@ -37,15 +37,15 @@ describe('Storing swiftsure data to DB', () => {
   });
   it('should save data correctly', async () => {
     await saveSwiftsureData(jsonData);
-    // for (key of Object.keys(bulkCreateSpies)) {
-    //   const passedData = jsonData[key[0].toUpperCase() + key.slice(1)];
-    //   if (passedData) {
-    //     expect(bulkCreateSpies[key]).toHaveBeenCalledWith(
-    //       passedData,
-    //       expect.anything(),
-    //     );
-    //   }
-    // }
+    for (key of Object.keys(bulkCreateSpies)) {
+      const passedData = jsonData[key[0].toUpperCase() + key.slice(1)];
+      if (passedData) {
+        expect(bulkCreateSpies[key]).toHaveBeenCalledWith(
+          passedData,
+          expect.anything(),
+        );
+      }
+    }
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
   });
 });
