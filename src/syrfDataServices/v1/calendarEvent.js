@@ -33,6 +33,7 @@ exports.upsert = async (
     isPubliclyViewable = true,
     editors = [],
     isOpen = true, // Default open for event creation flow
+    source = null,
   } = {},
   user,
 ) => {
@@ -121,6 +122,7 @@ exports.upsert = async (
   res.locationName = locationName;
   res.isPrivate = isPrivate;
   res.isOpen = isOpen;
+  res.source = source;
   res.ics = ics;
   res.isPubliclyViewable = isPubliclyViewable;
   res.description = description;
