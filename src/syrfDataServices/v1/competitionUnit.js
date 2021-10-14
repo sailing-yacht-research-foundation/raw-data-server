@@ -1,5 +1,5 @@
 const { zonedTimeToUtc } = require('date-fns-tz');
-const dataAccess = require('../../syrfDataAccess/v1/competitionUnit');
+const dataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
 
 const {
   setUpdateMeta,

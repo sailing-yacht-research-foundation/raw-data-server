@@ -1,7 +1,7 @@
 const uuid = require('uuid');
 const { zonedTimeToUtc } = require('date-fns-tz');
-const dataAccess = require('../../syrfDataAccess/v1/calendarEvent');
-const { errorCodes } = require('../../enums');
+const dataAccess = require('../../syrf-schema/dataAccess/v1/calendarEvent');
+const { errorCodes } = require('../../syrf-schema/enums');
 const {
   setCreateMeta,
   setUpdateMeta,
