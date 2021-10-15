@@ -135,7 +135,7 @@ const normalizeGeovoile = async (
         ics: null,
         editors: [],
       },
-      null,
+      mainDatabaseTransaction,
     );
     mainDatabaseTransaction.commit();
     console.log('Finish saving geovoile into main database');
