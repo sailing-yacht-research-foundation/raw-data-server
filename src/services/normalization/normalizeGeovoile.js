@@ -12,6 +12,8 @@ const {
 } = require('../../utils/gisUtils');
 const uploadUtil = require('../uploadUtil');
 
+const { createTransaction } = require('../../syrf-schema/utils/utils');
+const calendarEvent = require('../../syrfDataServices/v1/calendarEvent');
 const normalizeGeovoile = async (
   { geovoileRace, boats, sailors, positions },
   transaction,
@@ -70,7 +72,6 @@ const normalizeGeovoile = async (
     unstructuredText.push(`${sailor.first_name} ${sailor.last_name}`);
   }
 
-
   const raceMetadata = await createRace(
     id,
     name,
@@ -105,6 +106,7 @@ const normalizeGeovoile = async (
     transaction,
   );
 
+  const mainDatabaseTransaction = await createTransaction();
   // TODO:
   // 1. Save calendar event information
   // 2. Save race information
@@ -112,6 +114,37 @@ const normalizeGeovoile = async (
   // 4. Save sailor information
   // 5. Publish the position to rabbit mq using @syrf/transport-library
   // 6. Call analysis engine to stopCompetition (generate geo json per participant)
+  try {
+    calendarEvent.upsert(
+      null,
+      {
+        name,
+        description: '',
+        isPrivate: false,
+        approximateStartTime: new Date(startTime).toISOString(),
+        approximateEndTime: new Date(endTime).toISOString(),
+        lon: startPoint.geometry.coordinates[0],
+        lat: startPoint.geometry.coordinates[1],
+        source: GEOVOILE_SOURCE,
+        isOpen: false,
+        isPubliclyViewable: true,
+        approximateStartTime_zone: 'Etc/UTC',
+        approximateEndTime_zone: 'Etc/UTC',
+        externalUrl: race.url,
+        // Internet Calendar Scheduling (ics)
+        ics: null,
+        editors: [],
+      },
+      null,
+    );
+    mainDatabaseTransaction.commit();
+    console.log('Finish saving geovoile into main database');
+  } catch (e) {
+    console.log('Error duing saving geovoile into main database');
+    console.log(e);
+    mainDatabaseTransaction.rollback();
+  }
+
   return raceMetadata;
 };
 

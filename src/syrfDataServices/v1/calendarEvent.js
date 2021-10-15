@@ -35,6 +35,7 @@ exports.upsert = async (
     source = null,
   } = {},
   user,
+  transaction,
 ) => {
   const isNew = !id;
 
@@ -119,14 +120,13 @@ exports.upsert = async (
 
   res = setUpdateMeta(res, user);
 
-  const result = await dataAccess.upsert(id, res);
+  const result = await dataAccess.upsert(id, res, transaction);
 
   if (lon && lat) {
     setImmediate(async () => {
       exports.generateOpenGraph(result.id, [lon, lat]);
     });
   }
-
   return result;
 };
 
@@ -156,27 +156,29 @@ exports.delete = async (id, user) => {
   return result;
 };
 
-exports.generateOpenGraph = async (id, position) => {
+exports.generateOpenGraph = async (id, position, transaction) => {
   try {
     const imageBuffer = await createMapScreenshot(position);
     const response = await uploadMapScreenshot(
       imageBuffer,
       `calendar-event/${id}/${uuid.v4()}.png`,
     );
-    await dataAccess.addOpenGraph(id, response.Location);
+    await dataAccess.addOpenGraph(id, response.Location, transaction);
   } catch (error) {
     console.error(
       `Failed to create mapshot for calendar event: ${id}. Error: ${error.message}`,
     );
   }
 };
-exports.addOpenGraph = async (id, openGraphImage) => {
+
+exports.addOpenGraph = async (id, openGraphImage, transaction) => {
   await db.CalenderEvent.update(
     { openGraphImage },
     {
       where: {
         id,
       },
+      transaction,
     },
   );
 };
