@@ -5,11 +5,8 @@ const { errorCodes } = require('../../syrf-schema/enums');
 const {
   setCreateMeta,
   setUpdateMeta,
-} = require('../../utils/syrfDatabaseUtil');
-const {
-  findClosestCity,
-  findClosestCountry,
-} = require('../../utils/closestLocation');
+} = require('../../syrf-schema/utils/utils');
+const { pointToCity, pointToCountry } = require('../../utils/gisUtils');
 
 const { createMapScreenshot } = require('../../utils/createMapScreenshot');
 const { uploadMapScreenshot } = require('../../services/s3Util');
@@ -116,8 +113,8 @@ exports.upsert = async (
     res.city = city;
   } else {
     // fetch closest
-    res.country = findClosestCountry([lon, lat]);
-    res.city = findClosestCity([lon, lat]);
+    res.country = pointToCountry([lon, lat]);
+    res.city = pointToCity([lon, lat]);
   }
 
   res = setUpdateMeta(res, user);

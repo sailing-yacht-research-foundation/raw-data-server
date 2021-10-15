@@ -2,9 +2,9 @@ const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
 
 const {
-  setUpdateMeta,
   setCreateMeta,
-} = require('../../utils/syrfDatabaseUtil');
+  setUpdateMeta,
+} = require('../../syrf-schema/utils/utils');
 
 exports.upsert = async (
   id,
