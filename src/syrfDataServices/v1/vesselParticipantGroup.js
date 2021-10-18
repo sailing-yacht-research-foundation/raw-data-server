@@ -4,16 +4,15 @@ const { errorCodes } = require('../../syrf-schema/enums');
 const {
   setUpdateMeta,
   setCreateMeta,
-  ServiceError,
   ValidationError,
   statusCodes,
-  validateSqlDataAuth,
 } = require('../../syrf-schema/utils/utils');
 
 exports.upsert = async (
   id,
   { vesselParticipantGroupId, name, calendarEventId = null } = {},
   user,
+  transaction,
 ) => {
   const isNew = !id;
 
@@ -30,32 +29,15 @@ exports.upsert = async (
   if (isNew) {
     if (calendarEventId) {
       const eventData = await eventSVC.getById(calendarEventId);
-      const { id: eventId, name: eventName, editors, owner } = eventData;
+      const { id: eventId, name: eventName } = eventData;
       res = {
-        event: { id: eventId, name: eventName, editors, owner },
+        event: { id: eventId, name: eventName },
       };
     } else {
       res = {};
     }
 
     res = setCreateMeta(res, user);
-  }
-
-  // TODO: Remove this if (mandatory) once implemented on FE
-  if (calendarEventId) {
-    const dataAuth = validateSqlDataAuth(
-      {
-        editors: res.event.editors,
-        ownerId: res.event.owner.id,
-      },
-      user.id,
-    );
-    if (!dataAuth.isEditor && !dataAuth.isOwner)
-      throw new ServiceError(
-        'Unauthorized',
-        statusCodes.UNAUTHORIZED,
-        errorCodes.UNAUTHORIZED_DATA_CHANGE,
-      );
   }
 
   res.vesselParticipantGroupId = vesselParticipantGroupId;
@@ -66,7 +48,7 @@ exports.upsert = async (
   }
 
   res = setUpdateMeta(res, user);
-  return await dataAccess.upsert(id, res);
+  return await dataAccess.upsert(id, res, transaction);
 };
 
 exports.getAll = async (paging, calendarEventId) => {

@@ -108,124 +108,122 @@ exports.generateOGImage = async (idList, centerPoint) => {
   }
 };
 
-exports.upsert = useTransaction(
-  async (
-    id,
-    {
-      competitionUnitId = null,
-      courseSequencedGeometries,
-      courseUnsequencedUntimedGeometry,
-      courseUnsequencedTimedGeometry,
-      calendarEventId,
-      name,
-    } = {},
-    user,
-    transaction,
-  ) => {
-    const isNew = !id;
-    let res = await dataAccess.getById(id);
-    let oldData = { ...res };
+exports.upsert = async (
+  id,
+  {
+    competitionUnitId = null,
+    courseSequencedGeometries,
+    courseUnsequencedUntimedGeometry,
+    courseUnsequencedTimedGeometry,
+    calendarEventId,
+    name,
+  } = {},
+  user,
+  transaction,
+) => {
+  const isNew = !id;
+  let res = await dataAccess.getById(id);
+  let oldData = { ...res };
 
-    if (id && !res)
-      throw new ValidationError('Not Found', null, statusCodes.NOT_FOUND);
+  if (id && !res)
+    throw new ValidationError('Not Found', null, statusCodes.NOT_FOUND);
 
-    let eventData = {};
-    if (isNew) {
-      res = {};
-      if (calendarEventId) {
-        eventData = await eventDAL.getById(calendarEventId);
-      }
-      res = setCreateMeta(res, user);
-    }
-
+  let eventData = {};
+  if (isNew) {
+    res = {};
     if (calendarEventId) {
-      const dataAuth = validateSqlDataAuth(
-        {
-          editors: eventData.editors,
-          ownerId: eventData.owner.id,
-        },
-        user.id,
-      );
-      if (!dataAuth.isEditor && !dataAuth.isOwner)
-        throw new ServiceError(
-          'Unauthorized',
-          statusCodes.UNAUTHORIZED,
-          errorCodes.UNAUTHORIZED_DATA_CHANGE,
-        );
+      eventData = await eventDAL.getById(calendarEventId);
     }
+    res = setCreateMeta(res, user);
+  }
 
-    res.competitionUnitId = competitionUnitId;
-    res.courseSequencedGeometries = setGeometryId(courseSequencedGeometries);
-    res.courseUnsequencedUntimedGeometry = setGeometryId(
-      courseUnsequencedUntimedGeometry,
+  if (calendarEventId) {
+    const dataAuth = validateSqlDataAuth(
+      {
+        editors: eventData.editors,
+        ownerId: eventData.owner.id,
+      },
+      user.id,
     );
-    res.courseUnsequencedTimedGeometry = setGeometryId(
-      courseUnsequencedTimedGeometry,
-    );
-
-    res.calendarEventId = calendarEventId;
-    res.name = name;
-
-    res = setUpdateMeta(res, user);
-
-    let [result] = await Promise.all([
-      dataAccess.upsert(id, res, transaction),
-      updatePoints(
-        res.courseSequencedGeometries,
-        oldData.courseSequencedGeometries,
-        transaction,
-      ),
-      updatePoints(
-        res.courseUnsequencedUntimedGeometry,
-        oldData.courseUnsequencedUntimedGeometry,
-        transaction,
-      ),
-      updatePoints(
-        res.courseUnsequencedTimedGeometry,
-        oldData.courseUnsequencedTimedGeometry,
-        transaction,
-      ),
-    ]);
-
-    // Country and city directly derived on request
-    const relatedCompetitions = await dataAccess.getCourseCompetitionIds(
-      result.id,
-    );
-
-    let centerPoint = getCourseCenterPoint(courseSequencedGeometries);
-
-    // Trigger metadata generation
-    if (centerPoint !== null) {
-      setImmediate(async () => {
-        try {
-          await exports.generateOGImage(relatedCompetitions, centerPoint);
-        } catch (err) {
-          console.log(err.message);
-        }
-      });
-
-      const country = findClosestCountry(centerPoint);
-      const city = findClosestCity(centerPoint);
-
-      await competitionUnitDataAccess.updateCountryCity(relatedCompetitions, {
-        country,
-        city,
-        centerPoint,
-      });
-    } else {
-      await competitionUnitDataAccess.updateCountryCity(
-        relatedCompetitions,
-        null,
+    if (!dataAuth.isEditor && !dataAuth.isOwner)
+      throw new ServiceError(
+        'Unauthorized',
+        statusCodes.UNAUTHORIZED,
+        errorCodes.UNAUTHORIZED_DATA_CHANGE,
       );
-    }
+  }
 
-    relatedCompetitions.forEach((competitionUnitId) => {
-      competitionUnitSync(competitionUnitId);
+  res.competitionUnitId = competitionUnitId;
+  res.courseSequencedGeometries = setGeometryId(courseSequencedGeometries);
+  res.courseUnsequencedUntimedGeometry = setGeometryId(
+    courseUnsequencedUntimedGeometry,
+  );
+  res.courseUnsequencedTimedGeometry = setGeometryId(
+    courseUnsequencedTimedGeometry,
+  );
+
+  res.calendarEventId = calendarEventId;
+  res.name = name;
+
+  res = setUpdateMeta(res, user);
+
+  let [result] = await Promise.all([
+    dataAccess.upsert(id, res, transaction),
+    updatePoints(
+      res.courseSequencedGeometries,
+      oldData.courseSequencedGeometries,
+      transaction,
+    ),
+    updatePoints(
+      res.courseUnsequencedUntimedGeometry,
+      oldData.courseUnsequencedUntimedGeometry,
+      transaction,
+    ),
+    updatePoints(
+      res.courseUnsequencedTimedGeometry,
+      oldData.courseUnsequencedTimedGeometry,
+      transaction,
+    ),
+  ]);
+
+  // Country and city directly derived on request
+  const relatedCompetitions = await dataAccess.getCourseCompetitionIds(
+    result.id,
+  );
+
+  let centerPoint = getCourseCenterPoint(courseSequencedGeometries);
+
+  // Trigger metadata generation
+  if (centerPoint !== null) {
+    setImmediate(async () => {
+      try {
+        await exports.generateOGImage(relatedCompetitions, centerPoint);
+      } catch (err) {
+        console.log(err.message);
+      }
     });
 
-    return result;
-  },
-);
+    const country = findClosestCountry(centerPoint);
+    const city = findClosestCity(centerPoint);
+
+    await competitionUnitDataAccess.updateCountryCity(relatedCompetitions, {
+      country,
+      city,
+      centerPoint,
+    });
+  } else {
+    await competitionUnitDataAccess.updateCountryCity(
+      relatedCompetitions,
+      null,
+    );
+  }
+
+  relatedCompetitions.forEach((competitionUnitId) => {
+    competitionUnitSync(competitionUnitId);
+  });
+
+  return result;
+};
 
 exports.getAll = async (paging, calendarEventId) => {
   return await dataAccess.getAll(paging, calendarEventId);
