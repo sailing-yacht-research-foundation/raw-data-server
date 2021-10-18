@@ -14,6 +14,12 @@ const uploadUtil = require('../uploadUtil');
 
 const { createTransaction } = require('../../syrf-schema/utils/utils');
 const calendarEvent = require('../../syrfDataServices/v1/calendarEvent');
+const competitionUnit = require('../../syrfDataServices/v1/competitionUnit');
+const vessel = require('../../syrfDataServices/v1/vessel');
+const vesselParticipant = require('../../syrfDataServices/v1/vesselParticipant');
+const vesselParticipantGroup = require('../../syrfDataServices/v1/vesselParticipantGroup');
+const courses = require('../../syrfDataServices/v1/courses');
+
 const normalizeGeovoile = async (
   { geovoileRace, boats, sailors, positions },
   transaction,
@@ -107,15 +113,10 @@ const normalizeGeovoile = async (
   );
 
   const mainDatabaseTransaction = await createTransaction();
-  // TODO:
-  // 1. Save calendar event information
-  // 2. Save race information
-  // 3. Save boat information
-  // 4. Save sailor information
-  // 5. Publish the position to rabbit mq using @syrf/transport-library
-  // 6. Call analysis engine to stopCompetition (generate geo json per participant)
+
   try {
-    calendarEvent.upsert(
+    // 1. Save calendar event information
+    const newCalendarEvent = await calendarEvent.upsert(
       null,
       {
         name,
@@ -137,6 +138,80 @@ const normalizeGeovoile = async (
       },
       mainDatabaseTransaction,
     );
+    // Create vessel participant group
+    const vesselGroup = await vesselParticipantGroup.upsert(
+      null,
+      {
+        calendarEventId: newCalendarEvent.id,
+        name: '',
+      },
+      null,
+      mainDatabaseTransaction,
+    );
+
+    // Save vessels information
+    let vessels = [];
+    // TODO: get existing vessel information to reuse
+    // in case there is no existing vessels, then create new one
+    for (const boat of boats) {
+      const currentVessel = await vessel.upsert(
+        null,
+        {
+          publicName: boat.name,
+          vesselId: boat.original_id, // TODO save by root url + boat original id
+          lengthInMeters: null,
+          orcJsonPolars: {},
+          bulkCreated: true,
+        },
+        null,
+        mainDatabaseTransaction,
+      );
+      vessels.push(currentVessel);
+    }
+    for (const currentVessel of vessels) {
+      await vesselParticipant.upsert(
+        null,
+        {
+          vesselId: currentVessel.id,
+          vesselParticipantGroupId: vesselGroup.id,
+        },
+        null,
+        mainDatabaseTransaction,
+      );
+    }
+    // Save competition unit information
+    const newCompetitionUnit = await competitionUnit.upsert(
+      null,
+      {
+        isCompleted: true,
+        calendarEventId: newCalendarEvent.id,
+        startTime: new Date(startTime).toISOString(),
+        endTime: new Date(endTime).toISOString(),
+        approximateStart: new Date(startTime).toISOString(),
+        description: '',
+        name,
+        approximateStart_zone: 'Etc/UTC',
+        boundingBox,
+        vesselParticipantGroupId: vesselGroup.id,
+      },
+      null,
+      mainDatabaseTransaction,
+    );
+    // TODO: save course information
+    await courses.upsert(null, {
+      competitionUnitId: newCompetitionUnit.id,
+      calendarEventId: newCalendarEvent.id,
+      name,
+      // Bounding box
+      courseUnsequencedUntimedGeometry: boundingBox,
+      courseSequencedGeometries: null,
+      // Other polygons like start line and marks
+      courseUnsequencedTimedGeometry: null, //unknown
+    });
+    // TODO:
+    // 5. Publish the position to rabbit mq using @syrf/transport-library
+    // 6. Call analysis engine to stopCompetition (generate geo json per participant)
+
     mainDatabaseTransaction.commit();
     console.log('Finish saving geovoile into main database');
   } catch (e) {
