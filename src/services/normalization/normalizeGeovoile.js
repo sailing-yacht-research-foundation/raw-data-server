@@ -191,22 +191,57 @@ const normalizeGeovoile = async (
         description: '',
         name,
         approximateStart_zone: 'Etc/UTC',
-        boundingBox,
+        boundingBox: {
+          type: 'Polygon',
+          coordinates: boundingBox.coordinates,
+        },
         vesselParticipantGroupId: vesselGroup.id,
       },
       null,
       mainDatabaseTransaction,
     );
-    // TODO: save course information
     await courses.upsert(null, {
       competitionUnitId: newCompetitionUnit.id,
       calendarEventId: newCalendarEvent.id,
       name,
-      // Bounding box
-      courseUnsequencedUntimedGeometry: boundingBox,
-      courseSequencedGeometries: null,
-      // Other polygons like start line and marks
-      courseUnsequencedTimedGeometry: null, //unknown
+      // something like bounding box
+      courseSequencedGeometries: newCompetitionUnit.boundingBox,
+      // course related geometries (start line, gates, finish line etc)
+      courseUnsequencedUntimedGeometry: [
+        {
+          geometryType: 'Polyline',
+          order: 0,
+          coordinates: [
+            {
+              position: startPoint.geometry.coordinates[0],
+              properties: {
+                name: 'Start Point',
+              },
+            },
+            {
+              position: startPoint.geometry.coordinates[1],
+              properties: {},
+            },
+          ],
+        },
+        {
+          geometryType: 'Polyline',
+          order: 1,
+          coordinates: [
+            {
+              position: startPoint.geometry.coordinates[1],
+              properties: {
+                name: 'End Point',
+              },
+            },
+            {
+              position: endPoint.geometry.coordinates[0],
+              properties: {},
+            },
+          ],
+        },
+      ],
+      courseUnsequencedTimedGeometry: null, // no used atm
     });
     // TODO:
     // 5. Publish the position to rabbit mq using @syrf/transport-library
