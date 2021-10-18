@@ -23,6 +23,7 @@ exports.upsert = async (
     description,
   } = {},
   user,
+  transaction,
 ) => {
   const isNew = !id;
 
@@ -69,7 +70,7 @@ exports.upsert = async (
   res.description = description;
 
   res = setUpdateMeta(res, user);
-  const result = await dataAccess.upsert(id, res);
+  const result = await dataAccess.upsert(id, res, transaction);
 
   return result;
 };

@@ -19,6 +19,7 @@ exports.upsert = async (
     bulkCreated = false,
   } = {},
   user,
+  transaction,
 ) => {
   const isNew = !id;
 
@@ -46,7 +47,7 @@ exports.upsert = async (
 
   res = setUpdateMeta(res, user);
 
-  return await dataAccess.upsert(id, res);
+  return await dataAccess.upsert(id, res, transaction);
 };
 
 exports.getAll = async (paging) => {
