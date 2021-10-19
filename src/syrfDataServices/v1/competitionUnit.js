@@ -34,11 +34,6 @@ exports.upsert = async (
   }
 
   if (isNew) {
-    res = {
-      owner: user.id,
-      editors: [user.id],
-    };
-
     res = setCreateMeta(res, user);
   }
 
@@ -71,7 +66,6 @@ exports.upsert = async (
 
   res = setUpdateMeta(res, user);
   const result = await dataAccess.upsert(id, res, transaction);
-
   return result;
 };
 

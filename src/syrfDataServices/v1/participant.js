@@ -38,20 +38,6 @@ exports.upsert = async (
     res = setCreateMeta(res, user);
   }
 
-  const dataAuth = validateSqlDataAuth(
-    {
-      editors: res.event.editors,
-      ownerId: res.event.owner.id,
-    },
-    user.id,
-  );
-  if (!dataAuth.isEditor && !dataAuth.isOwner && !res.event.isOpen)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
-
   res.publicName = publicName;
   res.participantId = participantId;
   res.userProfileId = userProfileId;
