@@ -115,6 +115,7 @@ const normalizeGeovoile = async (
   const mainDatabaseTransaction = await createTransaction();
 
   try {
+    console.log('Create new calendar event');
     // 1. Save calendar event information
     const newCalendarEvent = await calendarEvent.upsert(
       null,
@@ -139,6 +140,7 @@ const normalizeGeovoile = async (
       mainDatabaseTransaction,
     );
     // Create vessel participant group
+    console.log('Create new vesselGroup');
     const vesselGroup = await vesselParticipantGroup.upsert(
       null,
       {
@@ -149,6 +151,7 @@ const normalizeGeovoile = async (
       mainDatabaseTransaction,
     );
 
+    console.log('Create new vessels');
     // Save vessels information
     let vessels = [];
     // TODO: get existing vessel information to reuse
@@ -168,6 +171,7 @@ const normalizeGeovoile = async (
       );
       vessels.push(currentVessel);
     }
+    console.log(`Save vessel participants`);
     for (const currentVessel of vessels) {
       await vesselParticipant.upsert(
         null,
@@ -179,6 +183,8 @@ const normalizeGeovoile = async (
         mainDatabaseTransaction,
       );
     }
+    console.log(`Create new Competition Unit`);
+    const boundingBoxGeometry = turf.bboxPolygon(boundingBox);
     // Save competition unit information
     const newCompetitionUnit = await competitionUnit.upsert(
       null,
@@ -191,57 +197,56 @@ const normalizeGeovoile = async (
         description: '',
         name,
         approximateStart_zone: 'Etc/UTC',
-        boundingBox: {
-          type: 'Polygon',
-          coordinates: boundingBox.coordinates,
-        },
+        boundingBox: boundingBoxGeometry.geometry,
         vesselParticipantGroupId: vesselGroup.id,
       },
       null,
       mainDatabaseTransaction,
     );
+
+    console.log(`Creating new Course`);
     await courses.upsert(null, {
       competitionUnitId: newCompetitionUnit.id,
       calendarEventId: newCalendarEvent.id,
       name,
       // something like bounding box
-      courseSequencedGeometries: newCompetitionUnit.boundingBox,
+      courseSequencedGeometries: [
+        {
+          geometryType: 'Polygon',
+          order: 0,
+          coordinates: boundingBoxGeometry.geometry.coordinates[0].map((t) => {
+            return { position: t };
+          }),
+        },
+      ],
       // course related geometries (start line, gates, finish line etc)
       courseUnsequencedUntimedGeometry: [
         {
-          geometryType: 'Polyline',
+          geometryType: 'Point',
           order: 0,
           coordinates: [
             {
-              position: startPoint.geometry.coordinates[0],
+              position: startPoint.geometry.coordinates,
               properties: {
                 name: 'Start Point',
               },
             },
-            {
-              position: startPoint.geometry.coordinates[1],
-              properties: {},
-            },
           ],
         },
         {
-          geometryType: 'Polyline',
+          geometryType: 'Point',
           order: 1,
           coordinates: [
             {
-              position: startPoint.geometry.coordinates[1],
+              position: endPoint.geometry.coordinates,
               properties: {
                 name: 'End Point',
               },
             },
-            {
-              position: endPoint.geometry.coordinates[0],
-              properties: {},
-            },
           ],
         },
       ],
-      courseUnsequencedTimedGeometry: null, // no used atm
+      courseUnsequencedTimedGeometry: [], // no used atm
     });
     // TODO:
     // 5. Publish the position to rabbit mq using @syrf/transport-library
