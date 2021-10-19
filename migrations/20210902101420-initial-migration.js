@@ -20,9 +20,7 @@ module.exports = {
     await queryInterface.sequelize.transaction(async (transaction) => {
       // BluewaterFailedUrl
       const bluewaterFailed = await queryInterface.describeTable('BluewaterFailedUrls');
-      console.log('q', bluewaterFailed.date_attempted);
       if (bluewaterFailed.date_attempted) {
-        console.log(2);
         await queryInterface.renameColumn('BluewaterFailedUrls', 'date_attempted', 'created_at', { transaction });
         await queryInterface.changeColumn('BluewaterFailedUrls', 'created_at', {
           type: 'TIMESTAMP USING CAST("created_at" as TIMESTAMP)',
