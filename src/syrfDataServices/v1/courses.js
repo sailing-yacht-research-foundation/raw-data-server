@@ -125,30 +125,9 @@ exports.upsert = async (
 
   if (id && !res)
     throw new ValidationError('Not Found', null, statusCodes.NOT_FOUND);
-
-  let eventData = {};
   if (isNew) {
     res = {};
-    if (calendarEventId) {
-      eventData = await eventDAL.getById(calendarEventId);
-    }
     res = setCreateMeta(res, user);
-  }
-
-  if (calendarEventId) {
-    const dataAuth = validateSqlDataAuth(
-      {
-        editors: eventData.editors,
-        ownerId: eventData.owner.id,
-      },
-      user.id,
-    );
-    if (!dataAuth.isEditor && !dataAuth.isOwner)
-      throw new ServiceError(
-        'Unauthorized',
-        statusCodes.UNAUTHORIZED,
-        errorCodes.UNAUTHORIZED_DATA_CHANGE,
-      );
   }
 
   res.competitionUnitId = competitionUnitId;
@@ -159,12 +138,9 @@ exports.upsert = async (
   res.courseUnsequencedTimedGeometry = setGeometryId(
     courseUnsequencedTimedGeometry,
   );
-
   res.calendarEventId = calendarEventId;
   res.name = name;
-
   res = setUpdateMeta(res, user);
-
   let [result] = await Promise.all([
     dataAccess.upsert(id, res, transaction),
     updatePoints(
@@ -188,7 +164,6 @@ exports.upsert = async (
   const relatedCompetitions = await dataAccess.getCourseCompetitionIds(
     result.id,
   );
-
   let centerPoint = getCourseCenterPoint(courseSequencedGeometries);
 
   // Trigger metadata generation
@@ -219,7 +194,6 @@ exports.upsert = async (
   relatedCompetitions.forEach((competitionUnitId) => {
     competitionUnitSync(competitionUnitId);
   });
-
   return result;
 };
 
@@ -278,21 +252,6 @@ exports.delete = useTransaction(async (id, calendarEventId, transaction) => {
       null,
       statusCodes.NOT_FOUND,
       errorCodes.DATA_NOT_FOUND,
-    );
-
-  const dataAuth = validateSqlDataAuth(
-    {
-      editors: result.calendarEvent.editors,
-      ownerId: result.calendarEvent.owner.id,
-    },
-    user.id,
-  );
-
-  if (!dataAuth.isOwner)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
     );
 
   await Promise.all([

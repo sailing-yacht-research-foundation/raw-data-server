@@ -41,21 +41,6 @@ exports.upsert = async (
     res = setCreateMeta(res, user);
   }
 
-  const dataAuth = validateSqlDataAuth(
-    {
-      ownerId: vpgDetail.event.owner.id,
-      editors: vpgDetail.event.editors,
-    },
-    user.id,
-  );
-
-  if (!dataAuth.isEditor && !dataAuth.isOwner && !vpgDetail.event.isOpen)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
-
   res.vesselParticipantId = vesselParticipantId;
   res.vesselId = vesselId;
   res.vesselParticipantGroupId = vesselParticipantGroupId;
@@ -130,21 +115,6 @@ exports.delete = async (id, user, vesselParticipantGroupId) => {
       errorCodes.DATA_NOT_FOUND,
     );
 
-  const dataAuth = validateSqlDataAuth(
-    {
-      ownerId: result.group.event.owner.id,
-      editors: result.group.event.editors,
-    },
-    user.id,
-  );
-
-  if (!dataAuth.isOwner)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
-
   const queryResult = await Promise.all([
     vpgDAL.getById(result.vesselParticipantGroupId),
     dataAccess.delete(id),
@@ -198,21 +168,6 @@ exports.addParticipant = async (
     );
   }
 
-  const dataAuth = validateSqlDataAuth(
-    {
-      ownerId: vesselParticipantObj.group.event.owner.id,
-      editors: vesselParticipantObj.group.event.editors,
-    },
-    user.id,
-  );
-
-  if (!dataAuth.isOwner && !dataAuth.isEditor)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
-
   const result = await dataAccess.addParticipant(
     vesselParticipantId,
     participantIds,
@@ -250,21 +205,6 @@ exports.removeParticipant = async (
       errorCodes.DATA_VALIDATION_FAILED,
     );
   }
-
-  const dataAuth = validateSqlDataAuth(
-    {
-      ownerId: vesselParticipantObj.group.event.owner.id,
-      editors: vesselParticipantObj.group.event.editors,
-    },
-    user.id,
-  );
-
-  if (!dataAuth.isOwner && !dataAuth.isEditor)
-    throw new ServiceError(
-      'Unauthorized',
-      statusCodes.UNAUTHORIZED,
-      errorCodes.UNAUTHORIZED_DATA_CHANGE,
-    );
 
   const result = await dataAccess.removeParticipant(
     vesselParticipantId,
