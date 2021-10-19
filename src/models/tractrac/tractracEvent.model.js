@@ -10,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       original_id: {
         type: Sequelize.TEXT,
         allowNull: false,
+        unique: true,
       },
       name: {
         type: Sequelize.TEXT,

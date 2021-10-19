@@ -108,11 +108,7 @@ describe('Storing trac trac data to DB', () => {
       expect.anything(),
     );
     expect(createEvent).toHaveBeenCalledWith(
-      jsonData.TracTracEvent,
-      expect.anything(),
-    );
-    expect(createRace).toHaveBeenCalledWith(
-      jsonData.TracTracRace,
+      [Object.assign({}, jsonData.TracTracEvent[0], { TracTracRaces: jsonData.TracTracRace })],
       expect.anything(),
     );
     expect(createCompetitor).toHaveBeenCalledWith(
