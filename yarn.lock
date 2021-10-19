@@ -821,6 +821,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@syrf/circuit-breaker@^1.0.1":
+  "integrity" "sha512-pJad6uTUdHwCXKsCP7eXfNPV7GXXyIEXyN54DpBQc52GMKUepyp3i3TL+kOkecPZus+WlaxT434vACtYEcr+/w=="
+  "resolved" "https://registry.npmjs.org/@syrf/circuit-breaker/-/circuit-breaker-1.0.1.tgz"
+  "version" "1.0.1"
+
 "@syrf/transport-library@^1.0.7":
   "integrity" "sha512-SOg8vXulDi1TlsBpf/Tz6L1y4PSKCpxJiZh718oHgduufGe/Ag+6JAk4Bv6ReKY68sUWSJXW3WRkv93DbbMUGg=="
   "resolved" "https://registry.yarnpkg.com/@syrf/transport-library/-/transport-library-1.0.7.tgz"

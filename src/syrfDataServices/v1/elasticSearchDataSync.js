@@ -1,4 +1,4 @@
-const dataAccess = require('../../syrf-schema/dataAccess/v1/searchDataSync');
+const dataAccess = require('./searchDataSync');
 const cuDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
 const vpDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
 const ceDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');

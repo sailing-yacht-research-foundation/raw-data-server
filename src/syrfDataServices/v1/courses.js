@@ -19,10 +19,8 @@ const {
   findClosestCountry,
 } = require('../../utils/closestLocation');
 const { createMapScreenshot } = require('../../utils/createMapScreenshot');
-const { uploadMapScreenshot } = require('../../externalServices/s3Bucket');
-const {
-  competitionUnitSync,
-} = require('../../services/v1/elasticSearchDataSync');
+const { uploadMapScreenshot } = require('../../services/s3Util');
+const { competitionUnitSync } = require('./elasticSearchDataSync');
 
 const setGeometryId = (geometries) => {
   if (Array.isArray(geometries)) {
