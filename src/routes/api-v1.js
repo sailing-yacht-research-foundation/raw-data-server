@@ -177,6 +177,7 @@ router.post(
           break;
         case isScraperExist(jsonData, TRACKER_MAP.swiftsure):
           saveSwiftsureData(jsonData);
+          break;
         case isScraperExist(jsonData, TRACKER_MAP.geovoile):
           saveGeovoileData(jsonData);
           break;
