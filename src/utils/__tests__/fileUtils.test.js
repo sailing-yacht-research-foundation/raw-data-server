@@ -54,9 +54,6 @@ describe('fileUtil.js', () => {
     beforeAll(() => {
       readdirSyncSpy = jest.spyOn(fs, 'readdirSync').mockReturnValue(mockDirValues);
     });
-    afterAll(() => {
-      readdirSyncSpy.restore();
-    });
 
     it('should call readdirsync, filter with directory only and return the names', () => {
       const result = listDirectories(existingPath);

@@ -208,6 +208,12 @@ db.tractracSuccessfulUrl = require('./tractrac/tractracSuccessfulUrl.model')(
   sequelize,
   Sequelize,
 );
+
+db.tractracEvent.hasMany(db.tractracRace, {
+  foreignKey: 'event',
+  constraints: false,
+})
+
 // === End of TracTrac ===
 
 // === Yellowbrick ===
@@ -498,6 +504,11 @@ db.tackTrackerFailedUrl = require('./tackTracker/tackTrackerFailedUrl.model')(
 );
 db.tackTrackerSuccessfulUrl =
   require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
+
+db.tackTrackerRegatta.hasMany(db.tackTrackerRace, {
+  foreignKey: 'regatta',
+  constraints: false,
+})
 // === End of TackTracker ===
 
 // === Swiftsure ===

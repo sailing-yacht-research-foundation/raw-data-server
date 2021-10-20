@@ -1,5 +1,5 @@
 const axios = require('axios');
-
+jest.unmock('../elasticsearch');
 jest.mock('axios', () => ({
   create: jest.fn().mockReturnThis(),
   put: jest.fn(),

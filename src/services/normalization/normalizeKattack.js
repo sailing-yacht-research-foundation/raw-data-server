@@ -28,7 +28,6 @@ const normalizeRace = async (
   }
   const id = race.id;
   const name = race.name;
-  const event = null;
   const url = race.url;
   const startTime = parseInt(race.start);
   const endTime = parseInt(race.stop);
@@ -80,7 +79,8 @@ const normalizeRace = async (
   const raceMetadata = await createRace(
     id,
     name,
-    event,
+    null, // event name
+    null, // event id
     KATTACK_SOURCE,
     url,
     startTime,

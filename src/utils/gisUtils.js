@@ -293,9 +293,26 @@ exports.validateBoundingBox = function (bbox) {
   return isNonPolar && isNotNarrow;
 };
 
+exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
+  eventName = eventName?.trim();
+  raceName = raceName?.trim();
+  let name;
+  if (eventName === raceName) {
+    name = eventName;
+  } else {
+    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')].filter(Boolean).join(" - ");
+  }
+  if (!name) {  // if no event or race name
+    const dateFormatter = formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'long', timeZone: 'utc' });
+    name = `Race at ${dateFormatter.format(startTimeMs)}`;  //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
+  }
+  return name;
+}
+
 exports.createRace = async function (
   id,
-  nameT,
+  raceName,
+  eventName,
   event,
   source,
   url,
@@ -313,7 +330,7 @@ exports.createRace = async function (
   unstructuredText,
   skipElasticSearch = false,
 ) {
-  const name = nameT.replace('_', ' ');
+  let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
   const startCountry = exports.pointToCountry(startPoint);
   const startCity = exports.pointToCity(startPoint.geometry.coordinates);
   let openGraphImage = null;
@@ -329,7 +346,7 @@ exports.createRace = async function (
       ContentEncoding: 'base64',
       ContentType: 'image/png',
     });
-    openGraphImage = response.Location;
+    openGraphImage = response?.Location;
   } catch (error) {
     // Logging only, if not successfully created, we can skip the open graph image
     console.error(

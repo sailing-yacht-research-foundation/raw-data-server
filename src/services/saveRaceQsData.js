@@ -58,6 +58,20 @@ const saveRaceQsData = async (data) => {
       });
     }
     if (data.RaceQsRoute) {
+      const routesWithNoWaypoint = data.RaceQsRoute.filter((r) => !r.waypoint);
+      if (routesWithNoWaypoint.length) {
+        const waypoints = await db.raceQsWaypoint.findAll({
+          attributes: ['id', 'original_id'],
+          where: { original_id: routesWithNoWaypoint.map((r) => r.waypoint_original_id?.toString()) },
+          raw: true,
+        });
+        routesWithNoWaypoint.forEach((r) => {
+          const wpId = waypoints.find((wp) => wp.original_id === r.waypoint_original_id?.toString())?.id;
+          if (wpId) {
+            r.waypoint = wpId;
+          }
+        })
+      }
       await db.raceQsRoute.bulkCreate(data.RaceQsRoute, {
         ignoreDuplicates: true,
         validate: true,
@@ -83,7 +97,7 @@ const saveRaceQsData = async (data) => {
     }
     await transaction.commit();
   } catch (error) {
-    console.log(error.toString());
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
