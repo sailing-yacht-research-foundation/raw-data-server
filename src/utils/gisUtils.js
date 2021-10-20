@@ -544,3 +544,13 @@ exports.parseGeoStringToDecimal = function (input) {
   var parts = input.split(/[^\d\w\.]+/);
   return convertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
 };
+
+/**
+ *
+ * @param {Number} speed
+ * @returns
+ */
+exports.meterPerSecToKnots = function (speed) {
+  // 1 m/s = 1.943844 kn
+  return parseFloat((speed * 1.943844).toFixed(2));
+};
