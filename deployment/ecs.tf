@@ -59,6 +59,9 @@ resource "aws_ecs_task_definition" "rds_task" {
           "hostPort": 3000
         }
       ],
+      "environment": [
+        { "name": "NODE_OPTIONS", "value": "--max_old_space_size=12288" }
+      ],
       "environmentFiles": [
                {
                    "value": "arn:aws:s3:::syrf-dev-env-variables/raw-data-server.env",
@@ -73,16 +76,16 @@ resource "aws_ecs_task_definition" "rds_task" {
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "memory": 12288,
+      "memory": 14336,
       "cpu": 4096
     }
-    
+
   ]
   DEFINITION
   requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 12288       # Specifying the memory our container requires
-  cpu                      = 4096         # Specifying the CPU our container requires
+  memory                   = 14336       # Specifying the memory our container requires
+  cpu                      = 4096        # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
   volume {
@@ -107,10 +110,10 @@ resource "aws_appautoscaling_target" "ecs_target" {
   resource_id        = "service/Raw-Data-Server-ECS_Cluster/Raw-Data-Server-Service"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
- }
- 
- 
- resource "aws_appautoscaling_policy" "ecs_target_cpu" {
+}
+
+
+resource "aws_appautoscaling_policy" "ecs_target_cpu" {
   name               = "application-scaling-policy-cpu"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.ecs_target.resource_id
