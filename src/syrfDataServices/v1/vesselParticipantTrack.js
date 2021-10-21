@@ -2,12 +2,9 @@ const turf = require('@turf/turf');
 const { meterPerSecToKnots } = require('../../utils/gisUtils');
 
 const { geokdbush } = require('geokdbush');
-const {
-  INTERACTION_TRACK_LENGTH,
-  SIMPLIFICATION_TOLERANCE,
-} = require('../../constants');
+const { SIMPLIFICATION_TOLERANCE } = require('../../constants');
 
-class VesselParticipantTrack {
+module.exports = class VesselParticipantTrack {
   constructor(id) {
     this.id = id;
     this.positions = [];
@@ -121,53 +118,6 @@ class VesselParticipantTrack {
       derivedSOG,
       derivedTWA,
     };
-  }
-  getShortTrack() {
-    if (this.positions.length < 2) {
-      return null;
-    }
-    return turf.lineString(
-      this.positions
-        .slice(INTERACTION_TRACK_LENGTH * -1)
-        .map((row) => row.position),
-    );
-  }
-
-  getPreviousPositionBeforeTime(time) {
-    const endIndex = this.positions.findIndex((row) => {
-      return row.timestamp >= time;
-    });
-    if (endIndex < 0) {
-      if (this.positions.length > 0) {
-        return this.positions[this.positions.length - 1];
-      }
-      return undefined;
-    }
-    return this.positions[endIndex - 1];
-  }
-  /**
-   *
-   * @param {Number} startTime
-   * @param {Number} endTime
-   * @returns
-   */
-  getTrackFromTime(startTime, endTime = null) {
-    const indexStart = this.positions.findIndex((row) => {
-      return row.timestamp >= startTime;
-    });
-    if (indexStart < 0) {
-      return [];
-    }
-    let indexEnd;
-    if (endTime) {
-      const tempIndex = this.positions.findIndex((row) => {
-        return row.timestamp > endTime;
-      });
-      if (tempIndex > 0 && tempIndex > indexStart) {
-        indexEnd = tempIndex;
-      }
-    }
-    return this.positions.slice(indexStart, indexEnd);
   }
   /**
    *
@@ -315,4 +265,4 @@ class VesselParticipantTrack {
       simplifiedGeoJson,
     };
   }
-}
+};

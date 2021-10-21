@@ -19,7 +19,7 @@ const vessel = require('../../syrfDataServices/v1/vessel');
 const vesselParticipant = require('../../syrfDataServices/v1/vesselParticipant');
 const vesselParticipantGroup = require('../../syrfDataServices/v1/vesselParticipantGroup');
 const courses = require('../../syrfDataServices/v1/courses');
-
+const VesselParticipantTrack = require('../../syrfDataServices/v1/vesselParticipantTrack');
 const normalizeGeovoile = async (
   { geovoileRace, boats, sailors, positions },
   transaction,
@@ -156,6 +156,8 @@ const normalizeGeovoile = async (
     let vessels = [];
     // TODO: get existing vessel information to reuse
     // in case there is no existing vessels, then create new one
+
+    const vesselOriginalIdMap = new Map();
     for (const boat of boats) {
       const currentVessel = await vessel.upsert(
         null,
@@ -170,10 +172,12 @@ const normalizeGeovoile = async (
         mainDatabaseTransaction,
       );
       vessels.push(currentVessel);
+      vesselOriginalIdMap.set(boat.original_id, currentVessel.id);
     }
     console.log(`Save vessel participants`);
+    const vesselParticipants = new Map();
     for (const currentVessel of vessels) {
-      await vesselParticipant.upsert(
+      const result = await vesselParticipant.upsert(
         null,
         {
           vesselId: currentVessel.id,
@@ -182,6 +186,7 @@ const normalizeGeovoile = async (
         null,
         mainDatabaseTransaction,
       );
+      vesselParticipants.set(result.vesselId, result.id);
     }
     console.log(`Create new Competition Unit`);
     const boundingBoxGeometry = turf.bboxPolygon(boundingBox);
@@ -248,11 +253,30 @@ const normalizeGeovoile = async (
       ],
       courseUnsequencedTimedGeometry: [], // no used atm
     });
-    // TODO:
-    // 5. Publish the position to rabbit mq using @syrf/transport-library
-    // 6. Call analysis engine to stopCompetition (generate geo json per participant)
 
     mainDatabaseTransaction.commit();
+
+    // Create the participant track
+    const vesselParticipantTracks = {};
+    for (const currentParticipant of vesselParticipants.values()) {
+      vesselParticipantTracks[currentParticipant] = new VesselParticipantTrack(
+        currentParticipant,
+      );
+    }
+    for (const position of allPositions) {
+      const vesselId = vesselOriginalIdMap.get(position.boat_original_id);
+      const tracker = vesselParticipantTracks[vesselParticipants.get(vesselId)];
+      tracker.addNewPosition(
+        [position.lon, position.lat],
+        position.timecode * 1000,
+        {
+          cog: position.heading,
+        },
+        {},
+      );
+    }
+
+    // TODO: generate geojson for each boat
     console.log('Finish saving geovoile into main database');
   } catch (e) {
     console.log('Error duing saving geovoile into main database');
