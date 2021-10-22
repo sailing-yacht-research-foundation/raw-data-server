@@ -122,13 +122,11 @@ const normalizeGeovoile = async (
     console.log('Create new calendar event');
     // 1. Save calendar event information
     const newCalendarEvent = await calendarEvent.upsert(
-      null,
       {
         name,
-        description: '',
-        isPrivate: false,
-        approximateStartTime: new Date(startTime).toISOString(),
-        approximateEndTime: new Date(endTime).toISOString(),
+        externalUrl: race.url,
+        approximateStartTime: startTime,
+        approximateEndTime: endTime,
         lon: startPoint.geometry.coordinates[0],
         lat: startPoint.geometry.coordinates[1],
         source: GEOVOILE_SOURCE,
@@ -136,9 +134,6 @@ const normalizeGeovoile = async (
         isPubliclyViewable: true,
         approximateStartTime_zone: 'Etc/UTC',
         approximateEndTime_zone: 'Etc/UTC',
-        externalUrl: race.url,
-        // Internet Calendar Scheduling (ics)
-        ics: null,
         editors: [],
       },
       mainDatabaseTransaction,
@@ -146,12 +141,9 @@ const normalizeGeovoile = async (
     // Create vessel participant group
     console.log('Create new vesselGroup');
     const vesselGroup = await vesselParticipantGroup.upsert(
-      null,
       {
         calendarEventId: newCalendarEvent.id,
-        name: '',
       },
-      null,
       mainDatabaseTransaction,
     );
 
@@ -302,7 +294,7 @@ const normalizeGeovoile = async (
     );
     console.log('Finish saving geovoile into main database');
   } catch (e) {
-    console.log('Error duing saving geovoile into main database');
+    console.log('Error during saving geovoile into main database');
     console.log(e);
     mainDatabaseTransaction.rollback();
   }
