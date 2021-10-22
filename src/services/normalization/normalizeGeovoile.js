@@ -286,7 +286,7 @@ const normalizeGeovoile = async (
       const vesselParticipantId = vesselParticipants.get(vesselId);
       return {
         vesselParticipantId: vesselParticipantId,
-        elapsedTime: t.arrival ? t.arrival.racetime * 1000 : Infinity,
+        elapsedTime: t.arrival ? t.arrival.racetime * 1000 : 0,
         finishTime: t.arrival ? t.arrival.timecode * 1000 : 0,
       };
     });

@@ -229,10 +229,7 @@ exports.triggerSaveFinishedCompetition = async (
         Readable.from(JSON.stringify(trackData)).pipe(writeStream);
         s3Detail = await uploadPromise;
       } catch (error) {
-        console.error(
-          `Error uploading point track geojson:
-          }`,
-        );
+        console.error(`Error uploading point track geojson:`);
         console.error(error);
       }
       return {
@@ -243,7 +240,6 @@ exports.triggerSaveFinishedCompetition = async (
   );
   const transaction = await createTransaction();
   try {
-    // TODO: saveCompetitionWinds
     await this.saveVesselTrackJsons(
       competitionUnitId,
       uploadedVesselTrack.filter((row) => {
