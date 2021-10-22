@@ -275,8 +275,13 @@ const normalizeGeovoile = async (
         {},
       );
     }
-
-    // TODO: generate geojson for each boat
+    await competitionUnit.stopCompetition(
+      newCompetitionUnit.id,
+      vesselParticipant,
+      vesselParticipantTracks,
+      {},
+      null,
+    );
     console.log('Finish saving geovoile into main database');
   } catch (e) {
     console.log('Error duing saving geovoile into main database');

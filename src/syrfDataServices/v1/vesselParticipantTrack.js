@@ -1,8 +1,9 @@
 const turf = require('@turf/turf');
 const { meterPerSecToKnots } = require('../../utils/gisUtils');
 
-const { geokdbush } = require('geokdbush');
+const geokdbush = require('geokdbush');
 const { SIMPLIFICATION_TOLERANCE } = require('../../constants');
+const KDBush = require('kdbush');
 
 module.exports = class VesselParticipantTrack {
   constructor(id) {
@@ -127,7 +128,7 @@ module.exports = class VesselParticipantTrack {
     const coordinateWithTime = [];
     if (this.positions.length > 2) {
       // Turf Line String is unable to process less than 2 position
-      const trackIndex = new turf.KDBush(
+      const trackIndex = new KDBush(
         this.positions,
         (p) => p.position[0],
         (p) => p.position[1],
@@ -144,8 +145,7 @@ module.exports = class VesselParticipantTrack {
         });
       } catch (error) {
         console.error(
-          `Error simplifying tracks: ${
-            error instanceof Error ? error.message : '-'
+          `Error simplifying tracks: ${error instanceof Error ? error.message : '-'
           }. Returning whole track`,
         );
         return {
@@ -197,7 +197,7 @@ module.exports = class VesselParticipantTrack {
    * @param {*} properties
    * @returns {providedGeoJson: VesselTrackGeoJson, calculatedGeoJson: VesselTrackGeoJson, simplifiedGeoJson: VesselTrackGeoJson }
    */
-  createGeoJsonTrack({ competitionUnitId }) {
+  createGeoJsonTrack({ competitionUnitId } = {}) {
     const providedGeoJson = {
       type: 'Feature',
       properties: {

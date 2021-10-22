@@ -4,6 +4,8 @@ const s3 = new AWS.S3({
   secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
 });
 
+const stream = require('stream');
+
 const listAllKeys = async (bucketName) => {
   let params = {
     Bucket: bucketName,
@@ -41,8 +43,23 @@ const uploadMapScreenshot = async (imageBuffer, fileName) => {
   return response;
 };
 
+const uploadStreamToS3 = (bucket, key) => {
+  const passThrough = new stream.PassThrough();
+
+  const uploadPromise = s3
+    .upload({
+      Bucket: bucket,
+      Key: key,
+      Body: passThrough,
+    })
+    .promise();
+
+  return { writeStream: passThrough, uploadPromise };
+};
+
 module.exports = {
   listAllKeys,
   getObject,
   uploadMapScreenshot,
+  uploadStreamToS3,
 };
