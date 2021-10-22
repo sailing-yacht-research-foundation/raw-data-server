@@ -169,21 +169,7 @@ exports.triggerSaveFinishedCompetition = async (
   const bucket = process.env.AWS_S3_TRACKS_GEOJSON_BUCKET;
   const uploadedVesselTrack = await Promise.all(
     vesselTracksJson.map(async (trackData) => {
-      const { calculatedGeoJson, providedGeoJson, simplifiedGeoJson } =
-        trackData;
-      let calculatedS3Detail = null;
-      try {
-        const { uploadPromise, writeStream } = uploadStreamToS3(
-          bucket,
-          `individual-tracks/${competitionUnitId}/vessel/calculated/${calculatedGeoJson.properties.vesselParticipantId}.geojson`,
-        );
-        Readable.from(JSON.stringify(calculatedGeoJson)).pipe(writeStream);
-        calculatedS3Detail = await uploadPromise;
-      } catch (error) {
-        console.error(`Error uploading calculated vessel track geojson:`);
-        console.error(error);
-      }
-
+      const { providedGeoJson, simplifiedGeoJson } = trackData;
       let providedS3Detail = null;
       try {
         const { uploadPromise, writeStream } = uploadStreamToS3(
@@ -211,8 +197,7 @@ exports.triggerSaveFinishedCompetition = async (
       }
 
       return {
-        vesselParticipantId: calculatedGeoJson.properties.vesselParticipantId,
-        calculatedStorageKey: calculatedS3Detail ? calculatedS3Detail.Key : '',
+        vesselParticipantId: providedGeoJson.properties.vesselParticipantId,
         providedStorageKey: providedS3Detail ? providedS3Detail.Key : '',
         simplifiedStorageKey: simplifiedS3Detail ? simplifiedS3Detail.Key : '',
       };
@@ -288,17 +273,13 @@ exports.saveVesselTrackJsons = async (
   transaction,
 ) => {
   const dataToSave = data.map((row) => {
-    const {
-      vesselParticipantId,
-      providedStorageKey,
-      calculatedStorageKey,
-      simplifiedStorageKey,
-    } = row;
+    const { vesselParticipantId, providedStorageKey, simplifiedStorageKey } =
+      row;
     return {
       competitionUnitId,
       vesselParticipantId,
       providedStorageKey,
-      calculatedStorageKey,
+      calculatedStorageKey: '',
       simplifiedStorageKey,
     };
   });

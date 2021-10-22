@@ -148,9 +148,9 @@ const saveGeovoileData = async (data) => {
     }
   }
 
-  if (raceMetadata) {
-    await triggerWeatherSlicer(raceMetadata);
-  }
+  // if (raceMetadata) {
+  //   await triggerWeatherSlicer(raceMetadata);
+  // }
 
   return errorMessage;
 };

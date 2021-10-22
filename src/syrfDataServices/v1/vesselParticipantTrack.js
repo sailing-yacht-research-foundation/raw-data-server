@@ -195,7 +195,7 @@ module.exports = class VesselParticipantTrack {
   /**
    *
    * @param {*} properties
-   * @returns {providedGeoJson: VesselTrackGeoJson, calculatedGeoJson: VesselTrackGeoJson, simplifiedGeoJson: VesselTrackGeoJson }
+   * @returns {providedGeoJson: VesselTrackGeoJson, simplifiedGeoJson: VesselTrackGeoJson }
    */
   createGeoJsonTrack({ competitionUnitId } = {}) {
     const providedGeoJson = {
@@ -220,38 +220,6 @@ module.exports = class VesselParticipantTrack {
         }),
       },
     };
-    const calculatedGeoJson = {
-      type: 'Feature',
-      properties: {
-        vesselParticipantId: this.id,
-        competitionUnitId,
-      },
-      geometry: {
-        type: 'LineString',
-        coordinates: this.positions.map((row) => {
-          const {
-            position,
-            timestamp,
-            derivedCOG,
-            derivedSOG,
-            derivedTWA,
-            windDirection,
-            windSpeed,
-          } = row;
-          return [
-            position[0],
-            position[1],
-            0,
-            timestamp,
-            derivedSOG || 0,
-            derivedCOG || 0,
-            derivedTWA || 0,
-            windSpeed || 0,
-            windDirection || 0,
-          ];
-        }),
-      },
-    };
     const simplifiedGeoJson = {
       ...this.getSimplifiedTrack(),
       properties: {
@@ -261,7 +229,6 @@ module.exports = class VesselParticipantTrack {
     };
     return {
       providedGeoJson,
-      calculatedGeoJson,
       simplifiedGeoJson,
     };
   }

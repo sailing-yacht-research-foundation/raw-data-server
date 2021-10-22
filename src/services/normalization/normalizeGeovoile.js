@@ -32,7 +32,11 @@ const normalizeGeovoile = async (
     return;
   }
   const id = race.id;
-  const name = race.name;
+  let name = race.name;
+
+  if (race.numLegs && race.numLegs > 1) {
+    name = `${name} - Leg ${race.legNum}`;
+  }
   const url = race.url;
   const startTime = race.startTime * 1000;
   const endTime = race.endTime * 1000;
