@@ -6,6 +6,7 @@ const {
   ServiceError,
   statusCodes,
 } = require('../../syrf-schema/utils/utils');
+const db = require('../../syrf-schema');
 
 exports.upsert = async (
   id,
@@ -82,4 +83,72 @@ exports.delete = async (id) => {
 
 exports.getAllForEvent = async (userId, eventId, paging) => {
   return await dataAccess.getAllForEvent(userId, eventId, paging);
+};
+
+exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
+  externalUrl = externalUrl.split('?')[0];
+  const existingCalendarEvent = await db.CalenderEvent.findOne({
+    where: {
+      externalUrl: {
+        [db.Op.like]: `${externalUrl}%`,
+      },
+    },
+    include: [
+      {
+        as: 'competitionUnit',
+        model: db.CompetitionUnit,
+        attributes: ['id', 'vesselParticipantGroupId'],
+        include: [
+          {
+            as: 'vesselParticipantGroup',
+            model: db.VesselParticipantGroup,
+            attributes: ['id'],
+            include: [
+              {
+                as: 'vesselParticipants',
+                model: db.VesselParticipant,
+                include: [
+                  {
+                    as: 'vessel',
+                    model: db.Vessel,
+                    attributes: [
+                      'id',
+                      'vesselId',
+                      'publicName',
+                      'orcJsonPolars',
+                      'globalId',
+                      'publicName',
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  });
+
+  // in case there is no existing calendar event, so just return null
+  if (!existingCalendarEvent) {
+    return [];
+  }
+
+  const results = [];
+
+  const vesselParticipantIds = [];
+  for (const currentCompetitionUnit of existingCalendarEvent.competitionUnit) {
+    if (!currentCompetitionUnit.vesselParticipantGroup.vesselParticipants) {
+      continue;
+    }
+
+    const vesselParticipants =
+      currentCompetitionUnit.vesselParticipantGroup.vesselParticipants;
+    for (const vesselParticipant of vesselParticipants) {
+      vesselParticipantIds.push(vesselParticipant.id);
+    }
+  }
+
+  // TODO: check why it can't join vessels
+  return results;
 };
