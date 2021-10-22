@@ -104,12 +104,21 @@ exports.delete = async (id, calendarEventId) => {
   return result;
 };
 
+/**
+ * Stop the competition.
+ * The logic is mostly taken from analysis engine.
+ * Since the race already has the rankings.
+ * That's why we take it out side instead of calculating the rankings like we do in the analysis engine.
+ * @param {String} id competitionUnitId
+ * @param {Map<String, VesselParticipantTrack>} vesselParticipantTracks vesselParticipantTracks
+ * @param {Map<String, PointTrack>} pointTracks pointTracks
+ * @param {Array<{vesselParticipantId:String, elapsedTime: Number, finishTime: Number}>} rankings rankings
+ */
 exports.stopCompetition = async (
   id,
-  vesselParticipants = [],
   vesselParticipantTracks = {},
   pointTracks = {},
-  participantRankings = null,
+  rankings = [],
 ) => {
   console.log('Stopping Competition');
   const vesselTracksJson = this.generateVesselTracksJson(
@@ -117,33 +126,11 @@ exports.stopCompetition = async (
     vesselParticipantTracks,
   );
   const pointTracksJson = this.generatePointTracksJson(id, pointTracks);
-  const rankings = [];
-  // TODO: ranking
-  if (!participantRankings) {
-  } else {
-    // vesselParticipants.forEach((vp) => {
-    //   rankings.push({
-    //     vesselParticipantId: vp.id,
-    //     elapsedTime: vp.overallStats.elapsedTime,
-    //     finishTime: vp.finishTime,
-    //   });
-    // });
-    // rankings.sort(function (a, b) {
-    //   // Simple ranking calculation
-    //   const firstVal = a.elapsedTime === 0 ? Infinity : a.elapsedTime;
-    //   const secondVal = b.elapsedTime === 0 ? Infinity : b.elapsedTime;
-    //   if (firstVal === secondVal) {
-    //     return 0;
-    //   }
-    //   return firstVal > secondVal ? 1 : -1;
-    // });
-  }
-
   await this.triggerSaveFinishedCompetition(id, {
     vesselParticipantData: null,
     windData: {},
     geoJsons: { vesselTracksJson, pointTracksJson },
-    rankings: [],
+    rankings,
   });
 };
 

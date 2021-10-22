@@ -275,12 +275,26 @@ const normalizeGeovoile = async (
         {},
       );
     }
+    boats.sort((a, b) => {
+      const firstBoatRanking = a.arrival ? a.arrival.rank : Infinity;
+      const secondBoatRanking = b.arrival ? b.arrival.rank : Infinity;
+
+      return firstBoatRanking - secondBoatRanking;
+    });
+    const rankings = boats.map((t) => {
+      const vesselId = vesselOriginalIdMap.get(t.original_id);
+      const vesselParticipantId = vesselParticipants.get(vesselId);
+      return {
+        vesselParticipantId: vesselParticipantId,
+        elapsedTime: t.arrival ? t.arrival.racetime * 1000 : Infinity,
+        finishTime: t.arrival ? t.arrival.timecode * 1000 : 0,
+      };
+    });
     await competitionUnit.stopCompetition(
       newCompetitionUnit.id,
-      vesselParticipant,
       vesselParticipantTracks,
       {},
-      null,
+      rankings,
     );
     console.log('Finish saving geovoile into main database');
   } catch (e) {

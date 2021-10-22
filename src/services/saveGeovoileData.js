@@ -110,6 +110,7 @@ const saveGeovoileData = async (data) => {
         short_name: t.short_name,
         hulls: t.hulls,
         hullColor: t.hullColor,
+        arrival: t.arrival,
       };
     });
 
