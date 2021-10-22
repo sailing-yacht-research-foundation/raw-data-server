@@ -10,9 +10,9 @@ module.exports = {
       : process.env.DB_RAW_DATA_NAME || 'sources',
   dialect: 'postgres',
   pool: {
-    max: 30,
+    max: 200,
     min: 0,
-    acquire: 30000,
+    acquire: 60000,
     idle: process.env.NODE_ENV === 'test' ? 500 : 10000,
   },
   migrationStorage: 'sequelize',
