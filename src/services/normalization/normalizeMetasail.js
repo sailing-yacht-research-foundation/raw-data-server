@@ -22,7 +22,7 @@ const normalizeRace = async (
     return;
   }
   const raceMetadatas = [];
-  const event = MetasailEvent[0];
+  const event = MetasailEvent?.[0];
   for (const race of MetasailRace) {
     const id = race.id;
     const url = race.url;
@@ -30,7 +30,7 @@ const normalizeRace = async (
     const endTime = parseInt(race.stop);
     const original_id = race.original_id;
 
-    const classes = [event.category_text];
+    const classes = [event?.category_text];
     const boatNames = [];
     const identifiers = [];
     const handicapRules = [];
