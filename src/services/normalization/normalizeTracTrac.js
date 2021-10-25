@@ -35,7 +35,7 @@ const normalizeRace = async (
     return;
   }
 
-  const event = TracTracEvent[0];
+  const event = TracTracEvent?.[0];
   for (const race of TracTracRace) {
     const id = race.id;
     const startTime = new Date(race.tracking_start).getTime();

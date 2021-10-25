@@ -26,7 +26,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const GEORACING_SOURCE = 'GEORACING';
-  const eventObj = GeoracingEvent[0];
+  const eventObj = GeoracingEvent?.[0];
   const raceMetadatas = [];
 
   let actorPositions = GeoracingPosition?.filter(
@@ -179,8 +179,8 @@ const normalizeRace = async (
     const raceMetadata = await createRace(
       id,
       race.name,
-      eventObj.name,
-      eventObj.id,
+      eventObj?.name,
+      eventObj?.id,
       GEORACING_SOURCE,
       url,
       startTime,

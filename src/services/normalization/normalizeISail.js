@@ -23,7 +23,7 @@ const normalizeRace = async (
     console.log('No race or positions so skipping.');
     return;
   }
-  const event = iSailEvent[0];
+  const event = iSailEvent?.[0];
   for (const index in iSailRace) {
     const race = iSailRace[index];
     const id = race.id;

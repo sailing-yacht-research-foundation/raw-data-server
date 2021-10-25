@@ -25,7 +25,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const KWINDOO_SOURCE = 'KWINDOO';
-  const regatta = KwindooRegatta[0];
+  const regatta = KwindooRegatta?.[0];
   const raceMetadatas = [];
   const runningGroups = KwindooRunningGroup;
   if (!KwindooRace || !KwindooPosition || KwindooPosition.length === 0) {
