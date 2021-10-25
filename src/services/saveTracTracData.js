@@ -41,7 +41,17 @@ const saveTracTracData = async (data) => {
       const fieldToUpdate = Object.keys(db.tractracEvent.rawAttributes).filter((k) => !['id', 'original_id'].includes(k));
       eventOptions.updateOnDuplicate = fieldToUpdate;
       await db.tractracEvent.bulkCreate(data.TracTracEvent, eventOptions);
+    } else if (data.TracTracRace) { // races associated to a club does not have events
+      raceUrl = data.TracTracRace.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
+      await db.tractracRace.bulkCreate(data.TracTracRace, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
     }
+
     if (data.TracTracClass) {
       await db.tractracClass.bulkCreate(data.TracTracClass, {
         ignoreDuplicates: true,
