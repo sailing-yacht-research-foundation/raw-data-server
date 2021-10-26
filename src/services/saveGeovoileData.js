@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
+const { saveCompetitionUnit } = require('./saveCompetitionUnit');
 
 const saveSuccessfulUrl = async (original_id, url) => {
   await db.geovoileSuccessfulUrl.create({ url, original_id, id: uuidv4() });
@@ -66,13 +67,13 @@ const saveGeovoileData = async (data) => {
   }
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, boats;
+  const positions = [];
   try {
     const race = await saveGeovoileRace(data.geovoileRace, transaction);
 
     const sailors = [];
-    const positions = [];
-    const boats = data.boats.map((t) => {
+    boats = data.boats.map((t) => {
       const boatId = uuidv4();
       const currentSailors = (t.sailors || []).map((sailor) => {
         return {
@@ -122,12 +123,36 @@ const saveGeovoileData = async (data) => {
       { geovoileRace: race, boats: boats, sailors: sailors, positions },
       transaction,
     );
-    await transaction.commit();
+
+    // await transaction.commit();
   } catch (error) {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
+
+  // create ranking
+  boats.sort((a, b) => {
+    const firstBoatRanking = a.arrival ? a.arrival.rank : Infinity;
+    const secondBoatRanking = b.arrival ? b.arrival.rank : Infinity;
+
+    return firstBoatRanking - secondBoatRanking;
+  });
+  const rankings = boats.map((b) => {
+    return {
+      vesselParticipantId: b.id,
+      elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
+      finishTime: b.arrival ? b.arrival.timecode * 1000 : 0,
+    };
+  });
+
+  await saveCompetitionUnit(
+    boats,
+    positions,
+    rankings,
+    null,
+    raceMetadata,
+  );
 
   if (errorMessage) {
     await saveFailedUrl(data.geovoileRace.url, errorMessage);

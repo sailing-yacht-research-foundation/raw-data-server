@@ -10,21 +10,14 @@ const {
   createRace,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
+const { SOURCE } = require('../../constants');
 const uploadUtil = require('../uploadUtil');
 
-const { createTransaction } = require('../../syrf-schema/utils/utils');
-const calendarEvent = require('../../syrfDataServices/v1/calendarEvent');
-const competitionUnit = require('../../syrfDataServices/v1/competitionUnit');
-const vessel = require('../../syrfDataServices/v1/vessel');
-const vesselParticipant = require('../../syrfDataServices/v1/vesselParticipant');
-const vesselParticipantGroup = require('../../syrfDataServices/v1/vesselParticipantGroup');
-const courses = require('../../syrfDataServices/v1/courses');
-const VesselParticipantTrack = require('../../syrfDataServices/v1/vesselParticipantTrack');
 const normalizeGeovoile = async (
   { geovoileRace, boats, sailors, positions },
   transaction,
 ) => {
-  const GEOVOILE_SOURCE = 'GEOVOILE';
+  const GEOVOILE_SOURCE = SOURCE.GEOVOILE;
   const race = geovoileRace;
   const allPositions = positions;
   if (!allPositions || allPositions.length === 0) {
@@ -45,6 +38,7 @@ const normalizeGeovoile = async (
   );
   allPositions.forEach((p) => {
     p.time = p.timecode;
+    p.cog = p.heading;
     p.timestamp = p.timecode * 1000; // Needed for function allPositionsToFeatureCollection
   });
   const boatsToSortedPositions = createBoatToPositionDictionary(
@@ -115,189 +109,6 @@ const normalizeGeovoile = async (
     GEOVOILE_SOURCE,
     transaction,
   );
-
-  const mainDatabaseTransaction = await createTransaction();
-
-  try {
-    console.log('Create new calendar event');
-    // 1. Save calendar event information
-    const newCalendarEvent = await calendarEvent.upsert(
-      {
-        name,
-        externalUrl: race.url,
-        approximateStartTime: startTime,
-        approximateEndTime: endTime,
-        lon: startPoint.geometry.coordinates[0],
-        lat: startPoint.geometry.coordinates[1],
-        source: GEOVOILE_SOURCE,
-        isOpen: false,
-        isPubliclyViewable: true,
-        approximateStartTime_zone: 'Etc/UTC',
-        approximateEndTime_zone: 'Etc/UTC',
-        editors: [],
-      },
-      mainDatabaseTransaction,
-    );
-    // Create vessel participant group
-    console.log('Create new vesselGroup');
-    const vesselGroup = await vesselParticipantGroup.upsert(
-      {
-        calendarEventId: newCalendarEvent.id,
-      },
-      mainDatabaseTransaction,
-    );
-
-    console.log('Create new vessels');
-    // Save vessels information
-    let vessels = [];
-    // TODO: get existing vessel information to reuse
-    // in case there is no existing vessels, then create new one
-
-    const vesselOriginalIdMap = new Map();
-    for (const boat of boats) {
-      const currentVessel = await vessel.upsert(
-        null,
-        {
-          publicName: boat.name,
-          vesselId: boat.original_id, // TODO save by root url + boat original id
-          lengthInMeters: null,
-          orcJsonPolars: {},
-          bulkCreated: true,
-        },
-        null,
-        mainDatabaseTransaction,
-      );
-      vessels.push(currentVessel);
-      vesselOriginalIdMap.set(boat.original_id, currentVessel.id);
-    }
-    console.log(`Save vessel participants`);
-    const vesselParticipants = new Map();
-    for (const currentVessel of vessels) {
-      const result = await vesselParticipant.upsert(
-        null,
-        {
-          vesselId: currentVessel.id,
-          vesselParticipantGroupId: vesselGroup.id,
-        },
-        null,
-        mainDatabaseTransaction,
-      );
-      vesselParticipants.set(result.vesselId, result.id);
-    }
-    console.log(`Create new Competition Unit`);
-    const boundingBoxGeometry = turf.bboxPolygon(boundingBox);
-    // Save competition unit information
-    const newCompetitionUnit = await competitionUnit.upsert(
-      null,
-      {
-        isCompleted: true,
-        calendarEventId: newCalendarEvent.id,
-        startTime: new Date(startTime).toISOString(),
-        endTime: new Date(endTime).toISOString(),
-        approximateStart: new Date(startTime).toISOString(),
-        description: '',
-        name,
-        approximateStart_zone: 'Etc/UTC',
-        boundingBox: boundingBoxGeometry.geometry,
-        vesselParticipantGroupId: vesselGroup.id,
-      },
-      null,
-      mainDatabaseTransaction,
-    );
-
-    console.log(`Creating new Course`);
-    await courses.upsert(null, {
-      competitionUnitId: newCompetitionUnit.id,
-      calendarEventId: newCalendarEvent.id,
-      name,
-      // something like bounding box
-      courseSequencedGeometries: [
-        {
-          geometryType: 'Polygon',
-          order: 0,
-          coordinates: boundingBoxGeometry.geometry.coordinates[0].map((t) => {
-            return { position: t };
-          }),
-        },
-      ],
-      // course related geometries (start line, gates, finish line etc)
-      courseUnsequencedUntimedGeometry: [
-        {
-          geometryType: 'Point',
-          order: 0,
-          coordinates: [
-            {
-              position: startPoint.geometry.coordinates,
-              properties: {
-                name: 'Start Point',
-              },
-            },
-          ],
-        },
-        {
-          geometryType: 'Point',
-          order: 1,
-          coordinates: [
-            {
-              position: endPoint.geometry.coordinates,
-              properties: {
-                name: 'End Point',
-              },
-            },
-          ],
-        },
-      ],
-      courseUnsequencedTimedGeometry: [], // no used atm
-    });
-
-    mainDatabaseTransaction.commit();
-
-    // Create the participant track
-    const vesselParticipantTracks = {};
-    for (const currentParticipant of vesselParticipants.values()) {
-      vesselParticipantTracks[currentParticipant] = new VesselParticipantTrack(
-        currentParticipant,
-      );
-    }
-    for (const position of allPositions) {
-      const vesselId = vesselOriginalIdMap.get(position.boat_original_id);
-      const tracker = vesselParticipantTracks[vesselParticipants.get(vesselId)];
-      tracker.addNewPosition(
-        [position.lon, position.lat],
-        position.timecode * 1000,
-        {
-          cog: position.heading,
-        },
-        {},
-      );
-    }
-    boats.sort((a, b) => {
-      const firstBoatRanking = a.arrival ? a.arrival.rank : Infinity;
-      const secondBoatRanking = b.arrival ? b.arrival.rank : Infinity;
-
-      return firstBoatRanking - secondBoatRanking;
-    });
-    const rankings = boats.map((t) => {
-      const vesselId = vesselOriginalIdMap.get(t.original_id);
-      const vesselParticipantId = vesselParticipants.get(vesselId);
-      return {
-        vesselParticipantId: vesselParticipantId,
-        elapsedTime: t.arrival ? t.arrival.racetime * 1000 : 0,
-        finishTime: t.arrival ? t.arrival.timecode * 1000 : 0,
-      };
-    });
-    await competitionUnit.stopCompetition(
-      newCompetitionUnit.id,
-      vesselParticipantTracks,
-      {},
-      rankings,
-    );
-    console.log('Finish saving geovoile into main database');
-  } catch (e) {
-    console.log('Error during saving geovoile into main database');
-    console.log(e);
-    mainDatabaseTransaction.rollback();
-  }
 
   return raceMetadata;
 };

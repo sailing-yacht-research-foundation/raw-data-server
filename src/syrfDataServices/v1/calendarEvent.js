@@ -2,11 +2,6 @@ const uuid = require('uuid');
 const ical = require('ical-generator');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/calendarEvent');
-const { errorCodes } = require('../../syrf-schema/enums');
-const {
-  setCreateMeta,
-  setUpdateMeta,
-} = require('../../syrf-schema/utils/utils');
 const { pointToCity, pointToCountry } = require('../../utils/gisUtils');
 
 const { createMapScreenshot } = require('../../utils/createMapScreenshot');
@@ -45,8 +40,7 @@ exports.upsert = async (
     source,
     createdAt: now,
     updatedAt: now,
-  }
-
+  };
 
   const startDateObj = new Date(approximateStartTime);
   const endDateObj = new Date(approximateEndTime);
@@ -59,7 +53,8 @@ exports.upsert = async (
       approximateStartTime_zone,
     );
     eventToSave.startDay = eventToSave.approximateStartTime_utc.getDate();
-    eventToSave.startMonth = eventToSave.approximateStartTime_utc.getMonth() + 1;
+    eventToSave.startMonth =
+      eventToSave.approximateStartTime_utc.getMonth() + 1;
     eventToSave.startYear = eventToSave.approximateStartTime_utc.getFullYear();
   } else {
     eventToSave.approximateStartTime = null;
@@ -137,7 +132,16 @@ exports.addOpenGraph = async (id, openGraphImage, transaction) => {
   );
 };
 
-const createICal = ({ name, description, locationName, city, country, externalUrl, approximateStartTime_utc, approximateEndTime_utc }) => {
+const createICal = ({
+  name,
+  description,
+  locationName,
+  city,
+  country,
+  externalUrl,
+  approximateStartTime_utc,
+  approximateEndTime_utc,
+}) => {
   if (!approximateStartTime_utc) {
     return null;
   }

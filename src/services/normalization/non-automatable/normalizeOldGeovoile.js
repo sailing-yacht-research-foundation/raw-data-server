@@ -1,6 +1,5 @@
 const turf = require('@turf/turf');
 const db = require('../../../models');
-const services = require('../../../syrfDataServices/v1/calendarEvent');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -112,19 +111,6 @@ const normalizeRace = async (
       transaction,
     );
   }
-
-  // TODO:
-  // 1. Save calendar event information
-  services.upsert(raceMetadata.id, {
-    name: raceMetadata.name,
-    externalUrl: raceMetadata.url,
-  });
-
-  // 2. Save race information
-  // 3. Save boat information
-  // 4. Save sailor information
-  // 5. Publish the position to rabbit mq using @syrf/transport-library
-  // 6. Call analysis engine to stopCompetition (generate geo json per participant)
   return raceMetadata;
 };
 

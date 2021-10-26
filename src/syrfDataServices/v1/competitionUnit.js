@@ -4,19 +4,14 @@ const { createTransaction } = require('../../syrf-schema/utils/utils');
 const db = require('../../syrf-schema/index');
 const { uploadStreamToS3 } = require('../../services/s3Util');
 const { Readable } = require('stream');
-const {
-  setCreateMeta,
-  setUpdateMeta,
-} = require('../../syrf-schema/utils/utils');
 
 exports.upsert = async (
-  id,
   {
+    id,
     name,
     startTime,
     approximateStart,
     approximateStart_zone = 'Etc/UTC',
-    isCompleted,
     boundingBox,
     vesselParticipantGroupId,
     courseId,
@@ -24,83 +19,43 @@ exports.upsert = async (
     endTime,
     timeLimit,
     description,
+    openGraphImage,
   } = {},
-  user,
   transaction,
 ) => {
-  const isNew = !id;
-
-  let res = await dataAccess.getById(id);
-
-  if (id && !res) {
-    throw new Error('Competition Unit not found');
-  }
-
-  if (isNew) {
-    res = setCreateMeta(res, user);
-  }
+  const now = Date.now();
+  const competitionToSave = {
+    name,
+    startTime,
+    isCompleted: true,
+    boundingBox,
+    vesselParticipantGroupId,
+    courseId,
+    calendarEventId,
+    endTime,
+    timeLimit,
+    description,
+    openGraphImage,
+    createdAt: now,
+    updatedAt: now,
+  };
 
   const startDateObj = new Date(approximateStart);
 
   if (!isNaN(startDateObj.getTime())) {
-    res.approximateStart = approximateStart;
-    res.approximateStart_zone = approximateStart_zone;
-    res.approximateStart_utc = zonedTimeToUtc(
+    competitionToSave.approximateStart = approximateStart;
+    competitionToSave.approximateStart_zone = approximateStart_zone;
+    competitionToSave.approximateStart_utc = zonedTimeToUtc(
       startDateObj,
       approximateStart_zone,
     );
   } else {
-    res.approximateStart = null;
-    res.approximateStart_zone = null;
-    res.approximateStart_utc = null;
+    competitionToSave.approximateStart = null;
+    competitionToSave.approximateStart_zone = null;
+    competitionToSave.approximateStart_utc = null;
   }
 
-  res.name = name;
-  res.startTime = startTime;
-  res.approximateStart = approximateStart;
-  res.isCompleted = isCompleted;
-  res.boundingBox = boundingBox;
-  res.vesselParticipantGroupId = vesselParticipantGroupId;
-  res.courseId = courseId;
-  res.calendarEventId = calendarEventId;
-  res.endTime = endTime;
-  res.timeLimit = timeLimit;
-  res.description = description;
-
-  res = setUpdateMeta(res, user);
-  const result = await dataAccess.upsert(id, res, transaction);
-  return result;
-};
-
-exports.getAll = async (paging, calendarEventId) => {
-  return await dataAccess.getAll(paging, calendarEventId);
-};
-
-exports.getById = async (id, calendarEventId) => {
-  let result = await dataAccess.getById(id);
-
-  if (!result) {
-    throw new Error('Competition Unit not found');
-  }
-  if (calendarEventId && result.calendarEventId !== calendarEventId) {
-    throw new Error('Calendar Event not found');
-  }
-
-  return result;
-};
-
-exports.delete = async (id, calendarEventId) => {
-  let result = await dataAccess.getById(id);
-
-  if (!result) {
-    throw new Error('Competition Unit not found');
-  }
-  if (calendarEventId && result.calendarEventId !== calendarEventId) {
-    throw new Error('Calendar Event not found');
-  }
-
-  await dataAccess.delete(id);
-
+  const result = await dataAccess.upsert(id, competitionToSave, transaction);
   return result;
 };
 
