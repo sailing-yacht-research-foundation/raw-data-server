@@ -34,7 +34,17 @@ const saveTackTrackerData = async (data) => {
       const fieldToUpdate = Object.keys(db.tackTrackerRegatta.rawAttributes).filter((k) => !['id', 'original_id'].includes(k));
       regattaOptions.updateOnDuplicate = fieldToUpdate;
       await db.tackTrackerRegatta.bulkCreate(data.TackTrackerRegatta, regattaOptions);
+    } else if (data.TackTrackerRace) { // races associated to a user does not have regatta
+      raceUrl = data.TackTrackerRace.map((row) => {
+        return { url: row.url, original_id: row.original_id };
+      });
+      await db.tackTrackerRace.bulkCreate(data.TackTrackerRace, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
     }
+
     if (data.TackTrackerBoat) {
       await db.tackTrackerBoat.bulkCreate(data.TackTrackerBoat, {
         ignoreDuplicates: true,

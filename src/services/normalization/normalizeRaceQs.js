@@ -24,7 +24,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const RACEQS_SOURCE = 'RACEQS';
-  const regatta = RaceQsRegatta[0];
+  const regatta = RaceQsRegatta?.[0];
   const raceMetadatas = [];
 
   if (!RaceQsRegatta || !RaceQsPosition || RaceQsPosition.length === 0) {
