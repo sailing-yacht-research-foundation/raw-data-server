@@ -1,12 +1,11 @@
 const dataAccess = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
 const searchDataSyncSvc = require('./elasticSearchDataSync');
 const vpgDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
-const { errorCodes } = require('../../syrf-schema/enums');
+const { errorCodes, statusCodes } = require('../../syrf-schema/enums');
 const {
   setUpdateMeta,
   setCreateMeta,
   ServiceError,
-  statusCodes,
   validateSqlDataAuth,
   ValidationError,
 } = require('../../syrf-schema/utils/utils');

@@ -2,13 +2,12 @@ const uuid = require('uuid');
 const dataAccess = require('../../syrf-schema/dataAccess/v1//participant');
 const eventSVC = require('./calendarEvent');
 let dynamicLinkAPI = require('../../syrf-schema/externalServices/dynamicLinkAPI.j');
-const { errorCodes } = require('../../syrf-schema/enums');
+const { errorCodes, statusCodes } = require('../../syrf-schema/enums');
 const {
   setUpdateMeta,
   setCreateMeta,
   ServiceError,
   ValidationError,
-  statusCodes,
   validateSqlDataAuth,
 } = require('../../syrf-schema/utils/utils');
 
