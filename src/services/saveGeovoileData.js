@@ -6,6 +6,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
 const { saveCompetitionUnit } = require('./saveCompetitionUnit');
+const vessel = require('../syrfDataServices/v1/vessel');
 
 const saveSuccessfulUrl = async (original_id, url) => {
   await db.geovoileSuccessfulUrl.create({ url, original_id, id: uuidv4() });
@@ -69,12 +70,18 @@ const saveGeovoileData = async (data) => {
   let errorMessage = '';
   let raceMetadata, boats;
   const positions = [];
+  const existingBoats = await vessel.getExistingVesselsByScrapedUrl(
+    data.geovoileRace.url,
+  );
   try {
     const race = await saveGeovoileRace(data.geovoileRace, transaction);
 
     const sailors = [];
     boats = data.boats.map((t) => {
-      const boatId = uuidv4();
+      const existBoat = existingBoats.find(
+        (currentVessel) => currentVessel.vesselId === t.original_id,
+      );
+      const boatId = existBoat ? existBoat.id : uuidv4();
       const currentSailors = (t.sailors || []).map((sailor) => {
         return {
           ...sailor,
@@ -94,6 +101,7 @@ const saveGeovoileData = async (data) => {
               race_id: race.id,
               race_original_id: race.original_id,
               boat_id: boatId,
+              vesselId: boatId,
               boat_original_id: t.original_id,
               id: uuidv4(),
             };
@@ -138,16 +146,26 @@ const saveGeovoileData = async (data) => {
 
     return firstBoatRanking - secondBoatRanking;
   });
+
   const rankings = boats.map((b) => {
     return {
-      vesselParticipantId: b.id,
+      id: b.id,
       elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
       finishTime: b.arrival ? b.arrival.timecode * 1000 : 0,
     };
   });
 
+  const inputBoats = boats.map((t) => {
+    return vessel.createVesselObject({
+      id: t.id,
+      name: t.name,
+      vesselId: t.original_id,
+      lengthInMeters: t.lengthInMeters,
+    });
+  });
+
   await saveCompetitionUnit(
-    boats,
+    inputBoats,
     positions,
     rankings,
     null,

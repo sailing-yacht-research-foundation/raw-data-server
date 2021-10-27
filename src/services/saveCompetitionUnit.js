@@ -100,8 +100,8 @@ const saveCompetitionUnit = async (
         {
           id: boat.id,
           publicName: boat.name,
-          vesselId: boat.original_id, // TODO save by root url + boat original id
-          lengthInMeters: boats.lengthInMeters,
+          vesselId: boat.vesselId,
+          lengthInMeters: boat.lengthInMeters,
         },
         mainDatabaseTransaction,
       );
@@ -123,6 +123,15 @@ const saveCompetitionUnit = async (
       );
       vesselParticipants.set(result.vesselId, result.id);
     }
+
+    rankings = rankings.map((t) => {
+      const vesselParticipantId = vesselParticipants.get(t.id);
+      return {
+        vesselParticipantId: vesselParticipantId,
+        elapsedTime: t.elapsedTime,
+        finishTime: t.finishTime,
+      };
+    });
     console.log(`Create new Competition Unit`);
     // Save competition unit information
     const newCompetitionUnit = await competitionUnit.upsert(
@@ -195,8 +204,7 @@ const saveCompetitionUnit = async (
       );
     }
     for (const position of allPositions) {
-      const vesselId = vesselOriginalIdMap.get(position.boat_original_id);
-      const tracker = vesselParticipantTracks[vesselParticipants.get(vesselId)];
+      const tracker = vesselParticipantTracks[vesselParticipants.get(position.vesselId)];
       tracker.addNewPosition(
         [position.lon, position.lat],
         position.timestamp,
@@ -214,7 +222,10 @@ const saveCompetitionUnit = async (
     );
     console.log(`Finish saving competition unit ${raceId} into main database`);
   } catch (err) {
-    console.log(`Error during saving competition unit ${raceId} into main database`, err);
+    console.log(
+      `Error during saving competition unit ${raceId} into main database`,
+      err,
+    );
     mainDatabaseTransaction.rollback();
   }
 };

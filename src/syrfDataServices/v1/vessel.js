@@ -29,6 +29,10 @@ exports.upsert = async (
   return await dataAccess.upsert(id, vesselToSave, transaction);
 };
 
+exports.createVesselObject = ({ id, name, vesselId, lengthInMeters } = {}) => {
+  return { id, name, vesselId, lengthInMeters };
+};
+
 exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
   externalUrl = externalUrl.split('?')[0];
   const existingCalendarEvent = await db.CalenderEvent.findOne({
@@ -55,16 +59,9 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
                   {
                     as: 'vessel',
                     model: db.Vessel,
-                    attributes: [
-                      'id',
-                      'vesselId',
-                      'publicName',
-                      'orcJsonPolars',
-                      'globalId',
-                      'publicName',
-                    ],
                   },
                 ],
+                attributes: ['id', 'vesselId'],
               },
             ],
           },
@@ -77,8 +74,6 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
   if (!existingCalendarEvent) {
     return [];
   }
-
-  const results = [];
 
   const vesselParticipantIds = [];
   for (const currentCompetitionUnit of existingCalendarEvent.competitionUnit) {
@@ -93,6 +88,16 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
     }
   }
 
-  // TODO: check why it can't join vessels
-  return results;
+  const allVessels = await db.VesselParticipant.findAll({
+    where: {
+      id: { [db.Op.in]: vesselParticipantIds },
+    },
+    include: [
+      {
+        as: 'vessel',
+        model: db.Vessel,
+      },
+    ],
+  });
+  return allVessels.map((t) => t.vessel);
 };
