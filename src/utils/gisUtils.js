@@ -300,14 +300,21 @@ exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
   if (eventName === raceName) {
     name = eventName;
   } else {
-    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')].filter(Boolean).join(" - ");
+    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')]
+      .filter(Boolean)
+      .join(' - ');
   }
-  if (!name) {  // if no event or race name
-    const dateFormatter = formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'long', timeZone: 'utc' });
-    name = `Race at ${dateFormatter.format(startTimeMs)}`;  //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
+  if (!name) {
+    // if no event or race name
+    const dateFormatter = (formatter = new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'long',
+      timeZone: 'utc',
+    }));
+    name = `Race at ${dateFormatter.format(startTimeMs)}`; //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
   }
   return name;
-}
+};
 
 exports.createRace = async function (
   id,
@@ -570,4 +577,16 @@ exports.parseGeoStringToDecimal = function (input) {
 exports.meterPerSecToKnots = function (speed) {
   // 1 m/s = 1.943844 kn
   return parseFloat((speed * 1.943844).toFixed(2));
+};
+
+exports.createGeometryPoint = (lat, lon, properties = {}) => {
+  return {
+    geometryType: 'Point',
+    coordinates: [
+      {
+        position: [lon, lat],
+        properties: properties,
+      },
+    ],
+  };
 };

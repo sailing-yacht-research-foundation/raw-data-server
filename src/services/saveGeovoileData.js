@@ -7,6 +7,7 @@ const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
 const { saveCompetitionUnit } = require('./saveCompetitionUnit');
 const vessel = require('../syrfDataServices/v1/vessel');
+const gisUtils = require('../utils/gisUtils');
 
 const saveSuccessfulUrl = async (original_id, url) => {
   await db.geovoileSuccessfulUrl.create({ url, original_id, id: uuidv4() });
@@ -164,12 +165,23 @@ const saveGeovoileData = async (data) => {
     });
   });
 
+  const courseSequencedGeometries = [];
+  if (data.marks) {
+    for (const mark of data.marks) {
+      const newPoint = gisUtils.createGeometryPoint(mark.lat, mark.lon, {
+        name: mark.name?.trim() || mark.type,
+        type: mark.type,
+      });
+      courseSequencedGeometries.push(newPoint);
+    }
+  }
   await saveCompetitionUnit(
     inputBoats,
     positions,
     rankings,
     null,
     raceMetadata,
+    { courseSequencedGeometries },
   );
 
   if (errorMessage) {

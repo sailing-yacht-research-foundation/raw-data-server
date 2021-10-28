@@ -60,6 +60,7 @@ const saveCompetitionUnit = async (
     approx_start_lon: lat,
     open_graph_image: openGraphImage,
   },
+  { courseSequencedGeometries = [] } = {},
 ) => {
   const mainDatabaseTransaction = await createTransaction();
 
@@ -150,20 +151,31 @@ const saveCompetitionUnit = async (
     );
 
     console.log(`Creating new Course`);
+
+    const newCourseSequencedGeometries = [];
+    if (boundingBox) {
+      newCourseSequencedGeometries.push({
+        geometryType: 'Polygon',
+        order: 0,
+        coordinates: boundingBox.coordinates[0].map((t) => {
+          return { position: t };
+        }),
+      });
+    }
+    if (courseSequencedGeometries) {
+      for (let i = 0; i < courseSequencedGeometries.length; i++) {
+        newCourseSequencedGeometries.push({
+          ...courseSequencedGeometries[i],
+          order: i + newCourseSequencedGeometries.length,
+        });
+      }
+    }
     await courses.upsert(null, {
       competitionUnitId: newCompetitionUnit.id,
       calendarEventId: newCalendarEvent.id,
       name,
       // something like bounding box
-      courseSequencedGeometries: [
-        {
-          geometryType: 'Polygon',
-          order: 0,
-          coordinates: boundingBox.coordinates[0].map((t) => {
-            return { position: t };
-          }),
-        },
-      ],
+      courseSequencedGeometries: newCourseSequencedGeometries,
       // course related geometries (start line, gates, finish line etc)
       courseUnsequencedUntimedGeometry: [
         {
@@ -204,7 +216,8 @@ const saveCompetitionUnit = async (
       );
     }
     for (const position of allPositions) {
-      const tracker = vesselParticipantTracks[vesselParticipants.get(position.vesselId)];
+      const tracker =
+        vesselParticipantTracks[vesselParticipants.get(position.vesselId)];
       tracker.addNewPosition(
         [position.lon, position.lat],
         position.timestamp,
