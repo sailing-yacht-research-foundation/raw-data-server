@@ -20,6 +20,8 @@ const {
   convertDMSToDD,
   parseGeoStringToDecimal,
   generateMetadataName,
+  meterPerSecToKnots,
+  createGeometryPoint,
 } = require('../gisUtils');
 const esUtil = require('../elasticsearch');
 
@@ -603,6 +605,24 @@ describe('gis_utils.js', () => {
       const expectedDateTime = 'Oct 11, 2021, 10:51:31 AM UTC';
       const resultName = generateMetadataName('', '', startTimeMs);
       expect(resultName).toBe(`Race at ${expectedDateTime}`);
+    });
+  });
+
+  describe('When meterPerSecToKnots is called', () => {
+    it('should convert m/s speed to kts', () => {
+      expect(meterPerSecToKnots(0.5144)).toEqual(1);
+      expect(meterPerSecToKnots(5.144)).toEqual(10);
+    });
+  });
+
+  describe('When createGeometryPoint is called', () => {
+    it('#createGeometryPoint should create geometry object', () => {
+      const result = createGeometryPoint(1, -1, { name: 'test' });
+      expect(result.geometryType).toEqual('Point');
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.coordinates[0].position[0]).toEqual(-1);
+      expect(result.coordinates[0].properties.name).toEqual('test');
     });
   });
 });

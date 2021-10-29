@@ -1,12 +1,7 @@
-const uuid = require('uuid');
 const ical = require('ical-generator');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/calendarEvent');
 const { pointToCity, pointToCountry } = require('../../utils/gisUtils');
-
-const { createMapScreenshot } = require('../../utils/createMapScreenshot');
-const { uploadMapScreenshot } = require('../../services/s3Util');
-const db = require('../../syrf-schema');
 
 exports.upsert = async (
   {
@@ -24,6 +19,7 @@ exports.upsert = async (
     country,
     city,
     source,
+    openGraphImage,
   },
   transaction,
 ) => {
@@ -94,42 +90,10 @@ exports.upsert = async (
   }
 
   eventToSave.ics = createICal(eventToSave);
-
+  eventToSave.openGraphImage = openGraphImage;
   const result = await dataAccess.upsert(id, eventToSave, transaction);
 
-  if (lon && lat) {
-    setImmediate(async () => {
-      exports.generateOpenGraph(result.id, [lon, lat]);
-    });
-  }
   return result;
-};
-
-exports.generateOpenGraph = async (id, position, transaction) => {
-  try {
-    const imageBuffer = await createMapScreenshot(position);
-    const response = await uploadMapScreenshot(
-      imageBuffer,
-      `calendar-event/${id}/${uuid.v4()}.png`,
-    );
-    await dataAccess.addOpenGraph(id, response.Location, transaction);
-  } catch (error) {
-    console.error(
-      `Failed to create mapshot for calendar event: ${id}. Error: ${error.message}`,
-    );
-  }
-};
-
-exports.addOpenGraph = async (id, openGraphImage, transaction) => {
-  await db.CalenderEvent.update(
-    { openGraphImage },
-    {
-      where: {
-        id,
-      },
-      transaction,
-    },
-  );
 };
 
 const createICal = ({

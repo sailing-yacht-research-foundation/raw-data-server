@@ -77,6 +77,7 @@ const saveCompetitionUnit = async (
         lon,
         lat,
         source,
+        openGraphImage,
       },
       mainDatabaseTransaction,
     );

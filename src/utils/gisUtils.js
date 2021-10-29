@@ -570,7 +570,7 @@ exports.parseGeoStringToDecimal = function (input) {
 };
 
 /**
- *
+ * Convert m/s speed to kts
  * @param {Number} speed
  * @returns
  */
