@@ -5,6 +5,9 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
+const { saveCompetitionUnit } = require('./saveCompetitionUnit');
+const vessel = require('../syrfDataServices/v1/vessel');
+const gisUtils = require('../utils/gisUtils');
 
 const saveSuccessfulUrl = async (original_id, url) => {
   await db.geovoileSuccessfulUrl.create({ url, original_id, id: uuidv4() });
@@ -66,14 +69,20 @@ const saveGeovoileData = async (data) => {
   }
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, boats;
+  const positions = [];
+  const existingBoats = await vessel.getExistingVesselsByScrapedUrl(
+    data.geovoileRace.url,
+  );
   try {
     const race = await saveGeovoileRace(data.geovoileRace, transaction);
 
     const sailors = [];
-    const positions = [];
-    const boats = data.boats.map((t) => {
-      const boatId = uuidv4();
+    boats = data.boats.map((t) => {
+      const existBoat = existingBoats.find(
+        (currentVessel) => currentVessel.vesselId === t.original_id,
+      );
+      const boatId = existBoat ? existBoat.id : uuidv4();
       const currentSailors = (t.sailors || []).map((sailor) => {
         return {
           ...sailor,
@@ -93,6 +102,7 @@ const saveGeovoileData = async (data) => {
               race_id: race.id,
               race_original_id: race.original_id,
               boat_id: boatId,
+              vesselId: boatId,
               boat_original_id: t.original_id,
               id: uuidv4(),
             };
@@ -110,6 +120,7 @@ const saveGeovoileData = async (data) => {
         short_name: t.short_name,
         hulls: t.hulls,
         hullColor: t.hullColor,
+        arrival: t.arrival,
       };
     });
 
@@ -121,11 +132,59 @@ const saveGeovoileData = async (data) => {
       { geovoileRace: race, boats: boats, sailors: sailors, positions },
       transaction,
     );
+
     await transaction.commit();
   } catch (error) {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
+  }
+
+  // temporary add of test env to avoid accidentally saving on maindb until its mocked
+  if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE === 'true' && process.env.NODE_ENV !== 'test') {
+    // create ranking
+    boats.sort((a, b) => {
+      const firstBoatRanking = a.arrival ? a.arrival.rank : Infinity;
+      const secondBoatRanking = b.arrival ? b.arrival.rank : Infinity;
+
+      return firstBoatRanking - secondBoatRanking;
+    });
+
+    const rankings = boats.map((b) => {
+      return {
+        id: b.id,
+        elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
+        finishTime: b.arrival ? b.arrival.timecode * 1000 : 0,
+      };
+    });
+
+    const inputBoats = boats.map((t) => {
+      return vessel.createVesselObject({
+        id: t.id,
+        name: t.name,
+        vesselId: t.original_id,
+        lengthInMeters: t.lengthInMeters,
+      });
+    });
+
+    const courseSequencedGeometries = [];
+    if (data.marks) {
+      for (const mark of data.marks) {
+        const newPoint = gisUtils.createGeometryPoint(mark.lat, mark.lon, {
+          name: mark.name?.trim() || mark.type,
+          type: mark.type,
+        });
+        courseSequencedGeometries.push(newPoint);
+      }
+    }
+    await saveCompetitionUnit(
+      inputBoats,
+      positions,
+      rankings,
+      null,
+      raceMetadata,
+      { courseSequencedGeometries },
+    );
   }
 
   if (errorMessage) {

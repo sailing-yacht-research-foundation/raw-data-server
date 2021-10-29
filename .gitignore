@@ -112,3 +112,5 @@ deployment/.terraform
 deployment/terraform.tfstate
 deployment/terraform.tfstate.backup
 deployment/.terraform.lock.hcl
+
+package-lock.json
