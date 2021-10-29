@@ -29,64 +29,16 @@ module.exports = class VesselParticipantTrack {
       windDirection: undefined,
     },
   ) {
-    let posLength = this.positions.length;
-    let prevPosition = null;
-    while (posLength > 0) {
-      if (this.positions[posLength - 1].timestamp === timestamp) {
-        // Not populating prevPosition position data when timestamp is the same as last data
-        // Track now mobile app sends multiple requests on the same data, which causes invalid calculated values
-        break;
-      }
-      prevPosition = this.positions[posLength - 1];
-      if (prevPosition.timestamp < timestamp) {
-        break;
-      }
-      posLength--;
-    }
-    if (
-      posLength !== this.positions.length &&
-      this.lastIndexSaved > posLength
-    ) {
-      this.lastIndexSaved = posLength;
-    }
-
-    let trackData;
-    if (prevPosition != null) {
-      const derivedData = this.calculateDerivedData(
-        { position: prevPosition.position, timestamp: prevPosition.timestamp },
-        { position, timestamp },
-        windDirection,
-      );
-      const { derivedCOG, derivedSOG, derivedTWA } = derivedData;
-      trackData = {
-        position,
-        timestamp,
-        cog,
-        sog,
-        twa,
-        derivedCOG,
-        derivedSOG,
-        derivedTWA,
-        windSpeed,
-        windDirection,
-      };
-    } else {
-      trackData = {
-        position,
-        timestamp,
-        cog,
-        sog,
-        twa,
-        windSpeed,
-        windDirection,
-      };
-    }
-
-    this.positions = [
-      ...(posLength > 0 ? this.positions.slice(0, posLength) : []),
-      trackData,
-    ];
-
+    const trackData = {
+      position,
+      timestamp,
+      cog,
+      sog,
+      twa,
+      windSpeed,
+      windDirection,
+    };
+    this.positions.push(trackData);
     return trackData;
   }
 

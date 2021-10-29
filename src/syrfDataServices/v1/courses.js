@@ -1,15 +1,12 @@
 const uuid = require('uuid');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/course');
 const competitionUnitDataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
-const eventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
 const { errorCodes, statusCodes } = require('../../syrf-schema/enums');
 const {
   setUpdateMeta,
   setCreateMeta,
   ValidationError,
-  ServiceError,
   useTransaction,
-  validateSqlDataAuth,
   getCourseCenterPoint,
 } = require('../../syrf-schema/utils/utils');
 
