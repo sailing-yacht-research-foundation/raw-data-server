@@ -1,4 +1,3 @@
-const turf = require('@turf/turf');
 const { createTransaction } = require('../syrf-schema/utils/utils');
 const calendarEvent = require('../syrfDataServices/v1/calendarEvent');
 const competitionUnit = require('../syrfDataServices/v1/competitionUnit');
@@ -68,8 +67,8 @@ const saveCompetitionUnit = async (
     console.log('Create new calendar event');
     // 1. Save calendar event information
     const newCalendarEvent = await calendarEvent.upsert(
+      event?.id,
       {
-        id: event?.id,
         name: event?.name,
         externalUrl: url,
         approximateStartTime: approxStartTimeMs,
@@ -84,6 +83,7 @@ const saveCompetitionUnit = async (
     // Create vessel participant group
     console.log('Create new vesselGroup');
     const vesselGroup = await vesselParticipantGroup.upsert(
+      null,
       {
         calendarEventId: newCalendarEvent.id,
       },
@@ -99,8 +99,8 @@ const saveCompetitionUnit = async (
     const vesselOriginalIdMap = new Map();
     for (const boat of boats) {
       const currentVessel = await vessel.upsert(
+        boat.id,
         {
-          id: boat.id,
           publicName: boat.name,
           vesselId: boat.vesselId,
           lengthInMeters: boat.lengthInMeters,
@@ -134,22 +134,6 @@ const saveCompetitionUnit = async (
         finishTime: t.finishTime,
       };
     });
-    console.log(`Create new Competition Unit`);
-    // Save competition unit information
-    const newCompetitionUnit = await competitionUnit.upsert(
-      {
-        id: raceId,
-        name,
-        calendarEventId: newCalendarEvent.id,
-        startTime: new Date(approxStartTimeMs).toISOString(),
-        endTime: new Date(approxEndTimeMs).toISOString(),
-        approximateStart: new Date(approxStartTimeMs).toISOString(),
-        boundingBox,
-        vesselParticipantGroupId: vesselGroup.id,
-        openGraphImage,
-      },
-      mainDatabaseTransaction,
-    );
 
     console.log(`Creating new Course`);
 
@@ -171,41 +155,62 @@ const saveCompetitionUnit = async (
         });
       }
     }
-    await courses.upsert(null, {
-      competitionUnitId: newCompetitionUnit.id,
-      calendarEventId: newCalendarEvent.id,
-      name,
-      // something like bounding box
-      courseSequencedGeometries: newCourseSequencedGeometries,
-      // course related geometries (start line, gates, finish line etc)
-      courseUnsequencedUntimedGeometry: [
-        {
-          geometryType: 'Point',
-          order: 0,
-          coordinates: [
-            {
-              position: approxStartPoint.coordinates,
-              properties: {
-                name: 'Start Point',
+    const createdCourse = await courses.upsert(
+      null,
+      {
+        calendarEventId: newCalendarEvent.id,
+        name,
+        // something like bounding box
+        courseSequencedGeometries: newCourseSequencedGeometries,
+        // course related geometries (start line, gates, finish line etc)
+        courseUnsequencedUntimedGeometry: [
+          {
+            geometryType: 'Point',
+            order: 0,
+            coordinates: [
+              {
+                position: approxStartPoint.coordinates,
+                properties: {
+                  name: 'Start Point',
+                },
               },
-            },
-          ],
-        },
-        {
-          geometryType: 'Point',
-          order: 1,
-          coordinates: [
-            {
-              position: approxEndPoint.coordinates,
-              properties: {
-                name: 'End Point',
+            ],
+          },
+          {
+            geometryType: 'Point',
+            order: 1,
+            coordinates: [
+              {
+                position: approxEndPoint.coordinates,
+                properties: {
+                  name: 'End Point',
+                },
               },
-            },
-          ],
-        },
-      ],
-      courseUnsequencedTimedGeometry: [], // no used atm
-    });
+            ],
+          },
+        ],
+        courseUnsequencedTimedGeometry: [], // no used atm
+      },
+      mainDatabaseTransaction,
+    );
+
+    console.log(`Create new Competition Unit`);
+    // Save competition unit information
+    const newCompetitionUnit = await competitionUnit.upsert(
+      raceId,
+      {
+        name,
+        startTime: new Date(approxStartTimeMs).toISOString(),
+        approximateStart: new Date(approxStartTimeMs).toISOString(),
+        boundingBox,
+        vesselParticipantGroupId: vesselGroup.id,
+        courseId: createdCourse.id,
+        calendarEventId: newCalendarEvent.id,
+        endTime: new Date(approxEndTimeMs).toISOString(),
+        openGraphImage,
+      },
+      mainDatabaseTransaction,
+    );
 
     mainDatabaseTransaction.commit();
 

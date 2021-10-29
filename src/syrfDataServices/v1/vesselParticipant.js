@@ -6,7 +6,6 @@ const {
   setUpdateMeta,
   setCreateMeta,
   ServiceError,
-  validateSqlDataAuth,
   ValidationError,
 } = require('../../syrf-schema/utils/utils');
 
@@ -126,10 +125,10 @@ exports.delete = async (id, user, vesselParticipantGroupId) => {
   return result;
 };
 
-exports.addParticipant = async (
-  { vesselParticipantId, participantIds = [] },
-  user,
-) => {
+exports.addParticipant = async ({
+  vesselParticipantId,
+  participantIds = [],
+}) => {
   let vesselParticipantObj = await dataAccess.getByParticipantAndId(
     vesselParticipantId,
     participantIds,
@@ -175,10 +174,7 @@ exports.addParticipant = async (
   return result;
 };
 
-exports.removeParticipant = async (
-  { vesselParticipantId, participantId },
-  user,
-) => {
+exports.removeParticipant = async ({ vesselParticipantId, participantId }) => {
   let vesselParticipantObj = await dataAccess.getByParticipantAndId(
     vesselParticipantId,
     [participantId],

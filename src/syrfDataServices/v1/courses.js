@@ -1,22 +1,8 @@
 const uuid = require('uuid');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/course');
 const competitionUnitDataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
-const { errorCodes, statusCodes } = require('../../syrf-schema/enums');
-const {
-  setUpdateMeta,
-  setCreateMeta,
-  ValidationError,
-  useTransaction,
-  getCourseCenterPoint,
-} = require('../../syrf-schema/utils/utils');
-
-const {
-  findClosestCity,
-  findClosestCountry,
-} = require('../../utils/closestLocation');
 const { createMapScreenshot } = require('../../utils/createMapScreenshot');
 const { uploadMapScreenshot } = require('../../services/s3Util');
-const { competitionUnitSync } = require('./elasticSearchDataSync');
 
 const setGeometryId = (geometries) => {
   if (Array.isArray(geometries)) {
@@ -112,155 +98,43 @@ exports.upsert = async (
     calendarEventId,
     name,
   } = {},
-  user,
   transaction,
 ) => {
-  const isNew = !id;
-  let res = await dataAccess.getById(id);
-  let oldData = { ...res };
+  const now = Date.now();
+  const courseToSave = {
+    name,
+    competitionUnitId,
+    calendarEventId,
+    createdAt: now,
+    updatedAt: now,
+  };
 
-  if (id && !res)
-    throw new ValidationError('Not Found', null, statusCodes.NOT_FOUND);
-  if (isNew) {
-    res = {};
-    res = setCreateMeta(res, user);
-  }
-
-  res.competitionUnitId = competitionUnitId;
-  res.courseSequencedGeometries = setGeometryId(courseSequencedGeometries);
-  res.courseUnsequencedUntimedGeometry = setGeometryId(
+  courseToSave.courseSequencedGeometries = setGeometryId(
+    courseSequencedGeometries,
+  );
+  courseToSave.courseUnsequencedUntimedGeometry = setGeometryId(
     courseUnsequencedUntimedGeometry,
   );
-  res.courseUnsequencedTimedGeometry = setGeometryId(
+  courseToSave.courseUnsequencedTimedGeometry = setGeometryId(
     courseUnsequencedTimedGeometry,
   );
-  res.calendarEventId = calendarEventId;
-  res.name = name;
-  res = setUpdateMeta(res, user);
   let [result] = await Promise.all([
-    dataAccess.upsert(id, res, transaction),
+    dataAccess.upsert(id, courseToSave, transaction),
     updatePoints(
-      res.courseSequencedGeometries,
-      oldData.courseSequencedGeometries,
+      courseToSave.courseSequencedGeometries,
+      null, // old geometries. Since this is scraped data only create no update
       transaction,
     ),
     updatePoints(
-      res.courseUnsequencedUntimedGeometry,
-      oldData.courseUnsequencedUntimedGeometry,
+      courseToSave.courseUnsequencedUntimedGeometry,
+      null,
       transaction,
     ),
     updatePoints(
-      res.courseUnsequencedTimedGeometry,
-      oldData.courseUnsequencedTimedGeometry,
+      courseToSave.courseUnsequencedTimedGeometry,
+      null,
       transaction,
     ),
   ]);
-
-  // Country and city directly derived on request
-  const relatedCompetitions = await dataAccess.getCourseCompetitionIds(
-    result.id,
-  );
-  let centerPoint = getCourseCenterPoint(courseSequencedGeometries);
-
-  // Trigger metadata generation
-  if (centerPoint !== null) {
-    setImmediate(async () => {
-      try {
-        await exports.generateOGImage(relatedCompetitions, centerPoint);
-      } catch (err) {
-        console.log(err.message);
-      }
-    });
-
-    const country = findClosestCountry(centerPoint);
-    const city = findClosestCity(centerPoint);
-
-    await competitionUnitDataAccess.updateCountryCity(relatedCompetitions, {
-      country,
-      city,
-      centerPoint,
-    });
-  } else {
-    await competitionUnitDataAccess.updateCountryCity(
-      relatedCompetitions,
-      null,
-    );
-  }
-
-  relatedCompetitions.forEach((competitionUnitId) => {
-    competitionUnitSync(competitionUnitId);
-  });
   return result;
 };
-
-exports.getAll = async (paging, calendarEventId) => {
-  return await dataAccess.getAll(paging, calendarEventId);
-};
-
-exports.getById = async (id, calendarEventId) => {
-  let result = await dataAccess.getById(id);
-
-  if (!result)
-    throw new ValidationError(
-      'Not Found',
-      null,
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-  if (calendarEventId && result.calendarEventId !== calendarEventId)
-    throw new ValidationError(
-      'Not Found',
-      null,
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-
-  return result;
-};
-
-exports.getByCompetitionId = async (competitionUnitId) => {
-  let result = await dataAccess.getByCompetitionId(competitionUnitId);
-
-  if (!result)
-    throw new ValidationError(
-      'Not Found',
-      null,
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-
-  return result;
-};
-
-exports.delete = useTransaction(async (id, calendarEventId, transaction) => {
-  let result = await dataAccess.getById(id, transaction);
-
-  if (!result)
-    throw new ValidationError(
-      'Not Found',
-      null,
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-  if (calendarEventId && result.calendarEventId !== calendarEventId)
-    throw new ValidationError(
-      'Not Found',
-      null,
-      statusCodes.NOT_FOUND,
-      errorCodes.DATA_NOT_FOUND,
-    );
-
-  await Promise.all([
-    dataAccess.clearPoints(
-      [
-        ...result.courseSequencedGeometries,
-        ...result.courseUnsequencedUntimedGeometry,
-        ...result.courseUnsequencedTimedGeometry,
-      ].map((t) => t?.id) || [],
-      transaction,
-    ),
-    dataAccess.delete(id, transaction),
-  ]);
-
-  return result;
-});

@@ -64,5 +64,4 @@ describe('PointTrack - Class to hold track data of a course point', () => {
       );
     });
   });
-
 });

@@ -1,13 +1,14 @@
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
 const { createTransaction } = require('../../syrf-schema/utils/utils');
+const { competitionUnitStatus } = require('../../syrf-schema/enums');
 const db = require('../../syrf-schema/index');
 const { uploadStreamToS3 } = require('../../services/s3Util');
 const { Readable } = require('stream');
 
 exports.upsert = async (
+  id,
   {
-    id,
     name,
     startTime,
     approximateStart,
@@ -20,6 +21,9 @@ exports.upsert = async (
     timeLimit,
     description,
     openGraphImage,
+    country,
+    city,
+    status = competitionUnitStatus.COMPLETED,
   } = {},
   transaction,
 ) => {
@@ -36,6 +40,9 @@ exports.upsert = async (
     timeLimit,
     description,
     openGraphImage,
+    country,
+    city,
+    status,
     createdAt: now,
     updatedAt: now,
   };

@@ -97,7 +97,8 @@ module.exports = class VesselParticipantTrack {
         });
       } catch (error) {
         console.error(
-          `Error simplifying tracks: ${error instanceof Error ? error.message : '-'
+          `Error simplifying tracks: ${
+            error instanceof Error ? error.message : '-'
           }. Returning whole track`,
         );
         return {

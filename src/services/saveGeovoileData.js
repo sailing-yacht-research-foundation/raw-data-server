@@ -133,56 +133,59 @@ const saveGeovoileData = async (data) => {
       transaction,
     );
 
-    // await transaction.commit();
+    await transaction.commit();
   } catch (error) {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }
 
-  // create ranking
-  boats.sort((a, b) => {
-    const firstBoatRanking = a.arrival ? a.arrival.rank : Infinity;
-    const secondBoatRanking = b.arrival ? b.arrival.rank : Infinity;
+  // temporary add of test env to avoid accidentally saving on maindb until its mocked
+  if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE === 'true' && process.env.NODE_ENV !== 'test') {
+    // create ranking
+    boats.sort((a, b) => {
+      const firstBoatRanking = a.arrival ? a.arrival.rank : Infinity;
+      const secondBoatRanking = b.arrival ? b.arrival.rank : Infinity;
 
-    return firstBoatRanking - secondBoatRanking;
-  });
-
-  const rankings = boats.map((b) => {
-    return {
-      id: b.id,
-      elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
-      finishTime: b.arrival ? b.arrival.timecode * 1000 : 0,
-    };
-  });
-
-  const inputBoats = boats.map((t) => {
-    return vessel.createVesselObject({
-      id: t.id,
-      name: t.name,
-      vesselId: t.original_id,
-      lengthInMeters: t.lengthInMeters,
+      return firstBoatRanking - secondBoatRanking;
     });
-  });
 
-  const courseSequencedGeometries = [];
-  if (data.marks) {
-    for (const mark of data.marks) {
-      const newPoint = gisUtils.createGeometryPoint(mark.lat, mark.lon, {
-        name: mark.name?.trim() || mark.type,
-        type: mark.type,
+    const rankings = boats.map((b) => {
+      return {
+        id: b.id,
+        elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
+        finishTime: b.arrival ? b.arrival.timecode * 1000 : 0,
+      };
+    });
+
+    const inputBoats = boats.map((t) => {
+      return vessel.createVesselObject({
+        id: t.id,
+        name: t.name,
+        vesselId: t.original_id,
+        lengthInMeters: t.lengthInMeters,
       });
-      courseSequencedGeometries.push(newPoint);
+    });
+
+    const courseSequencedGeometries = [];
+    if (data.marks) {
+      for (const mark of data.marks) {
+        const newPoint = gisUtils.createGeometryPoint(mark.lat, mark.lon, {
+          name: mark.name?.trim() || mark.type,
+          type: mark.type,
+        });
+        courseSequencedGeometries.push(newPoint);
+      }
     }
+    await saveCompetitionUnit(
+      inputBoats,
+      positions,
+      rankings,
+      null,
+      raceMetadata,
+      { courseSequencedGeometries },
+    );
   }
-  await saveCompetitionUnit(
-    inputBoats,
-    positions,
-    rankings,
-    null,
-    raceMetadata,
-    { courseSequencedGeometries },
-  );
 
   if (errorMessage) {
     await saveFailedUrl(data.geovoileRace.url, errorMessage);
@@ -203,9 +206,9 @@ const saveGeovoileData = async (data) => {
     }
   }
 
-  // if (raceMetadata) {
-  //   await triggerWeatherSlicer(raceMetadata);
-  // }
+  if (raceMetadata) {
+    await triggerWeatherSlicer(raceMetadata);
+  }
 
   return errorMessage;
 };

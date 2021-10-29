@@ -4,8 +4,8 @@ const dataAccess = require('../../syrf-schema/dataAccess/v1/calendarEvent');
 const { pointToCity, pointToCountry } = require('../../utils/gisUtils');
 
 exports.upsert = async (
+  id,
   {
-    id,
     name,
     externalUrl,
     approximateStartTime,

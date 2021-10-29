@@ -2,15 +2,8 @@ const dataAccess = require('../../syrf-schema/dataAccess/v1/vessel');
 const db = require('../../syrf-schema');
 
 exports.upsert = async (
-  {
-    id,
-    publicName,
-    vesselId,
-    globalId,
-    lengthInMeters,
-    orcJsonPolars,
-    scope,
-  } = {},
+  id,
+  { publicName, vesselId, globalId, lengthInMeters, orcJsonPolars, scope } = {},
   transaction,
 ) => {
   const now = Date.now();

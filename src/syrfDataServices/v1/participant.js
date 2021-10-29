@@ -8,7 +8,6 @@ const {
   setCreateMeta,
   ServiceError,
   ValidationError,
-  validateSqlDataAuth,
 } = require('../../syrf-schema/utils/utils');
 
 exports.upsert = async (
