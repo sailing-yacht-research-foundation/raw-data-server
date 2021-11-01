@@ -11,6 +11,8 @@ exports.upsert = async (
   {
     name,
     startTime,
+    approximateStartLocation,
+    approximateEndLocation,
     approximateStart,
     approximateStart_zone = 'Etc/UTC',
     boundingBox,
@@ -31,6 +33,8 @@ exports.upsert = async (
   const competitionToSave = {
     name,
     startTime,
+    approximateStartLocation,
+    approximateEndLocation,
     isCompleted: true,
     boundingBox,
     vesselParticipantGroupId,
