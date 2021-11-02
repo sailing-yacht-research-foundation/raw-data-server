@@ -771,6 +771,14 @@ db.geovoileFailedUrl = require('./geovoile/GeovoileFailedUrl.model')(
   sequelize,
   Sequelize,
 );
+db.GeovoileGeometry = require('./geovoile/GeovoileGeometry.model')(
+  sequelize,
+  Sequelize,
+);
+db.GeovoileGeometryGate = require('./geovoile/GeovoileGeometryGate.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Geovoile ===
 
 // === Start Old Geovoile ===

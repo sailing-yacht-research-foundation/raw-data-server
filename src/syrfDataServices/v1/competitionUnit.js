@@ -213,7 +213,7 @@ exports.triggerSaveFinishedCompetition = async (
       rankings.map((rank, index) => {
         return {
           vesselParticipantId: rank.vesselParticipantId,
-          finishTime: rank.finishTime || new Date().getTime(), // TODO: What should be saved instead if the finishTime is zero (never finish)
+          finishTime: rank.finishTime, // TODO: What should be saved instead if the finishTime is zero (never finish)
           time: rank.elapsedTime,
           rank: index + 1,
         };

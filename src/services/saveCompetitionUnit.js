@@ -61,7 +61,10 @@ const saveCompetitionUnit = async (
     start_city: city,
     open_graph_image: openGraphImage,
   },
-  { courseSequencedGeometries = [] } = {},
+  {
+    courseSequencedGeometries = [],
+    courseUnsequencedUntimedGeometry = [],
+  } = {},
 ) => {
   const mainDatabaseTransaction = await createTransaction();
 
@@ -97,8 +100,6 @@ const saveCompetitionUnit = async (
     console.log('Create new vessels');
     // Save vessels information
     let vessels = [];
-    // TODO: get existing vessel information to reuse
-    // in case there is no existing vessels, then create new one
 
     const vesselOriginalIdMap = new Map();
     for (const boat of boats) {
@@ -159,15 +160,10 @@ const saveCompetitionUnit = async (
         });
       }
     }
-    const createdCourse = await courses.upsert(
-      null,
-      {
-        calendarEventId: newCalendarEvent.id,
-        name,
-        // something like bounding box
-        courseSequencedGeometries: newCourseSequencedGeometries,
-        // course related geometries (start line, gates, finish line etc)
-        courseUnsequencedUntimedGeometry: [
+
+    if (courseUnsequencedUntimedGeometry.length === 0) {
+      courseUnsequencedUntimedGeometry.push(
+        ...[
           {
             geometryType: 'Point',
             order: 0,
@@ -193,6 +189,17 @@ const saveCompetitionUnit = async (
             ],
           },
         ],
+      );
+    }
+    const createdCourse = await courses.upsert(
+      null,
+      {
+        calendarEventId: newCalendarEvent.id,
+        name,
+        // something like bounding box
+        courseSequencedGeometries: newCourseSequencedGeometries,
+        // course related geometries (start line, gates, finish line etc)
+        courseUnsequencedUntimedGeometry: courseUnsequencedUntimedGeometry,
         courseUnsequencedTimedGeometry: [], // no used atm
       },
       mainDatabaseTransaction,
