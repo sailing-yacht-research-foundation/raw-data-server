@@ -1,18 +1,9 @@
 const turf = require('@turf/turf');
 const uuid = require('uuid');
 const elasticsearch = require('./elasticsearch');
-const cities = require('all-the-cities');
-const KDBush = require('kdbush');
-const geokdbush = require('geokdbush');
 const uploadUtil = require('../services/uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
-
-const { world } = require('./world');
-const cityIndex = new KDBush(
-  cities,
-  (p) => p.loc.coordinates[0],
-  (p) => p.loc.coordinates[1],
-);
+const { reverseGeoCode } = require('../syrfDataServices/v1/googleAPI');
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -137,33 +128,6 @@ exports.sortAllBoatPositionsByTime = function (
     const positions = boatsToPositions[key];
     exports.sortPositionsByTime(timeFieldName, positions);
   });
-};
-
-exports.pointToCountry = function (point) {
-  let minDistance = 10000;
-  let countryName = '';
-  let found = false;
-  world.features.forEach((country) => {
-    const poly = country.geometry;
-    const vertices = turf.explode(poly);
-    const closestVertex = turf.nearest(point, vertices);
-    const distance = turf.distance(point, closestVertex);
-    if (!found) {
-      if (turf.booleanPointInPolygon(point, poly)) {
-        found = true;
-        countryName = country.properties.ADMIN;
-      } else if (distance < minDistance) {
-        minDistance = distance;
-        countryName = country.properties.ADMIN;
-      }
-    }
-  });
-  return countryName;
-};
-
-exports.pointToCity = function (point) {
-  const nearestCity = geokdbush.around(cityIndex, point[0], point[1], 1);
-  return nearestCity[0].name;
 };
 
 exports.collectFirstNPositionsFromBoatsToPositions = function (
@@ -338,8 +302,12 @@ exports.createRace = async function (
   skipElasticSearch = false,
 ) {
   let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
-  const startCountry = exports.pointToCountry(startPoint);
-  const startCity = exports.pointToCity(startPoint.geometry.coordinates);
+
+  const { countryName: startCountry, cityName: startCity } =
+    await reverseGeoCode({
+      lon: startPoint.geometry.coordinates[0],
+      lat: startPoint.geometry.coordinates[1],
+    });
   let openGraphImage = null;
   try {
     const imageBuffer = await createMapScreenshot(

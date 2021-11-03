@@ -15,14 +15,13 @@ const {
   allPositionsToFeatureCollection,
   validateBoundingBox,
   createRace,
-  pointToCountry,
-  pointToCity,
   convertDMSToDD,
   parseGeoStringToDecimal,
   generateMetadataName,
   meterPerSecToKnots,
   createGeometryPoint,
 } = require('../gisUtils');
+const { reverseGeoCode } = require('../../syrfDataServices/v1/googleAPI');
 const esUtil = require('../elasticsearch');
 
 describe('gis_utils.js', () => {
@@ -427,8 +426,11 @@ describe('gis_utils.js', () => {
         name: 'EPSG:4326',
       },
     };
-    const startCountry = pointToCountry(startPoint.geometry.coordinates);
-    const startCity = pointToCity(startPoint.geometry.coordinates);
+    const { countryName: startCountry, cityName: startCity } =
+      await reverseGeoCode({
+        lon: startPoint.geometry.coordinates[0],
+        lat: startPoint.geometry.coordinates[1],
+      });
     const positionsLength = 100;
     const positions = [];
     let runningDiffCount = 0;
