@@ -3,7 +3,7 @@ const db = require('../src/models');
 const elasticsearch = require('../src/utils/elasticsearch');
 const Op = db.Sequelize.Op;
 
-const { pointToCity } = require('../src/utils/gisUtils');
+const { reverseGeoCode } = require('../src/syrfDataServices/v1/googleAPI');
 
 (async () => {
   let shouldContinue = true;
@@ -21,9 +21,11 @@ const { pointToCity } = require('../src/utils/gisUtils');
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         const { id, approx_start_point: startPoint } = data[i];
-        let closestCity;
+        const { cityName: closestCity } = await reverseGeoCode({
+          lon: startPoint.coordinates[0],
+          lat: startPoint.coordinates[1],
+        });
         try {
-          closestCity = pointToCity(startPoint.coordinates);
           await db.readyAboutRaceMetadata.update(
             { start_city: closestCity },
             { where: { id } },

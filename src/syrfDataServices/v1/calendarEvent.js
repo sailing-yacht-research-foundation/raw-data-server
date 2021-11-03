@@ -1,7 +1,7 @@
 const ical = require('ical-generator');
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/calendarEvent');
-const { pointToCity, pointToCountry } = require('../../utils/gisUtils');
+const { reverseGeoCode } = require('./googleAPI');
 
 exports.upsert = async (
   id,
@@ -24,6 +24,14 @@ exports.upsert = async (
   transaction,
 ) => {
   const now = Date.now();
+  if (!country || !city) {
+    const { countryName, cityName } = await reverseGeoCode({
+      lon,
+      lat,
+    });
+    country = country || countryName;
+    city = city || cityName;
+  }
   const eventToSave = {
     name,
     externalUrl,
@@ -31,8 +39,8 @@ exports.upsert = async (
     isPrivate: false,
     isOpen: false,
     description,
-    country: country || pointToCountry([lon, lat]),
-    city: city || pointToCity([lon, lat]),
+    country,
+    city,
     source,
     createdAt: now,
     updatedAt: now,
