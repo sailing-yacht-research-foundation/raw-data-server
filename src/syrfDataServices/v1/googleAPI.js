@@ -3,7 +3,7 @@ const qs = require('qs');
 
 const GOOGLE_MAP_URL = 'https://maps.googleapis.com';
 
-const reverseGeoCode = async ({ lon, lat }) => {
+exports.reverseGeoCode = async ({ lon, lat }) => {
   let query = qs.stringify({
     latlng: `${lat},${lon}`,
     key: process.env.GOOGLE_MAP_API_KEY,
@@ -46,5 +46,3 @@ const reverseGeoCode = async ({ lon, lat }) => {
     cityName,
   };
 };
-
-exports.reverseGeoCode = reverseGeoCode;

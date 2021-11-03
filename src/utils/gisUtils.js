@@ -302,6 +302,7 @@ exports.createRace = async function (
   skipElasticSearch = false,
 ) {
   let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
+
   const { countryName: startCountry, cityName: startCity } =
     await reverseGeoCode({
       lon: startPoint.geometry.coordinates[0],
