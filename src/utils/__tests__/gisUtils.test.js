@@ -622,7 +622,7 @@ describe('gis_utils.js', () => {
       expect(result.coordinates.length).toEqual(1);
       expect(result.coordinates[0].position[1]).toEqual(1);
       expect(result.coordinates[0].position[0]).toEqual(-1);
-      expect(result.coordinates[0].properties.name).toEqual('test');
+      expect(result.coordinates.properties.name).toEqual('test');
     });
   });
 });

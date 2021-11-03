@@ -585,9 +585,9 @@ exports.createGeometryPoint = (lat, lon, properties = {}) => {
     coordinates: [
       {
         position: [lon, lat],
-        properties: properties,
       },
     ],
+    properties,
   };
 };
 

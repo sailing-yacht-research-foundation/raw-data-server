@@ -267,8 +267,10 @@ const saveGeovoileData = async (data) => {
         ...gisUtils.createGeometryPoint(
           raceMetadata.approx_start_point.coordinates[1],
           raceMetadata.approx_start_point.coordinates[0],
-          { name: 'Start Point' },
         ),
+        properties: {
+          name: 'Start Point',
+        },
         order: 0,
       });
     }
@@ -278,8 +280,10 @@ const saveGeovoileData = async (data) => {
         ...gisUtils.createGeometryPoint(
           raceMetadata.approx_end_point.coordinates[1],
           raceMetadata.approx_end_point.coordinates[0],
-          { name: 'End Point' },
         ),
+        properties: {
+          name: 'End Point',
+        },
         order: courseGates.length,
       });
     }

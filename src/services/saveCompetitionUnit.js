@@ -148,11 +148,11 @@ const saveCompetitionUnit = async (
             coordinates: [
               {
                 position: approxStartPoint.coordinates,
-                properties: {
-                  name: 'Start Point',
-                },
               },
             ],
+            properties: {
+              name: 'Start Point',
+            },
           },
           {
             geometryType: 'Point',
@@ -160,11 +160,11 @@ const saveCompetitionUnit = async (
             coordinates: [
               {
                 position: approxEndPoint.coordinates,
-                properties: {
-                  name: 'End Point',
-                },
               },
             ],
+            properties: {
+              name: 'End Point',
+            },
           },
         ],
       );
