@@ -135,13 +135,12 @@ const saveGeovoileData = async (data) => {
           {
             lat: gate._pointA[1],
             lon: gate._pointA[0],
-            properties: {},
           },
           {
             lat: gate._pointB[1],
             lon: gate._pointB[0],
-            properties: {},
           },
+          { name: gate.id },
         );
         courseGates.push({
           id: uuidv4(),
@@ -149,9 +148,6 @@ const saveGeovoileData = async (data) => {
           race_original_id: race.original_id,
           order,
           ...line,
-          properties: {
-            name: gate.id,
-          },
         });
       }
       order++;
