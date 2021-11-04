@@ -553,27 +553,27 @@ exports.createGeometryPoint = (lat, lon, properties = {}) => {
     coordinates: [
       {
         position: [lon, lat],
-        properties: properties,
       },
     ],
+    properties,
   };
 };
 
 exports.createGeometryLine = (
-  { lat: point1Lat, lon: point1lon, properties: point1Properties },
-  { lat: point2Lat, lon: point2Lon, properties: point2Properties },
+  { lat: point1Lat, lon: point1lon },
+  { lat: point2Lat, lon: point2Lon },
+  properties = {},
 ) => {
   return {
     geometryType: 'Polyline',
     coordinates: [
       {
         position: [point1lon, point1Lat],
-        properties: point1Properties,
       },
       {
         position: [point2Lon, point2Lat],
-        properties: point2Properties,
       },
     ],
+    properties,
   };
 };

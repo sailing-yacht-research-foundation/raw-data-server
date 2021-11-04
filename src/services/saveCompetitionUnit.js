@@ -61,10 +61,7 @@ const saveCompetitionUnit = async (
     start_city: city,
     open_graph_image: openGraphImage,
   },
-  {
-    courseSequencedGeometries = [],
-    courseUnsequencedUntimedGeometry = [],
-  } = {},
+  { courseSequencedGeometries = [] } = {},
 ) => {
   const mainDatabaseTransaction = await createTransaction();
 
@@ -141,28 +138,9 @@ const saveCompetitionUnit = async (
     });
 
     console.log(`Creating new Course`);
-
-    const newCourseSequencedGeometries = [];
-    if (boundingBox) {
-      newCourseSequencedGeometries.push({
-        geometryType: 'Polygon',
-        order: 0,
-        coordinates: boundingBox.coordinates[0].map((t) => {
-          return { position: t };
-        }),
-      });
-    }
-    if (courseSequencedGeometries) {
-      for (let i = 0; i < courseSequencedGeometries.length; i++) {
-        newCourseSequencedGeometries.push({
-          ...courseSequencedGeometries[i],
-          order: i + newCourseSequencedGeometries.length,
-        });
-      }
-    }
-
-    if (courseUnsequencedUntimedGeometry.length === 0) {
-      courseUnsequencedUntimedGeometry.push(
+    // add default value in case there is no point or mark
+    if (courseSequencedGeometries.length === 0) {
+      courseSequencedGeometries.push(
         ...[
           {
             geometryType: 'Point',
@@ -170,11 +148,11 @@ const saveCompetitionUnit = async (
             coordinates: [
               {
                 position: approxStartPoint.coordinates,
-                properties: {
-                  name: 'Start Point',
-                },
               },
             ],
+            properties: {
+              name: 'Start Point',
+            },
           },
           {
             geometryType: 'Point',
@@ -182,11 +160,11 @@ const saveCompetitionUnit = async (
             coordinates: [
               {
                 position: approxEndPoint.coordinates,
-                properties: {
-                  name: 'End Point',
-                },
               },
             ],
+            properties: {
+              name: 'End Point',
+            },
           },
         ],
       );
@@ -196,10 +174,9 @@ const saveCompetitionUnit = async (
       {
         calendarEventId: newCalendarEvent.id,
         name,
-        // something like bounding box
-        courseSequencedGeometries: newCourseSequencedGeometries,
-        // course related geometries (start line, gates, finish line etc)
-        courseUnsequencedUntimedGeometry: courseUnsequencedUntimedGeometry,
+        // Start line, gates, finish line, marks...
+        courseSequencedGeometries,
+        courseUnsequencedUntimedGeometry: [], // no used atm
         courseUnsequencedTimedGeometry: [], // no used atm
       },
       mainDatabaseTransaction,
