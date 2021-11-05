@@ -11,6 +11,7 @@
     "db:migrate": "sequelize db:migrate",
     "db:seed": "sequelize db:seed:all",
     "db:syrf:sync": "node src/syrf-schema/sync",
+    "db:syrf:migrate": "node src/syrfDataServices/migrate",
     "debug": "nodemon --inspect -L src/main.js"
   },
   "keywords": [],
@@ -46,6 +47,7 @@
     "sequelize-cli": "^6.2.0",
     "tar-fs": "2.1.1",
     "temp": "^0.9.4",
+    "umzug": "^2.3.0",
     "uuid": "^8.3.2",
     "xml2js": "^0.4.23"
   },
