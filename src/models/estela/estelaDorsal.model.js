@@ -55,10 +55,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      track_csv: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
     },
     {
       tableName: 'EstelaDorsals',

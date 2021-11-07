@@ -14,6 +14,7 @@ const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
   {
+    TracTracEvent,
     TracTracRace,
     TracTracCompetitorPosition,
     TracTracClass,
@@ -34,12 +35,11 @@ const normalizeRace = async (
     return;
   }
 
+  const event = TracTracEvent?.[0];
   for (const race of TracTracRace) {
     const id = race.id;
     const startTime = new Date(race.tracking_start).getTime();
     const endTime = new Date(race.tracking_stop).getTime();
-    const name = race.name;
-    const event = race.event;
     const url = race.url;
     const handicapRules = [race.race_handicap];
     const unstructuredText = [];
@@ -94,8 +94,9 @@ const normalizeRace = async (
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
     const raceMetadata = await createRace(
       id,
-      name,
-      event,
+      race.name,
+      event?.name,
+      event?.id,
       TRACTRAC_SOURCE,
       url,
       startTime,

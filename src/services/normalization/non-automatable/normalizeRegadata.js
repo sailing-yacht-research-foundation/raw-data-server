@@ -106,7 +106,6 @@ const normalizeRegadata = async (
   const handicapRules = [];
   const boatIdentifiers = [];
   const unstructuredText = [];
-  const event = null;
   boats?.forEach((b) => {
     if (b.boat) {
       boatNames.push(b.boat);
@@ -125,14 +124,11 @@ const normalizeRegadata = async (
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
 
-  console.log(
-    `race.id = ${race.id}, name = ${name}, event = ${event}, SOURCE = ${SOURCE} startime = ${startTime}, endTimne = ${endTime}`,
-  );
-
   const raceMetadata = await createRace(
     race.id,
     name,
-    event,
+    null, // event name
+    null, // event id
     SOURCE,
     '', // url
     startTime,

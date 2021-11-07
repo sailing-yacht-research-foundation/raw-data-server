@@ -23,7 +23,7 @@ describe('Connect & Subscribe to topic from MQ', () => {
       subscriptions,
     );
 
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 2000));
     expect(onConnect).toHaveBeenCalledTimes(1);
 
     stompClient.publish('/topic/rawdata.topic', {
@@ -60,7 +60,7 @@ describe('Connect & Subscribe to topic from MQ', () => {
       onConnect,
     );
 
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 2000));
     expect(onConnect).toHaveBeenCalledTimes(1);
 
     stompClient.publish('/topic/rawdata.topic', {

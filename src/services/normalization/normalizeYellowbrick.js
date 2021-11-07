@@ -44,7 +44,6 @@ const normalizeRace = async (
   const startTime = parseInt(race.start) * 1000;
   const endTime = parseInt(race.stop) * 1000;
   const name = race.title;
-  const event = null;
   const url = race.url;
 
   const boatNames = [];
@@ -106,7 +105,8 @@ const normalizeRace = async (
   const raceMetadata = await createRace(
     id,
     name,
-    event,
+    null, // event name
+    null, // event id
     YELLOWBRICK_SOURCE,
     url,
     startTime,

@@ -66,11 +66,7 @@ describe('Storing TackTracker data to DB', () => {
   it('should save data correctly', async () => {
     await saveTackTrackerData(jsonData);
     expect(createRegatta).toHaveBeenCalledWith(
-      jsonData.TackTrackerRegatta,
-      expect.anything(),
-    );
-    expect(createRace).toHaveBeenCalledWith(
-      jsonData.TackTrackerRace,
+      [Object.assign({}, jsonData.TackTrackerRegatta[0], { TackTrackerRaces: jsonData.TackTrackerRace })],
       expect.anything(),
     );
     expect(createBoat).toHaveBeenCalledWith(

@@ -24,7 +24,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const RACEQS_SOURCE = 'RACEQS';
-  const regatta = RaceQsRegatta[0];
+  const regatta = RaceQsRegatta?.[0];
   const raceMetadatas = [];
 
   if (!RaceQsRegatta || !RaceQsPosition || RaceQsPosition.length === 0) {
@@ -53,11 +53,6 @@ const normalizeRace = async (
     const waypoints = RaceQsWaypoint?.filter((w) => w.event_original_id === event.original_id);
     const participants = RaceQsParticipant?.filter((p) => p.event_original_id === event.original_id);
     const id = event.id;
-    let name = regatta.name || '';
-    if (event.name) {
-      name += ` - ${event.name}`;
-    }
-    const regattaId = event.regatta;
     const url = event.url;
     const startTime = parseInt(event.from);
     const endTime = parseInt(event.till);
@@ -107,8 +102,9 @@ const normalizeRace = async (
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
     const raceMetadata = await createRace(
       id,
-      name,
-      regattaId,
+      event.name, // for raceQs event is race
+      regatta?.name,
+      regatta?.id,
       RACEQS_SOURCE,
       url,
       startTime,

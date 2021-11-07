@@ -43,7 +43,7 @@ const normalizeRace = async ({
     const startTime = new Date(race.start).getTime();
     let endTime;
     const name = race.name;
-    const event = race.regatta;
+    const regattaId = race.regatta;
     const url = race.url;
 
     const boatNames = [];
@@ -107,7 +107,8 @@ const normalizeRace = async ({
     const raceMetadata = await createRace(
         id,
         name,
-        event,
+        null, // event name. TackTracker's regatta has no name
+        regattaId,
         TACKTRACKER_SOURCE,
         url,
         startTime,

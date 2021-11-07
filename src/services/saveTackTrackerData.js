@@ -12,7 +12,29 @@ const saveTackTrackerData = async (data) => {
   let raceUrl = [];
   let raceMetadatas;
   try {
-    if (data.TackTrackerRace) {
+    if (data.TackTrackerRegatta) {
+      const regattaOptions = {
+        validate: true,
+        transaction,
+      };
+      if (data.TackTrackerRace) {
+        raceUrl = data.TackTrackerRace.map((row) => {
+          return { url: row.url, original_id: row.original_id };
+        });
+        // Put race inside regatta to upsert when regatta original_id already exist
+        data.TackTrackerRace.forEach((r) => {
+          const regatta = data.TackTrackerRegatta.find((e) => e.original_id === r.regatta_original_id);
+          if (!regatta[db.tackTrackerRace.tableName]) {
+            regatta[db.tackTrackerRace.tableName] = [];
+          }
+          regatta[db.tackTrackerRace.tableName].push(r);
+        });
+        regattaOptions.include = [db.tackTrackerRace];
+      }
+      const fieldToUpdate = Object.keys(db.tackTrackerRegatta.rawAttributes).filter((k) => !['id', 'original_id'].includes(k));
+      regattaOptions.updateOnDuplicate = fieldToUpdate;
+      await db.tackTrackerRegatta.bulkCreate(data.TackTrackerRegatta, regattaOptions);
+    } else if (data.TackTrackerRace) { // races associated to a user does not have regatta
       raceUrl = data.TackTrackerRace.map((row) => {
         return { url: row.url, original_id: row.original_id };
       });
@@ -22,13 +44,7 @@ const saveTackTrackerData = async (data) => {
         transaction,
       });
     }
-    if (data.TackTrackerRegatta) {
-      await db.tackTrackerRegatta.bulkCreate(data.TackTrackerRegatta, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-    }
+
     if (data.TackTrackerBoat) {
       await db.tackTrackerBoat.bulkCreate(data.TackTrackerBoat, {
         ignoreDuplicates: true,
@@ -82,6 +98,7 @@ const saveTackTrackerData = async (data) => {
       raceMetadatas = await normalizeRace(data, transaction);
     }
     await transaction.commit();
+    console.log('Finished saving TackTracker Races');
   } catch (error) {
     console.log(error);
     await transaction.rollback();

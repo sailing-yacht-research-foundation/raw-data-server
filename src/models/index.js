@@ -2,19 +2,24 @@ const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
 const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
-const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
-  host: dbConfig.host,
-  port: dbConfig.port,
-  dialect: dbConfig.dialect,
-  operatorsAliases: '0',
-  logging: false,
-  pool: {
-    max: dbConfig.pool.max,
-    min: dbConfig.pool.min,
-    acquire: dbConfig.pool.acquire,
-    idle: dbConfig.pool.idle,
+const sequelize = new Sequelize(
+  dbConfig.database,
+  dbConfig.username,
+  dbConfig.password,
+  {
+    host: dbConfig.host,
+    port: dbConfig.port,
+    dialect: dbConfig.dialect,
+    operatorsAliases: '0',
+    logging: false,
+    pool: {
+      max: dbConfig.pool.max,
+      min: dbConfig.pool.min,
+      acquire: dbConfig.pool.acquire,
+      idle: dbConfig.pool.idle,
+    },
   },
-});
+);
 
 const db = {};
 
@@ -203,6 +208,12 @@ db.tractracSuccessfulUrl = require('./tractrac/tractracSuccessfulUrl.model')(
   sequelize,
   Sequelize,
 );
+
+db.tractracEvent.hasMany(db.tractracRace, {
+  foreignKey: 'event',
+  constraints: false,
+})
+
 // === End of TracTrac ===
 
 // === Yellowbrick ===
@@ -493,6 +504,11 @@ db.tackTrackerFailedUrl = require('./tackTracker/tackTrackerFailedUrl.model')(
 );
 db.tackTrackerSuccessfulUrl =
   require('./tackTracker/tackTrackerSuccessfulUrl.model')(sequelize, Sequelize);
+
+db.tackTrackerRegatta.hasMany(db.tackTrackerRace, {
+  foreignKey: 'regatta',
+  constraints: false,
+})
 // === End of TackTracker ===
 
 // === Swiftsure ===
@@ -755,8 +771,29 @@ db.geovoileFailedUrl = require('./geovoile/GeovoileFailedUrl.model')(
   sequelize,
   Sequelize,
 );
+db.GeovoileGeometry = require('./geovoile/GeovoileGeometry.model')(
+  sequelize,
+  Sequelize,
+);
+db.GeovoileGeometryGate = require('./geovoile/GeovoileGeometryGate.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Geovoile ===
 
+// === Start Old Geovoile ===
+db.oldGeovoileRace = require('./old-geovoile/OldGeovoileRace.model')(
+  sequelize,
+  Sequelize,
+);
+db.oldGeovoileBoat = require('./old-geovoile/OldGeovoileBoat.model')(
+  sequelize,
+  Sequelize,
+);
+db.oldGeovoileBoatPosition =
+  require('./old-geovoile/OldGeovoileBoatPosition.model')(sequelize, Sequelize);
+
+// === End of Old Geovoile ===
 // === Normalized Table ===
 db.readyAboutRaceMetadata =
   require('./normalizedTable/readyAboutRaceMetadata.model')(

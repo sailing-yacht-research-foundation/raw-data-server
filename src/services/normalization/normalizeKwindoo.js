@@ -25,7 +25,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const KWINDOO_SOURCE = 'KWINDOO';
-  const regatta = KwindooRegatta[0];
+  const regatta = KwindooRegatta?.[0];
   const raceMetadatas = [];
   const runningGroups = KwindooRunningGroup;
   if (!KwindooRace || !KwindooPosition || KwindooPosition.length === 0) {
@@ -48,8 +48,6 @@ const normalizeRace = async (
       continue;
     }
     const id = race.id;
-    const name = `${regatta.name} - ${race.name}`;
-    const event = race.regatta;
     const url = race.url;
     const startTime = parseInt(race.start_timestamp) * 1000;
     const endTime = parseInt(race.end_timestamp) * 1000;
@@ -121,8 +119,9 @@ const normalizeRace = async (
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
     const raceMetadata = await createRace(
       id,
-      name,
-      event,
+      race.name,
+      regatta?.name,
+      regatta?.id,
       KWINDOO_SOURCE,
       url,
       startTime,

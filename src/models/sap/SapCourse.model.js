@@ -17,27 +17,23 @@ module.exports = (sequelize, Sequelize) => {
       },
       name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       course_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       passing_instruction: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       class: {
         type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      passing_instruction: {
-        type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       short_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       left_class: {
         type: Sequelize.TEXT,

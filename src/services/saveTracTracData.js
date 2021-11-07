@@ -12,7 +12,36 @@ const saveTracTracData = async (data) => {
   let raceUrl = [];
   let raceMetadatas;
   try {
-    if (data.TracTracRace) {
+    if (data.SailorEmail) {
+      await db.sailorEmail.bulkCreate(data.SailorEmail, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
+    if (data.TracTracEvent) {
+      const eventOptions = {
+        validate: true,
+        transaction,
+      };
+      if (data.TracTracRace) {
+        raceUrl = data.TracTracRace.map((row) => {
+          return { url: row.url, original_id: row.original_id };
+        });
+        // Put race inside event to upsert when event original_id already exist
+        data.TracTracRace.forEach((r) => {
+          const event = data.TracTracEvent.find((e) => e.original_id === r.event_original_id);
+          if (!event[db.tractracRace.tableName]) {
+            event[db.tractracRace.tableName] = [];
+          }
+          event[db.tractracRace.tableName].push(r);
+        });
+        eventOptions.include = [db.tractracRace];
+      }
+      const fieldToUpdate = Object.keys(db.tractracEvent.rawAttributes).filter((k) => !['id', 'original_id'].includes(k));
+      eventOptions.updateOnDuplicate = fieldToUpdate;
+      await db.tractracEvent.bulkCreate(data.TracTracEvent, eventOptions);
+    } else if (data.TracTracRace) { // races associated to a club does not have events
       raceUrl = data.TracTracRace.map((row) => {
         return { url: row.url, original_id: row.original_id };
       });
@@ -22,20 +51,7 @@ const saveTracTracData = async (data) => {
         transaction,
       });
     }
-    if (data.SailorEmail) {
-      await db.sailorEmail.bulkCreate(data.SailorEmail, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-    }
-    if (data.TracTracEvent) {
-      await db.tractracEvent.bulkCreate(data.TracTracEvent, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-    }
+
     if (data.TracTracClass) {
       await db.tractracClass.bulkCreate(data.TracTracClass, {
         ignoreDuplicates: true,
@@ -131,8 +147,9 @@ const saveTracTracData = async (data) => {
       raceMetadatas = await normalizeRace(data, transaction);
     }
     await transaction.commit();
+    console.log('Finished saving TracTrac Races');
   } catch (error) {
-    console.log(error.toString());
+    console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
   }

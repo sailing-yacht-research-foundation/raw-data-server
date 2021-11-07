@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       duration_millis: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       leg_start_millis: {
@@ -24,7 +24,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       leg_duration_millis: {
-        type: Sequelize.BIGINT,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       leg_distance_meters: {

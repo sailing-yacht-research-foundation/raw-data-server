@@ -60,6 +60,7 @@ const saveBluewaterData = async (data) => {
         {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         },
       );
     }

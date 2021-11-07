@@ -31,6 +31,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
 const saveGeovoileData = require('../services/saveGeovoileData');
+const saveOldGeovoileData = require('../services/non-automatable/saveOldGeovoileData');
 
 var router = express.Router();
 
@@ -62,7 +63,8 @@ const upload = multer({ storage, fileFilter });
 router.use(validateSecret);
 router.get('/', function (req, res) {
   res.json({
-    message: 'You are authorized to use this api',
+    message: 'ok',
+    version: process.env.npm_package_version,
   });
 });
 
@@ -175,6 +177,7 @@ router.post(
           break;
         case isScraperExist(jsonData, TRACKER_MAP.swiftsure):
           saveSwiftsureData(jsonData);
+          break;
         case isScraperExist(jsonData, TRACKER_MAP.geovoile):
           saveGeovoileData(jsonData);
           break;
@@ -378,6 +381,24 @@ router.post('/regadata', async function (req, res) {
   }
   try {
     saveRegadata(req.body.bucketName, req.body.fileName);
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.json({
+    message: `Successfully started processing of files`,
+  });
+});
+
+router.post('/old-geovoile', async function (req, res) {
+  if (!req.body.bucketName && !req.body.fileName) {
+    res
+      .status(400)
+      .json({ message: 'Must specify bucketName and fileName in body' });
+    return;
+  }
+  try {
+    saveOldGeovoileData(req.body.bucketName, req.body.fileName);
   } catch (err) {
     console.log(err);
   }

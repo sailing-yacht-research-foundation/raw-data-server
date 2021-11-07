@@ -14,7 +14,7 @@ const {
 const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
-  { iSailRace, iSailPosition, iSailStartline, iSailEventParticipant, iSailTrack },
+  { iSailEvent, iSailRace, iSailPosition, iSailStartline, iSailEventParticipant, iSailTrack },
   transaction,
 ) => {
   const ISAIL_SOURCE = 'ISAIL';
@@ -23,11 +23,10 @@ const normalizeRace = async (
     console.log('No race or positions so skipping.');
     return;
   }
+  const event = iSailEvent?.[0];
   for (const index in iSailRace) {
     const race = iSailRace[index];
     const id = race.id;
-    const name = race.name;
-    const event = race.event;
     const url = race.url;
     const startTime = new Date(race.start * 1000).getTime();
     const endTime = new Date(race.stop * 1000).getTime();
@@ -141,8 +140,9 @@ const normalizeRace = async (
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
     const raceMetadata = await createRace(
       id,
-      name,
-      event,
+      race.name,
+      event?.name,
+      event?.id,
       ISAIL_SOURCE,
       url,
       startTime,

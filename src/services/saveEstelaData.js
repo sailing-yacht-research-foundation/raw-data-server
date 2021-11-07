@@ -60,13 +60,11 @@ const saveEstelaData = async (data) => {
     if (data.EstelaPosition) {
       const positions = data.EstelaPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.estelaPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
+          transaction,
         });
       }
     }
@@ -81,7 +79,7 @@ const saveEstelaData = async (data) => {
     if (data.EstelaRace) {
       raceMetadata = await normalizeRace(data, transaction);
     }
-    transaction.commit();
+    await transaction.commit();
   } catch (error) {
     console.log(error);
     await transaction.rollback();

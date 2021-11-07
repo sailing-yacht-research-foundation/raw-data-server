@@ -6,6 +6,7 @@ const temp = require('temp').track();
 const { listDirectories } = require('../../utils/fileUtils');
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
+const Op = db.Sequelize.Op;
 
 const { downloadAndExtract } = require('../../utils/unzipFile');
 const {
@@ -38,57 +39,57 @@ const saveSapData = async (bucketName, fileName) => {
     const competitorPositionFiles = fs.readdirSync(competitorPositionPath);
 
     for (const competitorPositionFile of competitorPositionFiles) {
-      const transaction = await db.sequelize.transaction();
       console.log(`Processing ${competitorPositionFile}`);
+      let transaction;
       try {
         if (competitorPositionFile.endsWith('.json')) {
-          const regattaName = competitorPositionFile
+          const regattaEncodedName = competitorPositionFile
             .split('race_')[0]
             .replace('regatta_', '');
           const raceName = competitorPositionFile
             .split('race_')[1]
             .replace('_competitor_positions.json', '');
-          const entriesFilePath = path.join(
+          let entriesFilePath = path.join(
             entriesPath,
-            `${regattaName}_entries.json`,
+            `${regattaEncodedName}_entries.json`,
           );
           const competitorPositionFilePath = path.join(
             competitorPositionPath,
             competitorPositionFile,
           );
-          const raceFilePath = path.join(racePath, `${regattaName}_races.json`);
+          const raceFilePath = path.join(racePath, `${regattaEncodedName}_races.json`);
           const timeFilePath = path.join(
             timePath,
-            `regatta_${regattaName}race_${raceName}_times.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_times.json`,
           );
           const competitorLegFilePath = path.join(
             competitorLegPath,
-            `regatta_${regattaName}race_${raceName}_competitor_legs.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_competitor_legs.json`,
           );
           const maneuverFilePath = path.join(
             maneuverPath,
-            `regatta_${regattaName}race_${raceName}_maneuvers.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_maneuvers.json`,
           );
           const markPassingFilePath = path.join(
             markPassingPath,
-            `regatta_${regattaName}race_${raceName}_mark_passings.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_mark_passings.json`,
           );
           const markPositionFilePath = path.join(
             markPositionPath,
-            `regatta_${regattaName}race_${raceName}_marks_positions.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_marks_positions.json`,
           );
           const courseFilePath = path.join(
             coursePath,
-            `regatta_${regattaName}race_${raceName}_course.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_course.json`,
           );
           const targetTimeFilePath = path.join(
             targetTimePath,
-            `regatta_${regattaName}race_${raceName}_targettime.json`,
+            `regatta_${regattaEncodedName}race_${raceName}_targettime.json`,
           );
 
           const windSummaryFilePath = path.join(
             windSummaryPath,
-            `${regattaName}_windsummary.json`,
+            `${regattaEncodedName}_windsummary.json`,
           );
 
           //Competitor Positions
@@ -116,8 +117,18 @@ const saveSapData = async (bucketName, fileName) => {
           let courses = [];
           let targetTimes = [];
           let windSummarys = [];
+
           try {
-            entriesData = JSON.parse(fs.readFileSync(entriesFilePath));
+            try {
+              entriesData = JSON.parse(fs.readFileSync(entriesFilePath));
+            } catch (e) {
+              console.log(`Entries file ${entriesFilePath} does not exist. Trying to add prefix regatta_`);
+              entriesFilePath = path.join(
+                entriesPath,
+                `regatta_${regattaEncodedName}race_${raceName}_entries.json`,
+              )
+              entriesData = JSON.parse(fs.readFileSync(entriesFilePath));
+            }
             raceData = JSON.parse(fs.readFileSync(raceFilePath));
             timeData = JSON.parse(fs.readFileSync(timeFilePath));
             timeLegData = JSON.parse(fs.readFileSync(competitorLegFilePath));
@@ -129,7 +140,7 @@ const saveSapData = async (bucketName, fileName) => {
             windSummaryData = JSON.parse(fs.readFileSync(windSummaryFilePath));
           } catch (e) {
             console.log(
-              `File ${competitorPositionFile} has some other files missing, skipping race`,
+              `File ${competitorPositionFile} has some other files missing, skipping race`, e.message
             );
             continue;
           }
@@ -137,79 +148,115 @@ const saveSapData = async (bucketName, fileName) => {
           const raceInfo = raceData.races.find(
             (r) => r.name == competitorPositionsData.name,
           );
-          if (!raceInfo) continue;
+          if (!raceInfo) {
+            console.log(`No corresponding race with competitor position data name ${competitorPositionsData.name}. Skipping`);
+            continue;
+          }
 
           const existingRace = await db.sapRace.findOne({
-            where: { name: raceInfo.name },
+            where: {
+              [Op.and]: [
+                { name: raceInfo.name },
+                { regatta: competitorPositionsData.regatta }
+              ]
+            }
           });
-          if (existingRace) continue;
+          if (existingRace) {
+            console.log(`Race ${raceInfo.name} already exist. Skipping`);
+            continue;
+          }
           const raceId = uuidv4();
 
           const existingRegatta = await db.sapRace.findOne({
-            where: { regatta: regattaName.split('_20').join(' ') },
+            where: { regatta: competitorPositionsData.regatta },
           });
-          if (!existingRegatta) {
-            for (const competitor of entriesData.competitors) {
-              let competitorId = uuidv4();
-              competitors.push({
-                id: competitorId,
-                original_id: competitor.id,
-                race_id: raceId,
-                race_original_id: raceInfo.id,
-                regatta: competitorPositionsData.regatta,
-                name: competitor.name,
-                short_name: competitor.shortName,
-                display_color: competitor.displayColor,
-                search_tag: competitor.searchTag,
-                nationality: competitor.nationality,
-                nationality_iso2: competitor.nationalityISO2,
-                nationality_iso3: competitor.nationalityISO3,
-                flag_image_uri: competitor.flagImageUri,
-                time_on_time_factor: competitor.timeOnTimeFactor,
-                time_on_distance_allowance_in_seconds_per_nautical_mile:
-                  competitor.timeOnDistanceAllowanceInSecondsPerNauticalMile,
-              });
-            }
-            await db.sapCompetitor.bulkCreate(competitors, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-            for (const boat of entriesData.boats) {
-              let boatId = uuidv4();
-              boats.push({
-                id: boatId,
-                original_id: boat.id,
-                race_id: raceId,
-                race_original_id: raceInfo.id,
-                race_name: competitorPositionsData.name,
-                regatta: competitorPositionsData.regatta,
-                name: boat.name,
-                sail_number: boat.sailId,
-                color: boat.color,
-                boat_class_name: boat.boatClass.name,
-                boat_class_typically_start_upwind:
-                  boat.boatClass.typicallyStartsUpwind,
-                boat_class_hull_length_in_meters:
-                  boat.boatClass.hullLengthInMeters,
-                boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
-                boat_class_display_name: boat.boatClass.displayName,
-                boat_class_icon_url: boat.boatClass.iconUrl,
-              });
-            }
-            await db.sapCompetitorBoat.bulkCreate(boats, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          } else {
-            competitors = await db.sapCompetitor.findAll({
+          transaction = await db.sequelize.transaction();
+          let competitorsInDB, boatsInDB;
+          if (existingRegatta) {
+            competitorsInDB = await db.sapCompetitor.findAll({
               where: { regatta: competitorPositionsData.regatta },
             });
-            boats = await db.sapCompetitorBoat.findAll({
+            boatsInDB = await db.sapCompetitorBoat.findAll({
               where: { regatta: competitorPositionsData.regatta },
             });
           }
+          // check if there are competitors not yet in database
+          let competitorsToBeMapped = entriesData.competitors;
+          if (competitorsInDB?.length) {
+            competitorsToBeMapped = entriesData.competitors.filter((c) => !competitorsInDB.some((cDb) => cDb.original_id === c.id))
+          }
+          const competitorsToBeSaved = [];
+          for (const c of competitorsToBeMapped) {
+            let competitor = c.competitor || c; // In some files the competitor object is nested inside the competitors object
+            let competitorId = uuidv4();
+            competitorsToBeSaved.push({
+              id: competitorId,
+              original_id: competitor.id,
+              race_id: raceId,
+              race_original_id: raceInfo.id,
+              regatta: competitorPositionsData.regatta,
+              name: competitor.name,
+              short_name: competitor.shortName,
+              display_color: competitor.displayColor,
+              search_tag: competitor.searchTag,
+              nationality: competitor.nationality,
+              nationality_iso2: competitor.nationalityISO2,
+              nationality_iso3: competitor.nationalityISO3,
+              flag_image_uri: competitor.flagImageUri,
+              time_on_time_factor: competitor.timeOnTimeFactor,
+              time_on_distance_allowance_in_seconds_per_nautical_mile:
+                competitor.timeOnDistanceAllowanceInSecondsPerNauticalMile,
+            });
+          }
+          if (competitorsToBeSaved.length) {
+            await db.sapCompetitor.bulkCreate(competitorsToBeSaved, {
+              ignoreDuplicates: true,
+              validate: true,
+              transaction,
+            });
+          }
+          // combine the list of competitors
+          competitors = competitorsInDB?.length ? competitorsToBeSaved.concat(competitorsInDB) : competitorsToBeSaved;
+
+          let boatEntries = entriesData.boats;
+          if (!boatEntries) { // In some files the boat is inside the competitors object
+            boatEntries = entriesData.competitors.map((c) => c.boat);
+          }
+          // check if there are boats not yet in database
+          let boatsToBeMapped = boatEntries;
+          if (boatsInDB?.length) {
+            boatsToBeMapped = boatEntries.filter((b) => !boatsInDB.some((bDb) => bDb.original_id === b.id))
+          }
+          const boatsToBeSaved = [];
+          for (const boat of boatsToBeMapped) {
+            let boatId = uuidv4();
+            boatsToBeSaved.push({
+              id: boatId,
+              original_id: boat.id,
+              race_id: raceId,
+              race_original_id: raceInfo.id,
+              race_name: competitorPositionsData.name,
+              regatta: competitorPositionsData.regatta,
+              name: boat.name,
+              sail_number: boat.sailId,
+              color: boat.color,
+              boat_class_name: boat.boatClass.name,
+              boat_class_typically_start_upwind:
+                boat.boatClass.typicallyStartsUpwind,
+              boat_class_hull_length_in_meters:
+                boat.boatClass.hullLengthInMeters,
+              boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
+              boat_class_display_name: boat.boatClass.displayName,
+              boat_class_icon_url: boat.boatClass.iconUrl,
+            });
+          }
+          await db.sapCompetitorBoat.bulkCreate(boatsToBeSaved, {
+            ignoreDuplicates: true,
+            validate: true,
+            transaction,
+          });
+          // combine the list of boats
+          boats = boatsInDB?.length ? boatsToBeSaved.concat(boatsInDB) : boatsToBeSaved;
 
           let race = {
             id: raceId,
@@ -233,6 +280,7 @@ const saveSapData = async (bucketName, fileName) => {
             end_of_race_ms: timeData['endOfRace-ms'],
             delay_to_live_ms: timeData['delayToLive-ms'],
           };
+
           await db.sapRace.create(race, {
             validate: true,
             transaction,
@@ -289,7 +337,7 @@ const saveSapData = async (bucketName, fileName) => {
                 race_id: raceId,
                 race_original_id: raceInfo.id,
                 race_name: raceName,
-                regatta: regattaName,
+                regatta: competitorPositionsData.regatta,
                 competitor_id: existingCompetitor.id,
                 competitor_original_id: existingCompetitor.original_id,
                 from: leg.from,
@@ -390,7 +438,7 @@ const saveSapData = async (bucketName, fileName) => {
               let existingCompetitor = competitors.find(
                 (c) =>
                   c.original_id ===
-                  markPassingCompetitor.competitor.competitor.id,
+                  (markPassingCompetitor.competitor?.competitor?.id || markPassingCompetitor.competitor.id),
               );
               let existingBoat = boats.find(
                 (b) =>
@@ -590,11 +638,13 @@ const saveSapData = async (bucketName, fileName) => {
         }
       } catch (error) {
         console.log('Error processing race', error);
-        await transaction.rollback();
+        if (transaction) {
+          await transaction.rollback();
+        }
       }
     }
   } catch (e) {
-    console.log('An error has occured', e.message);
+    console.log('An error has occured', e);
   } finally {
     temp.cleanupSync();
   }

@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
       },
       name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       sail_number: {
         type: Sequelize.TEXT,
@@ -37,11 +37,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       color: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       boat_class_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       boat_class_typically_start_upwind: {
         type: Sequelize.BOOLEAN,
@@ -56,11 +56,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       boat_class_display_name: {
-        type: Sequelize.DOUBLE,
-        allowNull: false,
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       boat_class_icon_url: {
-        type: Sequelize.DOUBLE,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
     },

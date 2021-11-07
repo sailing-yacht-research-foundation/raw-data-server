@@ -1,6 +1,9 @@
 const turf = require('@turf/turf');
+const uuid = require('uuid');
 const elasticsearch = require('./elasticsearch');
-const { world } = require('./world');
+const uploadUtil = require('../services/uploadUtil');
+const { createMapScreenshot } = require('./createMapScreenshot');
+const { reverseGeoCode } = require('../syrfDataServices/v1/googleAPI');
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -125,28 +128,6 @@ exports.sortAllBoatPositionsByTime = function (
     const positions = boatsToPositions[key];
     exports.sortPositionsByTime(timeFieldName, positions);
   });
-};
-
-exports.pointToCountry = function (point) {
-  let minDistance = 10000;
-  let countryName = '';
-  let found = false;
-  world.features.forEach((country) => {
-    const poly = country.geometry;
-    const vertices = turf.explode(poly);
-    const closestVertex = turf.nearest(point, vertices);
-    const distance = turf.distance(point, closestVertex);
-    if (!found) {
-      if (turf.booleanPointInPolygon(point, poly)) {
-        found = true;
-        countryName = country.properties.ADMIN;
-      } else if (distance < minDistance) {
-        minDistance = distance;
-        countryName = country.properties.ADMIN;
-      }
-    }
-  });
-  return countryName;
 };
 
 exports.collectFirstNPositionsFromBoatsToPositions = function (
@@ -276,9 +257,33 @@ exports.validateBoundingBox = function (bbox) {
   return isNonPolar && isNotNarrow;
 };
 
+exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
+  eventName = eventName?.trim();
+  raceName = raceName?.trim();
+  let name;
+  if (eventName === raceName) {
+    name = eventName;
+  } else {
+    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')]
+      .filter(Boolean)
+      .join(' - ');
+  }
+  if (!name) {
+    // if no event or race name
+    const dateFormatter = (formatter = new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'long',
+      timeZone: 'utc',
+    }));
+    name = `Race at ${dateFormatter.format(startTimeMs)}`; //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
+  }
+  return name;
+};
+
 exports.createRace = async function (
   id,
-  nameT,
+  raceName,
+  eventName,
   event,
   source,
   url,
@@ -296,8 +301,33 @@ exports.createRace = async function (
   unstructuredText,
   skipElasticSearch = false,
 ) {
-  const name = nameT.replace('_', ' ');
-  const startCountry = exports.pointToCountry(startPoint);
+  let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
+
+  const { countryName: startCountry, cityName: startCity } =
+    await reverseGeoCode({
+      lon: startPoint.geometry.coordinates[0],
+      lat: startPoint.geometry.coordinates[1],
+    });
+  let openGraphImage = null;
+  try {
+    const imageBuffer = await createMapScreenshot(
+      startPoint.geometry.coordinates,
+    );
+    const response = await uploadUtil.uploadDataToS3({
+      ACL: 'public-read',
+      Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
+      Key: `public/competition/${id}/${uuid.v4()}.png`,
+      Body: imageBuffer,
+      ContentEncoding: 'base64',
+      ContentType: 'image/png',
+    });
+    openGraphImage = response?.Location;
+  } catch (error) {
+    // Logging only, if not successfully created, we can skip the open graph image
+    console.error(
+      `Failed to create mapshot for scraped race: ${id}, error: ${error.message}`,
+    );
+  }
 
   const startDate = new Date(startTimeMs);
 
@@ -418,6 +448,7 @@ exports.createRace = async function (
     source,
     url,
     start_country: startCountry,
+    start_city: startCity,
     start_year: startYear,
     start_month: startMonth,
     start_day: startDay,
@@ -439,6 +470,7 @@ exports.createRace = async function (
     boat_models: boatModels,
     handicap_rules: handicapRulesFiltered,
     great_circle: greatCircle,
+    open_graph_image: openGraphImage,
   };
 
   // Only used by ElasticSearch
@@ -453,6 +485,7 @@ exports.createRace = async function (
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,
@@ -502,4 +535,45 @@ exports.convertDMSToDD = convertDMSToDD;
 exports.parseGeoStringToDecimal = function (input) {
   var parts = input.split(/[^\d\w\.]+/);
   return convertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
+};
+
+/**
+ * Convert m/s speed to kts
+ * @param {Number} speed
+ * @returns
+ */
+exports.meterPerSecToKnots = function (speed) {
+  // 1 m/s = 1.943844 kn
+  return parseFloat((speed * 1.943844).toFixed(2));
+};
+
+exports.createGeometryPoint = (lat, lon, properties = {}) => {
+  return {
+    geometryType: 'Point',
+    coordinates: [
+      {
+        position: [lon, lat],
+      },
+    ],
+    properties,
+  };
+};
+
+exports.createGeometryLine = (
+  { lat: point1Lat, lon: point1lon },
+  { lat: point2Lat, lon: point2Lon },
+  properties = {},
+) => {
+  return {
+    geometryType: 'Polyline',
+    coordinates: [
+      {
+        position: [point1lon, point1Lat],
+      },
+      {
+        position: [point2Lon, point2Lat],
+      },
+    ],
+    properties,
+  };
 };

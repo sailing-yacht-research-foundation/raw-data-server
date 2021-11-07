@@ -15,10 +15,13 @@ const {
   allPositionsToFeatureCollection,
   validateBoundingBox,
   createRace,
-  pointToCountry,
   convertDMSToDD,
   parseGeoStringToDecimal,
+  generateMetadataName,
+  meterPerSecToKnots,
+  createGeometryPoint,
 } = require('../gisUtils');
+const { reverseGeoCode } = require('../../syrfDataServices/v1/googleAPI');
 const esUtil = require('../elasticsearch');
 
 describe('gis_utils.js', () => {
@@ -374,12 +377,13 @@ describe('gis_utils.js', () => {
       expect(r).toBe(false);
     });
   });
-  it('#createRace should create and return correct race meta data', async () => {
+  it.only('#createRace should create and return correct race meta data', async () => {
     const indexRaceSpy = jest.spyOn(esUtil, 'indexRace').mockResolvedValue({});
 
     const id = 'testraceid';
     const name = 'Race 1';
-    const event = 'event1';
+    const eventName = 'event1';
+    const eventId = '1fc1eb5e-2b6b-11ec-8d3d-0242ac130003';
     const source = 'racesource';
     const url = 'https://someurl.com';
     const startTimeMs = new Date().getTime() - 7 * 24 * 3600 * 1000;
@@ -422,7 +426,11 @@ describe('gis_utils.js', () => {
         name: 'EPSG:4326',
       },
     };
-    const startCountry = pointToCountry(startPoint);
+    const { countryName: startCountry, cityName: startCity } =
+      await reverseGeoCode({
+        lon: startPoint.geometry.coordinates[0],
+        lat: startPoint.geometry.coordinates[1],
+      });
     const positionsLength = 100;
     const positions = [];
     let runningDiffCount = 0;
@@ -465,7 +473,8 @@ describe('gis_utils.js', () => {
     const r = await createRace(
       id,
       name,
-      event,
+      eventName,
+      eventId,
       source,
       url,
       startTimeMs,
@@ -484,11 +493,12 @@ describe('gis_utils.js', () => {
 
     const expectedResult = {
       id,
-      name,
-      event,
+      name: `${eventName} - ${name}`,
+      event: eventId,
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,
@@ -506,6 +516,7 @@ describe('gis_utils.js', () => {
       approx_area_sq_km: approxAreaSqKm,
       approx_distance_km: approxDistanceKm,
       num_boats: Object.keys(boatIdsToPositions).length,
+      open_graph_image: expect.any(String),
       avg_time_between_positions: avgTimeBetweenPositions,
       boat_models: boatModels,
       handicap_rules: handicapRules,
@@ -515,11 +526,12 @@ describe('gis_utils.js', () => {
 
     const expectedIndexedBody = {
       id,
-      name,
-      event,
+      name: `${eventName} - ${name}`,
+      event: eventId,
       source,
       url,
       start_country: startCountry,
+      start_city: startCity,
       start_year: startYear,
       start_month: startMonth,
       start_day: startDay,
@@ -557,5 +569,62 @@ describe('gis_utils.js', () => {
     const result = parseGeoStringToDecimal(`36°57'9" N`);
     expect(typeof result).toBe('number');
     expect(result.toFixed(2)).toBe('36.95');
+  });
+
+  describe('When generateMetadataName is called', () => {
+    const eventName = 'Event 1';
+    const raceName = 'Race 2';
+    it('should return event name if race name is empty, null, or undefined', () => {
+      let resultName = generateMetadataName(eventName);
+      expect(resultName).toBe(eventName);
+      resultName = generateMetadataName(eventName, null);
+      expect(resultName).toBe(eventName);
+      resultName = generateMetadataName(eventName, '');
+      expect(resultName).toBe(eventName);
+    });
+
+    it('should return race name if event name is empty, null, or undefined', () => {
+      let resultName = generateMetadataName(undefined, raceName);
+      expect(resultName).toBe(raceName);
+      resultName = generateMetadataName(null, raceName);
+      expect(resultName).toBe(raceName);
+      resultName = generateMetadataName('', raceName);
+      expect(resultName).toBe(raceName);
+    });
+
+    it('should return only the event name or race name if they are the same', () => {
+      const resultName = generateMetadataName(eventName, eventName);
+      expect(resultName).toBe(eventName);
+    });
+
+    it('should return combined event name and race name separated by dash (-) if both are present', () => {
+      const resultName = generateMetadataName(eventName, raceName);
+      expect(resultName).toBe(`${eventName} - ${raceName}`);
+    });
+
+    it('should return "Race at <start date>" when both event and race name are not present', () => {
+      const startTimeMs = 1633949491963;
+      const expectedDateTime = 'Oct 11, 2021, 10:51:31 AM UTC';
+      const resultName = generateMetadataName('', '', startTimeMs);
+      expect(resultName).toBe(`Race at ${expectedDateTime}`);
+    });
+  });
+
+  describe('When meterPerSecToKnots is called', () => {
+    it('should convert m/s speed to kts', () => {
+      expect(meterPerSecToKnots(0.5144)).toEqual(1);
+      expect(meterPerSecToKnots(5.144)).toEqual(10);
+    });
+  });
+
+  describe('When createGeometryPoint is called', () => {
+    it('#createGeometryPoint should create geometry object', () => {
+      const result = createGeometryPoint(1, -1, { name: 'test' });
+      expect(result.geometryType).toEqual('Point');
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.coordinates[0].position[0]).toEqual(-1);
+      expect(result.coordinates.properties.name).toEqual('test');
+    });
   });
 });

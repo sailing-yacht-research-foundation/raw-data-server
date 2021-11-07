@@ -26,7 +26,7 @@ const normalizeRace = async (
   transaction,
 ) => {
   const GEORACING_SOURCE = 'GEORACING';
-  const eventObj = GeoracingEvent[0];
+  const eventObj = GeoracingEvent?.[0];
   const raceMetadatas = [];
 
   let actorPositions = GeoracingPosition?.filter(
@@ -40,8 +40,6 @@ const normalizeRace = async (
 
   for (const race of GeoracingRace) {
     const id = race.id;
-    const name = eventObj.name + ' - ' + race.name;
-    const event = race.event;
     const url = race.url;
     const startTime = new Date(race.start_time).getTime();
     const endTime = new Date(race.end_time).getTime();
@@ -180,8 +178,9 @@ const normalizeRace = async (
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
     const raceMetadata = await createRace(
       id,
-      name,
-      event,
+      race.name,
+      eventObj?.name,
+      eventObj?.id,
       GEORACING_SOURCE,
       url,
       startTime,
