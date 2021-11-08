@@ -4,6 +4,7 @@ const elasticsearch = require('./elasticsearch');
 const uploadUtil = require('../services/uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
 const { reverseGeoCode } = require('../syrfDataServices/v1/googleAPI');
+const { geometryType } = require('../syrf-schema/enums');
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -549,7 +550,8 @@ exports.meterPerSecToKnots = function (speed) {
 
 exports.createGeometryPoint = (lat, lon, properties = {}) => {
   return {
-    geometryType: 'Point',
+    geometryType: geometryType.POINT,
+    properties: properties,
     coordinates: [
       {
         position: [lon, lat],
@@ -565,7 +567,8 @@ exports.createGeometryLine = (
   properties = {},
 ) => {
   return {
-    geometryType: 'Polyline',
+    geometryType: geometryType.POLYLINE,
+    properties: properties,
     coordinates: [
       {
         position: [point1lon, point1Lat],

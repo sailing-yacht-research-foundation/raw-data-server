@@ -292,14 +292,14 @@ const saveGeovoileData = async (data) => {
     }
     courseGates.push({ ...lastItem, order: courseGates.length });
 
-    await saveCompetitionUnit(
-      inputBoats,
+    await saveCompetitionUnit({
+      race: data.geovoileRace,
+      boats: inputBoats,
       positions,
       rankings,
-      null,
       raceMetadata,
-      { courseSequencedGeometries: courseGates },
-    );
+      courseSequencedGeometries: courseGates,
+    });
   }
 
   if (errorMessage) {
