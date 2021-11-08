@@ -9,7 +9,7 @@ exports.upsert = async (
     polars,
     handicap,
   } = {},
-  transaction = undefined,
+  transaction,
 ) => {
   const now = Date.now();
   const participantToSave = {
@@ -30,11 +30,16 @@ exports.upsert = async (
 exports.addParticipant = async ({
   vesselParticipantId,
   participantIds = [],
-}) => {
+}, transaction) => {
   const result = await dataAccess.addParticipant(
     vesselParticipantId,
     participantIds,
+    transaction,
   );
 
   return result;
+};
+
+exports.bulkCreate = async (data, transaction) => {
+  return await dataAccess.bulkCreate(data, transaction);
 };

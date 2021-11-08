@@ -30,7 +30,7 @@ const mapAndSave = async (data, raceMetadata) => {
   }
 
   await saveCompetitionUnit({
-    race: data.BluewaterRace.map((r) => ({ ...r, url: r.referral_url }))[0],
+    race: data.BluewaterRace.map((r) => ({ ...r, url: r.referral_url, scrapedUrl: r.slug }))[0],
     boats: inputBoats,
     positions: inputPositions,
     raceMetadata,
@@ -112,8 +112,12 @@ const _mapSequencedGeometries = (bluewaterMap) => {
     try {
       const coursePoints = JSON.parse(bluewaterMap.course);
       coursePoints.forEach((pt, index) => {
-        const newPoint = createGeometryPoint(pt[1], pt[0], {
-          name: `Course Point ${index + 1}`,
+        const newPoint = createGeometryPoint({
+          lat: pt[1],
+          lon: pt[0],
+          properties: {
+            name: `Course Point ${index + 1}`,
+          }
         });
         newPoint.order = index + 1;
         courseSequencedGeometries.push(newPoint);

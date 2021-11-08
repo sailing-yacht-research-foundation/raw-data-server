@@ -271,11 +271,11 @@ exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
   }
   if (!name) {
     // if no event or race name
-    const dateFormatter = (formatter = new Intl.DateTimeFormat('en-US', {
+    const dateFormatter = new Intl.DateTimeFormat('en-US', {
       dateStyle: 'medium',
       timeStyle: 'long',
       timeZone: 'utc',
-    }));
+    });
     name = `Race at ${dateFormatter.format(startTimeMs)}`; //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
   }
   return name;
@@ -548,16 +548,15 @@ exports.meterPerSecToKnots = function (speed) {
   return parseFloat((speed * 1.943844).toFixed(2));
 };
 
-exports.createGeometryPoint = (lat, lon, properties = {}) => {
+exports.createGeometryPoint = ({ lat, lon, properties = {}}) => {
   return {
     geometryType: geometryType.POINT,
-    properties: properties,
+    properties,
     coordinates: [
       {
         position: [lon, lat],
       },
     ],
-    properties,
   };
 };
 
@@ -567,8 +566,8 @@ exports.createGeometryLine = (
   properties = {},
 ) => {
   return {
-    geometryType: geometryType.POLYLINE,
-    properties: properties,
+    geometryType: geometryType.LINESTRING,
+    properties,
     coordinates: [
       {
         position: [point1lon, point1Lat],
@@ -577,6 +576,5 @@ exports.createGeometryLine = (
         position: [point2Lon, point2Lat],
       },
     ],
-    properties,
   };
 };
