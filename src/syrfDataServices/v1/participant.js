@@ -3,7 +3,7 @@ const dataAccess = require('../../syrf-schema/dataAccess/v1//participant');
 exports.upsert = async (
   id,
   { publicName, calendarEventId } = {},
-  transaction = undefined,
+  transaction,
 ) => {
   const now = Date.now();
   const participantToSave = {
@@ -14,4 +14,8 @@ exports.upsert = async (
   };
 
   return await dataAccess.upsert(id, participantToSave, transaction);
+};
+
+exports.bulkCreate = async (data, transaction) => {
+  return await dataAccess.bulkCreate(data, transaction);
 };

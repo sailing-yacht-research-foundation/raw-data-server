@@ -112,6 +112,10 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
   return allVessels.map((t) => t.vessel);
 };
 
-exports.getVesselByVesselIdAndSource = async (vesselId, source) => {
-  return await dataAccess.getVesselByVesselIdAndSource(vesselId, source);
+exports.getVesselsByVesselIdsAndSource = async (vesselId, source) => {
+  return await dataAccess.getVesselsByVesselIdsAndSource(vesselId, source);
+};
+
+exports.bulkCreate = async (data, transaction) => {
+  return await dataAccess.bulkCreate(data, transaction);
 };
