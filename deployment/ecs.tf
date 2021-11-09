@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "rds_task" {
   [
     {
       "name": "rds-task",
-      "image": "${aws_ecr_repository.raw_data_server_ecr_repo.repository_url}",
+      "image": "${aws_ecr_repository.raw_data_server_ecr_repo.repository_url}@${data.aws_ecr_image.raw_data_service.image_digest}",
       "essential": true,
       "portMappings": [
         {
