@@ -7,10 +7,7 @@ const uploadUtil = require('./uploadUtil');
 const { normalizeRace } = require('./normalization/normalizeYellowbrick');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const KML_S3_BUCKET = process.env.AWS_YELLOWBRICK_KML_S3_BUCKET;
-const vessel = require('../syrfDataServices/v1/vessel');
-const { saveCompetitionUnit } = require('./saveCompetitionUnit');
-const gisUtils = require('../utils/gisUtils');
-
+const mapYellowBrickToSyrf = require('../services/mappingsToSyrfDB/mapYellowBrickToSyrf');
 const saveYellowbrickData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
@@ -99,55 +96,7 @@ const saveYellowbrickData = async (data) => {
     process.env.ENABLE_MAIN_DB_SAVE_YELLOW_BRICK === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    const inputBoats = data.YellowbrickTeam.map((t) => {
-      return vessel.createVesselObject({
-        id: t.id,
-        name: t.name,
-        vesselId: t.original_id,
-        lengthInMeters: null,
-      });
-    });
-
-    const courseSequencedGeometries = [];
-    if (data.YellowbrickCourseNode) {
-      for (const yellowbrickCourseNode of data.YellowbrickCourseNode) {
-        courseSequencedGeometries.push({
-          ...gisUtils.createGeometryPoint(
-            yellowbrickCourseNode.lat,
-            yellowbrickCourseNode.lon,
-          ),
-          properties: {
-            name: yellowbrickCourseNode.name,
-          },
-          order: yellowbrickCourseNode.order,
-        });
-      }
-    }
-    let positions;
-    if (data.YellowbrickPosition) {
-      positions = data.YellowbrickPosition.map((t) => {
-        return {
-          ...t,
-          race_id: t.race,
-          race_original_id: t.race_code,
-          boat_id: t.team,
-          vesselId: t.team,
-          boat_original_id: t.team_original_id,
-          id: uuidv4(),
-        };
-      });
-    }
-
-    const rankings = [];
-
-    await saveCompetitionUnit(
-      inputBoats,
-      positions,
-      rankings,
-      null,
-      raceMetadata,
-      { courseSequencedGeometries },
-    );
+    await mapYellowBrickToSyrf(data, raceMetadata);
   }
 
   if (raceUrl.length > 0) {
@@ -182,7 +131,7 @@ const saveYellowbrickData = async (data) => {
     }
   }
 
-  await triggerWeatherSlicer(raceMetadata);
+  // await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 

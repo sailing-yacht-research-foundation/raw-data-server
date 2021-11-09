@@ -126,10 +126,10 @@ const normalizeRace = async (
     allPositionsToFeatureCollection(boatsToSortedPositions),
   );
 
-  await db.readyAboutRaceMetadata.create(raceMetadata, {
-    fields: Object.keys(raceMetadata),
-    transaction,
-  });
+  // await db.readyAboutRaceMetadata.create(raceMetadata, {
+  //   fields: Object.keys(raceMetadata),
+  //   transaction,
+  // });
   await uploadGeoJsonToS3(
     race.id,
     tracksGeojson,
