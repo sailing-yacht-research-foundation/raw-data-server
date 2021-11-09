@@ -39,14 +39,17 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
       id: b.id,
       publicName: b.name,
       vesselId: b.id,
-      model: b.design,
+      model: b.model,
       lengthInMeters: null,
       widthInMeters: null,
       draftInMeters: null,
     };
 
+    if (b.owner) {
+      vessel.crews = [{ publicName: b.owner, id: uuidv4() }];
+    }
     vessel.handicap = {};
-    for (const key of Object.key(b)) {
+    for (const key of Object.keys(b)) {
       if (key.indexOf('tcf') === -1 || isNaN(b[key])) {
         continue;
       }
@@ -60,9 +63,11 @@ const _mapPositions = (yellowbrickPosition) => {
   if (!yellowbrickPosition) {
     return [];
   }
+  yellowbrickPosition.sort((a, b) => a.timestamp - b.timestamp);
   return yellowbrickPosition.map((t) => {
     return {
       ...t,
+      sog: t.sog_knots,
       race_id: t.race,
       race_original_id: t.race_code,
       boat_id: t.team,
@@ -101,10 +106,16 @@ const _mapRankings = (yellowbrickTeam) => {
     return finishedTimeA - finishedTimeB;
   });
   return yellowbrickTeam.map((b) => {
+    let elapsedTime = 0;
+    let finishTime = 0;
+    if (b.finshed_at) {
+      elapsedTime = (b.finshed_at - b.start) * 1000;
+      finishTime = b.finshed_at * 1000;
+    }
     return {
       id: b.id,
-      elapsedTime: b.finshed_at ? b.finshed_at * 1000 - b.start * 1000 : 0,
-      finishTime: b.finshed_at || 0,
+      elapsedTime,
+      finishTime,
     };
   });
 };
