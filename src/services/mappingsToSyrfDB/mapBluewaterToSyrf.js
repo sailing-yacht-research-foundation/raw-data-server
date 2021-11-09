@@ -69,9 +69,9 @@ const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
       }));
 
     // Handicap
-    const boatHandicaps = raceHandicaps.filter((h) => h.boat === b.id);
+    const boatHandicaps = raceHandicaps?.filter((h) => h.boat === b.id);
     vessel.handicap = {};
-    boatHandicaps.forEach((h) => {
+    boatHandicaps?.forEach((h) => {
       vessel.handicap[h.name] = h.rating;
     });
     return vessel;
@@ -90,19 +90,21 @@ const _mapSequencedGeometries = (bluewaterMap) => {
   if (bluewaterMap.start_line) {
     try {
       const startLine = JSON.parse(bluewaterMap.start_line);
-      const line = createGeometryLine(
-        {
-          lat: startLine[0][1],
-          lon: startLine[0][0],
-        },
-        {
-          lat: startLine[1][1],
-          lon: startLine[1][0],
-        },
-        { name: 'Start Line' },
-      );
-      line.order = 0;
-      courseSequencedGeometries.push(line);
+      if (startLine?.length) {
+        const line = createGeometryLine(
+          {
+            lat: startLine[0][1],
+            lon: startLine[0][0],
+          },
+          {
+            lat: startLine[1][1],
+            lon: startLine[1][0],
+          },
+          { name: 'Start Line' },
+        );
+        line.order = 0;
+        courseSequencedGeometries.push(line);
+      }
     } catch (err) {
       console.log('Invalid start_line', err);
     }
@@ -130,19 +132,21 @@ const _mapSequencedGeometries = (bluewaterMap) => {
   if (bluewaterMap.finish_line) {
     try {
       const finishLine = JSON.parse(bluewaterMap.finish_line);
-      const line = createGeometryLine(
-        {
-          lat: finishLine[0][1],
-          lon: finishLine[0][0],
-        },
-        {
-          lat: finishLine[1][1],
-          lon: finishLine[1][0],
-        },
-        { name: 'Finish Line' },
-      );
-      line.order = courseSequencedGeometries.length;
-      courseSequencedGeometries.push(line);
+      if (finishLine?.length) {
+        const line = createGeometryLine(
+          {
+            lat: finishLine[0][1],
+            lon: finishLine[0][0],
+          },
+          {
+            lat: finishLine[1][1],
+            lon: finishLine[1][0],
+          },
+          { name: 'Finish Line' },
+        );
+        line.order = courseSequencedGeometries.length;
+        courseSequencedGeometries.push(line);
+      }
     } catch (err) {
       console.log('Invalid finish_line', err);
     }
