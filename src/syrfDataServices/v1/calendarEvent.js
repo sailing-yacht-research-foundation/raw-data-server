@@ -20,6 +20,7 @@ exports.upsert = async (
     city,
     source,
     openGraphImage,
+    scrapedOriginalId,
   },
   transaction,
 ) => {
@@ -42,6 +43,8 @@ exports.upsert = async (
     country,
     city,
     source,
+    openGraphImage,
+    scrapedOriginalId,
     createdAt: now,
     updatedAt: now,
   };

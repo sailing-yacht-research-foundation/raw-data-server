@@ -1,51 +1,28 @@
 const { createTransaction } = require('../syrf-schema/utils/utils');
+const failedUrlDataAccess = require('../syrf-schema/dataAccess/v1/scrapedFailedUrl');
+const successfulUrlDataAccess = require('../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
 const calendarEvent = require('../syrfDataServices/v1/calendarEvent');
 const competitionUnit = require('../syrfDataServices/v1/competitionUnit');
 const vessel = require('../syrfDataServices/v1/vessel');
 const vesselParticipant = require('../syrfDataServices/v1/vesselParticipant');
 const vesselParticipantGroup = require('../syrfDataServices/v1/vesselParticipantGroup');
 const courses = require('../syrfDataServices/v1/courses');
+const participant = require('../syrfDataServices/v1/participant');
 const VesselParticipantTrack = require('../syrfDataServices/v1/vesselParticipantTrack');
+const {
+  createGeometryPoint,
+} = require('../utils/gisUtils');
 
-/*
-{
-    id,
-    name,
-    event,
-    source,
-    url,
-    start_country: startCountry,
-    start_city: startCity,
-    start_year: startYear,
-    start_month: startMonth,
-    start_day: startDay,
-    approx_start_time_ms: approxStartTimeMs,
-    approx_end_time_ms: approxEndTimeMs,
-    approx_duration_ms: approxDurationMs,
-    approx_start_point: approxStartPoint,
-    approx_start_lat: approxStartLat,
-    approx_start_lon: approxStartLon,
-    approx_end_point: approxEndPoint,
-    approx_end_lat: approxEndLat,
-    approx_end_lon: approxEndLon,
-    approx_mid_point: approxMidPoint,
-    bounding_box: boundingBox,
-    approx_area_sq_km: approxAreaSqKm,
-    approx_distance_km: approxDistanceKm,
-    num_boats: numBoats,
-    avg_time_between_positions: avgTimeBetweenPositions,
-    boat_models: boatModels,
-    handicap_rules: handicapRulesFiltered,
-    great_circle: greatCircle,
-    open_graph_image: openGraphImage,
-  }
-*/
-const saveCompetitionUnit = async (
-  boats,
-  allPositions,
-  rankings,
+const saveCompetitionUnit = async ({
   event,
-  {
+  race,
+  boats,
+  positions,
+  rankings,
+  raceMetadata,
+  courseSequencedGeometries = [],
+}) => {
+  const {
     id: raceId,
     name,
     source,
@@ -60,9 +37,7 @@ const saveCompetitionUnit = async (
     start_country: country,
     start_city: city,
     open_graph_image: openGraphImage,
-  },
-  { courseSequencedGeometries = [] } = {},
-) => {
+  } = raceMetadata;
   const mainDatabaseTransaction = await createTransaction();
 
   try {
@@ -81,6 +56,7 @@ const saveCompetitionUnit = async (
         country: event?.country || country,
         city: event?.city || city,
         openGraphImage,
+        scrapedOriginalId: event?.original_id,
       },
       mainDatabaseTransaction,
     );
@@ -94,42 +70,61 @@ const saveCompetitionUnit = async (
       mainDatabaseTransaction,
     );
 
-    console.log('Create new vessels');
+    console.log('Create new vessels and save participants');
     // Save vessels information
-    let vessels = [];
-
-    const vesselOriginalIdMap = new Map();
+    const vesselsToParticipantsMap = new Map();
+    const vesselsToSave = [];
+    const vesselParticipantsToSave = [];
+    const existingVesselIdMap = new Map(); // mapping of existing vessel id with its new id to replace the positions boat ids
+    const existingVessels = await vessel.getVesselsByVesselIdsAndSource(
+      boats.map((b) => b.vesselId),
+      source,
+    );
     for (const boat of boats) {
-      const currentVessel = await vessel.upsert(
-        boat.id,
-        {
-          publicName: boat.name,
-          vesselId: boat.vesselId,
-          lengthInMeters: boat.lengthInMeters,
-        },
-        mainDatabaseTransaction,
+      const existingVessel = existingVessels?.find(
+        (ev) => ev.vesselId === boat.vesselId,
       );
-      vessels.push(currentVessel);
-      vesselOriginalIdMap.set(boat.original_id, currentVessel.id);
+      if (existingVessel) {
+        existingVesselIdMap.set(boat.id, existingVessel.id);
+        boat.id = existingVessel.id;
+        boat.handicap = Object.assign(
+          {},
+          existingVessel.handicap,
+          boat.handicap,
+        );
+      }
+      vesselsToSave.push({
+        id: boat.id,
+        publicName: boat.name || boat.publicName,
+        globalId: boat.globalId,
+        vesselId: boat.vesselId,
+        model: boat.model,
+        lengthInMeters: boat.lengthInMeters,
+        widthInMeters: boat.widthInMeters,
+        draftInMeters: boat.draftInMeters,
+        handicap: boat.handicap,
+        source,
+      });
+      vesselParticipantsToSave.push({
+        vesselId: boat.id,
+        vesselParticipantGroupId: vesselGroup.id,
+        handicap: boat.handicap,
+      });
+      if (boat.crews) {
+        vesselsToParticipantsMap.set(boat.id, boat.crews);
+      }
     }
+    await vessel.bulkCreate(vesselsToSave, mainDatabaseTransaction);
+    const createdVesselParticipants = await vesselParticipant.bulkCreate(
+      vesselParticipantsToSave,
+      mainDatabaseTransaction,
+    );
 
-    console.log(`Save vessel participants`);
-    const vesselParticipants = new Map();
-    for (const currentVessel of vessels) {
-      const result = await vesselParticipant.upsert(
-        null,
-        {
-          vesselId: currentVessel.id,
-          vesselParticipantGroupId: vesselGroup.id,
-        },
-        null,
-        mainDatabaseTransaction,
-      );
-      vesselParticipants.set(result.vesselId, result.id);
-    }
-
-    rankings = rankings.map((t) => {
-      const vesselParticipantId = vesselParticipants.get(t.id);
+    rankings = rankings?.map((t) => {
+      const vesselId = existingVesselIdMap.get(t.id) || t.id; // replace vessel id if already exist
+      const vesselParticipantId = createdVesselParticipants.find(
+        (vp) => vp.vesselId === vesselId,
+      )?.id;
       return {
         vesselParticipantId: vesselParticipantId,
         elapsedTime: t.elapsedTime,
@@ -137,47 +132,64 @@ const saveCompetitionUnit = async (
       };
     });
 
+    console.log(`Save Participants and Crew`);
+    for (const vesselId of vesselsToParticipantsMap.keys()) {
+      const participants = vesselsToParticipantsMap.get(vesselId);
+      const vesselParticipantId = createdVesselParticipants.find(
+        (vp) => vp.vesselId === vesselId,
+      )?.id;
+      const addedParticipants = await participant.bulkCreate(
+        participants.map((p) => ({
+          ...p,
+          calendarEventId: newCalendarEvent.id,
+        })),
+        mainDatabaseTransaction,
+      );
+
+      if (addedParticipants?.length) {
+        await vesselParticipant.addParticipant(
+          {
+            vesselParticipantId,
+            participantIds: addedParticipants.map((p) => p.id),
+          },
+          mainDatabaseTransaction,
+        );
+      }
+    }
+
     console.log(`Creating new Course`);
     // add default value in case there is no point or mark
     if (courseSequencedGeometries.length === 0) {
       courseSequencedGeometries.push(
         ...[
-          {
-            geometryType: 'Point',
-            order: 0,
-            coordinates: [
-              {
-                position: approxStartPoint.coordinates,
-              },
-            ],
+          Object.assign(createGeometryPoint({
+            lon: approxStartPoint.coordinates[0],
+            lat: approxStartPoint.coordinates[1],
             properties: {
               name: 'Start Point',
-            },
-          },
-          {
-            geometryType: 'Point',
-            order: 1,
-            coordinates: [
-              {
-                position: approxEndPoint.coordinates,
-              },
-            ],
+            }
+          }), {
+            order: 0,
+          }),
+          Object.assign(createGeometryPoint({
+            lon: approxEndPoint.coordinates[0],
+            lat: approxEndPoint.coordinates[1],
             properties: {
               name: 'End Point',
-            },
-          },
+            }
+          }), {
+            order: 1,
+          })
         ],
       );
     }
+
     const createdCourse = await courses.upsert(
       null,
       {
         calendarEventId: newCalendarEvent.id,
         name,
-        // Start line, gates, finish line, marks...
         courseSequencedGeometries,
-        courseUnsequencedUntimedGeometry: [], // no used atm
-        courseUnsequencedTimedGeometry: [], // no used atm
       },
       mainDatabaseTransaction,
     );
@@ -200,44 +212,78 @@ const saveCompetitionUnit = async (
         country,
         city,
         openGraphImage,
+        scrapedOriginalId: race.original_id,
+        scrapedUrl: race.url,
       },
       mainDatabaseTransaction,
     );
 
-    mainDatabaseTransaction.commit();
-
     // Create the participant track
     const vesselParticipantTracks = {};
-    for (const currentParticipant of vesselParticipants.values()) {
-      vesselParticipantTracks[currentParticipant] = new VesselParticipantTrack(
-        currentParticipant,
+    for (const currentParticipant of createdVesselParticipants) {
+      const participantId = currentParticipant.id;
+      vesselParticipantTracks[participantId] = new VesselParticipantTrack(
+        participantId,
       );
     }
-    for (const position of allPositions) {
-      const tracker =
-        vesselParticipantTracks[vesselParticipants.get(position.vesselId)];
-      tracker.addNewPosition(
+    for (const position of positions) {
+      const vesselId =
+        existingVesselIdMap.get(position.vesselId) || position.vesselId; // replace vessel id if already exist
+      const vesselParticipantId = createdVesselParticipants.find(
+        (vp) => vp.vesselId === vesselId,
+      )?.id;
+      const tracker = vesselParticipantTracks[vesselParticipantId];
+      tracker?.addNewPosition(
         [position.lon, position.lat],
         position.timestamp,
         {
           cog: position.cog,
+          sog: position.sog,
+          twa: position.twa,
+          windSpeed: position.windSpeed,
+          windDirection: position.windDirection,
         },
         {},
       );
     }
+
+    // Remove vessel participant track that does not have positions
+    for (const vesselParticipantId in vesselParticipantTracks) {
+      const track = vesselParticipantTracks[vesselParticipantId];
+      if (!track.positions?.length) {
+        delete vesselParticipantTracks[vesselParticipantId];
+      }
+    }
+
     await competitionUnit.stopCompetition(
       newCompetitionUnit.id,
       vesselParticipantTracks,
       {},
       rankings,
     );
+
+    await successfulUrlDataAccess.create({
+      url: race.scrapedUrl || race.url || url,
+      originalId: race.original_id,
+      source,
+      createdAt: Date.now(),
+    }, mainDatabaseTransaction);
+
+    await mainDatabaseTransaction.commit();
     console.log(`Finish saving competition unit ${raceId} into main database`);
   } catch (err) {
     console.log(
       `Error during saving competition unit ${raceId} into main database`,
       err,
     );
-    mainDatabaseTransaction.rollback();
+    await mainDatabaseTransaction.rollback();
+
+    await failedUrlDataAccess.create({
+      url: race.scrapedUrl || race.url || url,
+      error: err.toString(),
+      source,
+      createdAt: Date.now(),
+    });
   }
 };
 

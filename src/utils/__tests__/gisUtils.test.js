@@ -619,7 +619,11 @@ describe('gis_utils.js', () => {
 
   describe('When createGeometryPoint is called', () => {
     it('#createGeometryPoint should create geometry object', () => {
-      const result = createGeometryPoint(1, -1, { name: 'test' });
+      const result = createGeometryPoint({
+        lat: 1,
+        lon: -1,
+        properties: { name: 'test' }
+      });
       expect(result.geometryType).toEqual('Point');
       expect(result.coordinates.length).toEqual(1);
       expect(result.coordinates[0].position[1]).toEqual(1);

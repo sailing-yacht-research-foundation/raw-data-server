@@ -26,6 +26,8 @@ exports.upsert = async (
     country,
     city,
     status = competitionUnitStatus.COMPLETED,
+    scrapedOriginalId,
+    scrapedUrl,
   } = {},
   transaction,
 ) => {
@@ -47,6 +49,8 @@ exports.upsert = async (
     country,
     city,
     status,
+    scrapedOriginalId,
+    scrapedUrl,
     createdAt: now,
     updatedAt: now,
   };

@@ -3,7 +3,19 @@ const db = require('../../syrf-schema');
 
 exports.upsert = async (
   id,
-  { publicName, vesselId, globalId, lengthInMeters, orcJsonPolars, scope } = {},
+  {
+    publicName,
+    vesselId,
+    globalId,
+    lengthInMeters,
+    widthInMeters,
+    draftInMeters,
+    model,
+    handicap,
+    orcJsonPolars,
+    scope,
+    source,
+  } = {},
   transaction,
 ) => {
   const now = Date.now();
@@ -12,8 +24,13 @@ exports.upsert = async (
     vesselId,
     globalId,
     lengthInMeters,
+    widthInMeters,
+    draftInMeters,
+    model,
+    handicap,
     orcJsonPolars,
     scope,
+    source,
     bulkCreated: false,
     createdAt: now,
     updatedAt: now,
@@ -93,4 +110,12 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
     ],
   });
   return allVessels.map((t) => t.vessel);
+};
+
+exports.getVesselsByVesselIdsAndSource = async (vesselId, source) => {
+  return await dataAccess.getVesselsByVesselIdsAndSource(vesselId, source);
+};
+
+exports.bulkCreate = async (data, transaction) => {
+  return await dataAccess.bulkCreate(data, transaction);
 };
