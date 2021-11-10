@@ -590,3 +590,11 @@ exports.createGeometryPolygon = (coordinates = [], properties = {}) => {
     coordinates,
   };
 };
+
+exports.createGeometry = (coordinates = [], properties = {}, geometryType) => {
+  return {
+    geometryType,
+    properties,
+    coordinates,
+  };
+};

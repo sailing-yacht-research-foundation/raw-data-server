@@ -1,6 +1,7 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
 const { v4: uuidv4 } = require('uuid');
+const { geometryType } = require('../../syrf-schema/enums');
 
 const mapYellowBrickToSyrf = async (data, raceMetadata) => {
   if (!raceMetadata) {
@@ -143,58 +144,36 @@ const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
     if (isNotNumber) {
       continue;
     }
-    const coordinates = [];
-    // positions length = 2 => point
-    // positions length = 4 => 2 points => line
-    // positions length > 4 => multiple points => polygon
-    switch (positions.length) {
-      case 2:
-        //point
-        courseSequencedGeometries.push({
-          ...gisUtils.createGeometryPoint({
-            lat: +positions[0],
-            lon: +positions[1],
-            properties: {
-              name: poi.name?.trim(),
-            },
-          }),
-          order: order,
-        });
-        break;
-      case 4:
-        // polyline
-        courseSequencedGeometries.push({
-          ...gisUtils.createGeometryLine(
-            {
-              lat: +positions[0],
-              lon: +positions[1],
-            },
-            {
-              lat: +positions[2],
-              lon: +positions[3],
-            },
-            {
-              name: poi.name?.trim(),
-            },
-          ),
-          order: order,
-        });
-        break;
-      default:
-        // polygon
-        while (positions.length) {
-          const lat = +positions.shift();
-          const lon = +positions.shift();
-          coordinates.push(gisUtils.createGeometryPosition({ lat, lon }));
-        }
-        courseSequencedGeometries.push({
-          ...gisUtils.createGeometryPolygon(coordinates, {
+    if (positions.length === 2) {
+      courseSequencedGeometries.push({
+        ...gisUtils.createGeometryPoint({
+          lat: +positions[0],
+          lon: +positions[1],
+          properties: {
             name: poi.name?.trim(),
-          }),
-          order: order,
-        });
-        break;
+          },
+        }),
+        order: order,
+      });
+      continue;
     }
+    const coordinates = [];
+    const type = poi.polygon ? geometryType.POLYGON : geometryType.LINESTRING;
+    while (positions.length) {
+      const lat = +positions.shift();
+      const lon = +positions.shift();
+      coordinates.push(gisUtils.createGeometryPosition({ lat, lon }));
+    }
+    courseSequencedGeometries.push({
+      ...gisUtils.createGeometry(
+        coordinates,
+        {
+          name: poi.name?.trim(),
+        },
+        type,
+      ),
+      order: order,
+    });
     order++;
   }
 

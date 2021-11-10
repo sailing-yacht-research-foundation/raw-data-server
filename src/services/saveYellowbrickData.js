@@ -131,7 +131,7 @@ const saveYellowbrickData = async (data) => {
     }
   }
 
-  // await triggerWeatherSlicer(raceMetadata);
+  await triggerWeatherSlicer(raceMetadata);
   return errorMessage;
 };
 
