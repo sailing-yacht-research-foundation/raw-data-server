@@ -9,9 +9,7 @@ const vesselParticipantGroup = require('../syrfDataServices/v1/vesselParticipant
 const courses = require('../syrfDataServices/v1/courses');
 const participant = require('../syrfDataServices/v1/participant');
 const VesselParticipantTrack = require('../syrfDataServices/v1/vesselParticipantTrack');
-const {
-  createGeometryPoint,
-} = require('../utils/gisUtils');
+const { createGeometryPoint } = require('../utils/gisUtils');
 
 const saveCompetitionUnit = async ({
   event,
@@ -21,6 +19,7 @@ const saveCompetitionUnit = async ({
   rankings,
   raceMetadata,
   courseSequencedGeometries = [],
+  handicapMap = {},
 }) => {
   const {
     id: raceId,
@@ -105,10 +104,15 @@ const saveCompetitionUnit = async ({
         handicap: boat.handicap,
         source,
       });
+
+      let boatHandicap = boat.handicap;
+      if (handicapMap && handicapMap[boat.id]) {
+        boatHandicap = handicapMap[boat.id];
+      }
       vesselParticipantsToSave.push({
         vesselId: boat.id,
         vesselParticipantGroupId: vesselGroup.id,
-        handicap: boat.handicap,
+        handicap: boatHandicap,
       });
       if (boat.crews) {
         vesselsToParticipantsMap.set(boat.id, boat.crews);
@@ -162,24 +166,30 @@ const saveCompetitionUnit = async ({
     if (courseSequencedGeometries.length === 0) {
       courseSequencedGeometries.push(
         ...[
-          Object.assign(createGeometryPoint({
-            lon: approxStartPoint.coordinates[0],
-            lat: approxStartPoint.coordinates[1],
-            properties: {
-              name: 'Start Point',
-            }
-          }), {
-            order: 0,
-          }),
-          Object.assign(createGeometryPoint({
-            lon: approxEndPoint.coordinates[0],
-            lat: approxEndPoint.coordinates[1],
-            properties: {
-              name: 'End Point',
-            }
-          }), {
-            order: 1,
-          })
+          Object.assign(
+            createGeometryPoint({
+              lon: approxStartPoint.coordinates[0],
+              lat: approxStartPoint.coordinates[1],
+              properties: {
+                name: 'Start Point',
+              },
+            }),
+            {
+              order: 0,
+            },
+          ),
+          Object.assign(
+            createGeometryPoint({
+              lon: approxEndPoint.coordinates[0],
+              lat: approxEndPoint.coordinates[1],
+              properties: {
+                name: 'End Point',
+              },
+            }),
+            {
+              order: 1,
+            },
+          ),
         ],
       );
     }
@@ -262,12 +272,15 @@ const saveCompetitionUnit = async ({
       rankings,
     );
 
-    await successfulUrlDataAccess.create({
-      url: race.scrapedUrl || race.url || url,
-      originalId: race.original_id,
-      source,
-      createdAt: Date.now(),
-    }, mainDatabaseTransaction);
+    await successfulUrlDataAccess.create(
+      {
+        url: race.scrapedUrl || race.url || url,
+        originalId: race.original_id,
+        source,
+        createdAt: Date.now(),
+      },
+      mainDatabaseTransaction,
+    );
 
     await mainDatabaseTransaction.commit();
     console.log(`Finish saving competition unit ${raceId} into main database`);

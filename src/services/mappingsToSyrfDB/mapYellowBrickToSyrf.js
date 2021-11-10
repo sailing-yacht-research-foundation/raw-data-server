@@ -10,6 +10,7 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
   console.log('Saving to main database');
   const boatIdToOriginalIdMap = {};
   const inputBoats = _mapBoats(data.YellowbrickTeam, boatIdToOriginalIdMap);
+  const handicapMap = _mapHandicap(data.YellowbrickLeaderboardTeam);
 
   const courseSequencedGeometries = _mapSequencedGeometries(
     data.YellowbrickCourseNode,
@@ -32,6 +33,7 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     raceMetadata,
     courseSequencedGeometries,
     rankings,
+    handicapMap,
   });
 };
 
@@ -66,6 +68,25 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
     }
     return vessel;
   });
+};
+
+const _mapHandicap = (yellowbrickLeaderboardTeam) => {
+  const handicapMap = {};
+  for (const leaderBoard of yellowbrickLeaderboardTeam) {
+    if (
+      leaderBoard?.type?.toLowerCase() === 'level' ||
+      !leaderBoard.tcf ||
+      isNaN(leaderBoard.tcf)
+    ) {
+      continue;
+    }
+    if (!handicapMap[leaderBoard.team]) {
+      handicapMap[leaderBoard.team] = {};
+    }
+    handicapMap[leaderBoard.team][leaderBoard?.type?.toLowerCase()] =
+      +leaderBoard.tcf;
+  }
+  return handicapMap;
 };
 
 const _mapPositions = (yellowbrickPosition) => {
