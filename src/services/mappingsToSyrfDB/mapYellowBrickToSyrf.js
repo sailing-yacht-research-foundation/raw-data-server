@@ -13,6 +13,7 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
 
   const courseSequencedGeometries = _mapSequencedGeometries(
     data.YellowbrickCourseNode,
+    data.YellowbrickPoi,
   );
   const positions = _mapPositions(data.YellowbrickPosition);
 
@@ -22,7 +23,6 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     race: {
       original_id: data.YellowbrickRace[0].race_code,
       url: data.YellowbrickRace[0].url,
-      scrapedUrl: data.YellowbrickRace[0].slug,
     },
     boats: inputBoats,
     positions,
@@ -38,19 +38,25 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
     const vessel = {
       id: b.id,
       publicName: b.name,
-      vesselId: b.id,
+      vesselId: b.original_id?.toString(),
       model: b.model,
       lengthInMeters: null,
       widthInMeters: null,
       draftInMeters: null,
     };
 
+    const crews = [];
     if (b.owner) {
-      vessel.crews = [{ publicName: b.owner, id: uuidv4() }];
+      crews.push({ publicName: b.owner, id: uuidv4() });
     }
+
+    if (b.captain && b.owner?.toLowerCase() !== b.captain.toLowerCase()) {
+      crews.push({ publicName: b.captain, id: uuidv4() });
+    }
+    vessel.crews = crews;
     vessel.handicap = {};
     for (const key of Object.keys(b)) {
-      if (key.indexOf('tcf') === -1 || isNaN(b[key])) {
+      if (key.indexOf('tcf') === -1 || isNaN(b[key]) || !b[key]) {
         continue;
       }
       vessel.handicap[key] = Number.parseFloat(b[key]);
@@ -78,20 +84,89 @@ const _mapPositions = (yellowbrickPosition) => {
   });
 };
 
-const _mapSequencedGeometries = (yellowbrickCourseNodes) => {
+const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
   const courseSequencedGeometries = [];
+  let order = 1;
   for (const yellowbrickCourseNode of yellowbrickCourseNodes) {
     courseSequencedGeometries.push({
-      ...gisUtils.createGeometryPoint(
-        yellowbrickCourseNode.lat,
-        yellowbrickCourseNode.lon,
-      ),
-      properties: {
-        name: yellowbrickCourseNode.name?.trim(),
-      },
-      order: yellowbrickCourseNode.order,
+      ...gisUtils.createGeometryPoint({
+        lat: yellowbrickCourseNode.lat,
+        lon: yellowbrickCourseNode.lon,
+        properties: {
+          name: yellowbrickCourseNode.name?.trim(),
+        },
+      }),
+      order: order,
     });
+    order++;
   }
+  if (!yellowbrickPoi || !yellowbrickPoi.length) {
+    return;
+  }
+  // poi schema
+  // {id:string, nodes: string, polygon: boolean}
+  for (const poi of yellowbrickPoi) {
+    if (!poi.nodes) {
+      continue;
+    }
+    const positions = poi.nodes.split(',');
+    // the positions should go by pair [lat, lon], so it should be even number
+    if (positions.length < 2 || positions.length % 2 !== 0) {
+      continue;
+    }
+    const coordinates = [];
+    switch (positions.length) {
+      case 2:
+        //point
+        courseSequencedGeometries.push({
+          ...gisUtils.createGeometryPoint({
+            lat: +positions[0],
+            lon: +positions[1],
+            properties: {
+              name: poi.name?.trim(),
+            },
+          }),
+          order: order,
+        });
+        break;
+      case 4:
+        // polyline
+        courseSequencedGeometries.push({
+          ...gisUtils.createGeometryLine(
+            {
+              lat: +positions[0],
+              lon: +positions[1],
+            },
+            {
+              lat: +positions[2],
+              lon: +positions[3],
+            },
+            {
+              name: poi.name?.trim(),
+            },
+          ),
+          order: order,
+        });
+        break;
+      default:
+        // polygon
+        while (positions.length) {
+          const lat = +positions.shift();
+          const lon = +positions.shift();
+          coordinates.push(gisUtils.createGeometryPosition({ lat, lon }));
+        }
+        courseSequencedGeometries.push({
+          ...gisUtils.createGeometryPolygon(coordinates, {
+            name: poi.name?.trim(),
+          }),
+          order: order,
+        });
+        // polygon
+        break;
+    }
+    order++;
+  }
+
   return courseSequencedGeometries;
 };
 
