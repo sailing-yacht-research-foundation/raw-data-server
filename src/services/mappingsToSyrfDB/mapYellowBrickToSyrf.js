@@ -117,7 +117,15 @@ const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
     if (positions.length < 2 || positions.length % 2 !== 0) {
       continue;
     }
+
+    const isNotNumber = positions.find((t) => isNaN(t));
+    if (isNotNumber) {
+      continue;
+    }
     const coordinates = [];
+    // positions length = 2 => point
+    // positions length = 4 => 2 points => line
+    // positions length > 4 => multiple points => polygon
     switch (positions.length) {
       case 2:
         //point
@@ -164,7 +172,6 @@ const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
           }),
           order: order,
         });
-        // polygon
         break;
     }
     order++;
