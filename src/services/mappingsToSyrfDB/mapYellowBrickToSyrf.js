@@ -17,7 +17,10 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
   );
   const positions = _mapPositions(data.YellowbrickPosition);
 
-  const rankings = _mapRankings(data.YellowbrickTeam);
+  const rankings = _mapRankings(
+    data.YellowbrickTeam,
+    data.YellowbrickLeaderboardTeam,
+  );
 
   await saveCompetitionUnit({
     race: {
@@ -170,28 +173,41 @@ const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
   return courseSequencedGeometries;
 };
 
-const _mapRankings = (yellowbrickTeam) => {
+const _mapRankings = (yellowbrickTeam, yellowbrickLeaderboardTeam = []) => {
   if (!yellowbrickTeam) {
     return [];
   }
-  yellowbrickTeam.sort((a, b) => {
-    const finishedTimeA = a.finshed_at || Infinity;
-    const finishedTimeB = b.finshed_at || Infinity;
 
-    return finishedTimeA - finishedTimeB;
-  });
-  return yellowbrickTeam.map((b) => {
+  const rankings = [];
+  for (const team of yellowbrickTeam) {
+    const ranking = { id: team.id };
+    //  the type is LEVEL the tcf are 1 which means it's the uncalculated time
+    const leaderBoardTeam = yellowbrickLeaderboardTeam.find(
+      (t) => t.team === team.id && t.type === 'LEVEL' && t.tcf === '1.000',
+    );
     let elapsedTime = 0;
     let finishTime = 0;
-    if (b.finshed_at) {
-      elapsedTime = (b.finshed_at - b.start) * 1000;
-      finishTime = b.finshed_at * 1000;
+    if (
+      leaderBoardTeam &&
+      leaderBoardTeam.elapsed &&
+      leaderBoardTeam.finished_at
+    ) {
+      elapsedTime = leaderBoardTeam.elapsed * 1000;
+      finishTime = leaderBoardTeam.finished_at * 1000;
     }
-    return {
-      id: b.id,
-      elapsedTime,
-      finishTime,
-    };
+    if (team.finshed_at && !elapsedTime && !finishTime) {
+      elapsedTime = (team.finshed_at - team.start) * 1000;
+      finishTime = team.finshed_at * 1000;
+    }
+    ranking.elapsedTime = elapsedTime;
+    ranking.finishTime = finishTime;
+    rankings.push(ranking);
+  }
+  rankings.sort((a, b) => {
+    const finishedTimeA = a.finishTime || Infinity;
+    const finishedTimeB = b.finishTime || Infinity;
+    return finishedTimeA - finishedTimeB;
   });
+  return rankings;
 };
 module.exports = mapYellowBrickToSyrf;
