@@ -548,15 +548,11 @@ exports.meterPerSecToKnots = function (speed) {
   return parseFloat((speed * 1.943844).toFixed(2));
 };
 
-exports.createGeometryPoint = ({ lat, lon, properties = {}}) => {
+exports.createGeometryPoint = ({ lat, lon, properties = {} }) => {
   return {
     geometryType: geometryType.POINT,
     properties,
-    coordinates: [
-      {
-        position: [lon, lat],
-      },
-    ],
+    coordinates: [this.createGeometryPosition({ lat, lon })],
   };
 };
 
@@ -569,12 +565,36 @@ exports.createGeometryLine = (
     geometryType: geometryType.LINESTRING,
     properties,
     coordinates: [
-      {
-        position: [point1lon, point1Lat],
-      },
-      {
-        position: [point2Lon, point2Lat],
-      },
+      this.createGeometryPosition({ lat: point1Lat, lon: point1lon }),
+      this.createGeometryPosition({ lat: point2Lat, lon: point2Lon }),
     ],
+  };
+};
+
+exports.createGeometryPosition = ({ lat, lon }) => {
+  return {
+    position: [lon, lat],
+  };
+};
+
+/**
+ *
+ * @param {Array of {lon, lat}} coordinates
+ * @param {*} properties
+ * @returns
+ */
+exports.createGeometryPolygon = (coordinates = [], properties = {}) => {
+  return {
+    geometryType: geometryType.POLYGON,
+    properties,
+    coordinates,
+  };
+};
+
+exports.createGeometry = (coordinates = [], properties = {}, geometryType) => {
+  return {
+    geometryType,
+    properties,
+    coordinates,
   };
 };
