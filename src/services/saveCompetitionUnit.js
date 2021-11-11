@@ -20,6 +20,7 @@ const saveCompetitionUnit = async ({
   raceMetadata,
   courseSequencedGeometries = [],
   handicapMap = {},
+  reuse = {},
 }) => {
   const {
     id: raceId,
@@ -80,17 +81,20 @@ const saveCompetitionUnit = async ({
       source,
     );
     for (const boat of boats) {
-      const existingVessel = existingVessels?.find(
-        (ev) => ev.vesselId === boat.vesselId,
-      );
-      if (existingVessel) {
-        existingVesselIdMap.set(boat.id, existingVessel.id);
-        boat.id = existingVessel.id;
-        boat.handicap = Object.assign(
-          {},
-          existingVessel.handicap,
-          boat.handicap,
+      if (reuse.boats) {
+        // some scrapers have the same boat.original_id but different info like yellowbrick
+        const existingVessel = existingVessels?.find(
+          (ev) => ev.vesselId === boat.vesselId,
         );
+        if (existingVessel) {
+          existingVesselIdMap.set(boat.id, existingVessel.id);
+          boat.id = existingVessel.id;
+          boat.handicap = Object.assign(
+            {},
+            existingVessel.handicap,
+            boat.handicap,
+          );
+        }
       }
       vesselsToSave.push({
         id: boat.id,

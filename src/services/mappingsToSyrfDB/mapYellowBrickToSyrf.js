@@ -45,6 +45,7 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
       id: b.id,
       publicName: b.name,
       vesselId: b.original_id?.toString(),
+      globalId: b.sail,
       model: b.model,
       lengthInMeters: null,
       widthInMeters: null,
@@ -199,16 +200,21 @@ const _mapRankings = (yellowbrickTeam, yellowbrickLeaderboardTeam = []) => {
     let elapsedTime = 0;
     let finishTime = 0;
     if (leaderBoardTeam) {
-      elapsedTime = leaderBoardTeam?.elapsed * 1000 || 0;
-      finishTime = leaderBoardTeam?.finished_at * 1000 || 0;
+      elapsedTime = leaderBoardTeam.elapsed * 1000 || 0;
+      finishTime = leaderBoardTeam.finished_at * 1000 || 0;
       ranking.rank = leaderBoardTeam.rank_r || leaderBoardTeam.rank_s;
       if (!hasRank && ranking.rank) {
         hasRank = true;
       }
     }
-    if (team.finshed_at && !elapsedTime && !finishTime) {
-      elapsedTime = (team.finshed_at - team.start) * 1000;
-      finishTime = team.finshed_at * 1000;
+    if (
+      team.finished_at &&
+      !isNaN(team.finished_at) &&
+      !elapsedTime &&
+      !finishTime
+    ) {
+      elapsedTime = (team.finished_at - team.start) * 1000;
+      finishTime = team.finished_at * 1000;
     }
     ranking.elapsedTime = elapsedTime;
     ranking.finishTime = finishTime;
