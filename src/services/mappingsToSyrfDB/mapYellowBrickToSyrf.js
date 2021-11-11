@@ -71,7 +71,7 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
   });
 };
 
-const _mapHandicap = (yellowbrickLeaderboardTeam) => {
+const _mapHandicap = (yellowbrickLeaderboardTeam = []) => {
   const handicapMap = {};
   for (const leaderBoard of yellowbrickLeaderboardTeam) {
     if (
@@ -109,7 +109,10 @@ const _mapPositions = (yellowbrickPosition) => {
   });
 };
 
-const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
+const _mapSequencedGeometries = (
+  yellowbrickCourseNodes = [],
+  yellowbrickPoi = [],
+) => {
   const courseSequencedGeometries = [];
   let order = 1;
   for (const yellowbrickCourseNode of yellowbrickCourseNodes) {
@@ -125,8 +128,8 @@ const _mapSequencedGeometries = (yellowbrickCourseNodes, yellowbrickPoi) => {
     });
     order++;
   }
-  if (!yellowbrickPoi || !yellowbrickPoi.length) {
-    return;
+  if (!yellowbrickPoi?.length) {
+    return courseSequencedGeometries;
   }
   // poi schema
   // {id:string, nodes: string, polygon: boolean}
@@ -186,6 +189,7 @@ const _mapRankings = (yellowbrickTeam, yellowbrickLeaderboardTeam = []) => {
   }
 
   const rankings = [];
+  let hasRank = false;
   for (const team of yellowbrickTeam) {
     const ranking = { id: team.id };
     //  the type is LEVEL the tcf are 1 which means it's the uncalculated time
@@ -194,13 +198,13 @@ const _mapRankings = (yellowbrickTeam, yellowbrickLeaderboardTeam = []) => {
     );
     let elapsedTime = 0;
     let finishTime = 0;
-    if (
-      leaderBoardTeam &&
-      leaderBoardTeam.elapsed &&
-      leaderBoardTeam.finished_at
-    ) {
-      elapsedTime = leaderBoardTeam.elapsed * 1000;
-      finishTime = leaderBoardTeam.finished_at * 1000;
+    if (leaderBoardTeam) {
+      elapsedTime = leaderBoardTeam?.elapsed * 1000 || 0;
+      finishTime = leaderBoardTeam?.finished_at * 1000 || 0;
+      ranking.rank = leaderBoardTeam.rank_r || leaderBoardTeam.rank_s;
+      if (!hasRank && ranking.rank) {
+        hasRank = true;
+      }
     }
     if (team.finshed_at && !elapsedTime && !finishTime) {
       elapsedTime = (team.finshed_at - team.start) * 1000;
@@ -210,11 +214,18 @@ const _mapRankings = (yellowbrickTeam, yellowbrickLeaderboardTeam = []) => {
     ranking.finishTime = finishTime;
     rankings.push(ranking);
   }
+
   rankings.sort((a, b) => {
+    if (hasRank) {
+      const rankA = !isNaN(a.rank) ? a.rank : Infinity;
+      const rankB = !isNaN(b.rank) ? b.rank : Infinity;
+      return rankA - rankB;
+    }
     const finishedTimeA = a.finishTime || Infinity;
     const finishedTimeB = b.finishTime || Infinity;
     return finishedTimeA - finishedTimeB;
   });
+
   return rankings;
 };
 module.exports = mapYellowBrickToSyrf;
