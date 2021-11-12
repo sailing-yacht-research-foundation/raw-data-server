@@ -365,6 +365,10 @@ db.yachtBotPosition = require('./yachtbot/yachtBotPosition.model')(
   sequelize,
   Sequelize,
 );
+db.yachtBotMark = require('./yachtbot/yachtBotMark.model')(
+  sequelize,
+  Sequelize,
+);
 db.yachtBotSuccessfulUrl = require('./yachtbot/yachtBotSuccessfulUrl.model')(
   sequelize,
   Sequelize,
