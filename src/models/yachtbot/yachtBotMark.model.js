@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       connected_buoy: {
-        type: Sequelize.TEXT,
+        type: Sequelize.UUID,
         allowNull: true,
       },
       connected_buoy_original_id: {
