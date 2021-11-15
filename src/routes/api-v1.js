@@ -27,6 +27,7 @@ const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData
 const saveAmericasCupData = require('../services/non-automatable/saveAmericasCupData');
 const saveSapData = require('../services/non-automatable/saveSapData');
 const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegadata');
+const updateYachtBotData = require('../services/non-automatable/updateYachtBotData');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { gunzipFile } = require('../utils/unzipFile');
@@ -381,6 +382,18 @@ router.post('/regadata', async function (req, res) {
   }
   try {
     saveRegadata(req.body.bucketName, req.body.fileName);
+  } catch (err) {
+    console.log(err);
+  }
+
+  res.json({
+    message: `Successfully started processing of files`,
+  });
+});
+
+router.post('/yacht-bot', async function (req, res) {
+  try {
+    updateYachtBotData(req.body);
   } catch (err) {
     console.log(err);
   }
