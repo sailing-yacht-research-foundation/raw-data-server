@@ -247,7 +247,7 @@ const saveGeovoileData = async (data) => {
       }
 
       return {
-        id: b.id,
+        vesselId: b.id,
         elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
         finishTime: finishTime,
       };

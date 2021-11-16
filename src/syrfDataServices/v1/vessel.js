@@ -31,7 +31,7 @@ exports.upsert = async (
     orcJsonPolars,
     scope,
     source,
-    bulkCreated: false,
+    bulkCreated: true,
     createdAt: now,
     updatedAt: now,
   };
