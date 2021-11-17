@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeYachtBot');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const mapYachtbotToSyrf = require('../services/mappingsToSyrfDB/mapYachtbotToSyrf');
 
 const saveYachtBotData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -65,6 +66,12 @@ const saveYachtBotData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_YACHT_BOT === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    await mapYachtbotToSyrf(data, raceMetadata);
+  }
   if (raceUrl.length > 0) {
     if (errorMessage) {
       await db.yachtBotFailedUrl.bulkCreate(
