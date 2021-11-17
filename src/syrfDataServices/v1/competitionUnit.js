@@ -56,12 +56,13 @@ exports.upsert = async (
   };
 
   const startDateObj = new Date(approximateStart);
+  const approxStartTime = startDateObj.getTime();
 
-  if (!isNaN(startDateObj.getTime())) {
+  if (!isNaN(approxStartTime)) {
     competitionToSave.approximateStart = approximateStart;
     competitionToSave.approximateStart_zone = approximateStart_zone;
     competitionToSave.approximateStart_utc = zonedTimeToUtc(
-      startDateObj,
+      approxStartTime,
       approximateStart_zone,
     );
   } else {
