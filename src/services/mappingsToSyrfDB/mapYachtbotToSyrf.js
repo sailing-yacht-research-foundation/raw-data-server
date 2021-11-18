@@ -31,8 +31,8 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
 
   await saveCompetitionUnit({
     race: {
-      original_id: data.YellowbrickRace[0].race_code,
-      url: data.YellowbrickRace[0].url,
+      original_id: data.YachtBotRace[0].original_id.toString(),
+      url: data.YachtBotRace[0].url,
     },
     boats: inputBoats,
     positions,
@@ -75,7 +75,7 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap) => {
   });
 };
 
-const _mapPositions = (yachtBotPosition, boatIdToOriginalIdMap) => {
+const _mapPositions = (yachtBotPosition) => {
   if (!yachtBotPosition) {
     return [];
   }
@@ -88,7 +88,7 @@ const _mapPositions = (yachtBotPosition, boatIdToOriginalIdMap) => {
       race_original_id: t.race_original_id?.toString(),
       boat_id: t.yacht,
       vesselId: t.yacht,
-      boat_original_id: boatIdToOriginalIdMap[t.yacht],
+      boat_original_id: t.yacht_original_id,
       id: uuidv4(),
     };
   });
