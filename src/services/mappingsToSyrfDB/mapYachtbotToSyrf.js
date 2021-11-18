@@ -153,22 +153,21 @@ const _mapSequencedGeometries = (
       buoyPositions,
     );
 
-    if (buoy && position) {
-      const connectedMarkLat = position.latitude;
-      const connectedMarkLon = position.longitude;
-      courseSequencedGeometries.push({
-        ...gisUtils.createGeometryLine(
-          { lat, lon },
-          { lat: connectedMarkLat, lon: connectedMarkLon },
-          {
-            name: mark.name?.trim(),
-            type: mark.buoy_type,
-          },
-        ),
-        order: order,
-      });
-      order++;
+    if (!buoy || !position) {
+      continue;
     }
+    courseSequencedGeometries.push({
+      ...gisUtils.createGeometryLine(
+        { lat, lon },
+        { lat: position.lat, lon: position.lon },
+        {
+          name: mark.name?.trim(),
+          type: mark.buoy_type,
+        },
+      ),
+      order: order,
+    });
+    order++;
   }
   if (!yachtBotBuoy?.length) {
     return courseSequencedGeometries;
@@ -180,8 +179,11 @@ const _mapSequencedGeometries = (
 
     const position = _findBuoyFirstPosition(currentBuoy.id, buoyPositions);
 
-    const lat = position?.latitude;
-    const lon = position?.longitude;
+    if (!position) {
+      continue;
+    }
+    const lat = position.lat;
+    const lon = position.lon;
     if (!currentBuoy.connected_buoy) {
       courseSequencedGeometries.push({
         ...gisUtils.createGeometryPoint({
@@ -201,31 +203,31 @@ const _mapSequencedGeometries = (
       (t) => t.id === currentBuoy.connected_buoy,
     );
 
-    if (connectedBuoy) {
-      connectedBuoy.processed = true;
-
-      const connectedBuoyPisition = _findBuoyFirstPosition(
-        connectedBuoy.id,
-        buoyPositions,
-      );
-      if (!connectedBuoyPisition) {
-        continue;
-      }
-      const connectedMarkLat = connectedBuoyPisition.latitude;
-      const connectedMarkLon = connectedBuoyPisition.longitude;
-      courseSequencedGeometries.push({
-        ...gisUtils.createGeometryLine(
-          { lat, lon },
-          { lat: connectedMarkLat, lon: connectedMarkLon },
-          {
-            name: currentBuoy.name?.trim(),
-          },
-        ),
-        order: order,
-      });
-      order++;
+    if (!connectedBuoy) {
       continue;
     }
+    connectedBuoy.processed = true;
+
+    const connectedBuoyPosition = _findBuoyFirstPosition(
+      connectedBuoy.id,
+      buoyPositions,
+    );
+    if (!connectedBuoyPosition) {
+      continue;
+    }
+    const connectedMarkLat = connectedBuoyPosition.lat;
+    const connectedMarkLon = connectedBuoyPosition.lon;
+    courseSequencedGeometries.push({
+      ...gisUtils.createGeometryLine(
+        { lat, lon },
+        { lat: connectedMarkLat, lon: connectedMarkLon },
+        {
+          name: currentBuoy.name?.trim(),
+        },
+      ),
+      order: order,
+    });
+    order++;
   }
 
   return courseSequencedGeometries;
@@ -243,7 +245,7 @@ const _findBuoyData = (
   }
 
   const buoy = yachtBotBuoy.find(
-    (t) => t.orginal_object_id === originalObjectId,
+    (t) => t.original_object_id === originalObjectId,
   );
 
   if (!buoy) {
@@ -269,13 +271,16 @@ const _mapRankings = (yachtBotYacht = [], positions = []) => {
   const reversedPositions = positions.concat().reverse();
   const rankings = [];
   for (const yacht of yachtBotYacht) {
-    const ranking = { id: yacht.id };
+    const ranking = { id: yacht.id, elapsedTime: 0, finishTime: 0 };
     const firstPosition = positions.find((t) => t.yacht === yacht.id);
     const lastPosition = reversedPositions.find((t) => t.yacht === yacht.id);
-    if (firstPosition && lastPosition) {
-      ranking.elapsedTime = lastPosition.time - firstPosition.time;
+    if (lastPosition) {
       ranking.finishTime = lastPosition.time;
     }
+    if (firstPosition && lastPosition) {
+      ranking.elapsedTime = lastPosition.time - firstPosition.time;
+    }
+
     rankings.push(ranking);
   }
 
