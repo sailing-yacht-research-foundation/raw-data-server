@@ -9,7 +9,10 @@ const vesselParticipantGroup = require('../syrfDataServices/v1/vesselParticipant
 const courses = require('../syrfDataServices/v1/courses');
 const participant = require('../syrfDataServices/v1/participant');
 const VesselParticipantTrack = require('../syrfDataServices/v1/vesselParticipantTrack');
+const PointTrack = require('../syrfDataServices/v1/pointTrack');
+
 const { createGeometryPoint } = require('../utils/gisUtils');
+const markTracker = require('../syrfDataServices/v1/markTracker');
 
 const saveCompetitionUnit = async ({
   event,
@@ -21,6 +24,8 @@ const saveCompetitionUnit = async ({
   courseSequencedGeometries = [],
   handicapMap = {},
   reuse = {},
+  markTrackers = [],
+  markTrackerPositions = [],
 }) => {
   const {
     id: raceId,
@@ -198,15 +203,23 @@ const saveCompetitionUnit = async ({
       );
     }
 
-    const createdCourse = await courses.upsert(
-      null,
-      {
-        calendarEventId: newCalendarEvent.id,
-        name,
-        courseSequencedGeometries,
-      },
-      mainDatabaseTransaction,
-    );
+    for (const tracker of markTrackers) {
+      await markTracker.upsert(
+        tracker.id,
+        { name: tracker.name, calendarEventId: newCalendarEvent.id },
+        mainDatabaseTransaction,
+      );
+    }
+    const [createdCourse, courseSequencedGeometriesPoints] =
+      await courses.upsert(
+        null,
+        {
+          calendarEventId: newCalendarEvent.id,
+          name,
+          courseSequencedGeometries,
+        },
+        mainDatabaseTransaction,
+      );
 
     console.log(`Create new Competition Unit`);
     // Save competition unit information
@@ -232,6 +245,32 @@ const saveCompetitionUnit = async ({
       mainDatabaseTransaction,
     );
 
+    const pointTracks = {};
+    if (markTrackers.length) {
+      const realTimePoints = courseSequencedGeometriesPoints.filter(
+        (t) => t.markTrackerId,
+      );
+
+      const trackerToPointMap = {};
+      for (const point of realTimePoints) {
+        trackerToPointMap[point.markTrackerId] = point.id;
+        pointTracks[point.id] = new PointTrack(point.id);
+      }
+
+      for (const pointPosition of markTrackerPositions) {
+        if (!pointPosition.markTrackerId) {
+          continue;
+        }
+        const pointId = trackerToPointMap[pointPosition.markTrackerId];
+        if (!pointId) {
+          continue;
+        }
+        pointTracks[pointId].addNewPosition(
+          [pointPosition.lon, pointPosition.lat],
+          pointPosition.timestamp,
+        );
+      }
+    }
     // Create the participant track
     const vesselParticipantTracks = {};
     for (const currentParticipant of createdVesselParticipants) {
@@ -272,7 +311,7 @@ const saveCompetitionUnit = async ({
     await competitionUnit.stopCompetition(
       newCompetitionUnit.id,
       vesselParticipantTracks,
-      {},
+      pointTracks,
       rankings,
     );
 

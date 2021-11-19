@@ -12,10 +12,21 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
   const inputBoats = _mapBoats(data.YachtBotYacht, boatIdToOriginalIdMap);
 
   data.YachtBotPosition.sort((a, b) => a.time - b.time);
-  const buoyPositions = data.YachtBotPosition.filter(
-    (t) => t.yacht_or_buoy !== 'yacht',
-  );
 
+  const markTrackers = [];
+  const buoyIdToMarkTrackerMap = {};
+  data.YachtBotBuoy = data.YachtBotBuoy.map((t) => {
+    const id = uuidv4();
+    buoyIdToMarkTrackerMap[t.id] = id;
+    markTrackers.push({ id, name: t.name });
+    return { ...t, markTrackerId: id };
+  });
+
+  const buoyPositions = data.YachtBotPosition.filter(
+    (t) => t.yacht_or_buoy !== 'yacht' && t.buoy,
+  ).map((t) => {
+    return { ...t, markTrackerId: buoyIdToMarkTrackerMap[t.buoy] };
+  });
   const courseSequencedGeometries = _mapSequencedGeometries(
     data.YachtBotMarks,
     data.YachtBotBuoy,
@@ -39,6 +50,8 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     raceMetadata,
     courseSequencedGeometries,
     rankings,
+    markTrackers: markTrackers,
+    markTrackerPositions: buoyPositions,
   });
 };
 
@@ -156,10 +169,15 @@ const _mapSequencedGeometries = (
     if (!buoy || !position) {
       continue;
     }
+
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
         { lat, lon },
-        { lat: position.lat, lon: position.lon },
+        {
+          lat: position.lat,
+          lon: position.lon,
+          markTrackerId: buoy.markTrackerId,
+        },
         {
           name: mark.name?.trim(),
           type: mark.buoy_type,
@@ -192,6 +210,7 @@ const _mapSequencedGeometries = (
           properties: {
             name: currentBuoy.name?.trim(),
           },
+          markTrackerId: currentBuoy.markTrackerId,
         }),
         order: order,
       });
@@ -217,10 +236,15 @@ const _mapSequencedGeometries = (
     }
     const connectedMarkLat = connectedBuoyPosition.lat;
     const connectedMarkLon = connectedBuoyPosition.lon;
+
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
-        { lat, lon },
-        { lat: connectedMarkLat, lon: connectedMarkLon },
+        { lat, lon, markTrackerId: currentBuoy.markTrackerId },
+        {
+          lat: connectedMarkLat,
+          lon: connectedMarkLon,
+          markTrackerId: connectedBuoy.markTrackerId,
+        },
         {
           name: currentBuoy.name?.trim(),
         },
