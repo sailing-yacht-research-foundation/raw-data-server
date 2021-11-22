@@ -122,6 +122,7 @@ const saveCompetitionUnit = async ({
         vesselId: boat.id,
         vesselParticipantGroupId: vesselGroup.id,
         handicap: boatHandicap,
+        isCommittee: boat.isCommittee,
       });
       if (boat.crews) {
         vesselsToParticipantsMap.set(boat.id, boat.crews);
@@ -134,7 +135,7 @@ const saveCompetitionUnit = async ({
     );
 
     rankings = rankings?.map((t) => {
-      const vesselId = existingVesselIdMap.get(t.id) || t.id; // replace vessel id if already exist
+      const vesselId = existingVesselIdMap.get(t.vesselId) || t.vesselId; // replace vessel id if already exist
       const vesselParticipantId = createdVesselParticipants.find(
         (vp) => vp.vesselId === vesselId,
       )?.id;
@@ -229,13 +230,13 @@ const saveCompetitionUnit = async ({
         name,
         approximateStartLocation: approxStartPoint,
         approximateEndLocation: approxEndPoint,
-        startTime: new Date(approxStartTimeMs).toISOString(),
-        approximateStart: new Date(approxStartTimeMs).toISOString(),
+        startTime: approxStartTimeMs,
+        approximateStart: approxStartTimeMs,
         boundingBox,
         vesselParticipantGroupId: vesselGroup.id,
         courseId: createdCourse.id,
         calendarEventId: newCalendarEvent.id,
-        endTime: new Date(approxEndTimeMs).toISOString(),
+        endTime: approxEndTimeMs,
         country,
         city,
         openGraphImage,

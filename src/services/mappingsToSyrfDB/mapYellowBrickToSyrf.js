@@ -192,7 +192,7 @@ const _mapRankings = (yellowbrickTeam, yellowbrickLeaderboardTeam = []) => {
   const rankings = [];
   let hasRank = false;
   for (const team of yellowbrickTeam) {
-    const ranking = { id: team.id };
+    const ranking = { vesselId: team.id };
     //  the type is LEVEL the tcf are 1 which means it's the uncalculated time
     const leaderBoardTeam = yellowbrickLeaderboardTeam.find(
       (t) => t.team === team.id && t.type === 'LEVEL' && t.tcf === '1.000',
