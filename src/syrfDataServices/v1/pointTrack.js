@@ -1,20 +1,13 @@
 module.exports = class PointTrack {
-  constructor(id, coordinate) {
+  constructor(id) {
     this.id = id;
-    this.positions = [{ position: coordinate, timestamp: 0 }];
-    this.lastIndexSaved = -1;
+    this.positions = [];
   }
 
   addNewPosition(position, timestamp) {
-    if (
-      this.positions.length > 0 &&
-      this.positions[this.positions.length - 1].timestamp === timestamp
-    ) {
-      this.positions[this.positions.length - 1] = { position, timestamp };
-    } else {
-      this.positions = [...this.positions, { position, timestamp }];
-    }
+    this.positions.push({ position, timestamp });
   }
+
   createGeoJsonTrack({ competitionUnitId } = {}) {
     const feature = {
       type: 'Feature',

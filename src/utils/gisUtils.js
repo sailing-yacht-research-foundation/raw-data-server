@@ -548,32 +548,46 @@ exports.meterPerSecToKnots = function (speed) {
   return parseFloat((speed * 1.943844).toFixed(2));
 };
 
-exports.createGeometryPoint = ({ lat, lon, properties = {} }) => {
+exports.createGeometryPoint = ({
+  lat,
+  lon,
+  properties = {},
+  markTrackerId = null,
+}) => {
   return {
     geometryType: geometryType.POINT,
     properties,
-    coordinates: [this.createGeometryPosition({ lat, lon })],
+    coordinates: [this.createGeometryPosition({ lat, lon, markTrackerId })],
   };
 };
 
 exports.createGeometryLine = (
-  { lat: point1Lat, lon: point1lon },
-  { lat: point2Lat, lon: point2Lon },
+  { lat: point1Lat, lon: point1lon, markTrackerId: point1TrackerId },
+  { lat: point2Lat, lon: point2Lon, markTrackerId: point2TrackerId },
   properties = {},
 ) => {
   return {
     geometryType: geometryType.LINESTRING,
     properties,
     coordinates: [
-      this.createGeometryPosition({ lat: point1Lat, lon: point1lon }),
-      this.createGeometryPosition({ lat: point2Lat, lon: point2Lon }),
+      this.createGeometryPosition({
+        lat: point1Lat,
+        lon: point1lon,
+        markTrackerId: point1TrackerId,
+      }),
+      this.createGeometryPosition({
+        lat: point2Lat,
+        lon: point2Lon,
+        markTrackerId: point2TrackerId,
+      }),
     ],
   };
 };
 
-exports.createGeometryPosition = ({ lat, lon }) => {
+exports.createGeometryPosition = ({ lat, lon, markTrackerId }) => {
   return {
     position: [lon, lat],
+    markTrackerId,
   };
 };
 
