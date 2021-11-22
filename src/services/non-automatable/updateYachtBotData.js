@@ -36,10 +36,23 @@ const updateYachtBotData = async (data) => {
         );
       }
     }
-    if (data.YachtBotMarks) {
-      data.YachtBotMarks = data.YachtBotMarks.map((t) => {
-        return { ...t, race: race.id };
+
+    if (data.YachtBotMarks?.length) {
+      const existingMarks = await db.yachtBotMark.findAll({
+        where: { race_original_id: race.original_id?.toString() },
       });
+
+      const existingMarkOriginalIds = new Set(
+        existingMarks.map((t) => t.original_id),
+      );
+
+      data.YachtBotMarks = data.YachtBotMarks.map((t) => {
+        if (existingMarkOriginalIds.has(t.original_id)) {
+          return null;
+        }
+        return { ...t, race: race.id };
+      }).filter((t) => t);
+
       await db.yachtBotMark.bulkCreate(data.YachtBotMarks, {
         ignoreDuplicates: true,
         validate: true,
