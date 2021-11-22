@@ -15,14 +15,14 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
 
   const markTrackers = [];
   const buoyIdToMarkTrackerMap = {};
-  data.YachtBotBuoy = data.YachtBotBuoy.map((t) => {
+  data.YachtBotBuoy = data.YachtBotBuoy?.map((t) => {
     const id = uuidv4();
     buoyIdToMarkTrackerMap[t.id] = id;
     markTrackers.push({ id, name: t.name });
     return { ...t, markTrackerId: id };
   });
 
-  const buoyPositions = data.YachtBotPosition.filter(
+  const buoyPositions = data.YachtBotPosition?.filter(
     (t) => t.yacht_or_buoy !== 'yacht' && t.buoy,
   ).map((t) => {
     return { ...t, markTrackerId: buoyIdToMarkTrackerMap[t.buoy] };
@@ -33,7 +33,7 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     buoyPositions,
   );
 
-  const yachtPositions = data.YachtBotPosition.filter(
+  const yachtPositions = data.YachtBotPosition?.filter(
     (t) => t.yacht_or_buoy === 'yacht',
   );
   const positions = _mapPositions(yachtPositions);
@@ -295,7 +295,7 @@ const _mapRankings = (yachtBotYacht = [], positions = []) => {
   const reversedPositions = positions.concat().reverse();
   const rankings = [];
   for (const yacht of yachtBotYacht) {
-    const ranking = { id: yacht.id, elapsedTime: 0, finishTime: 0 };
+    const ranking = { vesselId: yacht.id, elapsedTime: 0, finishTime: 0 };
     const firstPosition = positions.find((t) => t.yacht === yacht.id);
     const lastPosition = reversedPositions.find((t) => t.yacht === yacht.id);
     if (lastPosition) {
