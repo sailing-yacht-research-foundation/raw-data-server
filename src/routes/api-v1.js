@@ -81,12 +81,12 @@ router.post(
     res.json({
       message: `File successfully uploaded`,
     });
-    const isScraperExist = (data, source) =>
-      Object.keys(data).some(
-        (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
-      );
     try {
       const { jsonData } = await unzipFileFromRequest(req);
+      const isScraperExist = (data, source) =>
+        Object.keys(data).some(
+          (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
+        );
       switch (true) {
         case isScraperExist(jsonData, TRACKER_MAP.isail):
           saveISailData(jsonData);
