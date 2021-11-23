@@ -123,7 +123,12 @@ async function unzipFileFromRequest(req) {
     });
   });
 
-  return { jsonData, unzippedJsonPath };
+  fs.unlink(unzippedJsonPath, (err) => {
+    if (err) {
+      console.log('error deleting: ', err);
+    }
+  });
+  return { jsonData };
 }
 
 module.exports = {

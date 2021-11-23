@@ -81,12 +81,12 @@ router.post(
     res.json({
       message: `File successfully uploaded`,
     });
-    const { jsonData, unzippedJsonPath } = await unzipFileFromRequest(req);
     const isScraperExist = (data, source) =>
       Object.keys(data).some(
         (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
       );
     try {
+      const { jsonData } = await unzipFileFromRequest(req);
       switch (true) {
         case isScraperExist(jsonData, TRACKER_MAP.isail):
           saveISailData(jsonData);
@@ -134,12 +134,6 @@ router.post(
     } catch (err) {
       // TODO: Handle error better
       console.error('error: ', err);
-    } finally {
-      fs.unlink(unzippedJsonPath, (err) => {
-        if (err) {
-          console.log('error deleting: ', err);
-        }
-      });
     }
   },
 );
@@ -346,20 +340,14 @@ router.post('/yacht-bot', upload.single('raw_data'), async function (req, res) {
     });
     return;
   }
-  const { jsonData, unzippedJsonPath } = await unzipFileFromRequest(req);
   res.json({
     message: `File successfully uploaded`,
   });
   try {
+    const { jsonData } = await unzipFileFromRequest(req);
     await updateYachtBotData(jsonData);
   } catch (err) {
     console.error('error: ', err);
-  } finally {
-    fs.unlink(unzippedJsonPath, (err) => {
-      if (err) {
-        console.log('error deleting: ', err);
-      }
-    });
   }
 });
 
