@@ -6,9 +6,10 @@ const { errorHandler } = require('./errors');
 function createServer() {
   const app = express();
   // default settings is 100KB for express.json
+  // we can override the default by DEFAULT_JSON_PARSER_SIZE env variable to satisfy some requests with large body
   app.use(
     express.json({
-      limit: Number.parseInt(process.env.DEFAULT_JSON_PARSER_FILE || '1000000'),
+      limit: Number.parseInt(process.env.DEFAULT_JSON_PARSER_SIZE || '1000000'),
     }),
   );
 
