@@ -113,6 +113,9 @@ const _mapPositions = (yachtBotPosition, boatMetaDataMap) => {
       cog: metadata?.cog?.[t.time],
       sog: metadata?.sog?.[t.time],
       twa: metadata?.twa?.[t.time],
+      tws: metadata?.tws?.[t.time],
+      windSpeed: metadata?.awa?.[t.time],
+      windDirection: metadata?.aws?.[t.time],
     };
   });
 };
@@ -125,10 +128,14 @@ const _mapMetadata = (boatMetaDataMap, yachtBotYacht) => {
   boatMetaDataMap[id] = { cog: {}, sog: {}, twa: {} };
   try {
     const metaObject = JSON.parse(metas);
-    const { cog, sog, twa } = metaObject;
+    const { cog, sog, twa, tws, awa, aws } = metaObject;
     boatMetaDataMap[id].cog = _mapMetaDataToObject(cog, 't', '1');
     boatMetaDataMap[id].sog = _mapMetaDataToObject(sog, 't', '1');
     boatMetaDataMap[id].twa = _mapMetaDataToObject(twa, 't', '1');
+    // tws true wind speed,  awa wind angel, aws wind speed
+    boatMetaDataMap[id].tws = _mapMetaDataToObject(tws, 't', '1');
+    boatMetaDataMap[id].awa = _mapMetaDataToObject(awa, 't', '1');
+    boatMetaDataMap[id].aws = _mapMetaDataToObject(aws, 't', '1');
   } catch (e) {
     console.log('error while processing _mapMetaData');
     console.log(e);
