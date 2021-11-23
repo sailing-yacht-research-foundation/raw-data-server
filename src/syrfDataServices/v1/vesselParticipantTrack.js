@@ -23,8 +23,10 @@ module.exports = class VesselParticipantTrack {
   addNewPosition(
     position,
     timestamp,
-    { cog, sog, twa } = { cog: 0, sog: null, twa: null },
-    { windSpeed, windDirection } = {
+    { cog, sog, twa, windSpeed, windDirection } = {
+      cog: 0,
+      sog: null,
+      twa: null,
       windSpeed: undefined,
       windDirection: undefined,
     },
