@@ -3,7 +3,6 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const temp = require('temp');
 const fs = require('fs');
-const JSONStream = require('JSONStream');
 
 const db = require('../models');
 const { BadRequestError } = require('../errors');
@@ -30,7 +29,7 @@ const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegad
 const updateYachtBotData = require('../services/non-automatable/updateYachtBotData');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
-const { gunzipFile } = require('../utils/unzipFile');
+const { unzipFileFromRequest } = require('../utils/unzipFile');
 const saveGeovoileData = require('../services/saveGeovoileData');
 const saveOldGeovoileData = require('../services/non-automatable/saveOldGeovoileData');
 
@@ -82,58 +81,7 @@ router.post(
     res.json({
       message: `File successfully uploaded`,
     });
-
-    // gunzip
-    let unzippedJsonPath = req.file.path;
-
-    if (req.file.mimetype === 'application/gzip') {
-      console.log('Got gzip file');
-      unzippedJsonPath = (await temp.open('georacing')).path;
-      const sourceStream = fs.createReadStream(req.file.path);
-      const writeStream = fs.createWriteStream(unzippedJsonPath);
-      await gunzipFile(sourceStream, writeStream);
-      fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.log('error deleting: ', err);
-        }
-      });
-    }
-
-    const jsonData = {};
-
-    await new Promise((resolve, reject) => {
-      const errorHandler = (err) => {
-        reject(err);
-      };
-      const stream = fs.createReadStream(unzippedJsonPath);
-      // Need to use this emitPath: true
-      // So we can get what properties the data latched on (TrackerRace, TrackerPosition, etc)
-      // This way we don't need to add a new form data to this endpoint
-      const parser = JSONStream.parse([true, { emitPath: true }]);
-      stream.on('error', errorHandler);
-      parser.on('error', errorHandler);
-      stream.pipe(parser);
-      parser.on('data', async function (row) {
-        // during streaming the row, if the data is object then row.path[1]
-        // is the object property (not a number)
-        // if the data is array then row.path[1] is the index number of object.
-        if (isNaN(row.path[1])) {
-          if (!jsonData[row.path[0]]) {
-            jsonData[row.path[0]] = {};
-          }
-          jsonData[row.path[0]][row.path[1]] = row.value;
-        } else {
-          // case array
-          if (jsonData[row.path[0]] === undefined) {
-            jsonData[row.path[0]] = [];
-          }
-          jsonData[row.path[0]].push(row.value);
-        }
-      });
-      stream.on('close', () => {
-        resolve(true);
-      });
-    });
+    const { jsonData, unzippedJsonPath } = await unzipFileFromRequest(req);
     const isScraperExist = (data, source) =>
       Object.keys(data).some(
         (i) => i.toLowerCase().indexOf(source.toLowerCase()) > -1,
@@ -391,16 +339,28 @@ router.post('/regadata', async function (req, res) {
   });
 });
 
-router.post('/yacht-bot', async function (req, res) {
-  try {
-    updateYachtBotData(req.body);
-  } catch (err) {
-    console.log(err);
+router.post('/yacht-bot', upload.single('raw_data'), async function (req, res) {
+  if (!req.file) {
+    res.status(400).json({
+      message: 'No File Uploaded',
+    });
+    return;
   }
-
+  const { jsonData, unzippedJsonPath } = await unzipFileFromRequest(req);
   res.json({
-    message: `Successfully started processing of files`,
+    message: `File successfully uploaded`,
   });
+  try {
+    await updateYachtBotData(jsonData);
+  } catch (err) {
+    console.error('error: ', err);
+  } finally {
+    fs.unlink(unzippedJsonPath, (err) => {
+      if (err) {
+        console.log('error deleting: ', err);
+      }
+    });
+  }
 });
 
 router.post('/old-geovoile', async function (req, res) {
