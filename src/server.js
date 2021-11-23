@@ -5,7 +5,9 @@ const { errorHandler } = require('./errors');
 
 function createServer() {
   const app = express();
-  app.use(express.json());
+  // limit the request by 1000000 byes, which is around 1MB
+  // default settings is 100KB
+  app.use(express.json({ limit: 1000000 }));
 
   app.use(
     express.urlencoded({
