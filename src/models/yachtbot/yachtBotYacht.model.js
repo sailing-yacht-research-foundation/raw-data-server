@@ -39,6 +39,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      original_object_id: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
     },
     {
       tableName: 'YachtBotYachts',
