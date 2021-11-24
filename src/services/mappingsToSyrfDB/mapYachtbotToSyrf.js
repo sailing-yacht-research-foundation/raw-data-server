@@ -57,6 +57,9 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     rankings,
     markTrackers: markTrackers,
     markTrackerPositions: buoyPositions,
+    reuse: {
+      boats: true,
+    },
   });
 };
 
@@ -67,7 +70,7 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap, boatMetaDataMap) => {
     const vessel = {
       id: b.id,
       publicName: b.name,
-      vesselId: b.original_id?.toString(),
+      vesselId: `${b.original_id?.toString()}-${b.original_object_id}`,
       globalId: b.sail,
       model: b.model,
       lengthInMeters: null,
@@ -113,7 +116,6 @@ const _mapPositions = (yachtBotPosition, boatMetaDataMap) => {
       cog: metadata?.cog?.[t.time],
       sog: metadata?.sog?.[t.time],
       twa: metadata?.twa?.[t.time],
-      tws: metadata?.tws?.[t.time],
       windSpeed: metadata?.awa?.[t.time],
       windDirection: metadata?.aws?.[t.time],
     };
