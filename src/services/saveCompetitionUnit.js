@@ -294,7 +294,6 @@ const saveCompetitionUnit = async ({
           cog: position.cog,
           sog: position.sog,
           twa: position.twa,
-          tws: position.tws,
           windSpeed: position.windSpeed,
           windDirection: position.windDirection,
         },

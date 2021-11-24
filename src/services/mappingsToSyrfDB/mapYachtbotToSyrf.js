@@ -128,12 +128,11 @@ const _mapMetadata = (boatMetaDataMap, yachtBotYacht) => {
   boatMetaDataMap[id] = { cog: {}, sog: {}, twa: {} };
   try {
     const metaObject = JSON.parse(metas);
-    const { cog, sog, twa, tws, awa, aws } = metaObject;
+    const { cog, sog, twa, awa, aws } = metaObject;
     boatMetaDataMap[id].cog = _mapMetaDataToObject(cog, 't', '1');
     boatMetaDataMap[id].sog = _mapMetaDataToObject(sog, 't', '1');
     boatMetaDataMap[id].twa = _mapMetaDataToObject(twa, 't', '1');
-    // tws true wind speed,  awa wind angel, aws wind speed
-    boatMetaDataMap[id].tws = _mapMetaDataToObject(tws, 't', '1');
+    // awa wind angel, aws wind speed
     boatMetaDataMap[id].awa = _mapMetaDataToObject(awa, 't', '1');
     boatMetaDataMap[id].aws = _mapMetaDataToObject(aws, 't', '1');
   } catch (e) {
