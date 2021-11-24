@@ -67,7 +67,7 @@ const saveYachtBotData = async (data) => {
   }
 
   if (
-    process.env.ENABLE_MAIN_DB_SAVE_YACHT_BOT === 'true' &&
+    process.env.ENABLE_MAIN_DB_SAVE_YACHTBOT === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
     await mapYachtbotToSyrf(data, raceMetadata);

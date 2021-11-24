@@ -106,7 +106,11 @@ const saveBluewaterData = async (data) => {
     process.env.ENABLE_MAIN_DB_SAVE_BLUEWATER === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    await mapAndSave(data, raceMetadata);
+    try {
+      await mapAndSave(data, raceMetadata);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   if (raceUrl.length > 0) {
