@@ -297,7 +297,6 @@ const saveCompetitionUnit = async ({
           windSpeed: position.windSpeed,
           windDirection: position.windDirection,
         },
-        {},
       );
     }
 

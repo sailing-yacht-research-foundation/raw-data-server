@@ -9,7 +9,12 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
   }
   console.log('Saving to main database');
   const boatIdToOriginalIdMap = {};
-  const inputBoats = _mapBoats(data.YachtBotYacht, boatIdToOriginalIdMap);
+  const boatMetaDataMap = {};
+  const inputBoats = _mapBoats(
+    data.YachtBotYacht,
+    boatIdToOriginalIdMap,
+    boatMetaDataMap,
+  );
 
   data.YachtBotPosition.sort((a, b) => a.time - b.time);
 
@@ -36,7 +41,7 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
   const yachtPositions = data.YachtBotPosition?.filter(
     (t) => t.yacht_or_buoy === 'yacht',
   );
-  const positions = _mapPositions(yachtPositions);
+  const positions = _mapPositions(yachtPositions, boatMetaDataMap);
 
   const rankings = _mapRankings(data.YachtBotYacht, yachtPositions);
 
@@ -52,17 +57,20 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     rankings,
     markTrackers: markTrackers,
     markTrackerPositions: buoyPositions,
+    reuse: {
+      boats: true,
+    },
   });
 };
 
-const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap) => {
+const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap, boatMetaDataMap) => {
   return yachtBotYacht?.map((b) => {
     boatIdToOriginalIdMap[b.original_id] = b.id;
 
     const vessel = {
       id: b.id,
       publicName: b.name,
-      vesselId: b.original_id?.toString(),
+      vesselId: `${b.original_id?.toString()}-${b.original_object_id}`,
       globalId: b.sail,
       model: b.model,
       lengthInMeters: null,
@@ -70,6 +78,7 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap) => {
       draftInMeters: null,
     };
 
+    _mapMetadata(boatMetaDataMap, b);
     const crew = JSON.parse(b.crew);
     const crews = [];
     if (crew.person?.length) {
@@ -88,12 +97,13 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap) => {
   });
 };
 
-const _mapPositions = (yachtBotPosition) => {
+const _mapPositions = (yachtBotPosition, boatMetaDataMap) => {
   if (!yachtBotPosition) {
     return [];
   }
   yachtBotPosition.sort((a, b) => a.time - b.time);
   return yachtBotPosition.map((t) => {
+    const metadata = boatMetaDataMap[t.yacht];
     return {
       ...t,
       timestamp: t.time,
@@ -103,8 +113,47 @@ const _mapPositions = (yachtBotPosition) => {
       vesselId: t.yacht,
       boat_original_id: t.yacht_original_id,
       id: uuidv4(),
+      cog: metadata?.cog?.[t.time],
+      sog: metadata?.sog?.[t.time],
+      twa: metadata?.twa?.[t.time],
+      windSpeed: metadata?.awa?.[t.time],
+      windDirection: metadata?.aws?.[t.time],
     };
   });
+};
+
+const _mapMetadata = (boatMetaDataMap, yachtBotYacht) => {
+  const { id, metas } = yachtBotYacht;
+  if (!metas) {
+    return;
+  }
+  boatMetaDataMap[id] = { cog: {}, sog: {}, twa: {} };
+  try {
+    const metaObject = JSON.parse(metas);
+    const { cog, sog, twa, awa, aws } = metaObject;
+    boatMetaDataMap[id].cog = _mapMetaDataToObject(cog, 't', '1');
+    boatMetaDataMap[id].sog = _mapMetaDataToObject(sog, 't', '1');
+    boatMetaDataMap[id].twa = _mapMetaDataToObject(twa, 't', '1');
+    // awa wind angel, aws wind speed
+    boatMetaDataMap[id].awa = _mapMetaDataToObject(awa, 't', '1');
+    boatMetaDataMap[id].aws = _mapMetaDataToObject(aws, 't', '1');
+  } catch (e) {
+    console.log('error while processing _mapMetaData');
+    console.log(e);
+  }
+};
+
+const _mapMetaDataToObject = (metadataObject, timeField, valueField) => {
+  if (!metadataObject) {
+    return {};
+  }
+  const result = {};
+  for (let i = 0; i < metadataObject[timeField].length; i++) {
+    const currentTime = metadataObject[timeField][i];
+    const value = metadataObject[valueField][i];
+    result[currentTime] = value;
+  }
+  return result;
 };
 
 const _mapSequencedGeometries = (
