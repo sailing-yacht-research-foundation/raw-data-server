@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeTracTrac');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const mapTracTracToSyrf = require('../services/mappingsToSyrfDB/mapTracTracToSyrf');
 
 const saveTracTracData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -152,6 +153,13 @@ const saveTracTracData = async (data) => {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
+  }
+
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_TRACTRAC === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    await mapTracTracToSyrf(data, raceMetadata);
   }
 
   if (raceUrl.length > 0) {
