@@ -18,4 +18,4 @@ RUN yarn install --production && mv node_modules ../
 COPY . .
 
 EXPOSE 3000
-CMD ["yarn", "start"]
+CMD ["sh", "-c", "yarn run db:migrate && yarn run db:syrf:migrate && yarn start"]

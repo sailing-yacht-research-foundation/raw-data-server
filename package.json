@@ -8,10 +8,10 @@
     "dev": "nodemon -L src/main.js",
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
     "test": "jest --coverage --runInBand --detectOpenHandles --forceExit",
-    "db:migrate": "sequelize db:migrate",
+    "db:migrate": "node scripts/migrate",
     "db:seed": "sequelize db:seed:all",
     "db:syrf:sync": "node src/syrf-schema/sync",
-    "db:syrf:migrate": "node src/syrfDataServices/migrate",
+    "db:syrf:migrate": "node src/syrf-schema/migrate",
     "debug": "nodemon --inspect -L src/main.js"
   },
   "keywords": [],
