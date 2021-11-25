@@ -26,6 +26,8 @@ exports.upsert = async (
     country,
     city,
     status = competitionUnitStatus.COMPLETED,
+    scrapedOriginalId,
+    scrapedUrl,
   } = {},
   transaction,
 ) => {
@@ -47,17 +49,20 @@ exports.upsert = async (
     country,
     city,
     status,
+    scrapedOriginalId,
+    scrapedUrl,
     createdAt: now,
     updatedAt: now,
   };
 
   const startDateObj = new Date(approximateStart);
+  const approxStartTime = startDateObj.getTime();
 
-  if (!isNaN(startDateObj.getTime())) {
+  if (!isNaN(approxStartTime)) {
     competitionToSave.approximateStart = approximateStart;
     competitionToSave.approximateStart_zone = approximateStart_zone;
     competitionToSave.approximateStart_utc = zonedTimeToUtc(
-      startDateObj,
+      approxStartTime,
       approximateStart_zone,
     );
   } else {

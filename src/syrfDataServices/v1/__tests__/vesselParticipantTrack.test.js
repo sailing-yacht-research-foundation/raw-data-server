@@ -20,12 +20,13 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
       const timestamp = new Date().getTime();
       for (let i = 0; i < positionCount; i++) {
         expect(vesselTrack.positions.length).toEqual(i);
-        vesselTrack.addNewPosition(
-          [i, i],
-          timestamp + i * 1000,
-          { cog: 45, sog: 4, twa: -45 },
-          { windSpeed: 5, windDirection: 0 },
-        );
+        vesselTrack.addNewPosition([i, i], timestamp + i * 1000, {
+          cog: 45,
+          sog: 4,
+          twa: -45,
+          windSpeed: 5,
+          windDirection: 0,
+        });
         expect(vesselTrack.positions.length).toEqual(i + 1);
         expect(vesselTrack.positions[i]).toEqual(
           expect.objectContaining({
@@ -51,8 +52,10 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
       vesselTrack.addNewPosition(
         positionData.location,
         positionData.timestamp,
-        { cog: positionData.cog, sog: positionData.sog, twa: positionData.twa },
         {
+          cog: positionData.cog,
+          sog: positionData.sog,
+          twa: positionData.twa,
           windSpeed: positionData.windSpeed,
           windDirection: positionData.windDirection,
         },
@@ -85,12 +88,13 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
       }
       positionData.forEach((row) => {
         const { cog, sog, twa, windSpeed, windDirection } = row;
-        vesselTrack.addNewPosition(
-          row.location,
-          row.timestamp,
-          { cog, sog, twa },
-          { windSpeed, windDirection },
-        );
+        vesselTrack.addNewPosition(row.location, row.timestamp, {
+          cog,
+          sog,
+          twa,
+          windSpeed,
+          windDirection,
+        });
       });
       const track = vesselTrack.getSimplifiedTrack();
       expect(track).toEqual({
@@ -127,12 +131,13 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
       }
       positionData.forEach((row) => {
         const { cog, sog, twa, windSpeed, windDirection } = row;
-        vesselTrack.addNewPosition(
-          row.location,
-          row.timestamp,
-          { cog, sog, twa },
-          { windSpeed, windDirection },
-        );
+        vesselTrack.addNewPosition(row.location, row.timestamp, {
+          cog,
+          sog,
+          twa,
+          windSpeed,
+          windDirection,
+        });
       });
 
       const track = vesselTrack.getSimplifiedTrack();

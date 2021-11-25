@@ -104,10 +104,14 @@ const saveGeovoileData = async (data) => {
 
     if (data.marks) {
       for (const mark of data.marks) {
-        const newPoint = gisUtils.createGeometryPoint(mark.lat, mark.lon, {
-          name: mark.name?.trim() || mark.type,
-          type: mark.type,
-          poi: true,
+        const newPoint = gisUtils.createGeometryPoint({
+          lat: mark.lat,
+          lon: mark.lon,
+          properties: {
+            name: mark.name?.trim() || mark.type,
+            type: mark.type,
+            poi: true,
+          }
         });
 
         courseSequencedGeometries.push({
@@ -243,7 +247,7 @@ const saveGeovoileData = async (data) => {
       }
 
       return {
-        id: b.id,
+        vesselId: b.id,
         elapsedTime: b.arrival ? b.arrival.racetime * 1000 : 0,
         finishTime: finishTime,
       };
@@ -260,10 +264,10 @@ const saveGeovoileData = async (data) => {
 
     if (!hasStartLine) {
       courseGates.unshift({
-        ...gisUtils.createGeometryPoint(
-          raceMetadata.approx_start_point.coordinates[1],
-          raceMetadata.approx_start_point.coordinates[0],
-        ),
+        ...gisUtils.createGeometryPoint({
+          lat: raceMetadata.approx_start_point.coordinates[1],
+          lon: raceMetadata.approx_start_point.coordinates[0],
+        }),
         properties: {
           name: 'Start Point',
         },
@@ -273,10 +277,10 @@ const saveGeovoileData = async (data) => {
     // push finish line
     if (!hasFinishLine) {
       courseGates.push({
-        ...gisUtils.createGeometryPoint(
-          raceMetadata.approx_end_point.coordinates[1],
-          raceMetadata.approx_end_point.coordinates[0],
-        ),
+        ...gisUtils.createGeometryPoint({
+          lat: raceMetadata.approx_end_point.coordinates[1],
+          lon: raceMetadata.approx_end_point.coordinates[0],
+        }),
         properties: {
           name: 'End Point',
         },
@@ -292,14 +296,14 @@ const saveGeovoileData = async (data) => {
     }
     courseGates.push({ ...lastItem, order: courseGates.length });
 
-    await saveCompetitionUnit(
-      inputBoats,
+    await saveCompetitionUnit({
+      race: data.geovoileRace,
+      boats: inputBoats,
       positions,
       rankings,
-      null,
       raceMetadata,
-      { courseSequencedGeometries: courseGates },
-    );
+      courseSequencedGeometries: courseGates,
+    });
   }
 
   if (errorMessage) {

@@ -1,8 +1,9 @@
+const { geometryType } = require('../../syrf-schema/enums');
+
 module.exports = class PointTrack {
-  constructor(id, coordinate) {
+  constructor(id) {
     this.id = id;
-    this.positions = [{ position: coordinate, timestamp: 0 }];
-    this.lastIndexSaved = -1;
+    this.positions = [];
   }
 
   addNewPosition(position, timestamp) {
@@ -10,11 +11,13 @@ module.exports = class PointTrack {
       this.positions.length > 0 &&
       this.positions[this.positions.length - 1].timestamp === timestamp
     ) {
+      // Avoid pushing the data with the same timestamp
       this.positions[this.positions.length - 1] = { position, timestamp };
     } else {
-      this.positions = [...this.positions, { position, timestamp }];
+      this.positions.push({ position, timestamp });
     }
   }
+
   createGeoJsonTrack({ competitionUnitId } = {}) {
     const feature = {
       type: 'Feature',
@@ -23,7 +26,7 @@ module.exports = class PointTrack {
         competitionUnitId,
       },
       geometry: {
-        type: 'LineString',
+        type: geometryType.LINESTRING,
         coordinates: this.positions.map((row) => {
           const { position, timestamp } = row;
           return [position[0], position[1], 0, timestamp];

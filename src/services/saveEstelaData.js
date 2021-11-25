@@ -4,6 +4,7 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeEstela');
+const mapAndSave = require('./mappingsToSyrfDB/mapEstelaToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveEstelaData = async (data) => {
@@ -84,6 +85,17 @@ const saveEstelaData = async (data) => {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
+  }
+
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_ESTELA === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    try {
+      await mapAndSave(data, raceMetadata);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   if (raceUrl.length > 0) {

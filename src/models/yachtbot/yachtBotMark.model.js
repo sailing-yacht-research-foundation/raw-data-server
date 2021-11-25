@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const yachtBotYacht = sequelize.define(
-    'YachtBotYacht',
+  const yachtBotMark = sequelize.define(
+    'YachtBotMark',
     {
       id: {
         type: Sequelize.UUID,
@@ -19,35 +19,39 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      colour: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       name: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      boat_number: {
+      type: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      crew: {
+      connected_buoy: {
+        type: Sequelize.UUID,
+        allowNull: true,
+      },
+      connected_buoy_original_id: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      country: {
+      lat: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      metas: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      original_object_id: {
+      lon: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
     },
     {
-      tableName: 'YachtBotYachts',
+      tableName: 'YachtBotMarks',
       timestamps: false,
     },
   );
-  return yachtBotYacht;
+  return yachtBotMark;
 };

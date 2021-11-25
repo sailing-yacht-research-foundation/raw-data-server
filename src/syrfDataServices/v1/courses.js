@@ -118,7 +118,7 @@ exports.upsert = async (
   courseToSave.courseUnsequencedTimedGeometry = setGeometryId(
     courseUnsequencedTimedGeometry,
   );
-  let [result] = await Promise.all([
+  const [result, courseSequencedGeometriesPoints] = await Promise.all([
     dataAccess.upsert(id, courseToSave, transaction),
     updatePoints(
       courseToSave.courseSequencedGeometries,
@@ -136,5 +136,5 @@ exports.upsert = async (
       transaction,
     ),
   ]);
-  return result;
+  return [result, courseSequencedGeometriesPoints];
 };

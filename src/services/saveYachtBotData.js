@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeYachtBot');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const mapYachtbotToSyrf = require('../services/mappingsToSyrfDB/mapYachtbotToSyrf');
 
 const saveYachtBotData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -36,13 +37,17 @@ const saveYachtBotData = async (data) => {
         transaction,
       });
     }
+    if (data.YachtBotMarks) {
+      await db.yachtBotMark.bulkCreate(data.YachtBotMarks, {
+        ignoreDuplicates: true,
+        validate: true,
+        transaction,
+      });
+    }
     if (data.YachtBotPosition) {
       const positions = data.YachtBotPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.yachtBotPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -61,6 +66,12 @@ const saveYachtBotData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_YACHTBOT === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    await mapYachtbotToSyrf(data, raceMetadata);
+  }
   if (raceUrl.length > 0) {
     if (errorMessage) {
       await db.yachtBotFailedUrl.bulkCreate(

@@ -3,7 +3,19 @@ const db = require('../../syrf-schema');
 
 exports.upsert = async (
   id,
-  { publicName, vesselId, globalId, lengthInMeters, orcJsonPolars, scope } = {},
+  {
+    publicName,
+    vesselId,
+    globalId,
+    lengthInMeters,
+    widthInMeters,
+    draftInMeters,
+    model,
+    handicap,
+    orcJsonPolars,
+    scope,
+    source,
+  } = {},
   transaction,
 ) => {
   const now = Date.now();
@@ -12,9 +24,14 @@ exports.upsert = async (
     vesselId,
     globalId,
     lengthInMeters,
+    widthInMeters,
+    draftInMeters,
+    model,
+    handicap,
     orcJsonPolars,
     scope,
-    bulkCreated: false,
+    source,
+    bulkCreated: true,
     createdAt: now,
     updatedAt: now,
   };
@@ -28,7 +45,7 @@ exports.createVesselObject = ({ id, name, vesselId, lengthInMeters } = {}) => {
 
 exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
   externalUrl = externalUrl.split('?')[0];
-  const existingCalendarEvent = await db.CalenderEvent.findOne({
+  const existingCalendarEvent = await db.CalendarEvent.findOne({
     where: {
       externalUrl: {
         [db.Op.like]: `${externalUrl}%`,
@@ -93,4 +110,12 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
     ],
   });
   return allVessels.map((t) => t.vessel);
+};
+
+exports.getByVesselIdAndSource = async (vesselId, source) => {
+  return await dataAccess.getByVesselIdAndSource(vesselId, source);
+};
+
+exports.bulkCreate = async (data, transaction) => {
+  return await dataAccess.bulkCreate(data, transaction);
 };

@@ -20,9 +20,14 @@ const {
   generateMetadataName,
   meterPerSecToKnots,
   createGeometryPoint,
+  createGeometry,
+  createGeometryPolygon,
+  createGeometryPosition,
+  createGeometryLine,
 } = require('../gisUtils');
 const { reverseGeoCode } = require('../../syrfDataServices/v1/googleAPI');
 const esUtil = require('../elasticsearch');
+const { geometryType } = require('../../syrf-schema/enums');
 
 describe('gis_utils.js', () => {
   it('when getLonFromTurfPoint is called should return lon from turf point', () => {
@@ -619,12 +624,94 @@ describe('gis_utils.js', () => {
 
   describe('When createGeometryPoint is called', () => {
     it('#createGeometryPoint should create geometry object', () => {
-      const result = createGeometryPoint(1, -1, { name: 'test' });
+      const result = createGeometryPoint({
+        lat: 1,
+        lon: -1,
+        properties: { name: 'test' },
+      });
+      expect(result.geometryType).toEqual(geometryType.POINT);
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.coordinates[0].position[0]).toEqual(-1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+
+  describe('When createGeometry is called', () => {
+    it('#createGeometry should create geometry object', () => {
+      const result = createGeometry(
+        [
+          {
+            position: [1, -1],
+          },
+        ],
+        { name: 'test' },
+        geometryType.POINT,
+      );
+      expect(result.geometryType).toEqual(geometryType.POINT);
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(-1);
+      expect(result.coordinates[0].position[0]).toEqual(1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+  describe('When createGeometryPoint is called', () => {
+    it('#createGeometryPoint should create geometry object', () => {
+      const result = createGeometryPoint({
+        lat: 1,
+        lon: -1,
+        properties: { name: 'test' },
+      });
       expect(result.geometryType).toEqual('Point');
       expect(result.coordinates.length).toEqual(1);
       expect(result.coordinates[0].position[1]).toEqual(1);
       expect(result.coordinates[0].position[0]).toEqual(-1);
-      expect(result.coordinates.properties.name).toEqual('test');
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+  describe('When createGeometryPosition is called', () => {
+    it('#createGeometryPosition should create position object', () => {
+      const result = createGeometryPosition({ lat: 1, lon: -1 });
+      expect(result.position.length).toEqual(2);
+      expect(result.position[0]).toEqual(-1);
+      expect(result.position[1]).toEqual(1);
+    });
+  });
+  describe('When createGeometryLine is called', () => {
+    it('#createGeometryLine should create geometry GeometryLine object', () => {
+      const result = createGeometryLine(
+        { lat: 1, lon: 1 },
+        { lat: -1, lon: -1 },
+        { name: 'test' },
+      );
+      expect(result.geometryType).toEqual(geometryType.LINESTRING);
+      expect(result.coordinates.length).toEqual(2);
+      expect(result.coordinates[0].position[0]).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+  describe('When createGeometryPolygon is called', () => {
+    it('#createGeometryPolygon should create geometry GeometryPolygon object', () => {
+      const result = createGeometryPolygon(
+        [
+          {
+            position: [1, -1],
+          },
+          {
+            position: [1, 1],
+          },
+          {
+            position: [2, 2],
+          },
+        ],
+        { name: 'test' },
+      );
+      expect(result.geometryType).toEqual(geometryType.POLYGON);
+      expect(result.coordinates.length).toEqual(3);
+      expect(result.coordinates[0].position[0]).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(-1);
+      expect(result.properties.name).toEqual('test');
     });
   });
 });

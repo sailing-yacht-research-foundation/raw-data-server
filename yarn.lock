@@ -6706,7 +6706,7 @@ uglify-js@^3.1.4:
 
 umzug@^2.3.0:
   version "2.3.0"
-  resolved "https://registry.npmjs.org/umzug/-/umzug-2.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/umzug/-/umzug-2.3.0.tgz#0ef42b62df54e216b05dcaf627830a6a8b84a184"
   integrity sha512-Z274K+e8goZK8QJxmbRPhl89HPO1K+ORFtm6rySPhFKfKc5GHhqdzD0SGhSWHkzoXasqJuItdhorSvY7/Cgflw==
   dependencies:
     bluebird "^3.7.2"

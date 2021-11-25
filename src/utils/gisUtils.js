@@ -4,6 +4,7 @@ const elasticsearch = require('./elasticsearch');
 const uploadUtil = require('../services/uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
 const { reverseGeoCode } = require('../syrfDataServices/v1/googleAPI');
+const { geometryType } = require('../syrf-schema/enums');
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -270,11 +271,11 @@ exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
   }
   if (!name) {
     // if no event or race name
-    const dateFormatter = (formatter = new Intl.DateTimeFormat('en-US', {
+    const dateFormatter = new Intl.DateTimeFormat('en-US', {
       dateStyle: 'medium',
       timeStyle: 'long',
       timeZone: 'utc',
-    }));
+    });
     name = `Race at ${dateFormatter.format(startTimeMs)}`; //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
   }
   return name;
@@ -547,33 +548,67 @@ exports.meterPerSecToKnots = function (speed) {
   return parseFloat((speed * 1.943844).toFixed(2));
 };
 
-exports.createGeometryPoint = (lat, lon, properties = {}) => {
+exports.createGeometryPoint = ({
+  lat,
+  lon,
+  properties = {},
+  markTrackerId = null,
+}) => {
   return {
-    geometryType: 'Point',
-    coordinates: [
-      {
-        position: [lon, lat],
-      },
-    ],
+    geometryType: geometryType.POINT,
     properties,
+    coordinates: [this.createGeometryPosition({ lat, lon, markTrackerId })],
   };
 };
 
 exports.createGeometryLine = (
-  { lat: point1Lat, lon: point1lon },
-  { lat: point2Lat, lon: point2Lon },
+  { lat: point1Lat, lon: point1lon, markTrackerId: point1TrackerId },
+  { lat: point2Lat, lon: point2Lon, markTrackerId: point2TrackerId },
   properties = {},
 ) => {
   return {
-    geometryType: 'Polyline',
-    coordinates: [
-      {
-        position: [point1lon, point1Lat],
-      },
-      {
-        position: [point2Lon, point2Lat],
-      },
-    ],
+    geometryType: geometryType.LINESTRING,
     properties,
+    coordinates: [
+      this.createGeometryPosition({
+        lat: point1Lat,
+        lon: point1lon,
+        markTrackerId: point1TrackerId,
+      }),
+      this.createGeometryPosition({
+        lat: point2Lat,
+        lon: point2Lon,
+        markTrackerId: point2TrackerId,
+      }),
+    ],
+  };
+};
+
+exports.createGeometryPosition = ({ lat, lon, markTrackerId }) => {
+  return {
+    position: [lon, lat],
+    markTrackerId,
+  };
+};
+
+/**
+ *
+ * @param {Array of {lon, lat}} coordinates
+ * @param {*} properties
+ * @returns
+ */
+exports.createGeometryPolygon = (coordinates = [], properties = {}) => {
+  return {
+    geometryType: geometryType.POLYGON,
+    properties,
+    coordinates,
+  };
+};
+
+exports.createGeometry = (coordinates = [], properties = {}, geometryType) => {
+  return {
+    geometryType,
+    properties,
+    coordinates,
   };
 };

@@ -20,6 +20,7 @@ exports.upsert = async (
     city,
     source,
     openGraphImage,
+    scrapedOriginalId,
   },
   transaction,
 ) => {
@@ -42,6 +43,8 @@ exports.upsert = async (
     country,
     city,
     source,
+    openGraphImage,
+    scrapedOriginalId,
     createdAt: now,
     updatedAt: now,
   };
@@ -127,4 +130,8 @@ const createICal = ({
     url: externalUrl,
   });
   return calendar.toString();
+};
+
+exports.getByScrapedOriginalIdAndSource = async (originalIds, source) => {
+  return await dataAccess.getByScrapedOriginalIdAndSource(originalIds, source);
 };
