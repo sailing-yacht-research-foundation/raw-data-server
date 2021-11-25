@@ -45,7 +45,7 @@ exports.createVesselObject = ({ id, name, vesselId, lengthInMeters } = {}) => {
 
 exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
   externalUrl = externalUrl.split('?')[0];
-  const existingCalendarEvent = await db.CalenderEvent.findOne({
+  const existingCalendarEvent = await db.CalendarEvent.findOne({
     where: {
       externalUrl: {
         [db.Op.like]: `${externalUrl}%`,
@@ -112,8 +112,8 @@ exports.getExistingVesselsByScrapedUrl = async (externalUrl) => {
   return allVessels.map((t) => t.vessel);
 };
 
-exports.getVesselsByVesselIdsAndSource = async (vesselId, source) => {
-  return await dataAccess.getVesselsByVesselIdsAndSource(vesselId, source);
+exports.getByVesselIdAndSource = async (vesselId, source) => {
+  return await dataAccess.getByVesselIdAndSource(vesselId, source);
 };
 
 exports.bulkCreate = async (data, transaction) => {

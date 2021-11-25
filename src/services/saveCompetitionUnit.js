@@ -6,6 +6,7 @@ const competitionUnit = require('../syrfDataServices/v1/competitionUnit');
 const vessel = require('../syrfDataServices/v1/vessel');
 const vesselParticipant = require('../syrfDataServices/v1/vesselParticipant');
 const vesselParticipantGroup = require('../syrfDataServices/v1/vesselParticipantGroup');
+const vesselParticipantEvent = require('../syrfDataServices/v1/vesselParticipantEvent');
 const courses = require('../syrfDataServices/v1/courses');
 const participant = require('../syrfDataServices/v1/participant');
 const VesselParticipantTrack = require('../syrfDataServices/v1/vesselParticipantTrack');
@@ -26,6 +27,7 @@ const saveCompetitionUnit = async ({
   reuse = {},
   markTrackers = [],
   markTrackerPositions = [],
+  vesselParticipantEvents = [],
 }) => {
   const {
     id: raceId,
@@ -48,10 +50,21 @@ const saveCompetitionUnit = async ({
   try {
     console.log('Create new calendar event');
     // 1. Save calendar event information
+    let existingEvent;
+    if (reuse.event && event?.original_id) {
+      existingEvent = await calendarEvent.getByScrapedOriginalIdAndSource(
+        event.original_id.toString(),
+        source,
+      );
+      if (existingEvent?.length) {
+        event.id = existingEvent[0].id;
+      }
+    }
     const newCalendarEvent = await calendarEvent.upsert(
       event?.id,
       {
         name: event?.name,
+        locationName: event?.locationName,
         externalUrl: event?.url || url,
         approximateStartTime: event?.approxStartTimeMs || approxStartTimeMs,
         approximateEndTime: event?.approxEndTimeMs || approxEndTimeMs,
@@ -81,10 +94,13 @@ const saveCompetitionUnit = async ({
     const vesselsToSave = [];
     const vesselParticipantsToSave = [];
     const existingVesselIdMap = new Map(); // mapping of existing vessel id with its new id to replace the positions boat ids
-    const existingVessels = await vessel.getVesselsByVesselIdsAndSource(
-      boats.map((b) => b.vesselId),
-      source,
-    );
+    let existingVessels;
+    if (reuse.boats) {
+      existingVessels = await vessel.getByVesselIdAndSource(
+        boats.map((b) => b.vesselId),
+        source,
+      );
+    }
     for (const boat of boats) {
       if (reuse.boats) {
         // some scrapers have the same boat.original_id but different info like yellowbrick
@@ -139,12 +155,16 @@ const saveCompetitionUnit = async ({
       const vesselParticipantId = createdVesselParticipants.find(
         (vp) => vp.vesselId === vesselId,
       )?.id;
-      return {
-        vesselParticipantId: vesselParticipantId,
-        elapsedTime: t.elapsedTime,
-        finishTime: t.finishTime,
-      };
-    });
+      if (vesselParticipantId) {
+        return {
+          vesselParticipantId: vesselParticipantId,
+          elapsedTime: t.elapsedTime,
+          finishTime: t.finishTime,
+        };
+      } else {
+        return null;
+      }
+    }).filter(Boolean);
 
     console.log(`Save Participants and Crew`);
     for (const vesselId of vesselsToParticipantsMap.keys()) {
@@ -306,6 +326,27 @@ const saveCompetitionUnit = async ({
       if (!track.positions?.length) {
         delete vesselParticipantTracks[vesselParticipantId];
       }
+    }
+
+    // vesselParticipantEvents
+    if (vesselParticipantEvents.length) {
+      await vesselParticipantEvent.bulkCreate(
+        vesselParticipantEvents.map((e) => {
+          const vesselId =
+            existingVesselIdMap.get(e.vesselId) || e.vesselId; // replace vessel id if already exist
+          const vesselParticipantId = createdVesselParticipants.find(
+            (vp) => vp.vesselId === vesselId,
+          )?.id;
+          return {
+            vesselParticipantId,
+            competitionUnitId: e.competitionUnitId,
+            markId: e.markId,
+            eventType: e.eventType,
+            eventTime: e.eventTime,
+          }
+        }),
+        mainDatabaseTransaction,
+      );
     }
 
     await competitionUnit.stopCompetition(

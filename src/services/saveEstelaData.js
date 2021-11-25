@@ -91,7 +91,11 @@ const saveEstelaData = async (data) => {
     process.env.ENABLE_MAIN_DB_SAVE_ESTELA === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    await mapAndSave(data, raceMetadata);
+    try {
+      await mapAndSave(data, raceMetadata);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   if (raceUrl.length > 0) {
