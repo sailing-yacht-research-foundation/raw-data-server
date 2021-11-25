@@ -1,4 +1,5 @@
 const PointTrack = require('../pointTrack');
+const { geometryType } = require('../../../syrf-schema/enums');
 
 describe('PointTrack - Class to hold track data of a course point', () => {
   let track;
@@ -6,12 +7,12 @@ describe('PointTrack - Class to hold track data of a course point', () => {
   const initialPosition = [0, 0];
   beforeEach(() => {
     jest.clearAllMocks();
-    track = new PointTrack(pointId, initialPosition);
+    track = new PointTrack(pointId);
   });
   describe('constructor', () => {
     it('should construct PointTrack correctly', async () => {
       expect(track.id).toEqual(pointId);
-      expect(track.positions.length).toEqual(1);
+      expect(track.positions.length).toEqual(0);
     });
   });
   describe('addNewPosition', () => {
@@ -39,7 +40,7 @@ describe('PointTrack - Class to hold track data of a course point', () => {
     it('should return LineString geojson of all positions', async () => {
       const positionCount = 10;
       const timestamp = new Date().getTime();
-      const coordinateArray = [[...initialPosition, 0, 0]];
+      const coordinateArray = [];
       for (let i = 0; i < positionCount; i++) {
         const time = timestamp + i * 1000;
         track.addNewPosition([1, i], time);
@@ -57,7 +58,7 @@ describe('PointTrack - Class to hold track data of a course point', () => {
             competitionUnitId,
           },
           geometry: {
-            type: 'LineString',
+            type: geometryType.LINESTRING,
             coordinates: coordinateArray,
           },
         }),
