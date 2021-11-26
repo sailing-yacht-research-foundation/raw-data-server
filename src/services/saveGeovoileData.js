@@ -72,7 +72,6 @@ const saveGeovoileGates = async (data, transaction) => {
   return data;
 };
 
-
 const saveGeovoileBoatPositions = async (processedPositions, transaction) => {
   const positions = processedPositions.slice(); // clone array to avoid mutating the data
   while (positions.length > 0) {
