@@ -8,6 +8,21 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     return;
   }
 
+  // event
+  const event = data.TracTracEvent.map((e) => {
+    const starTimeObj = new Date(`${e.start} +0`);
+    const stopTimeObj = new Date(`${e.end} +0`);
+    return {
+      id: e.id,
+      original_id: e.original_id,
+      name: e.name,
+      url: e.web_url,
+      locationName: e.city,
+      approxStartTimeMs: starTimeObj.getTime(),
+      approxEndTimeMs: stopTimeObj.getTime(),
+    };
+  })[0];
+
   console.log('Saving to main database');
   const boatIdToOriginalIdMap = {};
   const inputBoats = _mapBoats(data.TracTracCompetitor, boatIdToOriginalIdMap);
@@ -40,6 +55,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   );
 
   await saveCompetitionUnit({
+    event,
     race: {
       original_id: data.YellowbrickRace[0].race_code,
       url: data.YellowbrickRace[0].url,
