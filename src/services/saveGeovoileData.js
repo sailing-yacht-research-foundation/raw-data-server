@@ -24,13 +24,11 @@ const saveFailedUrl = async (url, error) => {
 };
 
 const saveGeovoileRace = async (raceData, transaction) => {
-  const id = uuidv4();
   if (raceData.numLegs && raceData.numLegs > 1) {
     raceData.name = `${raceData.name} - Leg ${raceData.legNum}`;
   }
-  const race = { ...raceData, id };
-  await db.geovoileRace.create(race, { transaction });
-  return race;
+  await db.geovoileRace.create(raceData, { transaction });
+  return raceData;
 };
 
 const saveGeovoileBoats = async (boats, transaction) => {
@@ -53,8 +51,11 @@ const saveGeovoileSailors = async (sailors, transaction) => {
   return sailors;
 };
 
-const saveGeovoileGeometry = async (data, transaction) => {
-  await db.GeovoileGeometry.bulkCreate(data, {
+const saveGeovoileMarks = async (data, transaction) => {
+  if (!data) {
+    return;
+  }
+  await db.GeovoileMark.bulkCreate(data, {
     ignoreDuplicates: true,
     validate: true,
     transaction,
@@ -70,6 +71,7 @@ const saveGeovoileGates = async (data, transaction) => {
   });
   return data;
 };
+
 
 const saveGeovoileBoatPositions = async (processedPositions, transaction) => {
   const positions = processedPositions.slice(); // clone array to avoid mutating the data
@@ -95,35 +97,12 @@ const saveGeovoileData = async (data) => {
   const existingBoats = await vessel.getExistingVesselsByScrapedUrl(
     data.geovoileRace.url,
   );
-  const courseSequencedGeometries = [];
   const courseGates = [];
   let hasStartLine = false;
   let hasFinishLine = false;
   try {
     const race = await saveGeovoileRace(data.geovoileRace, transaction);
-
-    if (data.marks) {
-      for (const mark of data.marks) {
-        const newPoint = gisUtils.createGeometryPoint({
-          lat: mark.lat,
-          lon: mark.lon,
-          properties: {
-            name: mark.name?.trim() || mark.type,
-            type: mark.type,
-            poi: true,
-          }
-        });
-
-        courseSequencedGeometries.push({
-          ...newPoint,
-          id: uuidv4(),
-          race_id: race.id,
-          race_original_id: race.original_id,
-          geometryType: 'Point',
-        });
-      }
-      await saveGeovoileGeometry(courseSequencedGeometries, transaction);
-    }
+    await saveGeovoileMarks(data.marks, transaction);
 
     if (data.sig && data.sig.raceGates && data.sig.raceGates.length) {
       const firstItem = data.sig.raceGates[0];
@@ -290,6 +269,24 @@ const saveGeovoileData = async (data) => {
 
     const lastItem = courseGates.pop();
     let order = courseGates.length;
+    const courseSequencedGeometries = [];
+    for (const mark of data.marks) {
+      const newPoint = gisUtils.createGeometryPoint({
+        lat: mark.lat,
+        lon: mark.lon,
+        properties: {
+          name: mark.name?.trim() || mark.type,
+          type: mark.type,
+          poi: true,
+        },
+      });
+
+      courseSequencedGeometries.push({
+        ...newPoint,
+        id: uuidv4(),
+        geometryType: 'Point',
+      });
+    }
     for (const currentPoint of courseSequencedGeometries) {
       courseGates.push({ ...currentPoint, order: order });
       order++;
