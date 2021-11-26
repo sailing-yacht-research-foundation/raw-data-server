@@ -67,19 +67,19 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: docker-compose -f deployment/docker-compose.yml run --rm terraform init -input=false
+        run: docker-compose -f deployment/dev/docker-compose.yml run --rm terraform init -input=false
 
       - name: Terraform validation
-        run: docker-compose -f deployment/docker-compose.yml run --rm terraform validate
+        run: docker-compose -f deployment/dev/docker-compose.yml run --rm terraform validate
 
       - name: Terraform plan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: docker-compose -f deployment/docker-compose.yml run --rm terraform plan
+        run: docker-compose -f deployment/dev/docker-compose.yml run --rm terraform plan
 
       - name: Terraform apply
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: docker-compose -f deployment/docker-compose.yml run --rm terraform apply -auto-approve -input=false
+        run: docker-compose -f deployment/dev/docker-compose.yml run --rm terraform apply -auto-approve -input=false
