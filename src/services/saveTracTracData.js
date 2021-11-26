@@ -159,7 +159,7 @@ const saveTracTracData = async (data) => {
     process.env.ENABLE_MAIN_DB_SAVE_TRACTRAC === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    await mapTracTracToSyrf(data, raceMetadata);
+    await mapTracTracToSyrf(data, raceMetadatas);
   }
 
   if (raceUrl.length > 0) {
