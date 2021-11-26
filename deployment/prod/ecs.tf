@@ -25,22 +25,22 @@ resource "aws_ecs_service" "rds_service" {
   task_definition = aws_ecs_task_definition.rds_task.arn
   launch_type     = "FARGATE"
   desired_count   = 1
-
+  #
   load_balancer {
     target_group_arn = aws_lb_target_group.target_group.arn
     container_name   = aws_ecs_task_definition.rds_task.family
     container_port   = var.app_container_port
   }
 
-  load_balancer {
-    target_group_arn = aws_lb_target_group.target_group_db.arn
-    container_name   = "rds-db"
-    container_port   = 3306
-  }
+  #load_balancer {
+  #  target_group_arn = aws_lb_target_group.target_group_db.arn
+  #  container_name   = "rds-db"
+  #  container_port   = 3306
+  #}
 
   network_configuration {
-    subnets          = aws_default_subnet.default_subnet.*.id
-    assign_public_ip = true
+    subnets          = ["subnet-028dcac02c2daa0ff"]
+    #assign_public_ip = true
     security_groups  = [aws_security_group.service_security_group.id]
   }
 }
@@ -51,7 +51,7 @@ resource "aws_ecs_task_definition" "rds_task" {
   [
     {
       "name": "rds-task",
-      "image": "${aws_ecr_repository.raw_data_server_ecr_repo.repository_url}",
+      "image": "${aws_ecr_repository.raw_data_server_ecr_repo.repository_url}@${data.aws_ecr_image.raw_data_service.image_digest}",
       "essential": true,
       "portMappings": [
         {
@@ -59,21 +59,12 @@ resource "aws_ecs_task_definition" "rds_task" {
           "hostPort": 3000
         }
       ],
-      "environment": [
-        { "name": "DB_HOST", "value": "localhost" },
-        { "name": "DB_USER", "value": "${var.db_username}" },
-        { "name": "DB_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
-        { "name": "DB_NAME", "value": "${var.db_name}" },
-        { "name": "AWS_S3_ACCESS_KEY_ID", "value": "${var.s3_access_key_id}" },
-        { "name": "AWS_S3_SECRET_ACCESS_KEY", "value": "${var.s3_secret_key}" },
-        { "name": "AWS_S3_BUCKET", "value": "${var.s3_bucket}" },
-        { "name": "MQ_HOST", "value": "${var.mq_host}" },
-        { "name": "MQ_PORT", "value": "${var.mq_port}" },
-        { "name": "MQ_USER", "value": "${var.mq_user}" },
-        { "name": "MQ_PASSWORD", "value": "${var.mq_password}" },
-        { "name": "MQ_TOPIC", "value": "${var.mq_topic}" },
-        { "name": "MQ_TIMEOUT", "value": "${var.mq_timeout}" }
-      ],
+      "environmentFiles": [
+               {
+                   "value": "arn:aws:s3:::syrf-prod-env-variables/raw-server.env",
+                   "type": "s3"
+               }
+           ],
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -82,41 +73,16 @@ resource "aws_ecs_task_definition" "rds_task" {
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "memory": 256,
-      "cpu": 128
-    },
-    {
-      "name": "rds-db",
-      "image": "mysql:5.7",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 3306,
-          "hostPort": 3306
-        }
-      ],
-      "environment": [
-        { "name": "MYSQL_DATABASE", "value": "${var.db_name}" },
-        { "name": "MYSQL_USER", "value": "${var.db_username}" },
-        { "name": "MYSQL_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" },
-        { "name": "MYSQL_ROOT_PASSWORD", "value": "${random_password.raw_data_server_db_password.result}" }
-      ],
-      "command": ["--max_allowed_packet=100M"],
-      "memory": 256,
-      "cpu": 128,
-      "mountPoints": [
-          {
-              "containerPath": "/var/lib/mysql",
-              "sourceVolume": "rds-storage"
-          }
-      ]
+      "memory": 12288,
+      "cpu": 4096
     }
+    
   ]
   DEFINITION
-  requires_compatibilities = ["FARGATE"] # Stating that we are using ECS Fargate
+  requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 512         # Specifying the memory our container requires
-  cpu                      = 256         # Specifying the CPU our container requires
+  memory                   = 12288       # Specifying the memory our container requires
+  cpu                      = 4096        # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
   volume {
@@ -135,12 +101,56 @@ resource "aws_ecs_task_definition" "rds_task" {
   }
 }
 
+resource "aws_appautoscaling_target" "ecs_target" {
+  max_capacity       = 3
+  min_capacity       = 1
+  resource_id        = "service/Raw-Data-Server-ECS_Cluster/Raw-Data-Server-Service"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+
+resource "aws_appautoscaling_policy" "ecs_target_cpu" {
+  name               = "application-scaling-policy-cpu"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value = 80
+  }
+  depends_on = [aws_appautoscaling_target.ecs_target]
+}
+
+resource "aws_appautoscaling_policy" "ecs_target_memory" {
+  name               = "application-scaling-policy-memory"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs_target.resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs_target.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+    target_value = 80
+  }
+  depends_on = [aws_appautoscaling_target.ecs_target]
+}
+
 resource "aws_security_group" "service_security_group" {
+  vpc_id = aws_vpc.syrf-vpc.id
+
+
   ingress {
     from_port = 0
     to_port   = 0
     protocol  = "-1"
-    # Only allowing traffic in from the load balancer security group
+    # Only allowing traffic in from the load balancer security #group
     security_groups = [aws_security_group.load_balancer_security_group.id]
   }
 
@@ -158,6 +168,27 @@ resource "aws_security_group" "service_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 61614
+    to_port     = 61614
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -167,7 +198,7 @@ resource "aws_security_group" "service_security_group" {
 }
 
 resource "aws_iam_role" "ecsTaskExecutionRole" {
-  name               = "ecsTaskExecutionRole-RawDataServer"
+  name               = "ecsTaskExecutionRole-RawDataServer-prod"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
