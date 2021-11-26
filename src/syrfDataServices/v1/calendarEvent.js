@@ -131,3 +131,7 @@ const createICal = ({
   });
   return calendar.toString();
 };
+
+exports.getByScrapedOriginalIdAndSource = async (originalIds, source) => {
+  return await dataAccess.getByScrapedOriginalIdAndSource(originalIds, source);
+};

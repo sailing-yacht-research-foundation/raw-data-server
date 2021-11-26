@@ -1,18 +1,7 @@
 require('dotenv').config();
 const path = require('path');
-const { Sequelize } = require('sequelize');
+const { Sequelize, sequelize } = require('../src/models/index');
 const Umzug = require('umzug');
-
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    dialect: 'postgres',
-  },
-);
 
 const umzug = new Umzug({
   migrations: {
@@ -20,15 +9,15 @@ const umzug = new Umzug({
       sequelize.getQueryInterface(),
       Sequelize, // Sequelize constructor - the required module
     ],
-    path: path.join(process.cwd(), 'src', 'syrf-schema', 'migrations'),
+    path: path.join(__dirname, '..', 'migrations'),
     pattern: /\.js$/,
   },
   storage: 'sequelize',
   storageOptions: {
-    sequelize: sequelize,
+    sequelize,
   },
   context: sequelize.getQueryInterface(),
-  logger: console,
+  logging: console.log,
 });
 
 (async () => {

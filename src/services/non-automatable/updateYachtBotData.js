@@ -20,6 +20,23 @@ const updateYachtBotData = async (data) => {
       );
       return;
     }
+    if (data.YachtBotYacht) {
+      for (const yacht of data.YachtBotYacht) {
+        await db.yachtBotYacht.update(
+          {
+            original_object_id: yacht.original_object_id?.toString(),
+          },
+          {
+            where: {
+              original_id: yacht.original_id?.toString(),
+              race_original_id: race.original_id?.toString(),
+            },
+            transaction,
+          },
+        );
+      }
+    }
+
     if (data.YachtBotBuoy) {
       for (const buoy of data.YachtBotBuoy) {
         await db.yachtBotBuoy.update(

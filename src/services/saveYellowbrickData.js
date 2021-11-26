@@ -93,10 +93,14 @@ const saveYellowbrickData = async (data) => {
   }
 
   if (
-    process.env.ENABLE_MAIN_DB_SAVE_YELLOW_BRICK === 'true' &&
+    process.env.ENABLE_MAIN_DB_SAVE_YELLOWBRICK === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    await mapYellowBrickToSyrf(data, raceMetadata);
+    try {
+      await mapYellowBrickToSyrf(data, raceMetadata);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   if (raceUrl.length > 0) {

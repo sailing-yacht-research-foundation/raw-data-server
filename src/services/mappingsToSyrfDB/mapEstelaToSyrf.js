@@ -137,7 +137,7 @@ const _mapRankings = (results, raceStart) => {
         elapsedTime: raceStart - finishTime,
       };
     })
-    .sort((a, b) => a.finishTime - b.finishTime);
+    .sort((a, b) => (a.finishTime || Infinity) - (b.finishTime || Infinity));
 };
 
 module.exports = mapAndSave;
