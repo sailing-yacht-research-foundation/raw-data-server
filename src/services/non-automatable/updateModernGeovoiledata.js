@@ -20,6 +20,24 @@ const updateModernGeovoiledata = async (data) => {
       );
       return;
     }
+
+    if (data.boats) {
+      for (const boat of data.boats) {
+        await db.geovoileBoat.update(
+          {
+            arrival: boat.arrival,
+          },
+          {
+            where: {
+              original_id: boat.original_id,
+              race_original_id: race.original_id,
+            },
+            transaction,
+          },
+        );
+      }
+    }
+
     if (data.marks?.length) {
       const existingMarks = await db.geovoileMark.findAll({
         where: { race_original_id: race.original_id },
