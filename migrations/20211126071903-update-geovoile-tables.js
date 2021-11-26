@@ -53,6 +53,17 @@ module.exports = {
         },
       });
     }
+
+    const tableGeovoileBoats = await queryInterface.describeTable(
+      'GeovoileBoats',
+    );
+
+    if (!tableGeovoileBoats.arrival) {
+      await queryInterface.addColumn('GeovoileBoats', 'arrival', {
+        type: Sequelize.JSON,
+        allowNull: true,
+      });
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -63,5 +74,6 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
     await queryInterface.dropTable('GeovoileMarks');
+    await queryInterface.removeColumn('GeovoileBoats', 'arrival');
   },
 };
