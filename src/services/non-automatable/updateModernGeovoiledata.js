@@ -18,6 +18,7 @@ const updateModernGeovoiledata = async (data) => {
       console.log(
         `The race with original_id = ${race.original_id} does not exist in the database`,
       );
+      await transaction.rollback();
       return;
     }
 
