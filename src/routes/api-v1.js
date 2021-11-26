@@ -27,6 +27,7 @@ const saveAmericasCupData = require('../services/non-automatable/saveAmericasCup
 const saveSapData = require('../services/non-automatable/saveSapData');
 const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegadata');
 const updateYachtBotData = require('../services/non-automatable/updateYachtBotData');
+const updateModernGeovoiledata = require('../services/non-automatable/updateModernGeovoiledata');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { unzipFileFromRequest } = require('../utils/unzipFile');
@@ -350,6 +351,28 @@ router.post('/yacht-bot', upload.single('raw_data'), async function (req, res) {
     console.error('error: ', err);
   }
 });
+
+router.post(
+  '/modern-geovoile',
+  upload.single('raw_data'),
+  async function (req, res) {
+    if (!req.file) {
+      res.status(400).json({
+        message: 'No File Uploaded',
+      });
+      return;
+    }
+    res.json({
+      message: `File successfully uploaded`,
+    });
+    try {
+      const { jsonData } = await unzipFileFromRequest(req);
+      await updateModernGeovoiledata(jsonData);
+    } catch (err) {
+      console.error('error: ', err);
+    }
+  },
+);
 
 router.post('/old-geovoile', async function (req, res) {
   if (!req.body.bucketName && !req.body.fileName) {

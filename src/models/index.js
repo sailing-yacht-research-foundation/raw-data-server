@@ -783,6 +783,10 @@ db.GeovoileGeometryGate = require('./geovoile/GeovoileGeometryGate.model')(
   sequelize,
   Sequelize,
 );
+db.geovoileMark = require('./geovoile/GeovoileMark.model')(
+  sequelize,
+  Sequelize,
+);
 // === End of Geovoile ===
 
 // === Start Old Geovoile ===
