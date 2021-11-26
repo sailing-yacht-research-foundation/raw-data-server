@@ -783,7 +783,7 @@ db.GeovoileGeometryGate = require('./geovoile/GeovoileGeometryGate.model')(
   sequelize,
   Sequelize,
 );
-db.GeovoileMark = require('./geovoile/GeovoileMark.model')(
+db.geovoileMark = require('./geovoile/GeovoileMark.model')(
   sequelize,
   Sequelize,
 );

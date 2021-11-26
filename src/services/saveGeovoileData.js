@@ -55,7 +55,7 @@ const saveGeovoileMarks = async (data, transaction) => {
   if (!data) {
     return;
   }
-  await db.GeovoileMark.bulkCreate(data, {
+  await db.geovoileMark.bulkCreate(data, {
     ignoreDuplicates: true,
     validate: true,
     transaction,
