@@ -10,13 +10,14 @@ const {
   createRace,
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
+const { SOURCE } = require('../../constants');
 const uploadUtil = require('../uploadUtil');
 
 const normalizeGeovoile = async (
   { geovoileRace, boats, sailors, positions },
   transaction,
 ) => {
-  const GEOVOILE_SOURCE = 'GEOVOILE';
+  const GEOVOILE_SOURCE = SOURCE.GEOVOILE;
   const race = geovoileRace;
   const allPositions = positions;
   if (!allPositions || allPositions.length === 0) {
@@ -25,6 +26,7 @@ const normalizeGeovoile = async (
   }
   const id = race.id;
   const name = race.name;
+
   const url = race.url;
   const startTime = race.startTime * 1000;
   const endTime = race.endTime * 1000;
@@ -33,6 +35,7 @@ const normalizeGeovoile = async (
   );
   allPositions.forEach((p) => {
     p.time = p.timecode;
+    p.cog = p.heading;
     p.timestamp = p.timecode * 1000; // Needed for function allPositionsToFeatureCollection
   });
   const boatsToSortedPositions = createBoatToPositionDictionary(
@@ -103,6 +106,7 @@ const normalizeGeovoile = async (
     GEOVOILE_SOURCE,
     transaction,
   );
+
   return raceMetadata;
 };
 

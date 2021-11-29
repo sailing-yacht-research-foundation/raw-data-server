@@ -108,7 +108,10 @@ dist
 
 .vscode/
 
-deployment/.terraform
-deployment/terraform.tfstate
-deployment/terraform.tfstate.backup
-deployment/.terraform.lock.hcl
+deployment/**/.terraform
+deployment/**/terraform.tfstate
+deployment/**/terraform.tfstate.backup
+deployment/**/.terraform.lock.hcl
+deployment/**/.terraform.tfstate.lock.info
+deployment/**/.env
+package-lock.json

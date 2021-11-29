@@ -2,6 +2,7 @@ const db = require('../../../models');
 const uploadUtil = require('../../uploadUtil');
 const elasticsearch = require('../../../utils/elasticsearch');
 const mapScreenshotUtil = require('../../../utils/createMapScreenshot');
+const googleAPI = require('../../../syrfDataServices/v1/googleAPI');
 
 const scraperTestMappings = [
   {
@@ -85,12 +86,17 @@ const scraperTestMappings = [
 ];
 
 describe('Normalization test', () => {
-  let indexRaceSpy, uploadGeoJsonSpy;
+  let indexRaceSpy,
+    uploadGeoJsonSpy,
+    reverseGeoCodeSpy,
+    mapScreenshotSpy,
+    uploadDataSpy;
   beforeAll(async () => {
     await db.readyAboutRaceMetadata.sync();
     await db.readyAboutTrackGeoJsonLookup.sync();
     indexRaceSpy = jest.spyOn(elasticsearch, 'indexRace');
     mapScreenshotSpy = jest.spyOn(mapScreenshotUtil, 'createMapScreenshot');
+    reverseGeoCodeSpy = jest.spyOn(googleAPI, 'reverseGeoCode');
     uploadGeoJsonSpy = jest.spyOn(uploadUtil, 'uploadGeoJsonToS3');
     uploadDataSpy = jest.spyOn(uploadUtil, 'uploadDataToS3');
   });
@@ -100,7 +106,9 @@ describe('Normalization test', () => {
     await db.sequelize.close();
   });
   afterEach(() => {
-    jest.resetAllMocks();
+    // Need to replace reset with clear, cause each loop, it's clearing the mock return of geocode from jestSetup
+    // So only the first one is success
+    jest.clearAllMocks();
   });
 
   describe.each(scraperTestMappings)(
@@ -109,13 +117,15 @@ describe('Normalization test', () => {
       it('should save metadata to readyAboutRaceMetadatas, call elasticsearch indexRace and upload to s3', async () => {
         const { normalizeRace } = require(`../../normalization/${filename}`);
         const jsonData = require(`../../../test-files/${testData}`);
+
         const createMetadata = jest.spyOn(db.readyAboutRaceMetadata, 'create');
         const races = jsonData[raceTable];
         await normalizeRace(jsonData);
         expect(createMetadata).toHaveBeenCalledTimes(races.length);
         expect(indexRaceSpy).toHaveBeenCalledTimes(races.length);
-        expect(mapScreenshotSpy).toHaveBeenCalledTimes(races.length);  // For uploading the opengraph image
-        expect(uploadDataSpy).toHaveBeenCalledTimes(races.length);  // For uploading the opengraph image
+        expect(mapScreenshotSpy).toHaveBeenCalledTimes(races.length); // For uploading the opengraph image
+        expect(uploadDataSpy).toHaveBeenCalledTimes(races.length); // For uploading the opengraph image
+        expect(reverseGeoCodeSpy).toHaveBeenCalledTimes(races.length);
         races.forEach((race) => {
           expect(uploadGeoJsonSpy).toHaveBeenCalledWith(
             race.id,

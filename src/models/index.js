@@ -365,6 +365,10 @@ db.yachtBotPosition = require('./yachtbot/yachtBotPosition.model')(
   sequelize,
   Sequelize,
 );
+db.yachtBotMark = require('./yachtbot/yachtBotMark.model')(
+  sequelize,
+  Sequelize,
+);
 db.yachtBotSuccessfulUrl = require('./yachtbot/yachtBotSuccessfulUrl.model')(
   sequelize,
   Sequelize,
@@ -768,6 +772,18 @@ db.geovoileSuccessfulUrl = require('./geovoile/geovoileSuccessfulUrl.model')(
   Sequelize,
 );
 db.geovoileFailedUrl = require('./geovoile/GeovoileFailedUrl.model')(
+  sequelize,
+  Sequelize,
+);
+db.GeovoileGeometry = require('./geovoile/GeovoileGeometry.model')(
+  sequelize,
+  Sequelize,
+);
+db.GeovoileGeometryGate = require('./geovoile/GeovoileGeometryGate.model')(
+  sequelize,
+  Sequelize,
+);
+db.geovoileMark = require('./geovoile/GeovoileMark.model')(
   sequelize,
   Sequelize,
 );

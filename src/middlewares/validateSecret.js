@@ -7,7 +7,7 @@ var validateSecret = function (req, res, next) {
   if (!secret) {
     throw new BadRequestError('No Authorization Header');
   }
-  let secretCheck = generateSecret(generateDateAuthFormat());
+  const secretCheck = generateSecret(generateDateAuthFormat());
   if (secretCheck !== secret) {
     throw new AuthInvalidError('No Match');
   }

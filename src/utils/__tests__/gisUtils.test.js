@@ -15,13 +15,19 @@ const {
   allPositionsToFeatureCollection,
   validateBoundingBox,
   createRace,
-  pointToCountry,
-  pointToCity,
   convertDMSToDD,
   parseGeoStringToDecimal,
   generateMetadataName,
+  meterPerSecToKnots,
+  createGeometryPoint,
+  createGeometry,
+  createGeometryPolygon,
+  createGeometryPosition,
+  createGeometryLine,
 } = require('../gisUtils');
+const { reverseGeoCode } = require('../../syrfDataServices/v1/googleAPI');
 const esUtil = require('../elasticsearch');
+const { geometryType } = require('../../syrf-schema/enums');
 
 describe('gis_utils.js', () => {
   it('when getLonFromTurfPoint is called should return lon from turf point', () => {
@@ -425,8 +431,11 @@ describe('gis_utils.js', () => {
         name: 'EPSG:4326',
       },
     };
-    const startCountry = pointToCountry(startPoint.geometry.coordinates);
-    const startCity = pointToCity(startPoint.geometry.coordinates);
+    const { countryName: startCountry, cityName: startCity } =
+      await reverseGeoCode({
+        lon: startPoint.geometry.coordinates[0],
+        lat: startPoint.geometry.coordinates[1],
+      });
     const positionsLength = 100;
     const positions = [];
     let runningDiffCount = 0;
@@ -603,6 +612,106 @@ describe('gis_utils.js', () => {
       const expectedDateTime = 'Oct 11, 2021, 10:51:31 AM UTC';
       const resultName = generateMetadataName('', '', startTimeMs);
       expect(resultName).toBe(`Race at ${expectedDateTime}`);
+    });
+  });
+
+  describe('When meterPerSecToKnots is called', () => {
+    it('should convert m/s speed to kts', () => {
+      expect(meterPerSecToKnots(0.5144)).toEqual(1);
+      expect(meterPerSecToKnots(5.144)).toEqual(10);
+    });
+  });
+
+  describe('When createGeometryPoint is called', () => {
+    it('#createGeometryPoint should create geometry object', () => {
+      const result = createGeometryPoint({
+        lat: 1,
+        lon: -1,
+        properties: { name: 'test' },
+      });
+      expect(result.geometryType).toEqual(geometryType.POINT);
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.coordinates[0].position[0]).toEqual(-1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+
+  describe('When createGeometry is called', () => {
+    it('#createGeometry should create geometry object', () => {
+      const result = createGeometry(
+        [
+          {
+            position: [1, -1],
+          },
+        ],
+        { name: 'test' },
+        geometryType.POINT,
+      );
+      expect(result.geometryType).toEqual(geometryType.POINT);
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(-1);
+      expect(result.coordinates[0].position[0]).toEqual(1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+  describe('When createGeometryPoint is called', () => {
+    it('#createGeometryPoint should create geometry object', () => {
+      const result = createGeometryPoint({
+        lat: 1,
+        lon: -1,
+        properties: { name: 'test' },
+      });
+      expect(result.geometryType).toEqual('Point');
+      expect(result.coordinates.length).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.coordinates[0].position[0]).toEqual(-1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+  describe('When createGeometryPosition is called', () => {
+    it('#createGeometryPosition should create position object', () => {
+      const result = createGeometryPosition({ lat: 1, lon: -1 });
+      expect(result.position.length).toEqual(2);
+      expect(result.position[0]).toEqual(-1);
+      expect(result.position[1]).toEqual(1);
+    });
+  });
+  describe('When createGeometryLine is called', () => {
+    it('#createGeometryLine should create geometry GeometryLine object', () => {
+      const result = createGeometryLine(
+        { lat: 1, lon: 1 },
+        { lat: -1, lon: -1 },
+        { name: 'test' },
+      );
+      expect(result.geometryType).toEqual(geometryType.LINESTRING);
+      expect(result.coordinates.length).toEqual(2);
+      expect(result.coordinates[0].position[0]).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(1);
+      expect(result.properties.name).toEqual('test');
+    });
+  });
+  describe('When createGeometryPolygon is called', () => {
+    it('#createGeometryPolygon should create geometry GeometryPolygon object', () => {
+      const result = createGeometryPolygon(
+        [
+          {
+            position: [1, -1],
+          },
+          {
+            position: [1, 1],
+          },
+          {
+            position: [2, 2],
+          },
+        ],
+        { name: 'test' },
+      );
+      expect(result.geometryType).toEqual(geometryType.POLYGON);
+      expect(result.coordinates.length).toEqual(3);
+      expect(result.coordinates[0].position[0]).toEqual(1);
+      expect(result.coordinates[0].position[1]).toEqual(-1);
+      expect(result.properties.name).toEqual('test');
     });
   });
 });

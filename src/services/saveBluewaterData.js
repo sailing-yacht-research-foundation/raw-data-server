@@ -4,6 +4,7 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeBluewater');
+const mapAndSave = require('./mappingsToSyrfDB/mapBluewaterToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveBluewaterData = async (data) => {
@@ -100,6 +101,18 @@ const saveBluewaterData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
+  // temporary add of test env to avoid accidentally saving on maindb until its mocked
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_BLUEWATER === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    try {
+      await mapAndSave(data, raceMetadata);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   if (raceUrl.length > 0) {
     if (errorMessage) {
       await db.bluewaterFailedUrl.bulkCreate(
@@ -132,7 +145,9 @@ const saveBluewaterData = async (data) => {
     }
   }
 
-  await triggerWeatherSlicer(raceMetadata);
+  if (raceMetadata) {
+    await triggerWeatherSlicer(raceMetadata);
+  }
   return errorMessage;
 };
 

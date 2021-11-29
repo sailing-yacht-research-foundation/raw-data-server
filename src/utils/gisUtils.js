@@ -1,18 +1,10 @@
 const turf = require('@turf/turf');
 const uuid = require('uuid');
 const elasticsearch = require('./elasticsearch');
-const cities = require('all-the-cities');
-const KDBush = require('kdbush');
-const geokdbush = require('geokdbush');
 const uploadUtil = require('../services/uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
-
-const { world } = require('./world');
-const cityIndex = new KDBush(
-  cities,
-  (p) => p.loc.coordinates[0],
-  (p) => p.loc.coordinates[1],
-);
+const { reverseGeoCode } = require('../syrfDataServices/v1/googleAPI');
+const { geometryType } = require('../syrf-schema/enums');
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -137,33 +129,6 @@ exports.sortAllBoatPositionsByTime = function (
     const positions = boatsToPositions[key];
     exports.sortPositionsByTime(timeFieldName, positions);
   });
-};
-
-exports.pointToCountry = function (point) {
-  let minDistance = 10000;
-  let countryName = '';
-  let found = false;
-  world.features.forEach((country) => {
-    const poly = country.geometry;
-    const vertices = turf.explode(poly);
-    const closestVertex = turf.nearest(point, vertices);
-    const distance = turf.distance(point, closestVertex);
-    if (!found) {
-      if (turf.booleanPointInPolygon(point, poly)) {
-        found = true;
-        countryName = country.properties.ADMIN;
-      } else if (distance < minDistance) {
-        minDistance = distance;
-        countryName = country.properties.ADMIN;
-      }
-    }
-  });
-  return countryName;
-};
-
-exports.pointToCity = function (point) {
-  const nearestCity = geokdbush.around(cityIndex, point[0], point[1], 1);
-  return nearestCity[0].name;
 };
 
 exports.collectFirstNPositionsFromBoatsToPositions = function (
@@ -300,14 +265,21 @@ exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
   if (eventName === raceName) {
     name = eventName;
   } else {
-    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')].filter(Boolean).join(" - ");
+    name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')]
+      .filter(Boolean)
+      .join(' - ');
   }
-  if (!name) {  // if no event or race name
-    const dateFormatter = formatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'long', timeZone: 'utc' });
-    name = `Race at ${dateFormatter.format(startTimeMs)}`;  //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
+  if (!name) {
+    // if no event or race name
+    const dateFormatter = new Intl.DateTimeFormat('en-US', {
+      dateStyle: 'medium',
+      timeStyle: 'long',
+      timeZone: 'utc',
+    });
+    name = `Race at ${dateFormatter.format(startTimeMs)}`; //Example: Race at Oct 11, 2021, 2:32:46 PM GMT+8
   }
   return name;
-}
+};
 
 exports.createRace = async function (
   id,
@@ -331,8 +303,12 @@ exports.createRace = async function (
   skipElasticSearch = false,
 ) {
   let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
-  const startCountry = exports.pointToCountry(startPoint);
-  const startCity = exports.pointToCity(startPoint.geometry.coordinates);
+
+  const { countryName: startCountry, cityName: startCity } =
+    await reverseGeoCode({
+      lon: startPoint.geometry.coordinates[0],
+      lat: startPoint.geometry.coordinates[1],
+    });
   let openGraphImage = null;
   try {
     const imageBuffer = await createMapScreenshot(
@@ -560,4 +536,79 @@ exports.convertDMSToDD = convertDMSToDD;
 exports.parseGeoStringToDecimal = function (input) {
   var parts = input.split(/[^\d\w\.]+/);
   return convertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
+};
+
+/**
+ * Convert m/s speed to kts
+ * @param {Number} speed
+ * @returns
+ */
+exports.meterPerSecToKnots = function (speed) {
+  // 1 m/s = 1.943844 kn
+  return parseFloat((speed * 1.943844).toFixed(2));
+};
+
+exports.createGeometryPoint = ({
+  lat,
+  lon,
+  properties = {},
+  markTrackerId = null,
+}) => {
+  return {
+    geometryType: geometryType.POINT,
+    properties,
+    coordinates: [this.createGeometryPosition({ lat, lon, markTrackerId })],
+  };
+};
+
+exports.createGeometryLine = (
+  { lat: point1Lat, lon: point1lon, markTrackerId: point1TrackerId },
+  { lat: point2Lat, lon: point2Lon, markTrackerId: point2TrackerId },
+  properties = {},
+) => {
+  return {
+    geometryType: geometryType.LINESTRING,
+    properties,
+    coordinates: [
+      this.createGeometryPosition({
+        lat: point1Lat,
+        lon: point1lon,
+        markTrackerId: point1TrackerId,
+      }),
+      this.createGeometryPosition({
+        lat: point2Lat,
+        lon: point2Lon,
+        markTrackerId: point2TrackerId,
+      }),
+    ],
+  };
+};
+
+exports.createGeometryPosition = ({ lat, lon, markTrackerId }) => {
+  return {
+    position: [lon, lat],
+    markTrackerId,
+  };
+};
+
+/**
+ *
+ * @param {Array of {lon, lat}} coordinates
+ * @param {*} properties
+ * @returns
+ */
+exports.createGeometryPolygon = (coordinates = [], properties = {}) => {
+  return {
+    geometryType: geometryType.POLYGON,
+    properties,
+    coordinates,
+  };
+};
+
+exports.createGeometry = (coordinates = [], properties = {}, geometryType) => {
+  return {
+    geometryType,
+    properties,
+    coordinates,
+  };
 };
