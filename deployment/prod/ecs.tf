@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "rds_task" {
       ],
       "environmentFiles": [
                {
-                   "value": "arn:aws:s3:::syrf-prod-env-variables/raw-server.env",
+                   "value": "arn:aws:s3:::syrf-prod-env-variables/raw-data-server.env",
                    "type": "s3"
                }
            ],
@@ -76,7 +76,7 @@ resource "aws_ecs_task_definition" "rds_task" {
       "memory": 12288,
       "cpu": 4096
     }
-    
+
   ]
   DEFINITION
   requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
