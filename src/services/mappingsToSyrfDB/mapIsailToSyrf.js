@@ -146,6 +146,7 @@ const _mapBoats = (boats) => {
 
 const _mapPositions = (positions) => {
   return positions?.map((p) => ({
+    timestamp: p.time,
     lon: p.lon,
     lat: p.lat,
     cog: p.heading,
@@ -213,6 +214,9 @@ const _mapRoundings = (roundings, courseSequencedGeometries, raceTracks, raceId)
     const eventGeometry = courseSequencedGeometries?.find((g) =>
       g.properties?.courseMarkId?.toString() === r.original_course_mark_id?.toString(),
     )
+    if (!eventGeometry) {
+      return null;
+    }
     const eventType = eventGeometry.geometryType === geometryType.LINESTRING ? vesselEvents.insideCrossing : vesselEvents.rounding;
     const track = raceTracks.find((t) => t.original_id.toString() === r.original_track_id.toString());
 
@@ -223,7 +227,7 @@ const _mapRoundings = (roundings, courseSequencedGeometries, raceTracks, raceId)
       eventType,
       eventTime: r.time * 1000,
     }
-  });
+  }).filter(Boolean);
 };
 
 module.exports = mapAndSave;

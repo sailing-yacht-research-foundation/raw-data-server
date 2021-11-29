@@ -65,7 +65,7 @@ const saveCompetitionUnit = async ({
       {
         name: event?.name,
         locationName: event?.locationName,
-        externalUrl: event?.url || url,
+        externalUrl: event?.url,
         approximateStartTime: event?.approxStartTimeMs || approxStartTimeMs,
         approximateEndTime: event?.approxEndTimeMs || approxEndTimeMs,
         lat: event?.lat || lat,
@@ -192,37 +192,6 @@ const saveCompetitionUnit = async ({
     }
 
     console.log(`Creating new Course`);
-    // add default value in case there is no point or mark
-    if (courseSequencedGeometries.length === 0) {
-      courseSequencedGeometries.push(
-        ...[
-          Object.assign(
-            createGeometryPoint({
-              lon: approxStartPoint.coordinates[0],
-              lat: approxStartPoint.coordinates[1],
-              properties: {
-                name: 'Start Point',
-              },
-            }),
-            {
-              order: 0,
-            },
-          ),
-          Object.assign(
-            createGeometryPoint({
-              lon: approxEndPoint.coordinates[0],
-              lat: approxEndPoint.coordinates[1],
-              properties: {
-                name: 'End Point',
-              },
-            }),
-            {
-              order: 1,
-            },
-          ),
-        ],
-      );
-    }
 
     for (const tracker of markTrackers) {
       await markTracker.upsert(
@@ -307,8 +276,16 @@ const saveCompetitionUnit = async ({
         (vp) => vp.vesselId === vesselId,
       )?.id;
       const tracker = vesselParticipantTracks[vesselParticipantId];
+      let lon, lat;
+      try {
+        lon = parseFloat(position.lon);
+        lat = parseFloat(position.lat);
+      } catch (err) {
+        console.log(`Lon (${position.lon}) or lat (${position.lat}) is not a valid float`, err);
+        continue;
+      }
       tracker?.addNewPosition(
-        [position.lon, position.lat],
+        [lon, lat],
         position.timestamp,
         {
           cog: position.cog,
