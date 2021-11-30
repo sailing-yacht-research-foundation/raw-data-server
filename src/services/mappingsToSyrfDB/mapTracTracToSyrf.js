@@ -1,6 +1,7 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
 const { v4: uuidv4 } = require('uuid');
+const { geometryType } = require('../../syrf-schema/enums');
 
 const mapTracTracToSyrf = async (data, raceMetadata) => {
   if (!raceMetadata) {
@@ -44,6 +45,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   );
 
   const courseSequencedGeometries = _mapSequencedGeometries(
+    data.TracTracControl,
     data.TracTracControlPoint,
     data.TracTracControlPointPosition,
   );
@@ -57,8 +59,10 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   await saveCompetitionUnit({
     event,
     race: {
-      original_id: data.YellowbrickRace[0].race_code,
-      url: data.YellowbrickRace[0].url,
+      id: data.TracTracRace[0].id,
+      original_id: data.TracTracRace[0].original_id,
+      url: data.TracTracRace[0].url,
+      scrapedUrl: event.url,
     },
     boats: inputBoats,
     positions,
@@ -66,6 +70,10 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     courseSequencedGeometries,
     rankings,
     markTrackerPositions: data.TracTracControlPointPosition,
+    reuse: {
+      event: true,
+      boats: true,
+    },
   });
 };
 
@@ -75,11 +83,11 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
     const vessel = {
       id: b.id,
       publicName: b.name,
-      vesselId: b.original_id?.toString(),
+      vesselId: b.original_id,
       model: b.class_name,
+      handicap: {},
     };
 
-    vessel.handicap = {};
     for (const key of Object.keys(b)) {
       if (key.indexOf('handicap') === -1 || isNaN(b[key]) || !b[key]) {
         continue;
@@ -110,36 +118,49 @@ const _mapPositions = (positions) => {
 };
 
 const _mapSequencedGeometries = (
+  tracTracControl = [],
   tracTracControlPoint = [],
   tracTracControlPointPosition = [],
 ) => {
   const courseSequencedGeometries = [];
   let order = 1;
 
-  for (const currentControlPoint of tracTracControlPoint) {
-    const position = _findControlPointFirstPosition(
-      currentControlPoint.id,
-      tracTracControlPointPosition,
+  for (const control of tracTracControl) {
+    const controlPoints = tracTracControlPoint.filter(
+      (t) => t.control === control.id,
     );
-
-    if (!position) {
+    // no control point
+    if (controlPoints.length === 0) {
       continue;
     }
-    const lat = position.lat;
-    const lon = position.lon;
+    const coordinates = [];
+    for (const currentControlPoint of controlPoints) {
+      const position = _findControlPointFirstPosition(
+        currentControlPoint.id,
+        tracTracControlPointPosition,
+      );
+      if (!position) {
+        continue;
+      }
+      const lat = position.lat;
+      const lon = position.lon;
+      coordinates.push(
+        gisUtils.createGeometryPosition({
+          lat,
+          lon,
+          markTrackerId: currentControlPoint.markTrackerId,
+        }),
+      );
+    }
+    const type =
+      controlPoints.length === 1 ? geometryType.POINT : geometryType.LINESTRING;
     courseSequencedGeometries.push({
-      ...gisUtils.createGeometryPoint({
-        lat,
-        lon,
-        properties: {
-          name: currentControlPoint.name?.trim(),
-        },
-        markTrackerId: currentControlPoint.markTrackerId,
-      }),
+      ...gisUtils.createGeometry(coordinates, { name: control.name }, type),
       order: order,
     });
     order++;
   }
+
   return courseSequencedGeometries;
 };
 
@@ -156,10 +177,6 @@ const _mapRankings = (tracTracCompetitor, tracTracCompetitorResult = []) => {
   const rankings = [];
   for (const vessel of tracTracCompetitor) {
     const ranking = { vesselId: vessel.id, elapsedTime: 0, finishTime: 0 };
-
-    if (vessel.status !== 'FIN') {
-      continue;
-    }
 
     const result = tracTracCompetitorResult.find(
       (t) => t.competitor === vessel.id,
