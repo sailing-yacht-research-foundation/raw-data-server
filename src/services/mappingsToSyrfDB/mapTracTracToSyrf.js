@@ -29,9 +29,11 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   const inputBoats = _mapBoats(data.TracTracCompetitor, boatIdToOriginalIdMap);
 
   const controlPointToMarkTrackerId = {};
+  const markTrackers = [];
   data.TracTracControlPoint = data.TracTracControlPoint.map((t) => {
     const markTrackerId = uuidv4();
     controlPointToMarkTrackerId[t.id] = markTrackerId;
+    markTrackers.push({ id: markTrackerId, name: t.name });
     return { ...t, markTrackerId };
   });
 
@@ -69,6 +71,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     raceMetadata,
     courseSequencedGeometries,
     rankings,
+    markTrackers,
     markTrackerPositions: data.TracTracControlPointPosition,
     reuse: {
       event: true,
