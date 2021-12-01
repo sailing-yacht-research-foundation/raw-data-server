@@ -8,7 +8,6 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     console.log(`mapTracTracToSyrf requires raceMetadata`);
     return;
   }
-
   // event
   const event = data.TracTracEvent.map((e) => {
     const starTimeObj = new Date(`${e.start} +0`);
@@ -30,14 +29,14 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
 
   const controlPointToMarkTrackerId = {};
   const markTrackers = [];
-  data.TracTracControlPoint = data.TracTracControlPoint.map((t) => {
+  data.TracTracControlPoint = data.TracTracControlPoint?.map((t) => {
     const markTrackerId = uuidv4();
     controlPointToMarkTrackerId[t.id] = markTrackerId;
     markTrackers.push({ id: markTrackerId, name: t.name });
     return { ...t, markTrackerId };
   });
 
-  data.TracTracControlPointPosition = data.TracTracControlPointPosition.map(
+  data.TracTracControlPointPosition = data.TracTracControlPointPosition?.map(
     (t) => {
       return {
         ...t,
@@ -111,7 +110,6 @@ const _mapPositions = (positions) => {
       ...t,
       race_id: t.race,
       race_original_id: t.race_original_id,
-      boat_id: t.competitor,
       vesselId: t.competitor,
       boat_original_id: t.competitor_original_id,
       cog: t.direction,
