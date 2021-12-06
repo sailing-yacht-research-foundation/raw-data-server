@@ -6,18 +6,20 @@ const { uploadMapScreenshot } = require('../../services/s3Util');
 
 const setGeometryId = (geometries) => {
   if (Array.isArray(geometries)) {
-    return geometries.map((t) => ({
-      ...t,
-      id: uuid.v4(),
-      points: t.coordinates,
-      coordinates: t.coordinates.map((coordinate) =>
-        Array.isArray(coordinate)
-          ? coordinate
-          : typeof coordinate === 'object'
-          ? coordinate.position
-          : null,
-      ),
-    }));
+    return geometries.map((t) => {
+      return {
+        ...t,
+        id: t.id || uuid.v4(),
+        points: t.coordinates,
+        coordinates: t.coordinates.map((coordinate) =>
+          Array.isArray(coordinate)
+            ? coordinate
+            : typeof coordinate === 'object'
+            ? coordinate.position
+            : null,
+        ),
+      };
+    });
   } else {
     return geometries;
   }

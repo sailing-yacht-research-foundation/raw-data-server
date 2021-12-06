@@ -12,12 +12,18 @@ const mapAndSave = async (data, raceMetadatas) => {
     let startTimezone = e.start_timezone_type;
     let stopTimezone = e.stop_timezone_type;
 
-    if (startTimezone?.toString().indexOf('-') < 0 && startTimezone?.toString().indexOf('+') < 0) {
+    if (
+      startTimezone?.toString().indexOf('-') < 0 &&
+      startTimezone?.toString().indexOf('+') < 0
+    ) {
       startTimezone = `+${startTimezone}`;
     }
     const starTimeObj = new Date(e.start_date + startTimezone);
 
-    if (stopTimezone?.toString().indexOf('-') < 0 && stopTimezone?.toString().indexOf('+') < 0) {
+    if (
+      stopTimezone?.toString().indexOf('-') < 0 &&
+      stopTimezone?.toString().indexOf('+') < 0
+    ) {
       stopTimezone = `+${stopTimezone}`;
     }
     const stopTimeObj = new Date(e.stop_date + stopTimezone);
@@ -29,7 +35,7 @@ const mapAndSave = async (data, raceMetadatas) => {
       locationName: e.location,
       approxStartTimeMs: starTimeObj.getTime(),
       approxEndTimeMs: stopTimeObj.getTime(),
-    }
+    };
   })[0];
 
   for (const raceIndex in data.iSailRace) {
@@ -40,38 +46,33 @@ const mapAndSave = async (data, raceMetadatas) => {
     const raceTracks = data.iSailTrack.filter((t) => {
       return raceTrackIds?.includes(t.original_id.toString());
     });
-    const raceParticipantIds = raceTracks.map(
-      (t) => t.original_participant_id.toString()
+    const raceParticipantIds = raceTracks.map((t) =>
+      t.original_participant_id.toString(),
     );
     const raceParticipants = data.iSailEventParticipant.filter((p) =>
-      raceParticipantIds.includes(p.original_id.toString())
+      raceParticipantIds.includes(p.original_id.toString()),
     );
-    const inputBoats = _mapBoats(
-      raceParticipants,
-    );
+    const inputBoats = _mapBoats(raceParticipants);
 
     // positions
     const racePositions = data.iSailPosition.filter((pos) => {
       const isPositionInTrack = raceTrackIds?.includes(
-          pos.original_track_id.toString()
+        pos.original_track_id.toString(),
       );
       if (isPositionInTrack) {
-          let isPositionInRaceTime;
-          const isAfterStart =
-              pos.time >= race.start * 1000;
-          const isBeforeEnd =
-              pos.time <= race.stop * 1000;
-          if (raceIndex === 0) {
-              // include positions before start if race is earliest
-              isPositionInRaceTime = isBeforeEnd;
-          } else if (raceIndex === data.iSailRace.length - 1) {
-              // include positions after end if race is latest
-              isPositionInRaceTime = isAfterStart;
-          } else {
-              isPositionInRaceTime =
-                  isAfterStart && isBeforeEnd;
-          }
-          return isPositionInRaceTime;
+        let isPositionInRaceTime;
+        const isAfterStart = pos.time >= race.start * 1000;
+        const isBeforeEnd = pos.time <= race.stop * 1000;
+        if (raceIndex === 0) {
+          // include positions before start if race is earliest
+          isPositionInRaceTime = isBeforeEnd;
+        } else if (raceIndex === data.iSailRace.length - 1) {
+          // include positions after end if race is latest
+          isPositionInRaceTime = isAfterStart;
+        } else {
+          isPositionInRaceTime = isAfterStart && isBeforeEnd;
+        }
+        return isPositionInRaceTime;
       }
       return false;
     });
@@ -79,28 +80,32 @@ const mapAndSave = async (data, raceMetadatas) => {
       console.log('No race positions so skipping.');
       continue;
     }
-    const inputPositions = _mapPositions(
-      racePositions,
-    );
+    const inputPositions = _mapPositions(racePositions);
 
     // courseMarks are only used for ordering
     const raceCourseMarks = data.iSailCourseMark?.filter(
-      (s) => s.original_race_id === race.original_id
+      (s) => s.original_race_id === race.original_id,
     );
     const raceMarks = data.iSailMark?.filter(
-      (s) => s.original_race_id === race.original_id
+      (s) => s.original_race_id === race.original_id,
     );
     const raceStartLines = data.iSailStartline?.filter(
-      (s) => s.original_race_id === race.original_id
+      (s) => s.original_race_id === race.original_id,
     );
-    const courseSequencedGeometries = _mapSequencedGeometries(raceCourseMarks, raceMarks, raceStartLines);
+    const courseSequencedGeometries = _mapSequencedGeometries(
+      raceCourseMarks,
+      raceMarks,
+      raceStartLines,
+    );
 
     // roundings
     const inputRoundings = _mapRoundings(
-      data.iSailRounding?.filter((r) => raceTrackIds?.includes(r.original_track_id?.toString())),
+      data.iSailRounding?.filter((r) =>
+        raceTrackIds?.includes(r.original_track_id?.toString()),
+      ),
       courseSequencedGeometries,
       raceTracks,
-      race.id
+      race.id,
     );
 
     // rankings
@@ -168,6 +173,7 @@ const _mapSequencedGeometries = (courseMarks, marks = [], startlines = []) => {
         courseMarkId: cm?.original_id,
       },
     });
+    newPoint.id = cm?.id;
     newPoint.order = cm?.position || order;
     courseSequencedGeometries.push(newPoint);
     order++;
@@ -189,6 +195,7 @@ const _mapSequencedGeometries = (courseMarks, marks = [], startlines = []) => {
         courseMarkId: cm?.original_id,
       },
     );
+    line.id = cm?.id;
     line.order = cm?.position || order;
     courseSequencedGeometries.push(line);
     order++;
@@ -198,7 +205,8 @@ const _mapSequencedGeometries = (courseMarks, marks = [], startlines = []) => {
 };
 
 const _mapRankings = (results, raceStart) => {
-  return results?.map((r) => {
+  return results
+    ?.map((r) => {
       const finishTime = r.time * 1000;
       return {
         vesselId: r.participant,
@@ -206,28 +214,42 @@ const _mapRankings = (results, raceStart) => {
         elapsedTime: finishTime - raceStart,
       };
     })
-    .sort((a, b) => (a.finishTime || Infinity) - (b.finishTime || Infinity) );
+    .sort((a, b) => (a.finishTime || Infinity) - (b.finishTime || Infinity));
 };
 
-const _mapRoundings = (roundings, courseSequencedGeometries, raceTracks, raceId) => {
-  return roundings?.map((r) => {
-    const eventGeometry = courseSequencedGeometries?.find((g) =>
-      g.properties?.courseMarkId?.toString() === r.original_course_mark_id?.toString(),
-    )
-    if (!eventGeometry) {
-      return null;
-    }
-    const eventType = eventGeometry.geometryType === geometryType.LINESTRING ? vesselEvents.insideCrossing : vesselEvents.rounding;
-    const track = raceTracks.find((t) => t.original_id.toString() === r.original_track_id.toString());
+const _mapRoundings = (
+  roundings,
+  courseSequencedGeometries,
+  raceTracks,
+  raceId,
+) => {
+  return roundings
+    ?.map((r) => {
+      const eventGeometry = courseSequencedGeometries?.find(
+        (g) =>
+          g.properties?.courseMarkId?.toString() ===
+          r.original_course_mark_id?.toString(),
+      );
+      if (!eventGeometry) {
+        return null;
+      }
+      const eventType =
+        eventGeometry.geometryType === geometryType.LINESTRING
+          ? vesselEvents.insideCrossing
+          : vesselEvents.rounding;
+      const track = raceTracks.find(
+        (t) => t.original_id.toString() === r.original_track_id.toString(),
+      );
 
-    return {
-      competitionUnitId: raceId,
-      vesselId: track.participant,
-      markId: r.course_mark,
-      eventType,
-      eventTime: r.time * 1000,
-    }
-  }).filter(Boolean);
+      return {
+        competitionUnitId: raceId,
+        vesselId: track.participant,
+        markId: r.course_mark,
+        eventType,
+        eventTime: r.time * 1000,
+      };
+    })
+    .filter(Boolean);
 };
 
 module.exports = mapAndSave;
