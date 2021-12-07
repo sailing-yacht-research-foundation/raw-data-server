@@ -4,7 +4,7 @@ const { normalizeGeovoile } = require('../../normalization/normalizeGeovoile');
 
 const geovoileData = {
   filename: 'normalizeGeovoile',
-  testData: 'geovoile-modern.json',
+  testData: 'save-geovoile-modern.json',
   raceTable: 'regadataRaces',
   source: 'GEOVOILE',
 };
@@ -34,21 +34,9 @@ describe('Normalization Geovoile Test', () => {
     const jsonData = require(`../../../test-files/${geovoileData.testData}`);
     const geovoileRace = jsonData.geovoileRace;
     const boats = jsonData.boats;
-    const positions = [];
-    const sailors = [];
+    const positions = jsonData.positions;
+    const sailors = jsonData.sailors;
 
-    for (const boat of boats) {
-      positions.push(
-        ...boat.track.locations.map((location) => {
-          return {
-            ...location,
-            boat_original_id: boat.original_id,
-            boat_id: boat.id,
-          };
-        }),
-      );
-      sailors.push(...boat.sailors);
-    }
     await normalizeGeovoile({
       geovoileRace: geovoileRace,
       boats,
