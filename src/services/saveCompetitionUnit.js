@@ -11,8 +11,6 @@ const courses = require('../syrfDataServices/v1/courses');
 const participant = require('../syrfDataServices/v1/participant');
 const VesselParticipantTrack = require('../syrfDataServices/v1/vesselParticipantTrack');
 const PointTrack = require('../syrfDataServices/v1/pointTrack');
-
-const { createGeometryPoint } = require('../utils/gisUtils');
 const markTracker = require('../syrfDataServices/v1/markTracker');
 
 const saveCompetitionUnit = async ({
@@ -22,6 +20,7 @@ const saveCompetitionUnit = async ({
   positions,
   rankings,
   raceMetadata,
+  course,
   courseSequencedGeometries = [],
   handicapMap = {},
   reuse = {},
@@ -150,21 +149,23 @@ const saveCompetitionUnit = async ({
       mainDatabaseTransaction,
     );
 
-    rankings = rankings?.map((t) => {
-      const vesselId = existingVesselIdMap.get(t.vesselId) || t.vesselId; // replace vessel id if already exist
-      const vesselParticipantId = createdVesselParticipants.find(
-        (vp) => vp.vesselId === vesselId,
-      )?.id;
-      if (vesselParticipantId) {
-        return {
-          vesselParticipantId: vesselParticipantId,
-          elapsedTime: t.elapsedTime,
-          finishTime: t.finishTime,
-        };
-      } else {
-        return null;
-      }
-    }).filter(Boolean);
+    rankings = rankings
+      ?.map((t) => {
+        const vesselId = existingVesselIdMap.get(t.vesselId) || t.vesselId; // replace vessel id if already exist
+        const vesselParticipantId = createdVesselParticipants.find(
+          (vp) => vp.vesselId === vesselId,
+        )?.id;
+        if (vesselParticipantId) {
+          return {
+            vesselParticipantId: vesselParticipantId,
+            elapsedTime: t.elapsedTime,
+            finishTime: t.finishTime,
+          };
+        } else {
+          return null;
+        }
+      })
+      .filter(Boolean);
 
     console.log(`Save Participants and Crew`);
     for (const vesselId of vesselsToParticipantsMap.keys()) {
@@ -205,7 +206,7 @@ const saveCompetitionUnit = async ({
         null,
         {
           calendarEventId: newCalendarEvent.id,
-          name,
+          name: course?.name || name,
           courseSequencedGeometries,
         },
         mainDatabaseTransaction,
@@ -281,20 +282,19 @@ const saveCompetitionUnit = async ({
         lon = parseFloat(position.lon);
         lat = parseFloat(position.lat);
       } catch (err) {
-        console.log(`Lon (${position.lon}) or lat (${position.lat}) is not a valid float`, err);
+        console.log(
+          `Lon (${position.lon}) or lat (${position.lat}) is not a valid float`,
+          err,
+        );
         continue;
       }
-      tracker?.addNewPosition(
-        [lon, lat],
-        position.timestamp,
-        {
-          cog: position.cog,
-          sog: position.sog,
-          twa: position.twa,
-          windSpeed: position.windSpeed,
-          windDirection: position.windDirection,
-        },
-      );
+      tracker?.addNewPosition([lon, lat], position.timestamp, {
+        cog: position.cog,
+        sog: position.sog,
+        twa: position.twa,
+        windSpeed: position.windSpeed,
+        windDirection: position.windDirection,
+      });
     }
 
     // Remove vessel participant track that does not have positions
@@ -309,8 +309,7 @@ const saveCompetitionUnit = async ({
     if (vesselParticipantEvents.length) {
       await vesselParticipantEvent.bulkCreate(
         vesselParticipantEvents.map((e) => {
-          const vesselId =
-            existingVesselIdMap.get(e.vesselId) || e.vesselId; // replace vessel id if already exist
+          const vesselId = existingVesselIdMap.get(e.vesselId) || e.vesselId; // replace vessel id if already exist
           const vesselParticipantId = createdVesselParticipants.find(
             (vp) => vp.vesselId === vesselId,
           )?.id;
@@ -320,7 +319,7 @@ const saveCompetitionUnit = async ({
             markId: e.markId,
             eventType: e.eventType,
             eventTime: e.eventTime,
-          }
+          };
         }),
         mainDatabaseTransaction,
       );
