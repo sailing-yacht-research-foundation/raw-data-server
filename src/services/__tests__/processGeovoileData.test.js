@@ -11,7 +11,7 @@ jest
   .mockImplementation(() => Promise.resolve());
 const savegeovoileData = require('../saveGeovoileData');
 const uploadUtil = require('../uploadUtil');
-const jsonData = require('../../test-files/geovoile-modern.json');
+const jsonData = require('../../test-files/save-geovoile-modern.json');
 
 describe('Processing non-existent geovoile Data from DB to Parquet', () => {
   beforeAll(async () => {
