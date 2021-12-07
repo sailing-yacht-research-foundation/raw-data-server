@@ -53,7 +53,7 @@ const mapAndSave = async (data, raceMetadatas) => {
     // geometries
     // In georacing, there are multiple courses per race but there can only be 1 active course
     let raceCourseObjects, raceCourseElements;
-    if (!activeCourse) {
+    if (activeCourse) {
       raceCourseObjects = data.GeoracingCourseObject?.filter(
         (co) => co.race === race.id && co.course === activeCourse.id,
       );
@@ -61,9 +61,7 @@ const mapAndSave = async (data, raceMetadatas) => {
         (ce) => ce.race === race.id && ce.course === activeCourse.id,
       );
     }
-    const raceLines = data.GeoracingLine?.filter(
-      (ce) => ce.race === race.id,
-    );
+    const raceLines = data.GeoracingLine?.filter((ce) => ce.race === race.id);
 
     const { courseSequencedGeometries, markTrackers } = _mapSequencedGeometries(
       raceCourseObjects,
@@ -122,20 +120,22 @@ const _mapBoats = (boats) => {
 };
 
 const _mapPositions = (positions) => {
-  return positions?.map((p) => {
-    if (p.lon && !isNaN(p.lon) && p.lat && !isNaN(p.lat)) {
-      return {
-        timestamp: p.timestamp,
-        lon: p.lon,
-        lat: p.lat,
-        cog: p.h,
-        sog: p.s,
-        vesselId: p.trackable_id,
+  return positions
+    ?.map((p) => {
+      if (p.lon && !isNaN(p.lon) && p.lat && !isNaN(p.lat)) {
+        return {
+          timestamp: p.timestamp,
+          lon: p.lon,
+          lat: p.lat,
+          cog: p.h,
+          sog: p.s,
+          vesselId: p.trackable_id,
+        };
+      } else {
+        return null;
       }
-    } else {
-      return null;
-    }
-  }).filter(Boolean);
+    })
+    .filter(Boolean);
 };
 
 const _mapSequencedGeometries = (
@@ -222,7 +222,7 @@ const _mapSequencedGeometries = (
 
   let lineOrder = 0;
   // type 0 are land mass and equator lines.
-  const importantLines = lines.filter((l) => l.type?.toString() !== '0')
+  const importantLines = lines.filter((l) => l.type?.toString() !== '0');
   for (const line of importantLines) {
     const points = line.points?.split(/\r\n| |\n/); // split with space or next line
     const coordinates = [];
@@ -239,7 +239,9 @@ const _mapSequencedGeometries = (
     });
 
     const type =
-      coordinates.length > 2 && line.close?.toString() !== 'false' ? geometryType.POLYGON : geometryType.LINESTRING;
+      coordinates.length > 2 && line.close?.toString() !== 'false'
+        ? geometryType.POLYGON
+        : geometryType.LINESTRING;
     courseSequencedGeometries.push({
       ...createGeometry(
         coordinates,
