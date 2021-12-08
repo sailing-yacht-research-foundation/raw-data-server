@@ -53,13 +53,19 @@ const mapAndSave = async (data, raceMetadatas) => {
     // geometries
     // In georacing, there are multiple courses per race but there can only be 1 active course
     let raceCourseObjects, raceCourseElements;
+    const courseElementIdToOrigIdMap = {};
     if (activeCourse) {
       raceCourseObjects = data.GeoracingCourseObject?.filter(
         (co) => co.race === race.id && co.course === activeCourse.id,
       );
-      raceCourseElements = data.GeoracingCourseElement?.filter(
-        (ce) => ce.race === race.id && ce.course === activeCourse.id,
-      );
+      raceCourseElements = data.GeoracingCourseElement?.filter((ce) => {
+        if (ce.race === race.id && ce.course === activeCourse.id) {
+          courseElementIdToOrigIdMap[ce.original_id] = ce.id;
+          return true;
+        } else {
+          return false;
+        }
+      });
     }
     const raceLines = data.GeoracingLine?.filter((ce) => ce.race === race.id);
 
@@ -98,6 +104,10 @@ const mapAndSave = async (data, raceMetadatas) => {
       course: activeCourse,
       courseSequencedGeometries,
       markTrackers,
+      markTrackerPositions: raceCourseElementPositions.map((cep) => ({
+        ...cep,
+        markTrackerId: courseElementIdToOrigIdMap[cep.trackable_original_id],
+      })),
       vesselParticipantEvents: inputCourseEvents,
       reuse: {
         event: true,
