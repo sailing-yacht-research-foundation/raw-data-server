@@ -9,7 +9,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     return;
   }
   // event
-  const event = data.TracTracEvent.map((e) => {
+  const event = data.TracTracEvent?.map((e) => {
     const starTimeObj = new Date(`${e.start} +0`);
     const stopTimeObj = new Date(`${e.end} +0`);
     return {
@@ -60,10 +60,10 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   await saveCompetitionUnit({
     event,
     race: {
-      id: data.TracTracRace[0].id,
-      original_id: data.TracTracRace[0].original_id,
-      url: data.TracTracRace[0].url,
-      scrapedUrl: event.url,
+      id: data?.TracTracRace[0]?.id,
+      original_id: data?.TracTracRace[0]?.original_id,
+      url: data?.TracTracRace[0]?.url,
+      scrapedUrl: data?.TracTracRace[0]?.url,
     },
     boats: inputBoats,
     positions,

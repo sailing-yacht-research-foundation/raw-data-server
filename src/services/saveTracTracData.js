@@ -159,7 +159,7 @@ const saveTracTracData = async (data) => {
     process.env.ENABLE_MAIN_DB_SAVE_TRACTRAC === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    await mapTracTracToSyrf(data, raceMetadatas[0]);
+    await mapTracTracToSyrf(data, (raceMetadatas || [])[0]);
   }
 
   if (raceUrl.length > 0) {
@@ -195,7 +195,7 @@ const saveTracTracData = async (data) => {
   }
 
   if (raceMetadatas) {
-    for(raceMetadata of raceMetadatas) {
+    for (raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }
   }
