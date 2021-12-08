@@ -8,8 +8,12 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     console.log(`mapTracTracToSyrf requires raceMetadata`);
     return;
   }
+  if (!data.TracTracRace?.length) {
+    console.log(`mapTracTracToSyrf requires TracTracRace`);
+    return;
+  }
   // event
-  const event = data.TracTracEvent.map((e) => {
+  const event = data.TracTracEvent?.map((e) => {
     const starTimeObj = new Date(`${e.start} +0`);
     const stopTimeObj = new Date(`${e.end} +0`);
     return {
@@ -63,7 +67,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
       id: data.TracTracRace[0].id,
       original_id: data.TracTracRace[0].original_id,
       url: data.TracTracRace[0].url,
-      scrapedUrl: event.url,
+      scrapedUrl: data.TracTracRace[0].url,
     },
     boats: inputBoats,
     positions,
