@@ -147,6 +147,10 @@ const _mapSequencedGeometries = (
   const courseSequencedGeometries = [];
   const markTrackers = [];
   for (const co of courseObjects) {
+    if (co.order < 0) {
+      // negative order marks should not be shown
+      continue;
+    }
     switch (co.type?.toLowerCase()) {
       case 'mark': {
         const courseElement = courseElements?.find(
@@ -221,8 +225,10 @@ const _mapSequencedGeometries = (
   }
 
   let lineOrder = 0;
-  // type 0 are land mass and equator lines.
-  const importantLines = lines.filter((l) => l.type?.toString() !== '0');
+  // type 0 are land mass and equator lines. orthodromie is the route line
+  const importantLines = lines.filter(
+    (l) => l.type?.toString() !== '0' || l.name === '"orthodromie"',
+  );
   for (const line of importantLines) {
     const points = line.points?.split(/\r\n| |\n/); // split with space or next line
     const coordinates = [];
