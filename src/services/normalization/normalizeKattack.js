@@ -44,8 +44,12 @@ const normalizeRace = async (
     'time',
   );
 
-  const startObj = waypoints?.find((wp) => wp.name === 'Start Pin');
-  const endObj = waypoints?.find((wp) => wp.name === 'Finish Pin');
+  const startObj = waypoints?.find(
+    (wp) => wp.name.toLowerCase().indexOf('start') > -1,
+  );
+  const endObj = waypoints?.find(
+    (wp) => wp.name.toLowerCase().indexOf('finish') > -1,
+  );
   let startPoint, endPoint;
   if (startObj) {
     startPoint = createTurfPoint(startObj.lat, startObj.lon);
