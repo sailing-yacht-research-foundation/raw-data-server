@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeRaceQs');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const mapRaceQsToSyrf = require('../services/mappingsToSyrfDB/mapRaceQsToSyrf');
 
 const saveRaceQsData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -100,6 +101,13 @@ const saveRaceQsData = async (data) => {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
+  }
+
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_RACEQS === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    await mapRaceQsToSyrf(data, raceMetadatas?.[0]);
   }
 
   if (eventUrl.length > 0) {
