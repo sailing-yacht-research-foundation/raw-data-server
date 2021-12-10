@@ -1,5 +1,6 @@
 const ical = require('ical-generator');
 const { zonedTimeToUtc } = require('date-fns-tz');
+const { calendarEventStatus } = require('../../syrf-schema/enums');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/calendarEvent');
 const { reverseGeoCode } = require('./googleAPI');
 
@@ -21,6 +22,8 @@ exports.upsert = async (
     source,
     openGraphImage,
     scrapedOriginalId,
+    status = calendarEventStatus.COMPLETED,
+    isPrivate = false,
   },
   transaction,
 ) => {
@@ -37,7 +40,7 @@ exports.upsert = async (
     name,
     externalUrl,
     locationName,
-    isPrivate: false,
+    isPrivate,
     isOpen: false,
     description,
     country,
@@ -45,6 +48,7 @@ exports.upsert = async (
     source,
     openGraphImage,
     scrapedOriginalId,
+    status,
     createdAt: now,
     updatedAt: now,
   };
