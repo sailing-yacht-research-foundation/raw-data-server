@@ -86,7 +86,8 @@ const _mapPositions = (positions, race) => {
   return positions.map((t) => {
     return {
       ...t,
-      timestamp: t.time * 1000,
+      // RaceQs does not use ms
+      timestamp: t.time * 100,
       race_id: race.id,
       race_original_id: race.original_id.toString(),
       vesselId: t.participant,
@@ -145,7 +146,7 @@ const _mapSequencedGeometries = (raceQsDivision = [], raceQsWaypoint = []) => {
       order: order,
     });
     // only apply for line
-    _markWaypointsUsed(raceQsDivision, waypoint);
+    _markWaypointsUsed(raceQsWaypoint, waypoint);
     order++;
     continue;
   }
@@ -171,8 +172,8 @@ const _mapRankings = (boats = []) => {
     if (boat.finish) {
       ranking.finishTime = new Date(boat.finish).getTime();
     }
-    if (boat.start && boat.finishTime) {
-      ranking.elapsedTime = new Date(boat.start).getTime() - ranking.finishTime;
+    if (boat.start && boat.finish) {
+      ranking.elapsedTime = ranking.finishTime - new Date(boat.start).getTime();
     }
     rankings.push(ranking);
   }
