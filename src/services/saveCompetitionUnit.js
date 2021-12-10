@@ -74,6 +74,7 @@ const saveCompetitionUnit = async ({
         city: event?.city || city,
         openGraphImage,
         scrapedOriginalId: event?.original_id,
+        isPrivate: event?.isPrivate, // used to hide scraped race playback (forced iframe) like kattack races (not feed races) since there are issues
       },
       mainDatabaseTransaction,
     );

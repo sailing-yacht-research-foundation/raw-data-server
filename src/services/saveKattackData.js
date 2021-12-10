@@ -4,6 +4,7 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKattack');
+const mapAndSave = require('./mappingsToSyrfDB/mapKattackToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveKattackData = async (data) => {
@@ -39,10 +40,7 @@ const saveKattackData = async (data) => {
     if (data.KattackPosition) {
       const positions = data.KattackPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.kattackPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -65,6 +63,17 @@ const saveKattackData = async (data) => {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
+  }
+
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_KATTACK === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    try {
+      await mapAndSave(data, raceMetadata);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   if (raceUrl.length > 0) {
