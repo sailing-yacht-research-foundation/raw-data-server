@@ -6,21 +6,17 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
     console.log(`mapRaceQsToSyrf requires raceMetadata`);
     return;
   }
-  if (!data.RaceQsRegatta?.length) {
-    console.log(`mapRaceQsToSyrf requires TracTracRace`);
+  if (!data.RaceQsEvent?.length) {
+    console.log(`mapRaceQsToSyrf requires RaceQsEvent`);
     return;
   }
   // event
-  const event = data.RaceQsEvent?.map((e) => {
-    const starTimeObj = new Date(e.from);
-    const stopTimeObj = new Date(e.till);
+  const event = data.RaceQsRegatta?.map((e) => {
     return {
       id: e.id,
-      original_id: e.original_id,
+      original_id: e.original_id.toString(),
       name: e.name,
       url: e.url,
-      approxStartTimeMs: starTimeObj.getTime(),
-      approxEndTimeMs: stopTimeObj.getTime(),
     };
   })[0];
 
@@ -42,17 +38,17 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
     .filter((t) => t)
     .sort((a, b) => a.time - b.time);
 
-  const positions = _mapPositions(data.RaceQsPosition, data.RaceQsRegatta[0]);
+  const positions = _mapPositions(data.RaceQsPosition);
 
   const rankings = _mapRankings(data.RaceQsParticipant);
 
   await saveCompetitionUnit({
     event,
     race: {
-      id: data.RaceQsRegatta[0].id,
-      original_id: data.RaceQsRegatta[0].original_id,
-      url: event?.url,
-      scrapedUrl: event?.url,
+      id: data.RaceQsEvent[0].id,
+      original_id: data.RaceQsEvent[0].original_id?.toString(),
+      url: data.RaceQsEvent[0].url,
+      scrapedUrl: data.RaceQsEvent[0].url,
     },
     boats: inputBoats,
     positions,
@@ -79,7 +75,7 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
   });
 };
 
-const _mapPositions = (positions, race) => {
+const _mapPositions = (positions) => {
   if (!positions) {
     return [];
   }
@@ -88,8 +84,8 @@ const _mapPositions = (positions, race) => {
       ...t,
       // RaceQs does not use ms
       timestamp: t.time * 100,
-      race_id: race.id,
-      race_original_id: race.original_id.toString(),
+      race_id: t.event,
+      race_original_id: t.event_original_id.toString(),
       vesselId: t.participant,
       boat_original_id: t.participant_original_id.toString(),
       cog: t.heading,

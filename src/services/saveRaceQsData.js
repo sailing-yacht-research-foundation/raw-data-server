@@ -107,7 +107,12 @@ const saveRaceQsData = async (data) => {
     process.env.ENABLE_MAIN_DB_SAVE_RACEQS === 'true' &&
     process.env.NODE_ENV !== 'test'
   ) {
-    await mapRaceQsToSyrf(data, raceMetadatas?.[0]);
+    try {
+      await mapRaceQsToSyrf(data, raceMetadatas?.[0]);
+    } catch (err) {
+      console.log('error while mapRaceQsToSyrf');
+      console.log(err);
+    }
   }
 
   if (eventUrl.length > 0) {
