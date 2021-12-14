@@ -29,15 +29,6 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
     data.RaceQsWaypoint,
   );
 
-  data.RaceQsPosition = data.RaceQsPosition.map((t) => {
-    if (!t.time) {
-      return null;
-    }
-    return { ...t, time: +t.time };
-  })
-    .filter((t) => t)
-    .sort((a, b) => a.time - b.time);
-
   const positions = _mapPositions(data.RaceQsPosition);
 
   const rankings = _mapRankings(data.RaceQsParticipant);
@@ -79,20 +70,26 @@ const _mapPositions = (positions) => {
   if (!positions) {
     return [];
   }
-  return positions.map((t) => {
-    return {
-      ...t,
-      // RaceQs does not use ms
-      timestamp: t.time * 100,
-      race_id: t.event,
-      race_original_id: t.event_original_id.toString(),
-      vesselId: t.participant,
-      boat_original_id: t.participant_original_id.toString(),
-      cog: t.heading,
-      windSpeed: t.wind_speed ? Number.parseFloat(t.wind_speed) : null,
-      windDirection: t.wind_angle ? Number.parseFloat(t.wind_angle) : null,
-    };
-  });
+  return positions
+    .map((t) => {
+      if (!t.time || isNaN(t.time)) {
+        return null;
+      }
+      return {
+        ...t,
+        // RaceQs does not use ms
+        timestamp: +t.time * 100,
+        race_id: t.event,
+        race_original_id: t.event_original_id.toString(),
+        vesselId: t.participant,
+        boat_original_id: t.participant_original_id.toString(),
+        cog: t.heading,
+        windSpeed: t.wind_speed ? Number.parseFloat(t.wind_speed) : null,
+        windDirection: t.wind_angle ? Number.parseFloat(t.wind_angle) : null,
+      };
+    })
+    .filter((t) => t)
+    .sort((a, b) => a.timestamp - b.timestamp);
 };
 
 const _mapSequencedGeometries = (raceQsDivision = [], raceQsWaypoint = []) => {
@@ -124,27 +121,25 @@ const _mapSequencedGeometries = (raceQsDivision = [], raceQsWaypoint = []) => {
         }),
         order: order,
       });
-      order++;
-      continue;
+    } else {
+      courseSequencedGeometries.push({
+        ...gisUtils.createGeometryLine(
+          {
+            lat: waypoint.lat,
+            lon: waypoint.lon,
+          },
+          { lat: waypoint.lat2, lon: waypoint.lon2 },
+          {
+            name: waypoint.name,
+            type: waypoint.type?.toLowerCase(),
+          },
+        ),
+        order: order,
+      });
+      // only apply for line
+      _markWaypointsUsed(raceQsWaypoint, waypoint);
     }
-    courseSequencedGeometries.push({
-      ...gisUtils.createGeometryLine(
-        {
-          lat: waypoint.lat,
-          lon: waypoint.lon,
-        },
-        { lat: waypoint.lat2, lon: waypoint.lon2 },
-        {
-          name: waypoint.name,
-          type: waypoint.type?.toLowerCase(),
-        },
-      ),
-      order: order,
-    });
-    // only apply for line
-    _markWaypointsUsed(raceQsWaypoint, waypoint);
     order++;
-    continue;
   }
 
   return courseSequencedGeometries;
