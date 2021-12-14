@@ -33,14 +33,14 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
 
   const rankings = _mapRankings(data.RaceQsParticipant);
 
-  const raceQsRace = data.RaceQsEvent[0];
+  const race = data.RaceQsEvent[0];
   await saveCompetitionUnit({
     event,
     race: {
-      id: raceQsRace.id,
-      original_id: raceQsRace.original_id?.toString(),
-      url: raceQsRace.url,
-      scrapedUrl: raceQsRace.url,
+      id: race.id,
+      original_id: race.original_id?.toString(),
+      url: race.url,
+      scrapedUrl: race.url,
     },
     boats: inputBoats,
     positions,
