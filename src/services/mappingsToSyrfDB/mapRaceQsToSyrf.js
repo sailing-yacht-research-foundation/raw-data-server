@@ -1,5 +1,6 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
+const { v4: uuidv4 } = require('uuid');
 
 const mapRaceQsToSyrf = async (data, raceMetadata) => {
   if (!raceMetadata) {
@@ -22,43 +23,60 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
 
   // for each division we can create a separated race
   console.log('Saving to main database');
+  const inputBoats = _mapBoats(data.RaceQsParticipant);
   for (const division of data.RaceQsDivision) {
-    const inputBoats = _mapBoats(data.RaceQsParticipant);
+    const starts =
+      data.RaceQsStart?.filter((t) => t.division === division.id) || [];
 
-    const courseSequencedGeometries = _mapSequencedGeometries(
-      division,
-      data.RaceQsStart,
-      data.RaceQsWaypoint,
-      data.RaceQsRoute,
-    );
+    // if current race does not have start and the race do have many race division, then ignore it.
+    if (starts.length === 0 && data.RaceQsDivision.length > 1) {
+      continue;
+    }
 
-    const positions = _mapPositions(data.RaceQsPosition, division);
-
-    const rankings = _mapRankings(data.RaceQsParticipant);
-
-    const raceQsEvent = data.RaceQsEvent[0];
-    const raceName = [event.name, raceQsEvent.name, division.name]
-      .filter((t) => t)
-      .join(' - ');
-    await saveCompetitionUnit({
-      event,
-      race: {
-        id: raceQsEvent.id,
-        original_id: raceQsEvent.original_id?.toString(),
-        url: raceQsEvent.url,
-        scrapedUrl: raceQsEvent.url,
-      },
-      boats: inputBoats,
-      positions,
-      raceMetadata: { ...raceMetadata, id: division.id, name: raceName },
-      courseSequencedGeometries,
-      rankings,
-      reuse: {
-        event: true,
-        boats: true,
-      },
-    });
+    // we using do while to ensure in case the division does not have start, then we still be able to save anyway
+    do {
+      const start = starts.shift();
+      const courseSequencedGeometries = _mapSequencedGeometries(
+        start,
+        data.RaceQsWaypoint,
+        data.RaceQsRoute,
+      );
+      const positions = _mapPositions(data.RaceQsPosition, start);
+      const rankings = _mapRankings(data.RaceQsParticipant, start);
+      const raceQsEvent = data.RaceQsEvent[0];
+      const raceName = _getRaceName(event, division, start);
+      await saveCompetitionUnit({
+        event,
+        race: {
+          id: raceQsEvent.id,
+          original_id: raceQsEvent.original_id?.toString(),
+          url: raceQsEvent.url,
+          scrapedUrl: raceQsEvent.url,
+        },
+        boats: inputBoats,
+        positions,
+        raceMetadata: { ...raceMetadata, id: uuidv4(), name: raceName },
+        courseSequencedGeometries,
+        rankings,
+        reuse: {
+          event: true,
+          boats: true,
+        },
+      });
+    } while (starts.length);
   }
+};
+
+const _getRaceName = (event, division, start) => {
+  const raceNames = [event.name, division.name];
+
+  if (start) {
+    const startTime = new Date(start.from);
+    const utcString = startTime.toUTCString().split(' ');
+    raceNames.push(utcString[utcString.length - 2]);
+  }
+
+  return raceNames.filter((t) => t).join(' - ');
 };
 const _mapBoats = (boats) => {
   return boats?.map((b) => {
@@ -72,7 +90,7 @@ const _mapBoats = (boats) => {
   });
 };
 
-const _mapPositions = (positions, division) => {
+const _mapPositions = (positions, start) => {
   if (!positions) {
     return [];
   }
@@ -81,30 +99,33 @@ const _mapPositions = (positions, division) => {
       if (!t.time || isNaN(t.time)) {
         return null;
       }
-      return {
+      const mappedPosition = {
         ...t,
         // RaceQs does not use ms
         timestamp: +t.time * 100,
-        race_id: division.id,
-        race_original_id: division.original_id.toString(),
         vesselId: t.participant,
         boat_original_id: t.participant_original_id.toString(),
         cog: t.heading,
         windSpeed: t.wind_speed ? Number.parseFloat(t.wind_speed) : null,
         windDirection: t.wind_angle ? Number.parseFloat(t.wind_angle) : null,
       };
+
+      // remove the position before start time.
+      if (start && mappedPosition.timestamp < start.from) {
+        return null;
+      }
+
+      return mappedPosition;
     })
     .filter((t) => t)
     .sort((a, b) => a.timestamp - b.timestamp);
 };
 
 const _mapSequencedGeometries = (
-  raceQsDivision,
-  raceQsStart = [],
+  start,
   raceQsWaypoint = [],
   raceQsRoute = [],
 ) => {
-  const start = raceQsStart.find((t) => t.division === raceQsDivision.id);
   // no race qs start then this race does not have any course
   // For example:
   // "Non-Spinnaker", "PHRF 99 or less" in this race, https://raceqs.com/tv-beta/tv.htm#eventId=1730, do not have any courses
@@ -156,14 +177,16 @@ const _mapSequencedGeometries = (
   return courseSequencedGeometries;
 };
 
-const _mapRankings = (boats = []) => {
+const _mapRankings = (boats = [], start) => {
   const rankings = [];
   for (const boat of boats) {
     const ranking = { vesselId: boat.id, elapsedTime: 0, finishTime: 0 };
     if (boat.finish) {
       ranking.finishTime = new Date(boat.finish).getTime();
     }
-    if (boat.start && boat.finish) {
+    if (start) {
+      ranking.elapsedTime = ranking.finishTime - start.from;
+    } else if (boat.start && boat.finish) {
       ranking.elapsedTime = ranking.finishTime - new Date(boat.start).getTime();
     }
     rankings.push(ranking);
