@@ -67,7 +67,7 @@ const updateYachtBotData = async (data) => {
         if (existingMarkOriginalIds.has(t.original_id)) {
           return null;
         }
-        return { ...t, race: race.id };
+        return { ...t, race: existingRace.id };
       }).filter((t) => t);
 
       await db.yachtBotMark.bulkCreate(data.YachtBotMarks, {
