@@ -61,13 +61,15 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     data.TracTracCompetitorResult,
   );
 
+  const race = data.TracTracRace[0];
   await saveCompetitionUnit({
     event,
     race: {
-      id: data.TracTracRace[0].id,
-      original_id: data.TracTracRace[0].original_id,
-      url: data.TracTracRace[0].url,
-      scrapedUrl: data.TracTracRace[0].url,
+      id: race.id,
+      original_id: race.original_id,
+      name: race.name,
+      url: race.url,
+      scrapedUrl: race.url,
     },
     boats: inputBoats,
     positions,

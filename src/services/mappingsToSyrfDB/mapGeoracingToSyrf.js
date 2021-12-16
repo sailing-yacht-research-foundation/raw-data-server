@@ -92,6 +92,7 @@ const mapAndSave = async (data, raceMetadatas) => {
     const inputRace = {
       id: race.id,
       original_id: race.original_id,
+      name: race.name,
       url: race.url,
       scrapedUrl: event.url,
     };
