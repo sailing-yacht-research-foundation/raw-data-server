@@ -20,43 +20,48 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
     };
   })[0];
 
+  // for each division we can create a separated race
   console.log('Saving to main database');
-  const boatIdToOriginalIdMap = {};
-  const inputBoats = _mapBoats(data.RaceQsParticipant, boatIdToOriginalIdMap);
+  for (const division of data.RaceQsDivision) {
+    const inputBoats = _mapBoats(data.RaceQsParticipant);
 
-  const courseSequencedGeometries = _mapSequencedGeometries(
-    data.RaceQsDivision,
-    data.RaceQsWaypoint,
-  );
+    const courseSequencedGeometries = _mapSequencedGeometries(
+      division,
+      data.RaceQsStart,
+      data.RaceQsWaypoint,
+      data.RaceQsRoute,
+    );
 
-  const positions = _mapPositions(data.RaceQsPosition);
+    const positions = _mapPositions(data.RaceQsPosition, division);
 
-  const rankings = _mapRankings(data.RaceQsParticipant);
+    const rankings = _mapRankings(data.RaceQsParticipant);
 
-  const race = data.RaceQsEvent[0];
-  await saveCompetitionUnit({
-    event,
-    race: {
-      id: race.id,
-      original_id: race.original_id?.toString(),
-      url: race.url,
-      scrapedUrl: race.url,
-    },
-    boats: inputBoats,
-    positions,
-    raceMetadata,
-    courseSequencedGeometries,
-    rankings,
-    reuse: {
-      event: true,
-      boats: true,
-    },
-  });
+    const raceQsEvent = data.RaceQsEvent[0];
+    const raceName = [event.name, raceQsEvent.name, division.name]
+      .filter((t) => t)
+      .join(' - ');
+    await saveCompetitionUnit({
+      event,
+      race: {
+        id: raceQsEvent.id,
+        original_id: raceQsEvent.original_id?.toString(),
+        url: raceQsEvent.url,
+        scrapedUrl: raceQsEvent.url,
+      },
+      boats: inputBoats,
+      positions,
+      raceMetadata: { ...raceMetadata, id: division.id, name: raceName },
+      courseSequencedGeometries,
+      rankings,
+      reuse: {
+        event: true,
+        boats: true,
+      },
+    });
+  }
 };
-
-const _mapBoats = (boats, boatIdToOriginalIdMap) => {
+const _mapBoats = (boats) => {
   return boats?.map((b) => {
-    boatIdToOriginalIdMap[b.original_id] = b.id;
     const vessel = {
       id: b.id,
       publicName: b.boat,
@@ -67,7 +72,7 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
   });
 };
 
-const _mapPositions = (positions) => {
+const _mapPositions = (positions, division) => {
   if (!positions) {
     return [];
   }
@@ -80,8 +85,8 @@ const _mapPositions = (positions) => {
         ...t,
         // RaceQs does not use ms
         timestamp: +t.time * 100,
-        race_id: t.event,
-        race_original_id: t.event_original_id.toString(),
+        race_id: division.id,
+        race_original_id: division.original_id.toString(),
         vesselId: t.participant,
         boat_original_id: t.participant_original_id.toString(),
         cog: t.heading,
@@ -93,22 +98,29 @@ const _mapPositions = (positions) => {
     .sort((a, b) => a.timestamp - b.timestamp);
 };
 
-const _mapSequencedGeometries = (raceQsDivision = [], raceQsWaypoint = []) => {
+const _mapSequencedGeometries = (
+  raceQsDivision,
+  raceQsStart = [],
+  raceQsWaypoint = [],
+  raceQsRoute = [],
+) => {
+  const start = raceQsStart.find((t) => t.division === raceQsDivision.id);
+  // no race qs start then this race does not have any course
+  // For example:
+  // "Non-Spinnaker", "PHRF 99 or less" in this race, https://raceqs.com/tv-beta/tv.htm#eventId=1730, do not have any courses
+  if (!start) {
+    return [];
+  }
   const courseSequencedGeometries = [];
+  // find waypoints that belong to current division
+  const availableWayPoints = new Set(
+    raceQsRoute.filter((t) => t.start === start.id).map((t) => t.waypoint),
+  );
+
+  // only waypoint that in the route can be displayed
+  raceQsWaypoint = raceQsWaypoint.filter((t) => availableWayPoints.has(t.id));
   let order = 1;
-
-  raceQsWaypoint.sort((a, b) => {
-    let division1Index = raceQsDivision.findIndex((t) => t.name === a.name);
-    let division2Index = raceQsDivision.findIndex((t) => t.name === b.name);
-    division1Index = division1Index !== -1 ? division1Index : Infinity;
-    division2Index = division2Index !== -1 ? division2Index : Infinity;
-    return division1Index - division2Index;
-  });
-
   for (const waypoint of raceQsWaypoint) {
-    if (waypoint.used) {
-      continue;
-    }
     if (
       waypoint.type?.toLowerCase() === 'mark' ||
       !waypoint.lat2 ||
@@ -137,8 +149,6 @@ const _mapSequencedGeometries = (raceQsDivision = [], raceQsWaypoint = []) => {
         ),
         order: order,
       });
-      // only apply for line
-      _markWaypointsUsed(raceQsWaypoint, waypoint);
     }
     order++;
   }
@@ -146,17 +156,6 @@ const _mapSequencedGeometries = (raceQsDivision = [], raceQsWaypoint = []) => {
   return courseSequencedGeometries;
 };
 
-const _markWaypointsUsed = (raceQsWaypoint = [], currentWayPoint) => {
-  raceQsWaypoint
-    .filter(
-      (t) =>
-        t.lat === currentWayPoint.lat &&
-        t.lon === currentWayPoint.lon &&
-        t.lat2 === currentWayPoint.lat2 &&
-        t.lon2 === currentWayPoint.lon2,
-    )
-    .map((t) => (t.used = true));
-};
 const _mapRankings = (boats = []) => {
   const rankings = [];
   for (const boat of boats) {
