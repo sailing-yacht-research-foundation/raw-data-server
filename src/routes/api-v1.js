@@ -27,6 +27,7 @@ const saveAmericasCupData = require('../services/non-automatable/saveAmericasCup
 const saveSapData = require('../services/non-automatable/saveSapData');
 const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegadata');
 const updateYachtBotData = require('../services/non-automatable/updateYachtBotData');
+const updateYachtBotMarksRace = require('../services/non-automatable/updateYachtBotMarksRace');
 const updateModernGeovoiledata = require('../services/non-automatable/updateModernGeovoiledata');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
@@ -347,6 +348,17 @@ router.post('/yacht-bot', upload.single('raw_data'), async function (req, res) {
   try {
     const { jsonData } = await unzipFileFromRequest(req);
     await updateYachtBotData(jsonData);
+  } catch (err) {
+    console.error('error: ', err);
+  }
+});
+
+router.post('/yacht-bot-marks', async function (req, res) {
+  res.json({
+    message: `YachtBotMarks are being updated`,
+  });
+  try {
+    await updateYachtBotMarksRace();
   } catch (err) {
     console.error('error: ', err);
   }
