@@ -47,7 +47,7 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
       if (inputBoats.length === 0) {
         continue;
       }
-      const rankings = _mapRankings(data.RaceQsParticipant, start, inputBoats);
+      const rankings = _mapRankings(inputBoats, start);
       const raceName = _getRaceName(event, division, start, raceQsEvent);
       await saveCompetitionUnit({
         event,
@@ -56,10 +56,11 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
           original_id: raceQsEvent.original_id?.toString(),
           url: raceQsEvent.url,
           scrapedUrl: raceQsEvent.url,
+          name: raceName,
         },
         boats: inputBoats,
         positions,
-        raceMetadata: { ...raceMetadata, id: uuidv4(), name: raceName },
+        raceMetadata: { ...raceMetadata, id: uuidv4() },
         courseSequencedGeometries,
         rankings,
         reuse: {
@@ -88,6 +89,8 @@ const _mapBoats = (boats, start) => {
         id: b.id,
         publicName: b.boat,
         vesselId: b.original_id.toString(),
+        start: b.start,
+        finish: b.finish,
         handicap: {},
       };
       if (start && b.start && b.finish) {
@@ -158,8 +161,8 @@ const _mapSequencedGeometries = (
 
   // only waypoint that in the route can be displayed
   raceQsWaypoint = raceQsWaypoint.filter((t) => availableWayPoints.has(t.id));
-  let order = 1;
   for (const waypoint of raceQsWaypoint) {
+    const route = raceQsRoute.find((t) => t.waypoint === waypoint.id);
     if (
       waypoint.type?.toLowerCase() === 'mark' ||
       !waypoint.lat2 ||
@@ -171,7 +174,7 @@ const _mapSequencedGeometries = (
           lon: waypoint.lon,
           properties: { name: waypoint.name },
         }),
-        order: order,
+        order: route.sqk,
       });
     } else {
       courseSequencedGeometries.push({
@@ -186,23 +189,17 @@ const _mapSequencedGeometries = (
             type: waypoint.type?.toLowerCase(),
           },
         ),
-        order: order,
+        order: route.sqk,
       });
     }
-    order++;
   }
 
   return courseSequencedGeometries;
 };
 
-const _mapRankings = (boats = [], start, availableBoats) => {
+const _mapRankings = (boats = [], start) => {
   const rankings = [];
-
-  const availableBoatSet = new Set(availableBoats.map((t) => t.id));
   for (const boat of boats) {
-    if (!availableBoatSet.has(boat.id)) {
-      continue;
-    }
     const ranking = { vesselId: boat.id, elapsedTime: 0, finishTime: 0 };
     if (boat.finish) {
       ranking.finishTime = new Date(boat.finish).getTime();
