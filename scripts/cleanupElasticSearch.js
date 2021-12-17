@@ -21,7 +21,7 @@ const logDeleted = (documents = []) => {
   console.log('starting cleanup');
 
   let count = 0;
-  //   fs.appendFileSync(logFileName, '[');
+  fs.appendFileSync(logFileName, '[');
   do {
     const hits = (await elasticsearch.pageById(lastSort)).data?.hits?.hits;
 
