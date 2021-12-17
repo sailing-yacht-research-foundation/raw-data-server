@@ -4,6 +4,7 @@ const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKwindoo');
+const mapAndSave = require('./mappingsToSyrfDB/mapKwindooToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveKwindooData = async (data) => {
@@ -124,6 +125,17 @@ const saveKwindooData = async (data) => {
     console.log(error);
     await transaction.rollback();
     errorMessage = databaseErrorHandler(error);
+  }
+
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_KWINDOO === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    try {
+      await mapAndSave(data, raceMetadatas);
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   if (raceUrl.length > 0) {

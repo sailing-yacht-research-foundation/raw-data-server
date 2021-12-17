@@ -218,7 +218,7 @@ const saveCompetitionUnit = async ({
     const newCompetitionUnit = await competitionUnit.upsert(
       raceId,
       {
-        name,
+        name: race.name || name,
         approximateStartLocation: approxStartPoint,
         approximateEndLocation: approxEndPoint,
         startTime: approxStartTimeMs,

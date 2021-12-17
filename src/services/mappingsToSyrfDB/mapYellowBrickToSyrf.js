@@ -24,10 +24,12 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     data.YellowbrickLeaderboardTeam,
   );
 
+  const race = data.YellowbrickRace[0];
   await saveCompetitionUnit({
     race: {
-      original_id: data.YellowbrickRace[0].race_code,
-      url: data.YellowbrickRace[0].url,
+      original_id: race.race_code,
+      name: race.title,
+      url: race.url,
     },
     boats: inputBoats,
     positions,
