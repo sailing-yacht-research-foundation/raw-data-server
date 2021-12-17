@@ -1,7 +1,7 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
 const { v4: uuidv4 } = require('uuid');
-
+const moment = require('moment');
 const mapRaceQsToSyrf = async (data, raceMetadata) => {
   if (!raceMetadata) {
     console.log(`mapRaceQsToSyrf requires raceMetadata`);
@@ -23,7 +23,7 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
 
   // for each division we can create a separated race
   console.log('Saving to main database');
-  const inputBoats = _mapBoats(data.RaceQsParticipant);
+  const raceQsEvent = data.RaceQsEvent[0];
   for (const division of data.RaceQsDivision) {
     const starts =
       data.RaceQsStart?.filter((t) => t.division === division.id) || [];
@@ -32,7 +32,6 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
     if (starts.length === 0 && data.RaceQsDivision.length > 1) {
       continue;
     }
-
     // we using do while to ensure in case the division does not have start, then we still be able to save anyway
     do {
       const start = starts.shift();
@@ -42,9 +41,14 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
         data.RaceQsRoute,
       );
       const positions = _mapPositions(data.RaceQsPosition, start);
-      const rankings = _mapRankings(data.RaceQsParticipant, start);
-      const raceQsEvent = data.RaceQsEvent[0];
-      const raceName = _getRaceName(event, division, start);
+      const inputBoats = _mapBoats(data.RaceQsParticipant, start);
+
+      // the start with 0 input boat should be ignored.
+      if (inputBoats.length === 0) {
+        continue;
+      }
+      const rankings = _mapRankings(data.RaceQsParticipant, start, inputBoats);
+      const raceName = _getRaceName(event, division, start, raceQsEvent);
       await saveCompetitionUnit({
         event,
         race: {
@@ -67,27 +71,41 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
   }
 };
 
-const _getRaceName = (event, division, start) => {
+const _getRaceName = (event, division, start, raceQsEvent) => {
   const raceNames = [event.name, division.name];
 
-  if (start) {
-    const startTime = new Date(start.from);
-    const utcString = startTime.toUTCString().split(' ');
-    raceNames.push(utcString[utcString.length - 2]);
+  if (start?.from && raceQsEvent.tz) {
+    const startTime = moment(start.from).utcOffset(raceQsEvent.tz);
+    raceNames.push(startTime.format('HH:mm:ss'));
   }
 
   return raceNames.filter((t) => t).join(' - ');
 };
-const _mapBoats = (boats) => {
-  return boats?.map((b) => {
-    const vessel = {
-      id: b.id,
-      publicName: b.boat,
-      vesselId: b.original_id.toString(),
-      handicap: {},
-    };
-    return vessel;
-  });
+const _mapBoats = (boats, start) => {
+  return boats
+    ?.map((b) => {
+      const vessel = {
+        id: b.id,
+        publicName: b.boat,
+        vesselId: b.original_id.toString(),
+        handicap: {},
+      };
+      if (start && b.start && b.finish) {
+        const boatStartTime = new Date(b.start);
+        const boatFinishTime = new Date(b.finish);
+
+        // only the boat within the start will be count
+        if (
+          boatStartTime.getTime() <= start.from &&
+          boatFinishTime >= start.from
+        ) {
+          return vessel;
+        }
+        return null;
+      }
+      return vessel;
+    })
+    .filter((t) => t);
 };
 
 const _mapPositions = (positions, start) => {
@@ -177,9 +195,14 @@ const _mapSequencedGeometries = (
   return courseSequencedGeometries;
 };
 
-const _mapRankings = (boats = [], start) => {
+const _mapRankings = (boats = [], start, availableBoats) => {
   const rankings = [];
+
+  const availableBoatSet = new Set(availableBoats.map((t) => t.id));
   for (const boat of boats) {
+    if (!availableBoatSet.has(boat.id)) {
+      continue;
+    }
     const ranking = { vesselId: boat.id, elapsedTime: 0, finishTime: 0 };
     if (boat.finish) {
       ranking.finishTime = new Date(boat.finish).getTime();
