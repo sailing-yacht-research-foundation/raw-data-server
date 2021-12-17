@@ -23,7 +23,8 @@ module.exports = class VesselParticipantTrack {
   addNewPosition(
     position,
     timestamp,
-    { cog, sog, twa, windSpeed, windDirection } = {
+    { altitude, cog, sog, twa, windSpeed, windDirection } = {
+      altitude: 0,
       cog: 0,
       sog: null,
       twa: null,
@@ -34,6 +35,7 @@ module.exports = class VesselParticipantTrack {
     const trackData = {
       position,
       timestamp,
+      altitude,
       cog,
       sog,
       twa,
@@ -109,7 +111,7 @@ module.exports = class VesselParticipantTrack {
           geometry: {
             type: 'LineString',
             coordinates: this.positions.map((row) => {
-              return [...row.position, 0, row.timestamp];
+              return [...row.position, row.altitude, row.timestamp];
             }),
           },
         };
@@ -121,7 +123,7 @@ module.exports = class VesselParticipantTrack {
         const nearestData = geokdbush.around(trackIndex, coord[0], coord[1]);
 
         for (let i = 0; i < nearestData.length; i++) {
-          const { position, timestamp } = nearestData[i];
+          const { position, timestamp, altitude } = nearestData[i];
           if (coord[0] !== position[0] || coord[1] !== position[1]) {
             // Should not reach here
             break;
@@ -131,7 +133,12 @@ module.exports = class VesselParticipantTrack {
             coord[1] === position[1] &&
             timestamp > lastTime
           ) {
-            coordinateWithTime.push([position[0], position[1], 0, timestamp]);
+            coordinateWithTime.push([
+              position[0],
+              position[1],
+              altitude,
+              timestamp,
+            ]);
             break;
           }
         }
@@ -162,11 +169,11 @@ module.exports = class VesselParticipantTrack {
       geometry: {
         type: 'LineString',
         coordinates: this.positions.map((row) => {
-          const { position, timestamp, sog, cog, twa } = row;
+          const { position, timestamp, sog, cog, twa, altitude } = row;
           return [
             position[0],
             position[1],
-            0,
+            altitude || 0,
             timestamp,
             sog || 0,
             cog || 0,

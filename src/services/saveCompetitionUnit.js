@@ -290,6 +290,7 @@ const saveCompetitionUnit = async ({
         continue;
       }
       tracker?.addNewPosition([lon, lat], position.timestamp, {
+        altitude: position.altitude,
         cog: position.cog,
         sog: position.sog,
         twa: position.twa,
