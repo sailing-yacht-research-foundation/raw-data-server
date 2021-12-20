@@ -68,9 +68,14 @@ const mapAndSave = async (data, raceMetadatas) => {
 
 const _mapBoats = (boats) => {
   return boats?.map((b) => {
+    const crewName = [b.first_name, b.last_name]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
+
     const vessel = {
       id: b.id,
-      publicName: b.boat_name,
+      publicName: b.boat_name || crewName,
       globalId: b.sail_number,
       vesselId: b.original_id,
       model: b.boat_type_alias,
@@ -79,10 +84,6 @@ const _mapBoats = (boats) => {
     };
 
     // Boat Crew
-    const crewName = [b.first_name, b.last_name]
-      .filter(Boolean)
-      .join(' ')
-      .trim();
     if (crewName) {
       vessel.crews = [
         {
