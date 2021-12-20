@@ -1,10 +1,11 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
-const { v4: uuidv4 } = require('uuid');
 const moment = require('moment');
-const mapRaceQsToSyrf = async (data, raceMetadata) => {
-  if (!raceMetadata) {
-    console.log(`mapRaceQsToSyrf requires raceMetadata`);
+// 600.000 ms = 10 minutes
+const THRESHOLD_TIME = 600000;
+const mapRaceQsToSyrf = async (data, raceMetadatas) => {
+  if (!raceMetadatas?.length) {
+    console.log(`mapRaceQsToSyrf requires raceMetadatas`);
     return;
   }
   if (!data.RaceQsEvent?.length) {
@@ -35,6 +36,16 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
     // we using do while to ensure in case the division does not have start, then we still be able to save anyway
     do {
       const start = starts.shift();
+      const raceMetadata =
+        !start && raceMetadatas.length === 1
+          ? raceMetadatas[0]
+          : raceMetadatas.find((t) => t.id === start.id);
+      if (!raceMetadata) {
+        console.log(
+          `raceMetadata is not found for this start ${start?.id}, from = ${start?.from}`,
+        );
+        continue;
+      }
       const courseSequencedGeometries = _mapSequencedGeometries(
         start,
         data.RaceQsWaypoint,
@@ -60,13 +71,14 @@ const mapRaceQsToSyrf = async (data, raceMetadata) => {
         },
         boats: inputBoats,
         positions,
-        raceMetadata: { ...raceMetadata, id: uuidv4() },
+        raceMetadata,
         courseSequencedGeometries,
         rankings,
         reuse: {
           event: true,
           boats: true,
         },
+        competitionUnitData: { handicap: start?.type },
       });
     } while (starts.length);
   }
@@ -132,8 +144,14 @@ const _mapPositions = (positions, start) => {
       };
 
       // remove the position before start time.
-      if (start && mappedPosition.timestamp < start.from) {
-        return null;
+      if (start) {
+        if (mappedPosition.timestamp < start.from) {
+          return null;
+        }
+        const lowestTime = start.from - THRESHOLD_TIME;
+        if (mappedPosition.timestamp < lowestTime) {
+          return null;
+        }
       }
 
       return mappedPosition;
