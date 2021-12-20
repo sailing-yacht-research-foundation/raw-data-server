@@ -138,6 +138,7 @@ const _mapPositions = (positions) => {
           timestamp: p.timestamp,
           lon: p.lon,
           lat: p.lat,
+          altitude: p.al,
           cog: p.h,
           sog: p.s,
           vesselId: p.trackable_id,
