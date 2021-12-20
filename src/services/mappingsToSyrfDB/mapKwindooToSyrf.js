@@ -5,6 +5,11 @@ const {
 } = require('../../utils/gisUtils');
 
 const mapAndSave = async (data, raceMetadatas) => {
+  if (!raceMetadatas?.length || !data.KwindooRegatta?.length || !data.KwindooRace?.length || !data.KwindooBoat?.length || !data.KwindooPosition?.length) {
+    console.log('Missing data');
+    console.log(`raceMetadatas?.length ${raceMetadatas?.length}, data.KwindooRegatta?.length ${data.KwindooRegatta?.length}, data.KwindooRace?.length ${data.KwindooRace?.length}, data.KwindooBoat?.length ${data.KwindooBoat?.length}, !data.KwindooPosition?.length ${!data.KwindooPosition?.length}`);
+    return;
+  }
   console.log('Saving to main database');
   // event
   const event = data.KwindooRegatta.map((e) => {
@@ -18,7 +23,7 @@ const mapAndSave = async (data, raceMetadatas) => {
   })[0];
 
   for (const race of data.KwindooRace) {
-    const raceMetadata = raceMetadatas.find((m) => m.id === race.id);
+    const raceMetadata = raceMetadatas?.find((m) => m.id === race.id);
     if (!raceMetadata) {
       console.log(`No race metadata found on race id ${race.id}`);
       continue;
@@ -36,7 +41,7 @@ const mapAndSave = async (data, raceMetadatas) => {
 
     // geometries
     const courseSequencedGeometries = _mapSequencedGeometries(
-      data.KwindooWaypoint.filter((w) => w.race === race.id),
+      data.KwindooWaypoint?.filter((w) => w.race === race.id),
     );
 
     const inputRace = {
