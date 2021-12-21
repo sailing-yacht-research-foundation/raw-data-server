@@ -74,4 +74,7 @@ const logFailures = (documents = []) => {
 
   fs.appendFileSync(logFailureFileName, ']');
   fs.appendFileSync(logFileName, ']');
+
+  console.log('Deleted log can be found here ', logFileName);
+  console.log('Failed deletion log can be found here ', logFailureFileName);
 })();
