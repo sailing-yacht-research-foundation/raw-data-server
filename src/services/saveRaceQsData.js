@@ -108,7 +108,7 @@ const saveRaceQsData = async (data) => {
     process.env.NODE_ENV !== 'test'
   ) {
     try {
-      await mapRaceQsToSyrf(data, raceMetadatas?.[0]);
+      await mapRaceQsToSyrf(data, raceMetadatas);
     } catch (err) {
       console.log('error while mapRaceQsToSyrf');
       console.log(err);

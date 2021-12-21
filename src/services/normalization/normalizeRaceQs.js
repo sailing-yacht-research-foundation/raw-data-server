@@ -120,7 +120,7 @@ const normalizeRace = async (
         'lon',
         boatsToSortedPositions,
       );
-      const raceName = _getRaceName(event, division, start);
+      const raceName = _getRaceName(regatta, division, start, event);
       const raceMetadata = await createRace(
         id,
         raceName, // for raceQs event is race
@@ -166,7 +166,7 @@ const _getWayPoints = (start, raceQsWaypoint, raceQsRoute) => {
 };
 
 const _getParticipants = (start, raceQsParticipant) => {
-  raceQsParticipant
+  return raceQsParticipant
     ?.filter((b) => {
       if (start && b.start && b.finish) {
         const boatStartTime = new Date(b.start);
@@ -192,12 +192,11 @@ const _getAllPositions = (allPositions, start) => {
 
   return allPositions.filter((t) => t.timestamp >= lowestTime);
 };
+const _getRaceName = (regatta, division, start, raceQsEvent) => {
+  const raceNames = [regatta.name, division.name];
 
-const _getRaceName = (event, division, start) => {
-  const raceNames = [event.name, division.name];
-
-  if (start?.from && event.tz) {
-    const startTime = moment(start.from).utcOffset(event.tz);
+  if (start?.from && raceQsEvent.tz) {
+    const startTime = moment(start.from).utcOffset(raceQsEvent.tz);
     raceNames.push(startTime.format('HH:mm:ss'));
   }
 
