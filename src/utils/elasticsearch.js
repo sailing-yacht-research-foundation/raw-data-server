@@ -16,7 +16,7 @@ if (process.env.AWS_ES_HOST) {
 
 exports.indexRace = async (id, body) => {
   if (api) {
-    return await api.put(`races/race/${id}`, body);
+    return await api.put(`races/_doc/${id}`, body);
   } else {
     return Promise.resolve();
   }
