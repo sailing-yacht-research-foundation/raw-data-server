@@ -1,12 +1,11 @@
 const express = require('express');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
 const temp = require('temp');
-const fs = require('fs');
 
 const db = require('../models');
 const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
+const validateTrackerSource = require('../middlewares/validateTracker');
 const saveISailData = require('../services/saveISailData');
 const saveKattackData = require('../services/saveKattackData');
 const saveGeoracingData = require('../services/saveGeoracingData');
@@ -28,11 +27,14 @@ const saveSapData = require('../services/non-automatable/saveSapData');
 const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegadata');
 const updateYachtBotData = require('../services/non-automatable/updateYachtBotData');
 const updateModernGeovoiledata = require('../services/non-automatable/updateModernGeovoiledata');
-const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { TRACKER_MAP } = require('../constants');
 const { unzipFileFromRequest } = require('../utils/unzipFile');
 const saveGeovoileData = require('../services/saveGeovoileData');
 const saveOldGeovoileData = require('../services/non-automatable/saveOldGeovoileData');
+const {
+  getExistingData,
+  registerFailure,
+} = require('../services/scrapedDataResult');
 
 var router = express.Router();
 
@@ -139,128 +141,40 @@ router.post(
   },
 );
 
-router.get('/scraped-url/:tracker', async function (req, res) {
+router.get('/scraped-url/:tracker', validateTrackerSource, async (req, res) => {
   const { tracker } = req.params;
-  let urlToGet = (req.query.status || 'BOTH').toLowerCase();
-  let urlList = [];
-  let successModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}SuccessfulUrl`];
-  let failedModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}FailedUrl`];
-
-  if (urlToGet === 'success' || urlToGet === 'both') {
-    if (successModel) {
-      let successUrls = await successModel.findAll({
-        attributes: ['url', 'original_id'],
-        raw: true,
-      });
-      urlList = [
-        ...urlList,
-        ...successUrls.map((row) => {
-          return {
-            url: row.url,
-            original_id: row.original_id,
-            status: 'success',
-          };
-        }),
-      ];
-    }
+  try {
+    const urlList = await getExistingData(tracker);
+    res.json({
+      urlList,
+    });
+  } catch (err) {
+    const errMsg = 'An error occured getting success or failed data';
+    console.log(errMsg, err);
+    res.status(500).json({ message: errMsg });
   }
-
-  if (urlToGet === 'failed' || urlToGet === 'both') {
-    if (failedModel) {
-      let failedUrls = await failedModel.findAll({
-        attributes: ['url'],
-        raw: true,
-      });
-      urlList = [
-        ...urlList,
-        ...failedUrls.map((row) => {
-          return { url: row.url, status: 'failed' };
-        }),
-      ];
-    }
-  }
-  res.json({
-    urlList,
-  });
 });
 
-router.post('/check-url', async function (req, res) {
-  if (
-    req.body.tracker == null ||
-    (req.body.url == null && req.body.originalId == null)
-  ) {
-    res
-      .status(400)
-      .json({ message: 'Must specify tracker, and a url or originalId' });
-    return;
-  }
-  const { tracker, url = null, originalId = null } = req.body;
-  let successModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}SuccessfulUrl`];
-  let failedModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}FailedUrl`];
-  let scrapedDetail = null;
-
-  if (originalId == null && url == null) {
-    res.status(400).json({ message: 'Must specify originalId or url' });
-    return;
-  }
-
-  let whereCondition = url != null ? { url } : { original_id: originalId };
-
-  if (successModel) {
-    let successData = await successModel.findOne({
-      where: whereCondition,
-      raw: true,
-    });
-    if (successData) {
-      scrapedDetail = successData;
-    }
-  }
-
-  if (failedModel && url != null) {
-    // Only for url mode, since failed doesn't have id
-    let failedData = await failedModel.findOne({
-      where: whereCondition,
-      raw: true,
-    });
-    if (failedData) {
-      scrapedDetail = failedData;
-    }
-  }
-  res.json({ scraped: scrapedDetail !== null, scrapedDetail });
-});
-
-router.post('/register-failed-url', async function (req, res) {
-  if (
-    req.body.tracker == null ||
-    req.body.url == null ||
-    req.body.error == null
-  ) {
+router.post('/register-failed-url', validateTrackerSource, async (req, res) => {
+  const { tracker, url, error } = req.body;
+  if (!tracker || !url || !error) {
     res
       .status(400)
       .json({ message: 'Must specify tracker, url, and the error' });
     return;
   }
-  const { tracker, url, error } = req.body;
-  let failedModel = db[`${TRACKER_MAP[tracker.toLowerCase()]}FailedUrl`];
-
-  const transaction = await db.sequelize.transaction();
-  let errorMessage = '';
   try {
-    await failedModel.create({
-      id: uuidv4(),
-      url,
-      error,
-    });
-    await transaction.commit();
+    await registerFailure(tracker, url, error);
+    res.json({ success: true });
   } catch (err) {
-    await transaction.rollback();
-    errorMessage = databaseErrorHandler(err);
+    const errMsg = 'An error occured registering failed url';
+    console.log(errMsg, err);
+    res.status(500).json({ message: errMsg });
+    return;
   }
-
-  res.json({ success: errorMessage == '', errorMessage });
 });
 
-router.post('/americas-cup-2021', async function (req, res) {
+router.post('/americas-cup-2021', async (req, res) => {
   if (!req.body.bucketName) {
     res.status(400).json({ message: 'Must specify bucketName' });
     return;

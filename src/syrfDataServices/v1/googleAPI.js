@@ -21,7 +21,6 @@ exports.reverseGeoCode = async ({ lon, lat }) => {
       throw new Error('Location Not Found');
     }
     let { address_components: addressComponent } = results[0];
-
     addressComponent.forEach((component) => {
       let { types, short_name: shortName, long_name: longName } = component;
       if (types.includes('country')) {
@@ -35,6 +34,10 @@ exports.reverseGeoCode = async ({ lon, lat }) => {
         cityName = longName;
       }
     });
+    if (!cityName) {  // some country like Sweden has town with no city like Uddevalla
+      const townAddress = addressComponent.find((ac) => ac.types.includes('postal_town'));
+      cityName = townAddress?.long_name || '';
+    }
   } catch (error) {
     console.trace(error);
   }
