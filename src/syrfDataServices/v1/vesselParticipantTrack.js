@@ -111,7 +111,7 @@ module.exports = class VesselParticipantTrack {
           geometry: {
             type: 'LineString',
             coordinates: this.positions.map((row) => {
-              return [...row.position, row.altitude, row.timestamp];
+              return [...row.position, row.altitude || 0, row.timestamp];
             }),
           },
         };
@@ -136,7 +136,7 @@ module.exports = class VesselParticipantTrack {
             coordinateWithTime.push([
               position[0],
               position[1],
-              altitude,
+              altitude || 0,
               timestamp,
             ]);
             break;
