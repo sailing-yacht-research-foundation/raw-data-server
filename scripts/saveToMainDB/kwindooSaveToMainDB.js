@@ -41,10 +41,6 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
 
         console.log(`Processing ${races.length} races`);
         for (const race of races) {
-          // if (existingData.some((d) => d.url === race.url || d.original_id === race.original_id)) {
-          //   console.log(`Race original id ${race.original_id} already saved in DB`);
-          //   continue;
-          // }
           const raceFilter = {
             where: {
               race: race.id,
@@ -86,8 +82,6 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
 
           try {
             console.log(`Saving to syrf DB for race ${race.original_id}`);
-            // console.log('objectToPass', objectToPass);
-            // console.log('raceMetadata', raceMetadata);
             await mapAndSave(objectToPass, raceMetadatas);
             console.log('Finished saving race');
           } catch (err) {
