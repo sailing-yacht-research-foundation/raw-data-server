@@ -34,8 +34,12 @@ const normalizeRace = async (
   }
 
   for (const race of KwindooRace) {
-    const boats = KwindooBoat.filter((b) => b.race_original_id === race.original_id);
-    const waypoints = KwindooWaypoint?.filter((b) => b.race_original_id === race.original_id);
+    const boats = KwindooBoat.filter(
+      (b) => b.race_original_id === race.original_id,
+    );
+    const waypoints = KwindooWaypoint?.filter(
+      (b) => b.race_original_id === race.original_id,
+    );
     const allPositions = [];
     KwindooPosition.forEach((p) => {
       if (p.race_original_id === race.original_id && p.lat && p.lon && p.t) {
@@ -138,15 +142,17 @@ const normalizeRace = async (
       unstructuredText,
     );
 
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
+    if (process.env.ENABLE_MAIN_DB_SAVE_KWINDOO !== 'true') {
+      const tracksGeojson = JSON.stringify(
+        allPositionsToFeatureCollection(boatsToSortedPositions),
+      );
 
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(id, tracksGeojson, KWINDOO_SOURCE, transaction);
+      await db.readyAboutRaceMetadata.create(raceMetadata, {
+        fields: Object.keys(raceMetadata),
+        transaction,
+      });
+      await uploadGeoJsonToS3(id, tracksGeojson, KWINDOO_SOURCE, transaction);
+    }
     raceMetadatas.push(raceMetadata);
   }
   return raceMetadatas;

@@ -5,9 +5,21 @@ const {
 } = require('../../utils/gisUtils');
 
 const mapAndSave = async (data, raceMetadatas) => {
-  if (!raceMetadatas?.length || !data.KwindooRegatta?.length || !data.KwindooRace?.length || !data.KwindooBoat?.length || !data.KwindooPosition?.length) {
+  if (
+    !raceMetadatas?.length ||
+    !data.KwindooRegatta?.length ||
+    !data.KwindooRace?.length ||
+    !data.KwindooBoat?.length ||
+    !data.KwindooPosition?.length
+  ) {
     console.log('Missing data');
-    console.log(`raceMetadatas?.length ${raceMetadatas?.length}, data.KwindooRegatta?.length ${data.KwindooRegatta?.length}, data.KwindooRace?.length ${data.KwindooRace?.length}, data.KwindooBoat?.length ${data.KwindooBoat?.length}, !data.KwindooPosition?.length ${!data.KwindooPosition?.length}`);
+    console.log(
+      `raceMetadatas?.length ${raceMetadatas?.length},
+      data.KwindooRegatta?.length ${data.KwindooRegatta?.length},
+      data.KwindooRace?.length ${data.KwindooRace?.length},
+      data.KwindooBoat?.length ${data.KwindooBoat?.length},
+      data.KwindooPosition?.length ${data.KwindooPosition?.length}`,
+    );
     return;
   }
   console.log('Saving to main database');
