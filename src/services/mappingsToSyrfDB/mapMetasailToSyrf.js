@@ -39,12 +39,7 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       .sort((a, b) => a.timestamp - b.timestamp);
 
     console.log('Saving to main database');
-    const boatIdToOriginalIdMap = {};
-    const inputBoats = _mapBoats(
-      data.MetasailBoat,
-      boatIdToOriginalIdMap,
-      race,
-    );
+    const inputBoats = _mapBoats(data.MetasailBoat, race);
 
     const { courseSequencedGeometries, markTrackers, buoyPositions } =
       _mapSequencedGeometries(
@@ -83,11 +78,10 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
   }
 };
 
-const _mapBoats = (boats = [], boatIdToOriginalIdMap, race) => {
+const _mapBoats = (boats = [], race) => {
   return boats
     .filter((t) => t.race_original_id === race.original_id)
     .map((b) => {
-      boatIdToOriginalIdMap[b.original_id] = b.id;
       const vessel = {
         id: b.id,
         publicName: b.name,
