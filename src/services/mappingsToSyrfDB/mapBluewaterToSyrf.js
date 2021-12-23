@@ -6,6 +6,18 @@ const {
 } = require('../../utils/gisUtils');
 
 const mapAndSave = async (data, raceMetadata) => {
+  if (
+    !raceMetadata ||
+    !data.BluewaterRace?.length ||
+    !data.BluewaterBoat?.length ||
+    !data.BluewaterPosition?.length
+  ) {
+    console.log('Missing data');
+    console.log(
+      `raceMetadata ${raceMetadata}, data.BluewaterRace?.length ${data.BluewaterRace?.length}, data.BluewaterBoat?.length ${data.BluewaterBoat?.length}, !data.BluewaterPosition?.length ${data.BluewaterPosition?.length}`,
+    );
+    return;
+  }
   console.log('Saving to main database');
   // vessels
   const boatIdToOriginalIdMap = {};
@@ -87,7 +99,11 @@ const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
 
 const _mapPositions = (positions, boatIdToOriginalIdMap) => {
   return positions?.map((p) => ({
-    ...p,
+    timestamp: new Date(p.date).getTime(),
+    lon: +p.coordinate_0,
+    lat: +p.coordinate_1,
+    cog: +p.cog,
+    sog: +p.sog,
     vesselId: boatIdToOriginalIdMap[p.boat_original_id],
   }));
 };
