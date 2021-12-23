@@ -3,8 +3,18 @@ const uuid = require('uuid');
 const elasticsearch = require('./elasticsearch');
 const uploadUtil = require('../services/uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
+const cities = require('all-the-cities');
+const KDBush = require('kdbush');
+const geokdbush = require('geokdbush');
 const { reverseGeoCode } = require('../syrfDataServices/v1/googleAPI');
 const { geometryType } = require('../syrf-schema/enums');
+
+const { world } = require('./world');
+const cityIndex = new KDBush(
+  cities,
+  (p) => p.loc.coordinates[0],
+  (p) => p.loc.coordinates[1],
+);
 
 exports.filterHandicaps = function (handicaps) {
   const filtered = [];
@@ -534,7 +544,7 @@ exports.convertDMSToDD = convertDMSToDD;
  * @returns
  */
 exports.parseGeoStringToDecimal = function (input) {
-  var parts = input.split(/[^\d\w\.]+/);
+  var parts = input.split(/[^\d\w.]+/);
   return convertDMSToDD(parts[0], parts[1], parts[2], parts[3]);
 };
 
@@ -611,4 +621,47 @@ exports.createGeometry = (coordinates = [], properties = {}, geometryType) => {
     properties,
     coordinates,
   };
+};
+
+exports.pointToCountry = ({ lon, lat }) => {
+  const point = [lon, lat];
+  let minDistance = 10000;
+  let countryName = '';
+  let found = false;
+  world.features.forEach((country) => {
+    const poly = country.geometry;
+    const vertices = turf.explode(poly);
+    const closestVertex = turf.nearest(point, vertices);
+    const distance = turf.distance(point, closestVertex);
+    if (!found) {
+      if (turf.booleanPointInPolygon(point, poly)) {
+        found = true;
+        countryName = country.properties.ADMIN;
+      } else if (distance < minDistance) {
+        minDistance = distance;
+        countryName = country.properties.ADMIN;
+      }
+    }
+  });
+  return countryName;
+};
+
+exports.pointToCity = ({ lon, lat }) => {
+  const point = [lon, lat];
+  const nearestCity = geokdbush.around(cityIndex, point[0], point[1], 1);
+  return nearestCity[0].name;
+};
+
+exports.getCountryAndCity = async ({ lon, lat }) => {
+  let { countryName, cityName } = await reverseGeoCode({
+    lon,
+    lat,
+  });
+  if (!countryName) {
+    countryName = exports.pointToCountry({ lon, lat });
+  }
+  if (!cityName) {
+    cityName = exports.pointToCity({ lon, lat });
+  }
+  return { countryName, cityName };
 };
