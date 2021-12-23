@@ -154,7 +154,7 @@ const _mapSequencedGeometries = (
     );
     const bouy1 = metasailBuoy.find((t) => t.id === gate.buoy_1);
     const bouy2 = metasailBuoy.find((t) => t.id === gate.buoy_2);
-    if (!bouy1FirstPosition || !bouy2FirstPosition || !bouy1 || bouy2) {
+    if (!bouy1FirstPosition || !bouy2FirstPosition || !bouy1 || !bouy2) {
       continue;
     }
 
@@ -192,7 +192,7 @@ const _findBuoyFirstPosition = (id, buoyPositions) => {
 const _mapRankings = (boats, positions = []) => {
   const rankings = [];
 
-  const reversePositions = positions.splice().reverse();
+  const reversePositions = positions.slice().reverse();
   for (const vessel of boats) {
     const ranking = { vesselId: vessel.id, elapsedTime: 0, finishTime: 0 };
 
