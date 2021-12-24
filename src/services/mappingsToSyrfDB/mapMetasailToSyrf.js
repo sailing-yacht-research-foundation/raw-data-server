@@ -13,15 +13,13 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
   }
   // event
   const event = data.MetasailEvent?.map((e) => {
-    const starTimeObj = new Date(e.start * 1000);
-    const stopTimeObj = new Date(e.end * 1000);
     return {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
       url: e.url,
-      approxStartTimeMs: starTimeObj.getTime(),
-      approxEndTimeMs: stopTimeObj.getTime(),
+      approxStartTimeMs: e.start * 1000,
+      approxEndTimeMs: e.end * 1000,
     };
   })[0];
 
@@ -32,27 +30,29 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       return;
     }
 
-    const racePositions = data.MetasailPosition.filter(
-      (t) => t.race_original_id === race.original_id,
-    )
-      .map((t) => ({ ...t, timestamp: +t.time * 1000 }))
-      .sort((a, b) => a.timestamp - b.timestamp);
-
     console.log('Saving to main database');
     const inputBoats = _mapBoats(data.MetasailBoat, race);
 
+    if (!inputBoats.length) {
+      console.log(
+        `inputBoats positions is not found for  race = ${race.original_id}`,
+      );
+      continue;
+    }
     const { courseSequencedGeometries, markTrackers, buoyPositions } =
       _mapSequencedGeometries(
         data.MetasailBuoy,
         data.MetasailGate,
-        racePositions,
+        data.MetasailPosition,
         race,
       );
-    const positions = _mapPositions(
-      racePositions.filter((t) => t.boat_original_id),
-    );
+    const boatPositions = _mapPositions(data.MetasailPosition, race);
 
-    const rankings = _mapRankings(inputBoats, positions);
+    if (!boatPositions.length) {
+      console.log(`positions not found for race = ${race.original_id}`);
+      continue;
+    }
+    const rankings = _mapRankings(inputBoats, boatPositions);
 
     await saveCompetitionUnit({
       event,
@@ -64,7 +64,7 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
         scrapedUrl: race.url,
       },
       boats: inputBoats,
-      positions,
+      positions: boatPositions,
       raceMetadata,
       courseSequencedGeometries,
       rankings,
@@ -88,25 +88,30 @@ const _mapBoats = (boats = [], race) => {
         globalId: b.sail_number,
         vesselId: b.original_id,
         model: b.class_name,
-        handicap: {},
       };
       return vessel;
     });
 };
 
-const _mapPositions = (positions) => {
-  if (!positions) {
+const _mapPositions = (metasailPosition, race) => {
+  if (!metasailPosition) {
     return [];
   }
-  return positions.map((t) => {
-    return {
-      ...t,
-      vesselId: t.boat,
-      cog: t.orientation,
-      sog: t.speed,
-      windDirection: t.wind_direction,
-    };
-  });
+  const positions = metasailPosition.filter(
+    (t) => t.race_original_id === race.original_id && t.boat_original_id,
+  );
+  return positions
+    .map((t) => {
+      return {
+        ...t,
+        vesselId: t.boat,
+        cog: t.orientation,
+        sog: t.speed,
+        windDirection: t.wind_direction,
+        timestamp: +t.time * 1000,
+      };
+    })
+    .sort((a, b) => a.timestamp - b.timestamp);
 };
 
 const _mapSequencedGeometries = (
@@ -127,10 +132,17 @@ const _mapSequencedGeometries = (
     });
 
   const buoyPositions = racePositions
-    .filter((t) => t.buoy_original_id)
+    .filter(
+      (t) => t.buoy_original_id && t.race_original_id === race.original_id,
+    )
     .map((t) => {
-      return { ...t, markTrackerId: buoyIdToMarkTrackerMap[t.buoy] };
-    });
+      return {
+        ...t,
+        markTrackerId: buoyIdToMarkTrackerMap[t.buoy],
+        timestamp: +t.time * 1000,
+      };
+    })
+    .sort((a, b) => a.timestamp - b.timestamp);
 
   const courseSequencedGeometries = [];
   let order = 1;
@@ -148,10 +160,12 @@ const _mapSequencedGeometries = (
     );
     const bouy1 = metasailBuoy.find((t) => t.id === gate.buoy_1);
     const bouy2 = metasailBuoy.find((t) => t.id === gate.buoy_2);
+
     if (!bouy1FirstPosition || !bouy2FirstPosition || !bouy1 || !bouy2) {
       continue;
     }
-
+    bouy1.used = true;
+    bouy2.used = true;
     const name = [bouy1.name, bouy2.name].filter((t) => t).join(' ');
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
@@ -172,6 +186,27 @@ const _mapSequencedGeometries = (
       order: order,
     });
   }
+
+  for (const buoy of metasailBuoy) {
+    if (buoy.used) {
+      continue;
+    }
+    const firstPosition = _findBuoyFirstPosition(buoy.id, buoyPositions);
+    courseSequencedGeometries.push({
+      ...gisUtils.createGeometryPoint(
+        {
+          lat: firstPosition.lat,
+          lon: firstPosition.lon,
+          markTrackerId: buoy.markTrackerId,
+        },
+        {
+          name: buoy.name,
+        },
+      ),
+      order: order,
+    });
+    order++;
+  }
   return {
     markTrackers,
     courseSequencedGeometries,
@@ -186,12 +221,16 @@ const _findBuoyFirstPosition = (id, buoyPositions) => {
 const _mapRankings = (boats, positions = []) => {
   const rankings = [];
 
-  const reversePositions = positions.slice().reverse();
   for (const vessel of boats) {
     const ranking = { vesselId: vessel.id, elapsedTime: 0, finishTime: 0 };
 
-    const lastPosition = reversePositions.find((t) => t.boat === vessel.id);
-    const firstPosition = positions.find((t) => t.boat === vessel.id);
+    const allVesselPositions = positions.filter((t) => t.boat === vessel.id);
+    if (!allVesselPositions.length) {
+      rankings.push(ranking);
+      continue;
+    }
+    const lastPosition = allVesselPositions[allVesselPositions.length - 1];
+    const firstPosition = allVesselPositions[0];
     let elapsedTime = 0;
     let finishTime = 0;
     if (lastPosition && firstPosition) {
