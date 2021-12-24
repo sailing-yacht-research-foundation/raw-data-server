@@ -72,7 +72,8 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       markTrackerPositions: buoyPositions,
       reuse: {
         event: true,
-        boats: true,
+        // reuse boats in event only
+        boatsInEventOnly: true,
       },
     });
   }
