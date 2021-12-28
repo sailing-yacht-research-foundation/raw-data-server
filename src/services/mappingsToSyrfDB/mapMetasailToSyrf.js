@@ -71,9 +71,8 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       markTrackers,
       markTrackerPositions: buoyPositions,
       reuse: {
+        boats: true,
         event: true,
-        // reuse boats in event only
-        boatsInEventOnly: true,
       },
     });
   }
@@ -87,7 +86,7 @@ const _mapBoats = (boats = [], race) => {
         id: b.id,
         publicName: b.name,
         globalId: b.sail_number,
-        vesselId: b.original_id,
+        vesselId: `${b.original_id}-${b.serial}`,
         model: b.class_name,
       };
       return vessel;

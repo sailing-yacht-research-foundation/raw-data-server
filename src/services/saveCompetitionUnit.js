@@ -103,18 +103,14 @@ const saveCompetitionUnit = async ({
     const vesselParticipantsToSave = [];
     const existingVesselIdMap = new Map(); // mapping of existing vessel id with its new id to replace the positions boat ids
     let existingVessels;
-    if (existingEvent?.length && reuse.boatsInEventOnly) {
-      existingVessels = await vessel.getExistingVesselByCalendarEvent(
-        existingEvent[0].id,
-      );
-    } else if (reuse.boats) {
+    if (reuse.boats) {
       existingVessels = await vessel.getByVesselIdAndSource(
         boats.map((b) => b.vesselId),
         source,
       );
     }
     for (const boat of boats) {
-      if (reuse.boats || reuse.boatsInEventOnly) {
+      if (reuse.boats) {
         // some scrapers have the same boat.original_id but different info like yellowbrick
         const existingVessel = existingVessels?.find(
           (ev) => ev.vesselId === boat.vesselId,
