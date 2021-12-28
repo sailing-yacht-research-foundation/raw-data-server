@@ -29,7 +29,7 @@ const saveCompetitionUnit = async ({
   vesselParticipantEvents = [],
   competitionUnitData = {},
 }) => {
-  const {
+  let {
     id: raceId,
     name,
     source,
@@ -48,6 +48,12 @@ const saveCompetitionUnit = async ({
   const mainDatabaseTransaction = await createTransaction();
 
   try {
+    if (typeof approxStartTimeMs === 'string') {
+      approxStartTimeMs = parseFloat(approxStartTimeMs);
+    }
+    if (typeof approxEndTimeMs === 'string') {
+      approxEndTimeMs = parseFloat(approxEndTimeMs);
+    }
     console.log('Create new calendar event');
     // 1. Save calendar event information
     let existingEvent;
@@ -66,8 +72,10 @@ const saveCompetitionUnit = async ({
         name: event?.name,
         locationName: event?.locationName,
         externalUrl: event?.url,
-        approximateStartTime: event?.approxStartTimeMs || approxStartTimeMs,
-        approximateEndTime: event?.approxEndTimeMs || approxEndTimeMs,
+        approximateStartTime:
+          parseFloat(event?.approxStartTimeMs) || approxStartTimeMs,
+        approximateEndTime:
+          parseFloat(event?.approxEndTimeMs) || approxEndTimeMs,
         lat: event?.lat || lat,
         lon: event?.lon || lon,
         source,
@@ -219,7 +227,7 @@ const saveCompetitionUnit = async ({
     const newCompetitionUnit = await competitionUnit.upsert(
       raceId,
       {
-        name,
+        name: race.name || name,
         approximateStartLocation: approxStartPoint,
         approximateEndLocation: approxEndPoint,
         startTime: approxStartTimeMs,
@@ -292,6 +300,7 @@ const saveCompetitionUnit = async ({
         continue;
       }
       tracker?.addNewPosition([lon, lat], position.timestamp, {
+        altitude: position.altitude,
         cog: position.cog,
         sog: position.sog,
         twa: position.twa,

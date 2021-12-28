@@ -129,7 +129,8 @@ const _mapSequencedGeometries = (buoys) => {
 };
 
 const _mapRankings = (results, raceStart) => {
-  return results?.map((r) => {
+  return results
+    ?.map((r) => {
       const finishTime = r.timestamp * 1000;
       return {
         vesselId: r.dorsal,

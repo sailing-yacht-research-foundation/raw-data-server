@@ -29,7 +29,7 @@ describe('elasticsearch.js', () => {
 
       const r = await indexRace('raceid', raceData);
       expect(axios.put).toHaveBeenCalledWith(
-        `races/race/${raceId}`,
+        `races/_doc/${raceId}`,
         raceData);
       expect(r).toEqual(fakedResp);
     });
@@ -49,7 +49,7 @@ describe('elasticsearch.js', () => {
       } catch (err) {
         expect(err).toEqual(fakedError);
         expect(axios.put).toHaveBeenCalledWith(
-          `races/race/${raceId}`,
+          `races/_doc/${raceId}`,
           raceData);
       }
     });
