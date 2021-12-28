@@ -33,6 +33,7 @@ const { TRACKER_MAP } = require('../constants');
 const { unzipFileFromRequest } = require('../utils/unzipFile');
 const saveGeovoileData = require('../services/saveGeovoileData');
 const saveOldGeovoileData = require('../services/non-automatable/saveOldGeovoileData');
+const updateMetasailUrls = require('../services/non-automatable/updateMetasailUrls');
 
 var router = express.Router();
 
@@ -389,6 +390,17 @@ router.post('/old-geovoile', async function (req, res) {
 
   res.json({
     message: `Successfully started processing of files`,
+  });
+});
+
+router.post('/metasail', async function (req, res) {
+  try {
+    updateMetasailUrls();
+  } catch (err) {
+    console.log(err);
+  }
+  res.json({
+    message: `Metasail is being updated`,
   });
 });
 
