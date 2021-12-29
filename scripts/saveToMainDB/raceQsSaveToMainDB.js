@@ -45,6 +45,9 @@ const elasticsearch = require('../../src/utils/elasticsearch');
         const raceQsDivision = await db.raceQsDivision.findAll(raceFilter);
 
         if (!raceQsDivision.length) {
+          console.log(
+            `this raceQsEvent = ${raceQsEvent.original_id} is already processed, continue to next event`,
+          );
           continue;
         }
         const eventFilter = {
