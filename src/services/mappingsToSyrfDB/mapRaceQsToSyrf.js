@@ -12,6 +12,10 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
     console.log(`mapRaceQsToSyrf requires RaceQsEvent`);
     return;
   }
+  if (!data.RaceQsDivision?.length) {
+    console.log(`mapRaceQsToSyrf requires RaceQsDivision`);
+    return;
+  }
   // event
   const event = data.RaceQsRegatta?.map((e) => {
     return {
@@ -25,12 +29,12 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
   // for each division we can create a separated race
   console.log('Saving to main database');
   const raceQsEvent = data.RaceQsEvent[0];
-  for (const division of data.RaceQsDivision) {
+  for (const [index, division] of data.RaceQsDivision.entries()) {
     const starts =
       data.RaceQsStart?.filter((t) => t.division === division.id) || [];
 
-    // if current race does not have start and the race do have many race division, then ignore it.
-    if (starts.length === 0 && data.RaceQsDivision.length > 1) {
+    // if there is no start so we will take the first division only
+    if ((!data.RaceQsStart || !data.RaceQsStart.length) && index > 0) {
       continue;
     }
     // we using do while to ensure in case the division does not have start, then we still be able to save anyway
@@ -60,11 +64,14 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       }
       const rankings = _mapRankings(inputBoats, start);
       const raceName = _getRaceName(event, division, start, raceQsEvent);
+
+      const raceId = start?.id || division.id;
+      const raceOriginalId = start?.original_id || division.original_id;
       await saveCompetitionUnit({
         event,
         race: {
-          id: raceQsEvent.id,
-          original_id: raceQsEvent.original_id?.toString(),
+          id: raceId,
+          original_id: raceOriginalId?.toString(),
           url: raceQsEvent.url,
           scrapedUrl: raceQsEvent.url,
           name: raceName,

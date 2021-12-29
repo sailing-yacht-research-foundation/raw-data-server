@@ -12,7 +12,6 @@ const {
   allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
 const { uploadGeoJsonToS3 } = require('../uploadUtil');
-const { v4: uuidv4 } = require('uuid');
 const THRESHOLD_TIME = 600000;
 const moment = require('moment');
 
@@ -51,10 +50,10 @@ const normalizeRace = async (
     return;
   }
   const event = RaceQsEvent[0];
-  for (const division of RaceQsDivision) {
+  for (const [index, division] of RaceQsDivision.entries()) {
     const starts = RaceQsStart?.filter((t) => t.division === division.id) || [];
-    // if current race does not have start and the race do have many race division, then ignore it.
-    if (starts.length === 0 && RaceQsDivision.length > 1) {
+    // if there is no start so we will take the first division only
+    if ((!RaceQsStart || !RaceQsStart?.length) && index > 0) {
       continue;
     }
     do {
@@ -79,7 +78,7 @@ const normalizeRace = async (
         }
       });
       const participants = _getParticipants(start, RaceQsParticipant);
-      const id = start?.id || uuidv4();
+      const id = start?.id || division.id;
       const url = event.url;
       const startTime = start ? start.from : parseInt(event.from);
       const endTime = parseInt(event.till);

@@ -33,10 +33,7 @@ const saveRaceQsData = async (data) => {
     if (data.RaceQsPosition) {
       const positions = data.RaceQsPosition.slice(); // clone array to avoid mutating the data
       while (positions.length > 0) {
-        const splicedArray = positions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
+        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
         await db.raceQsPosition.bulkCreate(splicedArray, {
           ignoreDuplicates: true,
           validate: true,
@@ -63,15 +60,21 @@ const saveRaceQsData = async (data) => {
       if (routesWithNoWaypoint.length) {
         const waypoints = await db.raceQsWaypoint.findAll({
           attributes: ['id', 'original_id'],
-          where: { original_id: routesWithNoWaypoint.map((r) => r.waypoint_original_id?.toString()) },
+          where: {
+            original_id: routesWithNoWaypoint.map((r) =>
+              r.waypoint_original_id?.toString(),
+            ),
+          },
           raw: true,
         });
         routesWithNoWaypoint.forEach((r) => {
-          const wpId = waypoints.find((wp) => wp.original_id === r.waypoint_original_id?.toString())?.id;
+          const wpId = waypoints.find(
+            (wp) => wp.original_id === r.waypoint_original_id?.toString(),
+          )?.id;
           if (wpId) {
             r.waypoint = wpId;
           }
-        })
+        });
       }
       await db.raceQsRoute.bulkCreate(data.RaceQsRoute, {
         ignoreDuplicates: true,
@@ -148,7 +151,7 @@ const saveRaceQsData = async (data) => {
   }
 
   if (raceMetadatas) {
-    for(raceMetadata of raceMetadatas) {
+    for (raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }
   }
