@@ -23,13 +23,9 @@ const logFailures = (documents = []) => {
 
 (async () => {
   let shouldFetch = true;
-  let lastSort = 'fffb959b-a12c-4d77-b7bc-8a859f35aaf8';
-
-  let deletedCount = 0;
-
+  let lastSort = '0';
   console.log('starting cleanup');
 
-  let count = 0;
   fs.appendFileSync(logFileName, '[');
   fs.appendFileSync(logFailureFileName, '[');
   do {
@@ -57,8 +53,6 @@ const logFailures = (documents = []) => {
     ).map((t) => t.id);
 
     const toDelete = hits.filter((t) => !result.includes(t._id));
-    count += toDelete.length;
-
     logDeleted(toDelete);
     const { deleted, failures } = (
       await elasticsearch.deleteByIds(toDelete.map((t) => t._id))
@@ -67,7 +61,6 @@ const logFailures = (documents = []) => {
     logFailures(failures);
 
     console.log(deleted, 'documents deleted');
-    deletedCount += parseInt(deleted);
 
     lastSort = hits[hits.length - 1]?.sort?.[0];
   } while (shouldFetch);
