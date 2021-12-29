@@ -51,7 +51,10 @@ const normalizeRace = async (
     (wp) => wp.name.toLowerCase().indexOf('finish') > -1,
   );
   let startPoint, endPoint;
-  if (startObj) {
+  if (race.original_paradigm === 'Race') {
+    // Race paradigm has relative positions
+    startPoint = createTurfPoint(race.lat, race.lon);
+  } else if (startObj) {
     startPoint = createTurfPoint(startObj.lat, startObj.lon);
   } else {
     const first3Positions = collectFirstNPositionsFromBoatsToPositions(
