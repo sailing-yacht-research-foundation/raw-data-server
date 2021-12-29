@@ -3,7 +3,7 @@ const db = require('../src/models');
 const elasticsearch = require('../src/utils/elasticsearch');
 const Op = db.Sequelize.Op;
 
-const { reverseGeoCode } = require('../src/syrfDataServices/v1/googleAPI');
+const { getCountryAndCity } = require('../src/utils/gisUtils.js');
 
 (async () => {
   let shouldContinue = true;
@@ -11,7 +11,10 @@ const { reverseGeoCode } = require('../src/syrfDataServices/v1/googleAPI');
   do {
     const data = await db.readyAboutRaceMetadata.findAll({
       attributes: ['id', 'approx_start_point'],
-      where: { start_city: null, id: { [Op.notIn]: failedIds } },
+      where: {
+        [Op.or]: [{ start_city: '' }, { start_city: null }],
+        id: { [Op.notIn]: failedIds }
+      },
       raw: true,
       limit: 10,
       order: [['approx_start_time_ms', 'DESC']],
@@ -21,26 +24,48 @@ const { reverseGeoCode } = require('../src/syrfDataServices/v1/googleAPI');
     if (data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         const { id, approx_start_point: startPoint } = data[i];
-        const { cityName: closestCity } = await reverseGeoCode({
-          lon: startPoint.coordinates[0],
-          lat: startPoint.coordinates[1],
-        });
+
+        let countryName, cityName;
+        try {
+          ({ countryName, cityName } = await getCountryAndCity({
+            lon: startPoint.coordinates[0],
+            lat: startPoint.coordinates[1],
+          }));
+        } catch (error) {
+          console.log('Failed getting country and city', error);
+          failedIds.push(id);
+          continue;
+        }
+
+        if (!countryName || !cityName) {
+          console.log(
+            `No country or city found for id ${id}. country=${countryName}, city=${cityName}`,
+          );
+          failedIds.push(id);
+          continue;
+        }
         try {
           await db.readyAboutRaceMetadata.update(
-            { start_city: closestCity },
+            { start_country: countryName, start_city: cityName },
             { where: { id } },
           );
         } catch (error) {
           console.error(`Failed updating metadata ${id}:`, error);
           failedIds.push(id);
+          continue;
         }
 
         try {
           await elasticsearch.updateRace(id, {
-            start_city: closestCity,
+            start_country: countryName,
+            start_city: cityName,
           });
         } catch (error) {
-          console.error(`Failed updating elastic search ${id}:`, error);
+          if (error.response.status === 404 || error.status === 404) {
+            console.log('Elastic search race not found');
+          } else {
+            console.error(`Failed updating elastic search ${id}:`, error);
+          }
         }
       }
       console.log('Done updating:', data.map((row) => row.id).join(', '));
