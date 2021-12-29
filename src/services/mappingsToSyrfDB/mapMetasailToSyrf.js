@@ -86,7 +86,7 @@ const _mapBoats = (boats = [], race) => {
         id: b.id,
         publicName: b.name,
         globalId: b.sail_number,
-        vesselId: `${b.original_id}-${b.serial}-${b.sail_number}-${b.name}`,
+        vesselId: `${b.original_id}|${b.serial}|${b.sail_number}`,
         model: b.class_name,
       };
       return vessel;
