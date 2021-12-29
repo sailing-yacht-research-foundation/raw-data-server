@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeMetasail');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const mapMetasailToSyrf = require('./mappingsToSyrfDB/mapMetasailToSyrf');
 
 const saveMetasailData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -75,6 +76,17 @@ const saveMetasailData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_METASAIL === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    try {
+      await mapMetasailToSyrf(data, raceMetadatas);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   if (eventUrl.length > 0) {
     if (errorMessage) {
       await db.metasailFailedUrl.bulkCreate(
@@ -108,7 +120,7 @@ const saveMetasailData = async (data) => {
   }
 
   if (raceMetadatas) {
-    for(raceMetadata of raceMetadatas) {
+    for (raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }
   }

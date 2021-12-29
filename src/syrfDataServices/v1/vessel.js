@@ -116,6 +116,10 @@ exports.getByVesselIdAndSource = async (vesselId, source) => {
   return await dataAccess.getByVesselIdAndSource(vesselId, source);
 };
 
+exports.getExistingVesselByCalendarEvent = async (calendarEventId) => {
+  return await dataAccess.getExistingVesselByCalendarEvent(calendarEventId);
+};
+
 exports.bulkCreate = async (data, transaction) => {
   return await dataAccess.bulkCreate(data, transaction);
 };
