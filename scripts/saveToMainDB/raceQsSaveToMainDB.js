@@ -68,12 +68,12 @@ const elasticsearch = require('../../src/utils/elasticsearch');
         }
         const raceQsRegaData = await db.raceQsRegatta.findAll({
           where: {
-            regatta: raceQsEvent.regatta,
+            id: raceQsEvent.regatta,
           },
           raw: true,
         });
 
-        const raceQsPosition = await raceQsDivision.findAll(eventFilter);
+        const raceQsPosition = await db.raceQsPosition.findAll(eventFilter);
 
         const raceQsParticipant = await db.raceQsParticipant.findAll(
           eventFilter,
@@ -88,7 +88,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           RaceQsPosition: raceQsPosition,
           RaceQsDivision: raceQsDivision,
           RaceQsParticipant: raceQsParticipant,
-          raceQsRoute: raceQsRoute,
+          RaceQsRoute: raceQsRoute,
           RaceQsStart: raceQsStart,
           RaceQsWaypoint: raceQsWaypoint,
         };
