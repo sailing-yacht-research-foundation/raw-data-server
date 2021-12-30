@@ -86,3 +86,17 @@ exports.deleteByIds = async (ids = []) => {
     return null;
   }
 };
+
+exports.deleteByUrl = async (url) => {
+  if (url) {
+    return await api.post(`races/_delete_by_query`, {
+      query: {
+        term: {
+          "url.keyword": url,
+        },
+      },
+    });
+  } else {
+    return null;
+  }
+};
