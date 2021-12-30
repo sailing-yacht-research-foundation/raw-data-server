@@ -14,7 +14,20 @@ const elasticsearch = require('../../src/utils/elasticsearch');
   let shouldContinue = true;
   const existingData = await getExistingData(SOURCE.RACEQS);
 
-  const existingOriginalIds = new Set(existingData.map((t) => t.original_id));
+  const savedStartOriginalIds = new Set(
+    existingData
+      .map((t) => t.original_id)
+      .filter((t) => {
+        return t.indexOf('raceqs-start-') !== -1;
+      })
+      .map((t) => t.replace('raceqs-start-', '')),
+  );
+  const savedDivisionOriginalIds = existingData
+    .map((t) => t.original_id)
+    .filter((t) => {
+      return t.indexOf('raceqs-division-') !== -1;
+    })
+    .map((t) => t.replace('raceqs-division-', ''));
   while (shouldContinue) {
     const raceQsEvents = await db.raceQsEvent.findAll({
       raw: true,
@@ -37,7 +50,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           where: {
             event: raceQsEvent.id,
             original_id: {
-              [Op.notIn]: existingData.map((d) => d.original_id),
+              [Op.notIn]: savedDivisionOriginalIds,
             },
           },
           raw: true,
@@ -62,7 +75,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
         // filter out processed start
         if (raceQsStart.length > 0) {
           raceQsStart = raceQsStart.filter(
-            (t) => !existingOriginalIds.has(t.original_id),
+            (t) => !savedStartOriginalIds.has(t.original_id),
           );
 
           if (!raceQsStart.length) {

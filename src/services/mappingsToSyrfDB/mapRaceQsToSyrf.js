@@ -71,7 +71,16 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       const raceName = _getRaceName(event, division, start, raceQsEvent);
 
       const raceId = start?.id || division.id;
-      const raceOriginalId = start?.original_id || division.original_id;
+
+      let raceOriginalId = '';
+      // The start and division original id is number.
+      // They may duplicate so we use the start or division prefix to know where are they from
+      // so we can filter out the already saved race easily in raceQsSaveToMainDB.js file
+      if (start?.original_id) {
+        raceOriginalId = `raceqs-start-${start?.original_id}`;
+      } else if (division.original_id) {
+        raceOriginalId = `raceqs-division-${division?.original_id}`;
+      }
       await saveCompetitionUnit({
         event,
         race: {
@@ -100,7 +109,9 @@ const _getRaceName = (event, division, start, raceQsEvent) => {
   const raceNames = [event.name, division.name];
 
   if (start?.from && raceQsEvent.tz) {
-    const startTime = moment(start.from).utcOffset(raceQsEvent.tz);
+    const startTime = moment(Number.parseInt(start.from)).utcOffset(
+      raceQsEvent.tz,
+    );
     raceNames.push(startTime.format('HH:mm:ss'));
   }
 
