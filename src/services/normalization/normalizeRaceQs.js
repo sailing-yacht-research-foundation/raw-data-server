@@ -52,6 +52,12 @@ const normalizeRace = async (
   const event = RaceQsEvent[0];
   for (const [index, division] of RaceQsDivision.entries()) {
     const starts = RaceQsStart?.filter((t) => t.division === division.id) || [];
+
+    // if there is no starts for this division, and the event does have many starts
+    // ignore current division
+    if (!starts?.length && RaceQsStart?.length) {
+      continue;
+    }
     // if there is no start so we will take the first division only
     if ((!RaceQsStart || !RaceQsStart?.length) && index > 0) {
       continue;

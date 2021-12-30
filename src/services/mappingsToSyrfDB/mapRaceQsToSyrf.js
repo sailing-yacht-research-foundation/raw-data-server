@@ -33,6 +33,11 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
     const starts =
       data.RaceQsStart?.filter((t) => t.division === division.id) || [];
 
+    // if there is no starts for this division, and the event does have many starts
+    // ignore current division
+    if (!starts?.length && data.RaceQsStart?.length) {
+      continue;
+    }
     // if there is no start so we will take the first division only
     if ((!data.RaceQsStart || !data.RaceQsStart.length) && index > 0) {
       continue;
