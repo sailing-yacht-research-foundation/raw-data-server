@@ -21,6 +21,7 @@
     "@syrf/circuit-breaker": "^1.0.1",
     "@syrf/transport-library": "^1.0.7",
     "@turf/turf": "^6.5.0",
+    "all-the-cities": "^3.1.0",
     "aws-sdk": "^2.903.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
