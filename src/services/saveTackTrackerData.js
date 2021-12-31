@@ -5,6 +5,7 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeTackTracker');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const mapTackTrackerToSyrf = require('../services/mappingsToSyrfDB/mapTackTrackerToSyrf');
 
 const saveTackTrackerData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -105,6 +106,13 @@ const saveTackTrackerData = async (data) => {
     errorMessage = databaseErrorHandler(error);
   }
 
+  if (
+    process.env.ENABLE_MAIN_DB_SAVE_TACKTRACKER === 'true' &&
+    process.env.NODE_ENV !== 'test'
+  ) {
+    await mapTackTrackerToSyrf(data, raceMetadatas?.[0]);
+  }
+
   if (raceUrl.length > 0) {
     if (errorMessage) {
       await db.tackTrackerFailedUrl.bulkCreate(
@@ -138,7 +146,7 @@ const saveTackTrackerData = async (data) => {
   }
 
   if (raceMetadatas) {
-    for(raceMetadata of raceMetadatas) {
+    for (raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }
   }
