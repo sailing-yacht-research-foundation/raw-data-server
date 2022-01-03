@@ -36,7 +36,7 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
 
   const rankings = _mapRankings(inputBoats, positions);
 
-  const race = data.TracTracRace[0];
+  const race = data.TackTrackerRace[0];
   await saveCompetitionUnit({
     event,
     race: {
@@ -53,19 +53,16 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
     rankings,
     reuse: {
       event: true,
-      boats: true,
     },
   });
 };
 
-const _mapBoats = (boats, boatIdToOriginalIdMap) => {
+const _mapBoats = (boats) => {
   return boats?.map((b) => {
-    boatIdToOriginalIdMap[b.original_id] = b.id;
     const vessel = {
       id: b.id,
       publicName: b.name,
       vesselId: b.id,
-      handicap: {},
     };
     return vessel;
   });
@@ -80,7 +77,7 @@ const _mapPositions = (positions, tackTrackerRace) => {
       ...t,
       timestamp: new Date(t.time),
       race_id: t.race,
-      race_original_id: tackTrackerRace.race_original_id,
+      race_original_id: tackTrackerRace.original_id,
       vesselId: t.boat,
       boat_original_id: t.boat,
     };
@@ -129,10 +126,28 @@ const _mapSequencedGeometries = (
       });
       newMark.order = order;
       courseSequencedGeometries.push(newMark);
+      order++;
     } else if (mark.type === 'GateMark') {
-      const gates = tackTrackerMark.filter((t) => t.name === mark.name);
+      const gates = tackTrackerMark.filter(
+        (t) => t.name === mark.name && !t.used,
+      );
+      if (gates.length === 2) {
+        const line = createGeometryLine(
+          {
+            lat: gates[0].lat,
+            lon: gates[0].lon,
+          },
+          {
+            lat: gates[1].lat,
+            lon: gates[1].lon,
+          },
+          { name: mark.name },
+        );
+        gates.forEach((t) => (t.used = true));
+        courseSequencedGeometries.push(line);
+      }
+      order++;
     }
-    order++;
   }
   for (const finish of tackTrackerFinish) {
     const newMark = createGeometryLine(
@@ -160,8 +175,20 @@ const _mapRankings = (boats, positions = []) => {
   }
   const rankings = [];
   for (const vessel of boats) {
-    const ranking = { vesselId: vessel.id, elapsedTime: 0, finishTime: 0 };
+    const ranking = { vesselId: vessel.id };
+    const boatPositions = positions.filter((t) => t.boat === vessel.id);
 
+    let elapsedTime = 0;
+    let finishTime = 0;
+    if (boatPositions.length) {
+      const firstPosition = boatPositions[0];
+      const lastPosition = boatPositions[boatPositions.length - 1];
+      elapsedTime =
+        lastPosition.timestamp.getTime() - firstPosition.timestamp.getTime();
+      finishTime = lastPosition.timestamp.getTime();
+    }
+    ranking.elapsedTime = elapsedTime;
+    ranking.finishTime = finishTime;
     rankings.push(ranking);
   }
 
