@@ -60,6 +60,15 @@ const INTERACTION_TRACK_LENGTH = 30;
 const SIMPLIFICATION_TOLERANCE = 0.00001;
 const FEET_TO_METERS = 0.3048;
 
+/**
+ * START_PREFIX and DIVISION_PREFIX are used in mapRaceQsToSyrf
+ * They indicate that the source of race id, whether it is from start or division.
+ */
+const RACEQS = {
+  START_PREFIX: 'raceqs-start-',
+  DIVISION_PREFIX: 'raceqs-division-',
+};
+
 module.exports = {
   TEMPORARY_FOLDER,
   TRACKER_MAP,
@@ -70,4 +79,5 @@ module.exports = {
   SIMPLIFICATION_TOLERANCE,
   SOURCE,
   FEET_TO_METERS,
+  RACEQS,
 };
