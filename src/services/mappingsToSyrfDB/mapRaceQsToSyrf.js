@@ -1,6 +1,8 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
 const moment = require('moment');
+const { RACEQS } = require('../../constants');
+
 // 600.000 ms = 10 minutes
 const THRESHOLD_TIME = 600000;
 const mapRaceQsToSyrf = async (data, raceMetadatas) => {
@@ -77,9 +79,9 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       // They may duplicate so we use the start or division prefix to know where are they from
       // so we can filter out the already saved race easily in raceQsSaveToMainDB.js file
       if (start?.original_id) {
-        raceOriginalId = `raceqs-start-${start?.original_id}`;
+        raceOriginalId = `${RACEQS.START_PREFIX}${start?.original_id}`;
       } else if (division.original_id) {
-        raceOriginalId = `raceqs-division-${division?.original_id}`;
+        raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.original_id}`;
       }
       await saveCompetitionUnit({
         event,

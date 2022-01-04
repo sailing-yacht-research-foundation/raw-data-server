@@ -1,7 +1,7 @@
 require('dotenv').config();
 const db = require('../../src/models');
 const Op = db.Sequelize.Op;
-const { SOURCE } = require('../../src/constants');
+const { SOURCE, RACEQS } = require('../../src/constants');
 const { getExistingData } = require('../../src/services/scrapedDataResult');
 const mapRaceQsToSyrf = require('../../src/services/mappingsToSyrfDB/mapRaceQsToSyrf');
 const {
@@ -18,16 +18,16 @@ const elasticsearch = require('../../src/utils/elasticsearch');
     existingData
       .map((t) => t.original_id)
       .filter((t) => {
-        return t.indexOf('raceqs-start-') !== -1;
+        return t.indexOf(RACEQS.START_PREFIX) !== -1;
       })
-      .map((t) => t.replace('raceqs-start-', '')),
+      .map((t) => t.replace(RACEQS.START_PREFIX, '')),
   );
   const savedDivisionOriginalIds = existingData
     .map((t) => t.original_id)
     .filter((t) => {
-      return t.indexOf('raceqs-division-') !== -1;
+      return t.indexOf(RACEQS.DIVISION_PREFIX) !== -1;
     })
-    .map((t) => t.replace('raceqs-division-', ''));
+    .map((t) => t.replace(RACEQS.DIVISION_PREFIX, ''));
   while (shouldContinue) {
     const raceQsEvents = await db.raceQsEvent.findAll({
       raw: true,
