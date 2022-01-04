@@ -27,6 +27,7 @@ const saveCompetitionUnit = async ({
   markTrackers = [],
   markTrackerPositions = [],
   vesselParticipantEvents = [],
+  competitionUnitData = {},
 }) => {
   let {
     id: raceId,
@@ -241,6 +242,7 @@ const saveCompetitionUnit = async ({
         openGraphImage,
         scrapedOriginalId: race.original_id,
         scrapedUrl: race.url,
+        ...competitionUnitData,
       },
       mainDatabaseTransaction,
     );
