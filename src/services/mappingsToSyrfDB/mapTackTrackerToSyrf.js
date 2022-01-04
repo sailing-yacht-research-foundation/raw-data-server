@@ -128,8 +128,16 @@ const _mapSequencedGeometries = (
       courseSequencedGeometries.push(newMark);
       order++;
     } else if (mark.type === 'GateMark') {
+      // we will always have 3 gate mark here
+      // For example: for a start it will be like this.
+      // [
+      //   {"name": "\"Start\"", "type": "Start"},
+      //   { "name": "\"Start\"", "type": "GateMark"},
+      //   { "name": "\"Start\"", "type": "GateMark"}
+      // ]
+      // That's why we filter by type === 'GateMark' to make gate.lengths === 2
       const gates = tackTrackerMark.filter(
-        (t) => t.name === mark.name && !t.used,
+        (t) => t.name === mark.name && !t.used && t.type === 'GateMark',
       );
       if (gates.length === 2) {
         const line = createGeometryLine(
