@@ -146,14 +146,16 @@ const normalizeRace = async (
         handicaps,
         unstructuredText,
       );
-      const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions),
-      );
-      await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
-      });
-      await uploadGeoJsonToS3(id, tracksGeojson, RACEQS_SOURCE, transaction);
+      if (process.env.ENABLE_MAIN_DB_SAVE_RACEQS !== 'true') {
+        const tracksGeojson = JSON.stringify(
+          allPositionsToFeatureCollection(boatsToSortedPositions),
+        );
+        await db.readyAboutRaceMetadata.create(raceMetadata, {
+          fields: Object.keys(raceMetadata),
+          transaction,
+        });
+        await uploadGeoJsonToS3(id, tracksGeojson, RACEQS_SOURCE, transaction);
+      }
       raceMetadatas.push(raceMetadata);
     } while (starts.length);
   }
