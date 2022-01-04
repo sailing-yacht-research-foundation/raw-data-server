@@ -82,7 +82,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
             continue;
           }
         }
-        const raceQsRegaData = await db.raceQsRegatta.findAll({
+        const raceQsRegatta = await db.raceQsRegatta.findAll({
           where: {
             id: raceQsEvent.regatta,
           },
@@ -100,7 +100,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
 
         const objectToPass = {
           RaceQsEvent: [raceQsEvent],
-          RaceQsRegatta: raceQsRegaData,
+          RaceQsRegatta: raceQsRegatta,
           RaceQsPosition: raceQsPosition,
           RaceQsDivision: raceQsDivision,
           RaceQsParticipant: raceQsParticipant,
@@ -108,15 +108,13 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           RaceQsStart: raceQsStart,
           RaceQsWaypoint: raceQsWaypoint,
         };
-        const transaction = await db.sequelize.transaction();
         try {
           // in the old code of saveRaceQsData.js
           // we normalize the race by raceQsEvent, but it is not true
           // in the logic,  we normalize the race by division and start
           // in case there is a start in division, raceId = start.id
           // in case there is no start, raceId = division.id
-          const raceMetadatas = await normalizeRace(objectToPass, transaction);
-          await transaction.commit();
+          const raceMetadatas = await normalizeRace(objectToPass);
           await mapRaceQsToSyrf(objectToPass, raceMetadatas);
           console.log('Finished saving race');
           // Since we change the logic of normalizeRace, so we need to delete the raceQsEvent.id
@@ -129,7 +127,6 @@ const elasticsearch = require('../../src/utils/elasticsearch');
             console.log(e);
           }
         } catch (err) {
-          await transaction.rollback();
           console.log('Failed saving to syrf main DB', err);
         }
       } catch (err) {
