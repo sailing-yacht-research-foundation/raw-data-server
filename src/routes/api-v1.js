@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const temp = require('temp');
 
-const db = require('../models');
 const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
 const validateTrackerSource = require('../middlewares/validateTracker');
@@ -35,6 +34,7 @@ const {
   getExistingData,
   registerFailure,
 } = require('../services/scrapedDataResult');
+const { deleteUnfinishedRaces } = require('../services/competitionUnit');
 
 var router = express.Router();
 
@@ -305,4 +305,21 @@ router.post('/old-geovoile', async function (req, res) {
     message: `Successfully started processing of files`,
   });
 });
+
+router.delete(
+  '/delete-unfinished-races/:tracker',
+  validateTrackerSource,
+  async (req, res) => {
+    try {
+      await deleteUnfinishedRaces(req.params.tracker);
+    } catch (err) {
+      console.log(err);
+    }
+
+    res.json({
+      message: `Successfully deleted live or future races`,
+    });
+  },
+);
+
 module.exports = router;

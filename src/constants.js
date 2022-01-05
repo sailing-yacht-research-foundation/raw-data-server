@@ -68,7 +68,6 @@ const RACEQS = {
   START_PREFIX: 'raceqs-start-',
   DIVISION_PREFIX: 'raceqs-division-',
 };
-const UNFINISHED_RACE_PREFIX = 'unfinished';
 
 module.exports = {
   TEMPORARY_FOLDER,
@@ -81,5 +80,4 @@ module.exports = {
   SOURCE,
   FEET_TO_METERS,
   RACEQS,
-  UNFINISHED_RACE_PREFIX,
 };

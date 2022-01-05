@@ -30,7 +30,7 @@ const logFailures = (documents = []) => {
   fs.appendFileSync(logFileName, '[');
   fs.appendFileSync(logFailureFileName, '[');
   do {
-    const hits = (await elasticsearch.pageById(lastSort)).data?.hits?.hits;
+    const hits = (await elasticsearch.pageByIdFinishedNotSyrf(lastSort)).data?.hits?.hits;
 
     if (!Array.isArray(hits)) {
       break;

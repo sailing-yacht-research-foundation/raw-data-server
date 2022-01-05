@@ -32,17 +32,24 @@ exports.updateRace = async (id, body) => {
   }
 };
 
-exports.pageById = async (searchAfter = '0', size = 200) => {
+exports.pageByIdFinishedNotSyrf = async (searchAfter = '0', size = 200) => {
   if (api) {
     return await api.post(`races/_search`, {
       size,
       query: {
         bool: {
-          must_not: {
-            match: {
-              source: 'SYRF',
+          must_not: [
+            {
+              match: {
+                source: 'SYRF',
+              },
             },
-          },
+            {
+              match: {
+                is_unfinished: true,
+              },
+            },
+          ]
         },
       },
       sort: [
@@ -87,12 +94,23 @@ exports.deleteByIds = async (ids = []) => {
   }
 };
 
-exports.deleteByUrl = async (url) => {
-  if (url) {
+exports.deleteUnfinishedRacesBySource = async (source) => {
+  if (api && source) {
     return await api.post(`races/_delete_by_query`, {
       query: {
-        term: {
-          "url.keyword": url,
+        bool: {
+          must: [
+            {
+              term: {
+                'source.keyword': source.toUpperCase(),
+              },
+            },
+            {
+              term: {
+                is_unfinished: true,
+              },
+            },
+          ],
         },
       },
     });

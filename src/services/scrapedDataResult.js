@@ -3,7 +3,6 @@ const db = require('../models');
 const { TRACKER_MAP } = require('../constants');
 const syrfSuccessfulUrlDAL = require('../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
 const syrfFailedUrlDAL = require('../syrf-schema/dataAccess/v1/scrapedFailedUrl');
-const elasticsearch = require('../utils/elasticsearch');
 
 const getExistingData = async (source, status = 'both') => {
   let urlList = [];
@@ -42,15 +41,6 @@ const registerFailure = async (source, url, error) => {
       url,
       error,
     });
-  }
-
-  // Try to delete future race record in elastic search since it threw an error
-  try {
-    await elasticsearch.deleteByUrl(url);
-  } catch (err) {
-    if (err.status !== 404 && err.response?.status !== 404) { // suppress error if not exist
-      throw err;
-    }
   }
 };
 

@@ -1,10 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
-const {
-  SAVE_DB_POSITION_CHUNK_COUNT,
-  SOURCE,
-  UNFINISHED_RACE_PREFIX,
-} = require('../constants');
+const { SAVE_DB_POSITION_CHUNK_COUNT, SOURCE } = require('../constants');
 const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKwindoo');
@@ -12,6 +8,7 @@ const mapAndSave = require('./mappingsToSyrfDB/mapKwindooToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const { generateMetadataName } = require('../utils/gisUtils');
+const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveKwindooData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -174,37 +171,24 @@ const saveKwindooData = async (data) => {
   ) {
     const finishedRaces = [];
     for (const race of data.KwindooRace) {
-      const now = Date.now();
+      const now = 1633158000000; //Date.now();
       const raceStartTime = new Date(race.start_timestamp * 1000).getTime();
       const raceEndTime = new Date(race.end_timestamp * 1000).getTime();
       const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
-      const unfinishedRaceId = `${UNFINISHED_RACE_PREFIX}-${SOURCE.KWINDOO}-${race.original_id}`;
       if (isUnfinished) {
         console.log(
-          `Future race detected. Will use race id ${unfinishedRaceId}`,
+          `Future race detected for race original id ${race.original_id}`,
         );
-        race.id = unfinishedRaceId;
         try {
+          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraperZ
           await _indexUnfinishedRaceToES(race, data.KwindooRegatta[0]);
         } catch (err) {
           console.log(
-            `Failed indexing unfinished race id ${unfinishedRaceId}`,
+            `Failed indexing unfinished race original id ${race.original_id}`,
             err,
           );
         }
       } else {
-        // try to delete race in elastic search if it was scraped in live or future status
-        try {
-          await elasticsearch.deleteByIds([unfinishedRaceId]);
-        } catch (err) {
-          if (err.status !== 404 && err.response?.status !== 404) {
-            // ignore 404, no record in elastic search
-            console.log(
-              `Error occured in updating elastic search record ${unfinishedRaceId}`,
-              err,
-            );
-          }
-        }
         finishedRaces.push(race);
       }
     }
@@ -243,6 +227,8 @@ const _indexUnfinishedRaceToES = async (race, regatta) => {
     start_day: startDate.getUTCDate(),
     approx_start_time_ms: startTimeMs,
     approx_end_time_ms: race.end_timestamp * 1000,
+    open_graph_image: getTrackerLogoUrl(SOURCE.KWINDOO), // use tracker logo for unfinished races
+    is_unfinished: true, // only attribute for unfinished races
   };
 
   await elasticsearch.indexRace(race.id, body);

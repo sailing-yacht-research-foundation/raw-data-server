@@ -57,9 +57,16 @@ const uploadStreamToS3 = (bucket, key) => {
   return { writeStream: passThrough, uploadPromise };
 };
 
+const getTrackerLogoUrl = (tracker) => {
+  return `https://${
+    process.env.OPEN_GRAPH_BUCKET_NAME
+  }.s3.amazonaws.com/public/trackers-logos/${tracker.toLowerCase()}.png`;
+};
+
 module.exports = {
   listAllKeys,
   getObject,
   uploadMapScreenshot,
   uploadStreamToS3,
+  getTrackerLogoUrl,
 };
