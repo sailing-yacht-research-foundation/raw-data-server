@@ -171,7 +171,7 @@ const saveKwindooData = async (data) => {
   ) {
     const finishedRaces = [];
     for (const race of data.KwindooRace) {
-      const now = 1633158000000; //Date.now();
+      const now = Date.now();
       const raceStartTime = new Date(race.start_timestamp * 1000).getTime();
       const raceEndTime = new Date(race.end_timestamp * 1000).getTime();
       const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
