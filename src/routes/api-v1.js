@@ -34,7 +34,10 @@ const {
   getExistingData,
   registerFailure,
 } = require('../services/scrapedDataResult');
-const { deleteUnfinishedRaces } = require('../services/competitionUnit');
+const {
+  getUnfinishedRaceIds,
+  cleanUnfinishedRaces,
+} = require('../services/competitionUnit');
 
 var router = express.Router();
 
@@ -306,19 +309,41 @@ router.post('/old-geovoile', async function (req, res) {
   });
 });
 
-router.delete(
-  '/delete-unfinished-races/:tracker',
+/*
+  Returns a list of unfinished race uid used from elastic search to be reused if race has finished
+  Also deletes any orphaned elastic search records based from given original id
+*/
+router.get(
+  '/get-unfinished-races/:tracker',
   validateTrackerSource,
   async (req, res) => {
     try {
-      await deleteUnfinishedRaces(req.params.tracker);
+      const idMap = await getUnfinishedRaceIds(req.params.tracker);
+      res.json(idMap);
     } catch (err) {
       console.log(err);
+      res.status(500).json({
+        message: 'Failed getting unfinished races',
+      });
     }
+  },
+);
 
-    res.json({
-      message: `Successfully deleted live or future races`,
-    });
+router.post(
+  '/clean-unfinished-races/:tracker',
+  validateTrackerSource,
+  async (req, res) => {
+    try {
+      await cleanUnfinishedRaces(req.params.tracker, req.body.excludedOrigIds);
+      res.json({
+        message: `Successfully cleaned unfinished race for ${req.params.tracker}`,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        message: 'Failed cleaning unfinished races',
+      });
+    }
   },
 );
 

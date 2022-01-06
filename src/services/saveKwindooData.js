@@ -172,8 +172,8 @@ const saveKwindooData = async (data) => {
     const finishedRaces = [];
     for (const race of data.KwindooRace) {
       const now = Date.now();
-      const raceStartTime = new Date(race.start_timestamp * 1000).getTime();
-      const raceEndTime = new Date(race.end_timestamp * 1000).getTime();
+      const raceStartTime = race.start_timestamp * 1000;
+      const raceEndTime = race.end_timestamp * 1000;
       const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
       if (isUnfinished) {
         console.log(
@@ -229,6 +229,7 @@ const _indexUnfinishedRaceToES = async (race, regatta) => {
     approx_end_time_ms: race.end_timestamp * 1000,
     open_graph_image: getTrackerLogoUrl(SOURCE.KWINDOO), // use tracker logo for unfinished races
     is_unfinished: true, // only attribute for unfinished races
+    scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
 
   await elasticsearch.indexRace(race.id, body);
