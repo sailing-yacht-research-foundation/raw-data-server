@@ -95,7 +95,28 @@ const _mapSequencedGeometries = (
   const courseSequencedGeometries = [];
   let order = 1;
 
+  // filter out the finish lines which is the same as start line
+  const finishPinWithStartPinType = tackTrackerFinish.filter(
+    (t) => t.finish_pin_type === 'StartPin',
+  );
+
+  tackTrackerFinish = tackTrackerFinish.filter(
+    (t) => t.finish_pin_type !== 'StartPin',
+  );
   for (const start of tackTrackerStart) {
+    const finishMark = finishPinWithStartPinType.find(
+      (t) =>
+        t.finish_mark_lat === start.start_mark_lat &&
+        t.finish_mark_lon === start.start_mark_lon &&
+        t.finish_pin_lat === start.start_pin_lat &&
+        t.finish_pin_lon === start.start_pin_lon,
+    );
+
+    let startMarkName = start.start_mark_name;
+
+    if (finishMark && finishMark.finish_mark_name !== start.start_mark_name) {
+      startMarkName = `${start.start_mark_name} - ${finishMark.finish_mark_name}`;
+    }
     const newMark = createGeometryLine(
       {
         lat: start.start_mark_lat,
@@ -105,14 +126,14 @@ const _mapSequencedGeometries = (
         lat: start.start_pin_lat,
         lon: start.start_pin_lon,
       },
-      { name: start.start_mark_name },
+      { name: startMarkName },
     );
     newMark.order = order;
     courseSequencedGeometries.push(newMark);
     order++;
   }
   for (const mark of tackTrackerMark) {
-    if (mark.used) {
+    if (mark.used || !mark.lat || !mark.lon) {
       continue;
     }
     if (mark.type === 'Rounding') {
