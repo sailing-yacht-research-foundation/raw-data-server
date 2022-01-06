@@ -132,11 +132,12 @@ const _mapSequencedGeometries = (
     courseSequencedGeometries.push(newMark);
     order++;
   }
+  tackTrackerMark = tackTrackerMark.filter((t) => t.lat && t.lon);
   for (const mark of tackTrackerMark) {
-    if (mark.used || !mark.lat || !mark.lon) {
+    if (mark.used) {
       continue;
     }
-    if (mark.type === 'Rounding') {
+    if (mark.type === 'Rounding' || mark.type === 'Fixed' || !mark.type) {
       const newMark = createGeometryPoint({
         lat: mark.lat,
         lon: mark.lon,
