@@ -156,7 +156,7 @@ const _mapSequencedGeometries = (waypoints) => {
             lon: waypoint.secondary_marker_lon,
           },
           {
-            name: [waypoint.primary_marker_name, waypoint.secondary_marker_name]
+            name: [...new Set([waypoint.primary_marker_name, waypoint.secondary_marker_name])]
               .filter(Boolean)
               .join(' - '),
             role: waypoint.role,
