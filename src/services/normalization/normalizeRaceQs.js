@@ -203,7 +203,7 @@ const _getRaceName = (regatta, division, start, raceQsEvent) => {
   const raceNames = [regatta.name, division.name];
 
   if (start?.from && raceQsEvent.tz) {
-    const startTime = moment(start.from).utcOffset(raceQsEvent.tz);
+    const startTime = moment(parseInt(start.from)).utcOffset(raceQsEvent.tz);
     raceNames.push(startTime.format('HH:mm:ss'));
   }
 
