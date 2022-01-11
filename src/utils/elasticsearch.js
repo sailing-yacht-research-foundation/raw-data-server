@@ -32,17 +32,24 @@ exports.updateRace = async (id, body) => {
   }
 };
 
-exports.pageById = async (searchAfter = '0', size = 200) => {
+exports.pageByIdFinishedNotSyrf = async (searchAfter = '0', size = 200) => {
   if (api) {
     return await api.post(`races/_search`, {
       size,
       query: {
         bool: {
-          must_not: {
-            match: {
-              source: 'SYRF',
+          must_not: [
+            {
+              match: {
+                source: 'SYRF',
+              },
             },
-          },
+            {
+              match: {
+                is_unfinished: true,
+              },
+            },
+          ],
         },
       },
       sort: [
@@ -82,6 +89,78 @@ exports.deleteByIds = async (ids = []) => {
         },
       },
     });
+  } else {
+    return null;
+  }
+};
+
+exports.deleteOrphanedRacesBySource = async (source, excludedOrigIds) => {
+  if (api && source && excludedOrigIds) {
+    return await api.post(`races/_delete_by_query`, {
+      query: {
+        bool: {
+          must: [
+            {
+              term: {
+                'source.keyword': source.toUpperCase(),
+              },
+            },
+            {
+              term: {
+                is_unfinished: true,
+              },
+            },
+          ],
+          must_not: [
+            {
+              terms: {
+                scraped_original_id: excludedOrigIds,
+              },
+            },
+          ],
+        },
+      },
+    });
+  } else {
+    return null;
+  }
+};
+
+exports.getUnfinishedRaceIdsBySource = async (source) => {
+  if (api && source) {
+    const allHits = [];
+    let totalHitCount = 0;
+    const size = 50;
+    const reqBody = {
+      _source: ['id', 'scraped_original_id'],
+      from: 0,
+      size,
+      query: {
+        bool: {
+          must: [
+            {
+              term: {
+                'source.keyword': source.toUpperCase(),
+              },
+            },
+            {
+              term: {
+                is_unfinished: true,
+              },
+            },
+          ],
+        },
+      },
+    };
+    do {
+      const esResult = await api.post(`races/_search`, reqBody);
+      const esHits = esResult.data.hits.hits;
+      totalHitCount = esResult.data.hits.total.value;
+      allHits.push(...esHits);
+      reqBody.from += size;
+    } while (allHits.length < totalHitCount);
+
+    return allHits;
   } else {
     return null;
   }

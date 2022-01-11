@@ -103,7 +103,7 @@ const _mapSequencedGeometries = (buoys) => {
               lon: connectingPoint.lon,
             },
             {
-              name: [buoy.name, connectingPoint.name]
+              name: [...new Set([buoy.name, connectingPoint.name])]
                 .filter(Boolean)
                 .join(' - '),
             },
