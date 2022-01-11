@@ -2,7 +2,6 @@ const express = require('express');
 const multer = require('multer');
 const temp = require('temp');
 
-const db = require('../models');
 const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
 const validateTrackerSource = require('../middlewares/validateTracker');
@@ -35,6 +34,10 @@ const {
   getExistingData,
   registerFailure,
 } = require('../services/scrapedDataResult');
+const {
+  getUnfinishedRaceIds,
+  cleanUnfinishedRaces,
+} = require('../services/competitionUnit');
 
 var router = express.Router();
 
@@ -305,4 +308,43 @@ router.post('/old-geovoile', async function (req, res) {
     message: `Successfully started processing of files`,
   });
 });
+
+/*
+  Returns a list of unfinished race uid used from elastic search to be reused if race has finished
+  Also deletes any orphaned elastic search records based from given original id
+*/
+router.get(
+  '/get-unfinished-races/:tracker',
+  validateTrackerSource,
+  async (req, res) => {
+    try {
+      const idMap = await getUnfinishedRaceIds(req.params.tracker);
+      res.json(idMap);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        message: 'Failed getting unfinished races',
+      });
+    }
+  },
+);
+
+router.post(
+  '/clean-unfinished-races/:tracker',
+  validateTrackerSource,
+  async (req, res) => {
+    try {
+      await cleanUnfinishedRaces(req.params.tracker, req.body.excludedOrigIds);
+      res.json({
+        message: `Successfully cleaned unfinished race for ${req.params.tracker}`,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        message: 'Failed cleaning unfinished races',
+      });
+    }
+  },
+);
+
 module.exports = router;
