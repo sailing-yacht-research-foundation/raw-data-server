@@ -329,7 +329,6 @@ exports.createRace = async function (
       Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
       Key: `public/competition/${id}/${uuid.v4()}.png`,
       Body: imageBuffer,
-      ContentEncoding: 'base64',
       ContentType: 'image/png',
     });
     openGraphImage = response?.Location;

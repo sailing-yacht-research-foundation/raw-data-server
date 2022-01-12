@@ -6,10 +6,10 @@ const s3 = new AWS.S3({
 
 const stream = require('stream');
 
-const listAllKeys = async (bucketName) => {
+const listAllKeys = async (bucketName, prefix = '') => {
   let params = {
     Bucket: bucketName,
-    Prefix: '',
+    Prefix: prefix,
   };
   let objects = await s3.listObjects(params).promise();
   let fileNames = [];
@@ -36,7 +36,6 @@ const uploadMapScreenshot = async (imageBuffer, fileName) => {
     Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
     Key: `public/${fileName}`,
     Body: imageBuffer,
-    ContentEncoding: 'base64',
     ContentType: 'image/png',
   };
   const response = await s3.upload(params).promise();
@@ -63,10 +62,17 @@ const getTrackerLogoUrl = (tracker) => {
   }.s3.amazonaws.com/public/trackers-logos/${tracker.toLowerCase()}.png`;
 };
 
+const copyObject = async (params) => {
+  return await s3
+    .copyObject(params)
+    .promise();
+};
+
 module.exports = {
   listAllKeys,
   getObject,
   uploadMapScreenshot,
   uploadStreamToS3,
   getTrackerLogoUrl,
+  copyObject,
 };
