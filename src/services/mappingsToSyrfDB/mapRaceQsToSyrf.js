@@ -170,9 +170,6 @@ const _mapPositions = (positions, start) => {
 
       // remove the position before start time.
       if (start) {
-        if (mappedPosition.timestamp < start.from) {
-          return null;
-        }
         const lowestTime = start.from - THRESHOLD_TIME;
         if (mappedPosition.timestamp < lowestTime) {
           return null;
