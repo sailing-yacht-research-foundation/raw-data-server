@@ -166,7 +166,7 @@ const _mapSequencedGeometries = (
     }
     bouy1.used = true;
     bouy2.used = true;
-    const name = [bouy1.name, bouy2.name].filter((t) => t).join(' ');
+    const name = [bouy1.name, bouy2.name].filter((t) => t).join(' - ');
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
         {
@@ -197,10 +197,10 @@ const _mapSequencedGeometries = (
         {
           lat: firstPosition.lat,
           lon: firstPosition.lon,
+          properties: {
+            name: buoy.name,
+          },
           markTrackerId: buoy.markTrackerId,
-        },
-        {
-          name: buoy.name,
         },
       ),
       order: order,
