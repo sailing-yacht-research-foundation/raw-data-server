@@ -115,3 +115,4 @@ deployment/**/.terraform.lock.hcl
 deployment/**/.terraform.tfstate.lock.info
 deployment/**/.env
 package-lock.json
+OpenGraphCopyFailure.json
