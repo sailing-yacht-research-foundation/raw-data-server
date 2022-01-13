@@ -2,6 +2,7 @@
 const path = require('path');
 const puppeteer = require('puppeteer');
 const Jimp = require('jimp');
+const sharp = require('sharp');
 
 // Need to have the file:// to work
 const htmlPath = `file://${path.resolve(
@@ -35,43 +36,61 @@ exports.createMapScreenshot = async (centerPosition) => {
       height: OG_HEIGHT,
     },
   });
-  const page = await browser.newPage();
+  let finalImageBuffer;
+  try {
+    const page = await browser.newPage();
 
-  await page.goto(htmlPath);
-  await page.evaluate(initMap, {
-    center: latLon,
-    zoom: 8,
-    tileLayerUrl: `https://api.mapbox.com/styles/v1/${mapboxId}/tiles/{z}/{x}/{y}?access_token=${accessToken}`,
-  });
+    await page.goto(htmlPath);
+    await page.evaluate(initMap, {
+      center: latLon,
+      zoom: 8,
+      tileLayerUrl: `https://api.mapbox.com/styles/v1/${mapboxId}/tiles/{z}/{x}/{y}?access_token=${accessToken}`,
+    });
 
-  await page.evaluate(addMarker, latLon);
-  await page.waitForNetworkIdle({
-    idleTime: 1000, // Need to have at least 1sec, 0ms still show some not fully loaded white tiles
-  });
-  const imageBuffer = await page.screenshot();
+    await page.evaluate(addMarker, latLon);
+    await page.waitForNetworkIdle({
+      idleTime: 1000, // Need to have at least 1sec, 0ms still show some not fully loaded white tiles
+    });
+    const imageBuffer = await page.screenshot();
 
-  // Must use supported image type, can't use syrf svg logo
-  const [image, logo] = await Promise.all([
-    Jimp.read(imageBuffer),
-    Jimp.read(path.resolve(__dirname, '../assets/images/logo-light.png')),
-  ]);
-  logo.resize(image.bitmap.width * LOGO_SIZE_PERCENTAGE, Jimp.AUTO);
+    // Must use supported image type, can't use syrf svg logo
+    const [image, logo] = await Promise.all([
+      Jimp.read(imageBuffer),
+      Jimp.read(path.resolve(__dirname, '../assets/images/logo-light.png')),
+    ]);
+    logo.resize(image.bitmap.width * LOGO_SIZE_PERCENTAGE, Jimp.AUTO);
 
-  const xMargin = image.bitmap.width * LOGO_MARGIN_PERCENTAGE;
-  const yMargin = image.bitmap.height * LOGO_MARGIN_PERCENTAGE;
-  const x = image.bitmap.width - logo.bitmap.width - xMargin;
-  const y = image.bitmap.height - logo.bitmap.height - yMargin;
+    const xMargin = image.bitmap.width * LOGO_MARGIN_PERCENTAGE;
+    const yMargin = image.bitmap.height * LOGO_MARGIN_PERCENTAGE;
+    const x = image.bitmap.width - logo.bitmap.width - xMargin;
+    const y = image.bitmap.height - logo.bitmap.height - yMargin;
 
-  image.composite(logo, x, y, [
-    {
-      mode: Jimp.BLEND_SCREEN,
-      opacitySource: 0.1,
-      opacityDest: 1,
-    },
-  ]);
-  const finalImageBuffer = image.getBufferAsync(Jimp.MIME_PNG);
+    image.composite(logo, x, y, [
+      {
+        mode: Jimp.BLEND_SOURCE_OVER,
+        opacitySource: 1,
+        opacityDest: 1,
+      },
+    ]);
+    finalImageBuffer = await image.getBufferAsync(Jimp.MIME_JPEG);
+    try {
+      const compressedBuffer = await sharp(finalImageBuffer)
+        .jpeg({ quality: 80 })
+        .toBuffer();
 
-  await browser.close();
+      finalImageBuffer = compressedBuffer;
+    } catch (error) {
+      console.error('Failed to compress image: ', error);
+    }
+  } catch (error) {
+    console.error('Failed to create map screenshot:', error);
+  } finally {
+    await browser.close();
+  }
+
+  if (!finalImageBuffer) {
+    throw new Error('Failed to create map screenshot');
+  }
   return finalImageBuffer;
 };
 

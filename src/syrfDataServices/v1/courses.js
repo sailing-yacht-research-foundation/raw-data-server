@@ -77,7 +77,7 @@ exports.generateOGImage = async (idList, centerPoint) => {
     const imageBuffer = await createMapScreenshot(centerPoint);
     const response = await uploadMapScreenshot(
       imageBuffer,
-      `competition/${uuid.v4()}.png`,
+      `competition/${uuid.v4()}.jpg`,
     );
     openGraphImage = response.Location;
     await competitionUnitDataAccess.addOpenGraphImage(idList, {
