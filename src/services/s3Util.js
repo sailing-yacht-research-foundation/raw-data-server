@@ -36,7 +36,7 @@ const uploadMapScreenshot = async (imageBuffer, fileName) => {
     Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
     Key: `public/${fileName}`,
     Body: imageBuffer,
-    ContentType: 'image/png',
+    ContentType: fileName.indexOf('.png') > -1 ? 'image/png' : 'image/jpeg',
   };
   const response = await s3.upload(params).promise();
   return response;

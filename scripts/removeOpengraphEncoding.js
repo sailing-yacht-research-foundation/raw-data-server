@@ -21,7 +21,7 @@ const logFailureFileName = 'OpenGraphCopyFailure.json';
         Bucket: ogBucketName,
         CopySource: `${ogBucketName}/${ogImageName}`,
         Key: ogImageName,
-        ContentType: 'image/png',
+        ContentType: ogImageName.indexOf('.png') > -1 ? 'image/png' : 'image/jpeg',
         MetadataDirective: 'REPLACE',
       });
     } catch (err) {
