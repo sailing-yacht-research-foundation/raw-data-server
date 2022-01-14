@@ -75,6 +75,13 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
             raw: true,
           });
 
+          if (!raceMetadatas?.length) {
+            console.log(
+              `Race original id ${race.original_id} does not have metadata. Skipping`,
+            );
+            continue;
+          }
+
           objectToPass.KwindooRace = [race];
           objectToPass.KwindooBoat = boats;
           objectToPass.KwindooPosition = boatPositions;
