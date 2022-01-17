@@ -68,6 +68,10 @@ const copyObject = async (params) => {
     .promise();
 };
 
+const listObjects = async (params) => {
+  return await s3.listObjects(params).promise();
+};
+
 module.exports = {
   listAllKeys,
   getObject,
@@ -75,4 +79,5 @@ module.exports = {
   uploadStreamToS3,
   getTrackerLogoUrl,
   copyObject,
+  listObjects,
 };
