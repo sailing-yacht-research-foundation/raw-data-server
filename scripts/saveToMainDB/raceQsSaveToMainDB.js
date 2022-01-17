@@ -25,7 +25,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
   const savedDivisionOriginalIds = existingData
     .map((t) => t.original_id)
     .filter((t) => {
-      return t.indexOf(RACEQS.DIVISION_PREFIX) !== -1;
+      return t?.indexOf(RACEQS.DIVISION_PREFIX) > -1;
     })
     .map((t) => t.replace(RACEQS.DIVISION_PREFIX, ''));
   while (shouldContinue) {
