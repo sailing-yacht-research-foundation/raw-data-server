@@ -4,7 +4,7 @@ const { createGeometryPoint } = require('../../utils/gisUtils');
 const mapAndSave = async (data, raceMetadata) => {
   console.log('Saving to main database');
   const race = data.KattackRace[0];
-  if (!race || !data.KattackPosition) {
+  if (!race || !data.KattackPosition?.length) {
     console.log('No race or positions provided');
     return;
   }
