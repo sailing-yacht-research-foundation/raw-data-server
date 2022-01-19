@@ -52,20 +52,20 @@ const normalizeRace = async (
 
     const actors = GeoracingActor;
     const allPositions = actorPositions.filter(
-      (p) => p.race_original_id === race.original_id
+      (p) => p.race_original_id === race.original_id,
     );
     if (allPositions.length === 0) {
       console.log('No race positions so skipping.');
       continue;
     }
     const courseObjects = GeoracingCourseObject?.filter(
-      (p) => p.race_original_id === race.original_id
+      (p) => p.race_original_id === race.original_id,
     );
     const courseElements = GeoracingCourseElement?.filter(
-      (p) => p.race_original_id === race.original_id
+      (p) => p.race_original_id === race.original_id,
     );
     const lines = GeoracingLine?.filter(
-      (p) => p.race_original_id === race.original_id
+      (p) => p.race_original_id === race.original_id,
     );
 
     actors.forEach((a) => {
@@ -196,20 +196,22 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
+    if (process.env.ENABLE_MAIN_DB_SAVE_GEORACING !== 'true') {
+      const tracksGeojson = JSON.stringify(
+        allPositionsToFeatureCollection(boatsToSortedPositions),
+      );
 
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      GEORACING_SOURCE,
-      transaction,
-    );
+      await db.readyAboutRaceMetadata.create(raceMetadata, {
+        fields: Object.keys(raceMetadata),
+        transaction,
+      });
+      await uploadGeoJsonToS3(
+        race.id,
+        tracksGeojson,
+        GEORACING_SOURCE,
+        transaction,
+      );
+    }
     raceMetadatas.push(raceMetadata);
   }
   return raceMetadatas;
