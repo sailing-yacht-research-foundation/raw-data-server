@@ -144,7 +144,10 @@ const saveBluewaterData = async (data) => {
     process.env.NODE_ENV !== 'test'
   ) {
     try {
-      await mapAndSave(data, raceMetadata);
+      if (data.BluewaterRace?.length) {
+        raceMetadata = await normalizeRace(data);
+        await mapAndSave(data, raceMetadata);
+      }
     } catch (err) {
       console.log(err);
     }

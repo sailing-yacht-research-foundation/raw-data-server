@@ -315,7 +315,7 @@ exports.createRace = async function (
   let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
 
   const { countryName: startCountry, cityName: startCity } =
-    await reverseGeoCode({
+    await exports.getCountryAndCity({
       lon: startPoint.geometry.coordinates[0],
       lat: startPoint.geometry.coordinates[1],
     });
