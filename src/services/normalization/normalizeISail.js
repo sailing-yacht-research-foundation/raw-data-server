@@ -14,7 +14,14 @@ const {
 const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
 const normalizeRace = async (
-  { iSailEvent, iSailRace, iSailPosition, iSailStartline, iSailEventParticipant, iSailTrack },
+  {
+    iSailEvent,
+    iSailRace,
+    iSailPosition,
+    iSailStartline,
+    iSailEventParticipant,
+    iSailTrack,
+  },
   transaction,
 ) => {
   const ISAIL_SOURCE = 'ISAIL';
@@ -33,26 +40,21 @@ const normalizeRace = async (
     const raceTrackIds = race.track_ids;
 
     const racePositions = iSailPosition.filter((pos) => {
-      const isPositionInTrack = raceTrackIds.includes(
-          pos.original_track_id
-      );
+      const isPositionInTrack = raceTrackIds.includes(pos.original_track_id);
       if (isPositionInTrack) {
-          let isPositionInRaceTime;
-          const isAfterStart =
-              pos.time >= race.start * 1000;
-          const isBeforeEnd =
-              pos.time <= race.stop * 1000;
-          if (index === 0) {
-              // include positions before start if race is earliest
-              isPositionInRaceTime = isBeforeEnd;
-          } else if (index === iSailRace.length - 1) {
-              // include positions after end if race is latest
-              isPositionInRaceTime = isAfterStart;
-          } else {
-              isPositionInRaceTime =
-                  isAfterStart && isBeforeEnd;
-          }
-          return isPositionInRaceTime;
+        let isPositionInRaceTime;
+        const isAfterStart = pos.time >= race.start * 1000;
+        const isBeforeEnd = pos.time <= race.stop * 1000;
+        if (index === 0) {
+          // include positions before start if race is earliest
+          isPositionInRaceTime = isBeforeEnd;
+        } else if (index === iSailRace.length - 1) {
+          // include positions after end if race is latest
+          isPositionInRaceTime = isAfterStart;
+        } else {
+          isPositionInRaceTime = isAfterStart && isBeforeEnd;
+        }
+        return isPositionInRaceTime;
       }
       return false;
     });
@@ -61,26 +63,24 @@ const normalizeRace = async (
       continue;
     }
     const raceTracks = iSailTrack.filter((t) =>
-        raceTrackIds.includes(t.original_id)
+      raceTrackIds.includes(t.original_id),
     );
-    const raceParticipantIds = raceTracks.map(
-        (t) => t.original_participant_id
-    );
+    const raceParticipantIds = raceTracks.map((t) => t.original_participant_id);
     const raceParticipants = iSailEventParticipant.filter((p) =>
-        raceParticipantIds.includes(p.original_id)
+      raceParticipantIds.includes(p.original_id),
     );
     const raceStartLines = iSailStartline?.filter(
-        (s) => s.original_race_id === race.original_id
+      (s) => s.original_race_id === race.original_id,
     );
     // Add the participantId in positions object for normalization
     racePositions.map((pos) => {
-        const participantId = iSailTrack.find(
-            (t) => t.id === pos.track
-        )?.participant;
-        if (participantId) {
-            pos.participant = participantId;
-        }
-        return pos;
+      const participantId = iSailTrack.find(
+        (t) => t.id === pos.track,
+      )?.participant;
+      if (participantId) {
+        pos.participant = participantId;
+      }
+      return pos;
     });
 
     const boundingBox = turf.bbox(
@@ -158,17 +158,24 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
+    if (process.env.ENABLE_MAIN_DB_SAVE_ISAIL !== 'true') {
+      const tracksGeojson = JSON.stringify(
+        allPositionsToFeatureCollection(boatsToSortedPositions),
+      );
 
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(race.id, tracksGeojson, ISAIL_SOURCE, transaction);
+      await db.readyAboutRaceMetadata.create(raceMetadata, {
+        fields: Object.keys(raceMetadata),
+        transaction,
+      });
+      await uploadGeoJsonToS3(
+        race.id,
+        tracksGeojson,
+        ISAIL_SOURCE,
+        transaction,
+      );
+    }
     raceMetadatas.push(raceMetadata);
-  };
+  }
   return raceMetadatas;
 };
 
