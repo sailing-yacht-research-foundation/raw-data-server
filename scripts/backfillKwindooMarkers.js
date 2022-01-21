@@ -47,6 +47,10 @@ const syrfDb = require('../src/syrf-schema/index');
           await courseGeometriesDAL.getSequencedByCourseId(
             competitionUnit.courseId,
           );
+
+        // In kwindoo, usually the geometry order starts at 0 and the finish line have order of 10000 . If geometry length is >= 2 then it means it has a finish line.
+        // If it only has 0 or 1 geometry, it means there is no finish line yet so the next geometry will be added with 0 or 1 order
+        // Eg. Only startline added, length = 1. The startline order is 0 then the next geometry will have order of 1.
         let markerOrder =
           existingGeometries.length >= 2
             ? existingGeometries.length - 1
