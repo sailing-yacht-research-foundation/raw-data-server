@@ -3,35 +3,35 @@ const db = require('../../src/models');
 const Op = db.Sequelize.Op;
 const { SOURCE } = require('../../src/constants');
 const { getExistingData } = require('../../src/services/scrapedDataResult');
-const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf');
+const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapGeoracingToSyrf');
 
 (async () => {
   const limit = 10;
   let page = 0;
   let shouldContinue = true;
-  const existingData = await getExistingData(SOURCE.KWINDOO);
+  const existingData = await getExistingData(SOURCE.GEORACING);
 
   while (shouldContinue) {
-    const regattas = await db.kwindooRegatta.findAll({
+    const events = await db.georacingEvent.findAll({
       raw: true,
       limit,
       offset: page * limit,
       order: [['original_id', 'ASC']],
     });
-    if (regattas.length === 0) {
+    if (events.length === 0) {
       shouldContinue = false;
       break;
     }
 
-    console.log(`Processing ${regattas.length} regattas`);
-    for (const regatta of regattas) {
+    console.log(`Processing ${events.length} events`);
+    for (const event of events) {
       try {
         const objectToPass = {
-          KwindooRegatta: [regatta],
+          GeoracingEvent: [event],
         };
-        const races = await db.kwindooRace.findAll({
+        const races = await db.georacingRace.findAll({
           where: {
-            regatta: regatta.id,
+            event: event.id,
             original_id: {
               [Op.notIn]: existingData.map((d) => d.original_id),
             },
@@ -48,7 +48,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
             raw: true,
           };
 
-          const boats = await db.kwindooBoat.findAll(raceFilter);
+          const boats = await db.georacingActor.findAll(raceFilter);
 
           if (boats.length === 0) {
             console.log(
@@ -57,7 +57,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
             continue;
           }
 
-          const boatPositions = await db.kwindooPosition.findAll(raceFilter);
+          const boatPositions = await db.georacingPosition.findAll(raceFilter);
 
           if (boatPositions.length === 0) {
             console.log(
@@ -65,8 +65,6 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
             );
             continue;
           }
-
-          const waypoints = await db.kwindooWaypoint.findAll(raceFilter);
 
           const raceMetadatas = await db.readyAboutRaceMetadata.findAll({
             where: {
@@ -82,10 +80,26 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
             continue;
           }
 
-          objectToPass.KwindooRace = [race];
-          objectToPass.KwindooBoat = boats;
-          objectToPass.KwindooPosition = boatPositions;
-          objectToPass.KwindooWaypoint = waypoints;
+          const courses = await db.georacingCourse.findAll(raceFilter);
+          const courseElements = await db.georacingCourseElement.findAll(raceFilter);
+          const courseObjects = await db.georacingCourseObject.findAll(raceFilter);
+          const lines = await db.georacingLine.findAll(raceFilter);
+          const splittimes = await db.georacingSplittime.findAll(raceFilter);
+          const splittimeObjects = await db.georacingSplittimeObject.findAll({
+            where: {
+              splittime: splittimes.map((s) => s.id),
+            },
+          });
+
+          objectToPass.GeoracingRace = [race];
+          objectToPass.GeoracingActor = boats;
+          objectToPass.GeoracingPosition = boatPositions;
+          objectToPass.GeoracingCourse = courses;
+          objectToPass.GeoracingCourseElement = courseElements;
+          objectToPass.GeoracingCourseObject = courseObjects;
+          objectToPass.GeoracingLine = lines;
+          objectToPass.GeoracingSplittime = splittimes;
+          objectToPass.GeoracingSplittimeObject = splittimeObjects;
 
           try {
             console.log(`Saving to syrf DB for race ${race.original_id}`);
@@ -96,10 +110,10 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKwindooToSyrf
           }
         } // race loop
       } catch (err) {
-        console.log('Error occured getting regatta data', err);
+        console.log('Error occured getting event data', err);
       }
     }
-    console.log(`Finished processing ${regattas.length} regattas`);
+    console.log(`Finished processing ${events.length} events`);
     page++;
   }
   console.log('Finished saving all scraper db data to main db');

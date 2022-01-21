@@ -3,16 +3,16 @@ const db = require('../../src/models');
 const Op = db.Sequelize.Op;
 const { SOURCE } = require('../../src/constants');
 const { getExistingData } = require('../../src/services/scrapedDataResult');
-const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSyrf');
+const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapKattackToSyrf');
 
 (async () => {
   const limit = 10;
   let page = 0;
   let shouldContinue = true;
-  const existingData = await getExistingData(SOURCE.BLUEWATER);
+  const existingData = await getExistingData(SOURCE.KATTACK);
 
   while (shouldContinue) {
-    const races = await db.bluewaterRace.findAll({
+    const races = await db.kattackRace.findAll({
       where: {
         original_id: {
           [Op.notIn]: existingData.map((d) => d.original_id),
@@ -38,7 +38,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSy
           raw: true,
         };
 
-        const boats = await db.bluewaterBoat.findAll(raceFilter);
+        const boats = await db.kattackDevice.findAll(raceFilter);
 
         if (boats.length === 0) {
           console.log(
@@ -47,34 +47,21 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSy
           continue;
         }
 
-        const boatPositions = await db.bluewaterPosition.findAll(raceFilter);
+        const positions = await db.kattackPosition.findAll(raceFilter);
 
-        if (boatPositions.length === 0) {
+        if (positions.length === 0) {
           console.log(
             `Race original id ${race.original_id} does not have boat positions. Skipping`,
           );
           continue;
         }
 
-        const handicaps = await db.bluewaterBoatHandicap.findAll({
+        const raceMetadata = await db.readyAboutRaceMetadata.findOne({
           where: {
-            boat: {
-              [Op.in]: boats.map((b) => b.id),
-            },
+            id: race.id,
           },
+          raw: true,
         });
-
-        const crews = await db.bluewaterCrew.findAll(raceFilter);
-        const maps = await db.bluewaterMap.findAll(raceFilter);
-
-        const raceMetadata = (
-          await db.readyAboutRaceMetadata.findAll({
-            where: {
-              id: race.id,
-            },
-            raw: true,
-          })
-        )[0];
 
         if (!raceMetadata) {
           console.log(
@@ -83,13 +70,13 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSy
           continue;
         }
 
+        const waypoints = await db.kattackWaypoint.findAll(raceFilter);
+
         const objectToPass = {
-          BluewaterRace: [race],
-          BluewaterBoat: boats,
-          BluewaterPosition: boatPositions,
-          BluewaterBoatHandicap: handicaps,
-          BluewaterCrew: crews,
-          BluewaterMap: maps,
+          KattackRace: [race],
+          KattackDevice: boats,
+          KattackPosition: positions,
+          KattackWaypoint: waypoints,
         };
 
         try {

@@ -27,6 +27,7 @@ const saveCompetitionUnit = async ({
   markTrackers = [],
   markTrackerPositions = [],
   vesselParticipantEvents = [],
+  competitionUnitData = {},
 }) => {
   let {
     id: raceId,
@@ -241,6 +242,7 @@ const saveCompetitionUnit = async ({
         openGraphImage,
         scrapedOriginalId: race.original_id,
         scrapedUrl: race.url,
+        ...competitionUnitData,
       },
       mainDatabaseTransaction,
     );
@@ -318,19 +320,31 @@ const saveCompetitionUnit = async ({
     // vesselParticipantEvents
     if (vesselParticipantEvents.length) {
       await vesselParticipantEvent.bulkCreate(
-        vesselParticipantEvents.map((e) => {
-          const vesselId = existingVesselIdMap.get(e.vesselId) || e.vesselId; // replace vessel id if already exist
-          const vesselParticipantId = createdVesselParticipants.find(
-            (vp) => vp.vesselId === vesselId,
-          )?.id;
-          return {
-            vesselParticipantId,
-            competitionUnitId: e.competitionUnitId,
-            markId: e.markId,
-            eventType: e.eventType,
-            eventTime: e.eventTime,
-          };
-        }),
+        vesselParticipantEvents
+          .map((e) => {
+            const vesselId = existingVesselIdMap.get(e.vesselId) || e.vesselId; // replace vessel id if already exist
+            const vesselParticipantId = createdVesselParticipants.find(
+              (vp) => vp.vesselId === vesselId,
+            )?.id;
+            if (
+              vesselParticipantId &&
+              e.competitionUnitId &&
+              e.markId &&
+              e.eventType &&
+              e.eventTime
+            ) {
+              return {
+                vesselParticipantId,
+                competitionUnitId: e.competitionUnitId,
+                markId: e.markId,
+                eventType: e.eventType,
+                eventTime: e.eventTime,
+              };
+            } else {
+              return null;
+            }
+          })
+          .filter(Boolean),
         mainDatabaseTransaction,
       );
     }

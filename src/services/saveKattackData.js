@@ -12,57 +12,95 @@ const saveKattackData = async (data) => {
   let errorMessage = '';
   let raceUrl = [];
   let raceMetadata;
-  try {
-    if (data.KattackRace) {
-      raceUrl = data.KattackRace.map((row) => {
-        return { url: row.url, original_id: row.original_id };
-      });
-      await db.kattackRace.bulkCreate(data.KattackRace, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-    }
-    if (data.KattackYachtClub) {
-      await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-    }
-    if (data.KattackDevice) {
-      await db.kattackDevice.bulkCreate(data.KattackDevice, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-    }
-    if (data.KattackPosition) {
-      const positions = data.KattackPosition.slice(); // clone array to avoid mutating the data
-      while (positions.length > 0) {
-        const splicedArray = positions.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-        await db.kattackPosition.bulkCreate(splicedArray, {
+
+  if (process.env.ENABLE_MAIN_DB_SAVE_KATTACK !== 'true') {
+    try {
+      if (data.KattackRace) {
+        raceUrl = data.KattackRace.map((row) => {
+          return { url: row.url, original_id: row.original_id };
+        });
+        await db.kattackRace.bulkCreate(data.KattackRace, {
           ignoreDuplicates: true,
           validate: true,
           transaction,
         });
       }
+      if (data.KattackYachtClub) {
+        await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        });
+      }
+      if (data.KattackDevice) {
+        await db.kattackDevice.bulkCreate(data.KattackDevice, {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        });
+      }
+      if (data.KattackPosition) {
+        const positions = data.KattackPosition.slice(); // clone array to avoid mutating the data
+        while (positions.length > 0) {
+          const splicedArray = positions.splice(
+            0,
+            SAVE_DB_POSITION_CHUNK_COUNT,
+          );
+          await db.kattackPosition.bulkCreate(splicedArray, {
+            ignoreDuplicates: true,
+            validate: true,
+            transaction,
+          });
+        }
+      }
+      if (data.KattackWaypoint) {
+        await db.kattackWaypoint.bulkCreate(data.KattackWaypoint, {
+          ignoreDuplicates: true,
+          validate: true,
+          transaction,
+        });
+      }
+      if (data.KattackRace) {
+        raceMetadata = await normalizeRace(data, transaction);
+      }
+      await transaction.commit();
+    } catch (error) {
+      console.log(error);
+      await transaction.rollback();
+      errorMessage = databaseErrorHandler(error);
     }
-    if (data.KattackWaypoint) {
-      await db.kattackWaypoint.bulkCreate(data.KattackWaypoint, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
+
+    if (raceUrl.length > 0) {
+      if (errorMessage) {
+        await db.kattackFailedUrl.bulkCreate(
+          raceUrl.map((row) => {
+            return {
+              id: uuidv4(),
+              url: row.url,
+              error: errorMessage,
+            };
+          }),
+          {
+            ignoreDuplicates: true,
+            validate: true,
+          },
+        );
+      } else {
+        await db.kattackSuccessfulUrl.bulkCreate(
+          raceUrl.map((row) => {
+            return {
+              id: uuidv4(),
+              url: row.url,
+              original_id: row.original_id,
+            };
+          }),
+          {
+            ignoreDuplicates: true,
+            validate: true,
+          },
+        );
+      }
     }
-    if (data.KattackRace) {
-      raceMetadata = await normalizeRace(data, transaction);
-    }
-    await transaction.commit();
-  } catch (error) {
-    console.log(error);
-    await transaction.rollback();
-    errorMessage = databaseErrorHandler(error);
   }
 
   if (
@@ -70,41 +108,12 @@ const saveKattackData = async (data) => {
     process.env.NODE_ENV !== 'test'
   ) {
     try {
-      await mapAndSave(data, raceMetadata);
+      if (data.KattackRace?.length) {
+        raceMetadata = await normalizeRace(data);
+        await mapAndSave(data, raceMetadata);
+      }
     } catch (err) {
       console.log(err);
-    }
-  }
-
-  if (raceUrl.length > 0) {
-    if (errorMessage) {
-      await db.kattackFailedUrl.bulkCreate(
-        raceUrl.map((row) => {
-          return {
-            id: uuidv4(),
-            url: row.url,
-            error: errorMessage,
-          };
-        }),
-        {
-          ignoreDuplicates: true,
-          validate: true,
-        },
-      );
-    } else {
-      await db.kattackSuccessfulUrl.bulkCreate(
-        raceUrl.map((row) => {
-          return {
-            id: uuidv4(),
-            url: row.url,
-            original_id: row.original_id,
-          };
-        }),
-        {
-          ignoreDuplicates: true,
-          validate: true,
-        },
-      );
     }
   }
 

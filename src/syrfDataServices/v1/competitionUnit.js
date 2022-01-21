@@ -28,6 +28,7 @@ exports.upsert = async (
     status = competitionUnitStatus.COMPLETED,
     scrapedOriginalId,
     scrapedUrl,
+    handicap,
   } = {},
   transaction,
 ) => {
@@ -51,6 +52,7 @@ exports.upsert = async (
     status,
     scrapedOriginalId,
     scrapedUrl,
+    handicap,
     createdAt: now,
     updatedAt: now,
   };

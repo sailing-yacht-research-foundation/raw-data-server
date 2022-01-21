@@ -94,15 +94,17 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  const tracksGeojson = JSON.stringify(
-    allPositionsToFeatureCollection(boatsToSortedPositions),
-  );
+  if (process.env.ENABLE_MAIN_DB_SAVE_ESTELA !== 'true') {
+    const tracksGeojson = JSON.stringify(
+      allPositionsToFeatureCollection(boatsToSortedPositions),
+    );
 
-  await db.readyAboutRaceMetadata.create(raceMetadata, {
-    fields: Object.keys(raceMetadata),
-    transaction,
-  });
-  await uploadGeoJsonToS3(race.id, tracksGeojson, ESTELA_SOURCE, transaction);
+    await db.readyAboutRaceMetadata.create(raceMetadata, {
+      fields: Object.keys(raceMetadata),
+      transaction,
+    });
+    await uploadGeoJsonToS3(race.id, tracksGeojson, ESTELA_SOURCE, transaction);
+  }
   return raceMetadata;
 };
 

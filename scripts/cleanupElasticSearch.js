@@ -1,5 +1,6 @@
 require('dotenv').config();
 const db = require('../src/models');
+const syrfDb = require('../src/syrf-schema')
 const elasticsearch = require('../src/utils/elasticsearch');
 const Op = db.Sequelize.Op;
 const fs = require('fs');
@@ -29,7 +30,7 @@ const logFailures = (documents = []) => {
   fs.appendFileSync(logFileName, '[');
   fs.appendFileSync(logFailureFileName, '[');
   do {
-    const hits = (await elasticsearch.pageById(lastSort)).data?.hits?.hits;
+    const hits = (await elasticsearch.pageByIdFinishedNotSyrf(lastSort)).data?.hits?.hits;
 
     if (!Array.isArray(hits)) {
       break;
@@ -40,6 +41,7 @@ const logFailures = (documents = []) => {
       shouldFetch = false;
     }
 
+    // Check if id is in scraper DB
     const result = (
       await db.readyAboutRaceMetadata.findAll({
         where: {
@@ -52,7 +54,25 @@ const logFailures = (documents = []) => {
       })
     ).map((t) => t.id);
 
-    const toDelete = hits.filter((t) => !result.includes(t._id));
+    let toDelete = hits.filter((t) => !result.includes(t._id));
+
+    // Check if id is in syrf main DB
+    const syrfResult = (
+      await syrfDb.CompetitionUnit.findAll({
+        where: {
+          id: {
+            [Op.in]: hits.map((t) => t._id),
+          },
+        },
+        attributes: ['id'],
+        raw: true,
+      })
+    ).map((t) => t.id);
+
+    toDelete = hits.filter((t) => !syrfResult.includes(t._id));
+
+    count += toDelete.length;
+
     logDeleted(toDelete);
     const { deleted, failures } = (
       await elasticsearch.deleteByIds(toDelete.map((t) => t._id))

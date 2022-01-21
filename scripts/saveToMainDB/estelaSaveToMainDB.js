@@ -3,16 +3,16 @@ const db = require('../../src/models');
 const Op = db.Sequelize.Op;
 const { SOURCE } = require('../../src/constants');
 const { getExistingData } = require('../../src/services/scrapedDataResult');
-const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSyrf');
+const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapEstelaToSyrf');
 
 (async () => {
   const limit = 10;
   let page = 0;
   let shouldContinue = true;
-  const existingData = await getExistingData(SOURCE.BLUEWATER);
+  const existingData = await getExistingData(SOURCE.ESTELA);
 
   while (shouldContinue) {
-    const races = await db.bluewaterRace.findAll({
+    const races = await db.estelaRace.findAll({
       where: {
         original_id: {
           [Op.notIn]: existingData.map((d) => d.original_id),
@@ -38,7 +38,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSy
           raw: true,
         };
 
-        const boats = await db.bluewaterBoat.findAll(raceFilter);
+        const boats = await db.estelaDorsal.findAll(raceFilter);
 
         if (boats.length === 0) {
           console.log(
@@ -47,25 +47,18 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSy
           continue;
         }
 
-        const boatPositions = await db.bluewaterPosition.findAll(raceFilter);
+        const positions = await db.estelaPosition.findAll(raceFilter);
 
-        if (boatPositions.length === 0) {
+        if (positions.length === 0) {
           console.log(
             `Race original id ${race.original_id} does not have boat positions. Skipping`,
           );
           continue;
         }
 
-        const handicaps = await db.bluewaterBoatHandicap.findAll({
-          where: {
-            boat: {
-              [Op.in]: boats.map((b) => b.id),
-            },
-          },
-        });
-
-        const crews = await db.bluewaterCrew.findAll(raceFilter);
-        const maps = await db.bluewaterMap.findAll(raceFilter);
+        const players = await db.estelaPlayer.findAll(raceFilter);
+        const buoys = await db.estelaBuoy.findAll(raceFilter);
+        const results = await db.estelaResult.findAll(raceFilter);
 
         const raceMetadata = (
           await db.readyAboutRaceMetadata.findAll({
@@ -84,12 +77,12 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapBluewaterToSy
         }
 
         const objectToPass = {
-          BluewaterRace: [race],
-          BluewaterBoat: boats,
-          BluewaterPosition: boatPositions,
-          BluewaterBoatHandicap: handicaps,
-          BluewaterCrew: crews,
-          BluewaterMap: maps,
+          EstelaRace: [race],
+          EstelaDorsal: boats,
+          EstelaPosition: positions,
+          EstelaPlayer: players,
+          EstelaBuoy: buoys,
+          EstelaResult: results,
         };
 
         try {

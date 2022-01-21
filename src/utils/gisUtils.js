@@ -315,7 +315,7 @@ exports.createRace = async function (
   let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
 
   const { countryName: startCountry, cityName: startCity } =
-    await reverseGeoCode({
+    await exports.getCountryAndCity({
       lon: startPoint.geometry.coordinates[0],
       lat: startPoint.geometry.coordinates[1],
     });
@@ -327,10 +327,9 @@ exports.createRace = async function (
     const response = await uploadUtil.uploadDataToS3({
       ACL: 'public-read',
       Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
-      Key: `public/competition/${id}/${uuid.v4()}.png`,
+      Key: `public/competition/${id}/${uuid.v4()}.jpg`,
       Body: imageBuffer,
-      ContentEncoding: 'base64',
-      ContentType: 'image/png',
+      ContentType: 'image/jpeg',
     });
     openGraphImage = response?.Location;
   } catch (error) {
