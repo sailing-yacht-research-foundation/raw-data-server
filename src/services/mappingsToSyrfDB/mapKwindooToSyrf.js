@@ -54,6 +54,7 @@ const mapAndSave = async (data, raceMetadatas) => {
     // geometries
     const courseSequencedGeometries = _mapSequencedGeometries(
       data.KwindooWaypoint?.filter((w) => w.race === race.id),
+      data.KwindooMarker?.filter((w) => w.race === race.id),
     );
 
     const inputRace = {
@@ -123,8 +124,9 @@ const _mapPositions = (positions) => {
     .filter(Boolean);
 };
 
-const _mapSequencedGeometries = (waypoints) => {
+const _mapSequencedGeometries = (waypoints = [], markers = []) => {
   const courseSequencedGeometries = [];
+  const excludeMarkersId = [];
   for (const waypoint of waypoints) {
     switch (waypoint.type) {
       case 'buoy': {
@@ -143,6 +145,7 @@ const _mapSequencedGeometries = (waypoints) => {
         geometryMark.id = waypoint.id;
         geometryMark.order = waypoint.order_number;
         courseSequencedGeometries.push(geometryMark);
+        excludeMarkersId.push(waypoint.primary_marker_id);
         break;
       }
       case 'gate': {
@@ -156,7 +159,12 @@ const _mapSequencedGeometries = (waypoints) => {
             lon: waypoint.secondary_marker_lon,
           },
           {
-            name: [...new Set([waypoint.primary_marker_name, waypoint.secondary_marker_name])]
+            name: [
+              ...new Set([
+                waypoint.primary_marker_name,
+                waypoint.secondary_marker_name,
+              ]),
+            ]
               .filter(Boolean)
               .join(' - '),
             role: waypoint.role,
@@ -173,9 +181,30 @@ const _mapSequencedGeometries = (waypoints) => {
         geometryLine.id = waypoint.id;
         geometryLine.order = waypoint.order_number;
         courseSequencedGeometries.push(geometryLine);
+        excludeMarkersId.push(waypoint.primary_marker_id);
+        excludeMarkersId.push(waypoint.secondary_marker_id);
         break;
       }
     } // switch close
+  }
+
+  // Add markers that were not included in the waypoints
+  let markerOrder = Math.max(courseSequencedGeometries.length - 1, 0); // exclude finish line
+  for (const marker of markers.filter(
+    (m) => !excludeMarkersId.includes(m.original_id),
+  )) {
+    const geometryMark = createGeometryPoint({
+      lat: marker.lat,
+      lon: marker.lon,
+      properties: {
+        name: marker.name,
+        approach_radius: marker.approach_radius,
+        marker_id: marker.original_id,
+      },
+    });
+    geometryMark.id = marker.id;
+    geometryMark.order = markerOrder++;
+    courseSequencedGeometries.push(geometryMark);
   }
   return courseSequencedGeometries;
 };
