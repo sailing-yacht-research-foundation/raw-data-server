@@ -3,6 +3,9 @@ const {
   createGeometryPoint,
   createGeometryLine,
 } = require('../../utils/gisUtils');
+
+const markIdentifiers = new Set(['Mark', 'Marker', 'CourseMark']);
+
 const mapTackTrackerToSyrf = async (data, raceMetadata) => {
   if (!raceMetadata) {
     console.log(`mapTackTrackerToSyrf requires raceMetadata`);
@@ -22,18 +25,24 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
   })[0];
 
   console.log('Saving to main database');
-  const inputBoats = _mapBoats(data.TackTrackerBoat);
-
+  const markTrackers = _mapTracker(data.TackTrackerBoat);
   const courseSequencedGeometries = _mapSequencedGeometries(
     data.TackTrackerMark,
     data.TackTrackerStart,
     data.TackTrackerFinish,
+    markTrackers,
   );
+  const markTrackerPositions = _mapMarkTrackerPositions(
+    data.TackTrackerPosition,
+    markTrackers,
+  );
+
   const positions = _mapPositions(
     data.TackTrackerPosition,
     data.TackTrackerRace[0],
   );
 
+  const inputBoats = _mapBoats(data.TackTrackerBoat);
   const rankings = _mapRankings(inputBoats, positions);
 
   const race = data.TackTrackerRace[0];
@@ -49,6 +58,8 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
     boats: inputBoats,
     positions,
     raceMetadata,
+    markTrackers,
+    markTrackerPositions,
     courseSequencedGeometries,
     rankings,
     reuse: {
@@ -58,14 +69,33 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
 };
 
 const _mapBoats = (boats) => {
-  return boats?.map((b) => {
+  const inputBoats = [];
+
+  for (const b of boats) {
+    if (markIdentifiers.has(b.unknown_4)) {
+      continue;
+    }
     const vessel = {
       id: b.id,
       publicName: b.name,
       vesselId: b.id,
+      model: b.unknown_4,
     };
-    return vessel;
-  });
+    inputBoats.push(vessel);
+  }
+
+  return inputBoats;
+};
+
+const _mapTracker = (trackerData) => {
+  const markTrackers = [];
+  for (const tracker of trackerData) {
+    if (!markIdentifiers.has(tracker.unknown_4)) {
+      continue;
+    }
+    markTrackers.push(tracker);
+  }
+  return markTrackers;
 };
 
 const _mapPositions = (positions, tackTrackerRace) => {
@@ -87,10 +117,33 @@ const _mapPositions = (positions, tackTrackerRace) => {
   return newPositions;
 };
 
+const _mapMarkTrackerPositions = (positions, markTrackers) => {
+  if (!markTrackers || !markTrackers.length) {
+    return [];
+  }
+  const markTrackerIds = new Set(markTrackers.map((t) => t.id));
+  const newPositions = positions
+    .map((t) => {
+      if (!markTrackerIds.has(t.boat)) {
+        return null;
+      }
+      return {
+        ...t,
+        timestamp: new Date(t.time),
+        markTrackerId: t.boat,
+      };
+    })
+    .filter((t) => t);
+
+  newPositions.sort((a, b) => a.timestamp - b.timestamp);
+  return newPositions;
+};
+
 const _mapSequencedGeometries = (
   tackTrackerMark = [],
   tackTrackerStart = [],
   tackTrackerFinish = [],
+  markTrackers = [],
 ) => {
   const courseSequencedGeometries = [];
   let order = 1;
@@ -117,14 +170,22 @@ const _mapSequencedGeometries = (
     if (finishMark && finishMark.finish_mark_name !== start.start_mark_name) {
       startMarkName = `${start.start_mark_name} - ${finishMark.finish_mark_name}`;
     }
+    const startMarkTracker = markTrackers.find(
+      (t) => t.name === start.start_mark_name,
+    );
+    const startPinTracker = markTrackers.find(
+      (t) => t.name === start.start_pin_name,
+    );
     const newMark = createGeometryLine(
       {
         lat: start.start_mark_lat,
         lon: start.start_mark_lon,
+        markTrackerId: startMarkTracker?.id,
       },
       {
         lat: start.start_pin_lat,
         lon: start.start_pin_lon,
+        markTrackerId: startPinTracker?.id,
       },
       { name: startMarkName },
     );
@@ -138,6 +199,11 @@ const _mapSequencedGeometries = (
       continue;
     }
     if (mark.type === 'Rounding' || mark.type === 'Fixed' || !mark.type) {
+      const markTracker = markTrackers.find(
+        (t) =>
+          _getNameWithoutDoubleQuote(t.name) ===
+          _getNameWithoutDoubleQuote(mark.name),
+      );
       const newMark = createGeometryPoint({
         lat: mark.lat,
         lon: mark.lon,
@@ -145,6 +211,7 @@ const _mapSequencedGeometries = (
           name: mark.name,
           type: mark.type,
         },
+        markTrackerId: markTracker?.id,
       });
       newMark.order = order;
       courseSequencedGeometries.push(newMark);
@@ -162,14 +229,26 @@ const _mapSequencedGeometries = (
         (t) => t.name === mark.name && !t.used && t.type === 'GateMark',
       );
       if (gates.length === 2) {
+        const firstTracker = markTrackers.find(
+          (t) =>
+            _getNameWithoutDoubleQuote(t.name) ===
+            _getNameWithoutDoubleQuote(gates[0].name),
+        );
+        const secondTracker = markTrackers.find(
+          (t) =>
+            _getNameWithoutDoubleQuote(t.name) ===
+            _getNameWithoutDoubleQuote(gates[1].name),
+        );
         const line = createGeometryLine(
           {
             lat: gates[0].lat,
             lon: gates[0].lon,
+            markTrackerId: firstTracker?.id,
           },
           {
             lat: gates[1].lat,
             lon: gates[1].lon,
+            markTrackerId: secondTracker?.id,
           },
           { name: mark.name },
         );
@@ -180,14 +259,22 @@ const _mapSequencedGeometries = (
     }
   }
   for (const finish of tackTrackerFinish) {
+    const finishMarkTracker = markTrackers.find(
+      (t) => t.name === finish.finish_mark_name,
+    );
+    const finishPinTracker = markTrackers.find(
+      (t) => t.name === finish.finish_pin_name,
+    );
     const newMark = createGeometryLine(
       {
         lat: finish.finish_mark_lat,
         lon: finish.finish_mark_lon,
+        markTrackerId: finishMarkTracker?.id,
       },
       {
         lat: finish.finish_pin_lat,
         lon: finish.finish_pin_lon,
+        markTrackerId: finishPinTracker?.id,
       },
       { name: finish.finish_mark_name },
     );
@@ -229,5 +316,9 @@ const _mapRankings = (boats, positions = []) => {
   });
 
   return rankings;
+};
+
+const _getNameWithoutDoubleQuote = (name) => {
+  return name?.replace(/"/g, '');
 };
 module.exports = mapTackTrackerToSyrf;
