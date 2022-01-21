@@ -54,6 +54,18 @@ const mapAndSave = async (data, raceMetadata) => {
     reuse: {
       boats: true,
     },
+    competitionUnitData: {
+      handicap: data.BluewaterBoatHandicap
+        ? [
+            ...data.BluewaterBoatHandicap.reduce((acc, h) => {
+              if (h.name) {
+                acc.add(h.name);
+              }
+              return acc;
+            }, new Set()),
+          ]
+        : null,
+    },
   });
 };
 
