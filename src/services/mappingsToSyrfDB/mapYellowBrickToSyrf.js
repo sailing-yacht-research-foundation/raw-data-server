@@ -37,6 +37,18 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     courseSequencedGeometries,
     rankings,
     handicapMap,
+    competitionUnitData: {
+      handicap: data.YellowbrickTag
+        ? [
+            ...data.YellowbrickTag.reduce((acc, t) => {
+              if (t.handicap) {
+                acc.add(t.handicap);
+              }
+              return acc;
+            }, new Set()),
+          ]
+        : null,
+    },
   });
 };
 

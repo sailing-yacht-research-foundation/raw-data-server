@@ -101,7 +101,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
           event: true,
           boats: true,
         },
-        competitionUnitData: { handicap: start?.type },
+        competitionUnitData: start?.type ? { handicap: [start?.type] } : null,
       });
     } while (starts.length);
   }
