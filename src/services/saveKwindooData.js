@@ -9,6 +9,7 @@ const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const { generateMetadataName } = require('../utils/gisUtils');
 const { getTrackerLogoUrl } = require('./s3Util');
+const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveKwindooData = async (data) => {
   const transaction = await db.sequelize.transaction();
@@ -180,8 +181,8 @@ const saveKwindooData = async (data) => {
           `Future race detected for race original id ${race.original_id}`,
         );
         try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraperZ
-          await _indexUnfinishedRaceToES(race, data.KwindooRegatta[0]);
+          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+          await _indexUnfinishedRaceToES(race, data);
         } catch (err) {
           console.log(
             `Failed indexing unfinished race original id ${race.original_id}`,
@@ -212,10 +213,25 @@ const saveKwindooData = async (data) => {
   return errorMessage;
 };
 
-const _indexUnfinishedRaceToES = async (race, regatta) => {
+const _indexUnfinishedRaceToES = async (race, data) => {
+  const regatta = data.KwindooRegatta[0];
+  const waypoints = data.KwindooWaypoint?.filter((wp) => wp.race === race.id);
+  const homeportLocation = data.KwindooHomeportLocation[0];
   const startTimeMs = race.start_timestamp * 1000;
   const startDate = new Date(startTimeMs);
   const name = generateMetadataName(regatta.name, race.name, startTimeMs);
+  const startWaypoint = waypoints?.find((wp) => wp.role === 'start');
+  let startPoint;
+  if (startWaypoint) {
+    startPoint = createTurfPoint(
+      startWaypoint.primary_marker_lat,
+      startWaypoint.primary_marker_lon,
+    );
+  } else if (homeportLocation) {
+    // If start waypoint does not exist, use homeport as start point
+    startPoint = createTurfPoint(homeportLocation.lat, homeportLocation.lon);
+  }
+
   const body = {
     id: race.id,
     name,
@@ -231,6 +247,21 @@ const _indexUnfinishedRaceToES = async (race, regatta) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  if (startPoint) {
+    body.approx_start_point = startPoint.geometry;
+    const { countryName, cityName } = await getCountryAndCity({
+      lon: startPoint.geometry.coordinates[0],
+      lat: startPoint.geometry.coordinates[1],
+    });
+
+    if (countryName) {
+      body.start_country = countryName;
+    }
+    if (cityName) {
+      body.start_city = cityName;
+    }
+  }
 
   await elasticsearch.indexRace(race.id, body);
 };
