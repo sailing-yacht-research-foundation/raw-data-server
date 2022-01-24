@@ -36,17 +36,17 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
 
   console.log('Saving to main database');
   const markTrackers = _mapTracker(data.TackTrackerBoat);
+  const markTrackerPositions = _mapMarkTrackerPositions(
+    data.TackTrackerPosition,
+    markTrackers,
+  );
   const courseSequencedGeometries = _mapSequencedGeometries(
     data.TackTrackerMark,
     data.TackTrackerStart,
     data.TackTrackerFinish,
     markTrackers,
+    markTrackerPositions,
   );
-  const markTrackerPositions = _mapMarkTrackerPositions(
-    data.TackTrackerPosition,
-    markTrackers,
-  );
-
   const positions = _mapPositions(
     data.TackTrackerPosition,
     data.TackTrackerRace[0],
@@ -155,6 +155,7 @@ const _mapSequencedGeometries = (
   tackTrackerStart = [],
   tackTrackerFinish = [],
   markTrackers = [],
+  markTrackerPositions = [],
 ) => {
   const courseSequencedGeometries = [];
   let order = 1;
@@ -184,18 +185,26 @@ const _mapSequencedGeometries = (
     const startMarkTracker = markTrackers.find(
       (t) => t.name === start.start_mark_name,
     );
+    const startMarkFirstPosition = _getFirstMarkPosition(
+      startMarkTracker?.id,
+      markTrackerPositions,
+    );
     const startPinTracker = markTrackers.find(
       (t) => t.name === start.start_pin_name,
     );
+    const startPinTrackerPosition = _getFirstMarkPosition(
+      startPinTracker?.id,
+      markTrackerPositions,
+    );
     const newMark = createGeometryLine(
       {
-        lat: start.start_mark_lat,
-        lon: start.start_mark_lon,
+        lat: startMarkFirstPosition?.lat || start.start_mark_lat,
+        lon: startMarkFirstPosition?.lon || start.start_mark_lon,
         markTrackerId: startMarkTracker?.id,
       },
       {
-        lat: start.start_pin_lat,
-        lon: start.start_pin_lon,
+        lat: startPinTrackerPosition?.lat || start.start_pin_lat,
+        lon: startPinTrackerPosition?.lon || start.start_pin_lon,
         markTrackerId: startPinTracker?.id,
       },
       { name: startMarkName },
@@ -215,9 +224,14 @@ const _mapSequencedGeometries = (
           _getNameWithoutDoubleQuote(t.name) ===
           _getNameWithoutDoubleQuote(mark.name),
       );
+
+      const markTrackerFirstPosition = _getFirstMarkPosition(
+        markTracker?.id,
+        markTrackerPositions,
+      );
       const newMark = createGeometryPoint({
-        lat: mark.lat,
-        lon: mark.lon,
+        lat: markTrackerFirstPosition?.lat || mark.lat,
+        lon: markTrackerFirstPosition?.lon || mark.lon,
         properties: {
           name: mark.name,
           type: mark.type,
@@ -250,15 +264,24 @@ const _mapSequencedGeometries = (
             _getNameWithoutDoubleQuote(t.name) ===
             _getNameWithoutDoubleQuote(gates[1].name),
         );
+
+        const firstTrackerPosition = _getFirstMarkPosition(
+          firstTracker?.id,
+          markTrackerPositions,
+        );
+        const secondTrackerPosition = _getFirstMarkPosition(
+          secondTracker?.id,
+          markTrackerPositions,
+        );
         const line = createGeometryLine(
           {
-            lat: gates[0].lat,
-            lon: gates[0].lon,
+            lat: firstTrackerPosition?.lat || gates[0].lat,
+            lon: firstTrackerPosition?.lon || gates[0].lon,
             markTrackerId: firstTracker?.id,
           },
           {
-            lat: gates[1].lat,
-            lon: gates[1].lon,
+            lat: secondTrackerPosition?.lat || gates[1].lat,
+            lon: secondTrackerPosition?.lon || gates[1].lon,
             markTrackerId: secondTracker?.id,
           },
           { name: mark.name },
@@ -276,15 +299,25 @@ const _mapSequencedGeometries = (
     const finishPinTracker = markTrackers.find(
       (t) => t.name === finish.finish_pin_name,
     );
+
+    const finishMarkTrackerPosition = _getFirstMarkPosition(
+      finishMarkTracker?.id,
+      markTrackerPositions,
+    );
+
+    const finishPinTrackerPosition = _getFirstMarkPosition(
+      finishPinTracker?.id,
+      markTrackerPositions,
+    );
     const newMark = createGeometryLine(
       {
-        lat: finish.finish_mark_lat,
-        lon: finish.finish_mark_lon,
+        lat: finishMarkTrackerPosition?.lat || finish.finish_mark_lat,
+        lon: finishMarkTrackerPosition?.lon || finish.finish_mark_lon,
         markTrackerId: finishMarkTracker?.id,
       },
       {
-        lat: finish.finish_pin_lat,
-        lon: finish.finish_pin_lon,
+        lat: finishPinTrackerPosition?.lat || finish.finish_pin_lat,
+        lon: finishPinTrackerPosition?.lon || finish.finish_pin_lon,
         markTrackerId: finishPinTracker?.id,
       },
       { name: finish.finish_mark_name },
@@ -329,6 +362,12 @@ const _mapRankings = (boats, positions = []) => {
   return rankings;
 };
 
+const _getFirstMarkPosition = (markTrackerId, markTrackerPositions) => {
+  if (!markTrackerId) {
+    return null;
+  }
+  return markTrackerPositions.find((t) => t.markTrackerId === markTrackerId);
+};
 const _getNameWithoutDoubleQuote = (name) => {
   return name?.replace(/"/g, '');
 };
