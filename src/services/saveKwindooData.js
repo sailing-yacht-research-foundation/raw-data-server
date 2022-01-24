@@ -16,7 +16,6 @@ const saveKwindooData = async (data) => {
   let errorMessage = '';
   let raceUrl = [];
   let raceMetadatas;
-
   if (process.env.ENABLE_MAIN_DB_SAVE_KWINDOO !== 'true') {
     try {
       if (data.KwindooRace) {
