@@ -12,33 +12,45 @@ const {
   findCenter,
 } = require('../../utils/gisUtils');
 const { uploadGeoJsonToS3 } = require('../uploadUtil');
+const markIdentifiers = new Set(['Mark', 'Marker', 'CourseMark']);
 
-const normalizeRace = async ({
+const normalizeRace = async (
+  {
     TackTrackerRace,
     TackTrackerPosition,
     TackTrackerStart,
     TackTrackerFinish,
     TackTrackerBoat,
   },
-  transaction
+  transaction,
 ) => {
   const TACKTRACKER_SOURCE = 'TACKTRACKER';
   const raceMetadatas = [];
 
-  if (!TackTrackerRace || !TackTrackerPosition || TackTrackerPosition.length === 0) {
+  if (
+    !TackTrackerRace ||
+    !TackTrackerPosition ||
+    TackTrackerPosition.length === 0
+  ) {
     console.log('No race or positions so skipping.');
     return;
   }
 
   for (const race of TackTrackerRace) {
-    const allPositions = TackTrackerPosition.filter((p) => p.race === race.id && p.lat && p.lon);
+    let allPositions = TackTrackerPosition.filter(
+      (p) => p.race === race.id && p.lat && p.lon,
+    );
     if (allPositions.length === 0) {
       console.log('No race positions so skipping.');
       continue;
     }
     const startMark = TackTrackerStart?.filter((s) => s.race === race.id)?.[0];
-    const finishMark = TackTrackerFinish?.filter((f) => f.race === race.id)?.[0];
-    const boats = TackTrackerBoat.filter((b) => b.race === race.id);
+    const finishMark = TackTrackerFinish?.filter(
+      (f) => f.race === race.id,
+    )?.[0];
+    const boats = TackTrackerBoat.filter(
+      (b) => b.race === race.id && !markIdentifiers.has(b.unknown_4),
+    );
     const id = race.id;
     const startTime = new Date(race.start).getTime();
     let endTime;
@@ -52,91 +64,94 @@ const normalizeRace = async ({
     const handicapRules = [];
     const unstructuredText = [];
 
+    const boatIds = new Set();
     boats.forEach((b) => {
-        boatNames.push(b.name);
+      boatNames.push(b.name);
+      boatIds.add(b.id);
     });
 
+    allPositions = allPositions.filter((t) => boatIds.has(t.boat));
     allPositions.forEach((p) => {
-        p.timestamp = new Date(p.time).getTime();
-        if (!endTime || endTime < p.timestamp) {
-            endTime = p.timestamp;
-        }
+      p.timestamp = new Date(p.time).getTime();
+      if (!endTime || endTime < p.timestamp) {
+        endTime = p.timestamp;
+      }
     });
 
     const boundingBox = turf.bbox(
-        positionsToFeatureCollection('lat', 'lon', allPositions)
+      positionsToFeatureCollection('lat', 'lon', allPositions),
     );
     const boatsToSortedPositions = createBoatToPositionDictionary(
-        allPositions,
-        'boat',
-        'timestamp'
+      allPositions,
+      'boat',
+      'timestamp',
     );
     let startPoint;
     if (startMark) {
-        startPoint = findCenter(
-            startMark.start_mark_lat,
-            startMark.start_mark_lon,
-            startMark.start_pin_lat,
-            startMark.start_pin_lon
-        );
+      startPoint = findCenter(
+        startMark.start_mark_lat,
+        startMark.start_mark_lon,
+        startMark.start_pin_lat,
+        startMark.start_pin_lon,
+      );
     } else {
-        const first3Positions = collectFirstNPositionsFromBoatsToPositions(
-            boatsToSortedPositions,
-            3
-        );
-        startPoint = getCenterOfMassOfPositions('lat', 'lon', first3Positions);
+      const first3Positions = collectFirstNPositionsFromBoatsToPositions(
+        boatsToSortedPositions,
+        3,
+      );
+      startPoint = getCenterOfMassOfPositions('lat', 'lon', first3Positions);
     }
 
     let endPoint;
     if (finishMark) {
-        endPoint = findCenter(
-            finishMark.finish_mark_lat,
-            finishMark.finish_mark_lon,
-            finishMark.finish_pin_lat,
-            finishMark.finish_pin_lon
-        );
+      endPoint = findCenter(
+        finishMark.finish_mark_lat,
+        finishMark.finish_mark_lon,
+        finishMark.finish_pin_lat,
+        finishMark.finish_pin_lon,
+      );
     } else {
-        const last3Positions = collectLastNPositionsFromBoatsToPositions(
-            boatsToSortedPositions,
-            3
-        );
-        endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
+      const last3Positions = collectLastNPositionsFromBoatsToPositions(
+        boatsToSortedPositions,
+        3,
+      );
+      endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
     }
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
     const raceMetadata = await createRace(
-        id,
-        name,
-        null, // event name. TackTracker's regatta has no name
-        regattaId,
-        TACKTRACKER_SOURCE,
-        url,
-        startTime,
-        endTime,
-        startPoint,
-        endPoint,
-        boundingBox,
-        roughLength,
-        boatsToSortedPositions,
-        boatNames,
-        boatModels,
-        boatIdentifiers,
-        handicapRules,
-        unstructuredText
+      id,
+      name,
+      null, // event name. TackTracker's regatta has no name
+      regattaId,
+      TACKTRACKER_SOURCE,
+      url,
+      startTime,
+      endTime,
+      startPoint,
+      endPoint,
+      boundingBox,
+      roughLength,
+      boatsToSortedPositions,
+      boatNames,
+      boatModels,
+      boatIdentifiers,
+      handicapRules,
+      unstructuredText,
     );
     const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions)
+      allPositionsToFeatureCollection(boatsToSortedPositions),
     );
 
     await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
+      fields: Object.keys(raceMetadata),
+      transaction,
     });
     await uploadGeoJsonToS3(
-        race.id,
-        tracksGeojson,
-        TACKTRACKER_SOURCE,
-        transaction
+      race.id,
+      tracksGeojson,
+      TACKTRACKER_SOURCE,
+      transaction,
     );
     raceMetadatas.push(raceMetadata);
   }
