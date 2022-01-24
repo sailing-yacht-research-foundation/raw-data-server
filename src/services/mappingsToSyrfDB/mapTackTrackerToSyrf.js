@@ -116,7 +116,7 @@ const _mapPositions = (positions, tackTrackerRace) => {
   const newPositions = positions.map((t) => {
     return {
       ...t,
-      timestamp: new Date(t.time),
+      timestamp: new Date(t.time).getTime(),
       race_id: t.race,
       race_original_id: tackTrackerRace.original_id,
       vesselId: t.boat,
@@ -140,7 +140,7 @@ const _mapMarkTrackerPositions = (positions, markTrackers) => {
       }
       return {
         ...t,
-        timestamp: new Date(t.time),
+        timestamp: new Date(t.time).getTime(),
         markTrackerId: t.boat,
       };
     })
@@ -344,9 +344,8 @@ const _mapRankings = (boats, positions = []) => {
     if (boatPositions.length) {
       const firstPosition = boatPositions[0];
       const lastPosition = boatPositions[boatPositions.length - 1];
-      elapsedTime =
-        lastPosition.timestamp.getTime() - firstPosition.timestamp.getTime();
-      finishTime = lastPosition.timestamp.getTime();
+      elapsedTime = lastPosition.timestamp - firstPosition.timestamp;
+      finishTime = lastPosition.timestamp;
     }
     ranking.elapsedTime = elapsedTime;
     ranking.finishTime = finishTime;
