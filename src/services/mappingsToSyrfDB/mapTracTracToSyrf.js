@@ -1,7 +1,7 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const gisUtils = require('../../utils/gisUtils');
 const { v4: uuidv4 } = require('uuid');
-const { geometryType } = require('../../syrf-schema/enums');
+const { geometryType, vesselEvents } = require('../../syrf-schema/enums');
 
 const mapTracTracToSyrf = async (data, raceMetadata) => {
   if (!raceMetadata) {
@@ -61,6 +61,11 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     data.TracTracCompetitorResult,
   );
 
+  const inputCourseEvents = _mapPassings(
+    data.TracTracCompetitorPassing,
+    courseSequencedGeometries,
+  );
+
   const race = data.TracTracRace[0];
   await saveCompetitionUnit({
     event,
@@ -78,6 +83,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
     rankings,
     markTrackers,
     markTrackerPositions: data.TracTracControlPointPosition,
+    vesselParticipantEvents: inputCourseEvents,
     reuse: {
       event: true,
       boats: true,
@@ -163,6 +169,7 @@ const _mapSequencedGeometries = (
       controlPoints.length === 1 ? geometryType.POINT : geometryType.LINESTRING;
     courseSequencedGeometries.push({
       ...gisUtils.createGeometry(coordinates, { name: control.name }, type),
+      id: control.id,
       order: order,
     });
     order++;
@@ -192,7 +199,7 @@ const _mapRankings = (tracTracCompetitor, tracTracCompetitorResult = []) => {
     let finishTime = 0;
     if (result) {
       elapsedTime = Math.abs(result.time_elapsed * 1000) || 0;
-      finishTime = result.start_time + elapsedTime;
+      finishTime = +result.start_time + elapsedTime;
     }
     ranking.elapsedTime = elapsedTime;
     ranking.finishTime = finishTime;
@@ -206,5 +213,29 @@ const _mapRankings = (tracTracCompetitor, tracTracCompetitorResult = []) => {
   });
 
   return rankings;
+};
+
+const _mapPassings = (passings, courseSequencedGeometries) => {
+  return passings
+    ?.map((p) => {
+      const eventGeometry = courseSequencedGeometries?.find(
+        (g) => g.id === p.control,
+      );
+      if (!eventGeometry) {
+        return null;
+      }
+      const eventType =
+        eventGeometry.geometryType === geometryType.LINESTRING
+          ? vesselEvents.insideCrossing
+          : vesselEvents.rounding;
+      return {
+        competitionUnitId: p.race,
+        vesselId: p.competitor,
+        markId: eventGeometry.id,
+        eventType,
+        eventTime: +p.passing_time,
+      };
+    })
+    .filter(Boolean);
 };
 module.exports = mapTracTracToSyrf;
