@@ -16,13 +16,23 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
     return;
   }
   // event
-  const event = data.TackTrackerRegatta?.map((e) => {
+  let event = data.TackTrackerRegatta?.map((e) => {
     return {
       id: e.id,
       original_id: e.original_id,
       url: e.url,
     };
   })[0];
+
+  if (!event && data.TackTrackerRace[0].user) {
+    event = data.TackTrackerRace?.map((e) => {
+      return {
+        id: e.id,
+        original_id: e.user_original_id,
+        url: e.url,
+      };
+    })[0];
+  }
 
   console.log('Saving to main database');
   const markTrackers = _mapTracker(data.TackTrackerBoat);
@@ -80,6 +90,7 @@ const _mapBoats = (boats) => {
       publicName: b.name,
       vesselId: b.id,
       model: b.unknown_4,
+      isCommittee: b.unknown_4 === 'Spectator',
     };
     inputBoats.push(vessel);
   }
