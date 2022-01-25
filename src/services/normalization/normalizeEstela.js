@@ -46,8 +46,8 @@ const normalizeRace = async (
     3,
   );
   let endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
-  const buoys = allBuoys.filter((b) => b.race === race.id && b.door);
-  if (buoys.length > 1) {
+  const buoys = allBuoys?.filter((b) => b.race === race.id && b.door);
+  if (buoys?.length > 1) {
     buoys.sort((a, b) => (parseInt(a.index) > parseInt(b.index) ? 1 : -1));
 
     const startBuoy = buoys[0];
