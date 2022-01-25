@@ -88,6 +88,12 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
       event: true,
       boats: true,
     },
+    competitionUnitData: {
+      handicap:
+        race.race_handicap && race.race_handicap !== 'NONE'
+          ? [race.race_handicap]
+          : null,
+    },
   });
 };
 
