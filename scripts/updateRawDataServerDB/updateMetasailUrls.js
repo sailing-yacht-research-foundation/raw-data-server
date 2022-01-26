@@ -8,32 +8,31 @@ const updateMetasailUrls = async () => {
   const existingRaces = await db.metasailRace.findAll({
     attributes: ['id', 'url'],
     raw: true,
-    where: {
-      url: {
-        [Op.notILike]: 'https%',
-      },
-    },
   });
 
   for (const race of existingRaces) {
     const transaction = await db.sequelize.transaction();
     try {
-      const url = race.url.replace('http', 'https');
-      await db.metasailRace.update(
-        {
-          url,
-        },
-        {
-          where: {
-            id: race.id,
+      const url = race.url.replace('http://', 'https://');
+
+      // only update http race
+      if (race.url.indexOf('https') === -1) {
+        await db.metasailRace.update(
+          {
+            url,
           },
-          transaction,
-        },
-      );
+          {
+            where: {
+              id: race.id,
+            },
+            transaction,
+          },
+        );
+        await transaction.commit();
+      }
       await elasticsearch.updateRace(race.id, {
         url,
       });
-      await transaction.commit();
     } catch (error) {
       console.log(error.toString());
       await transaction.rollback();
