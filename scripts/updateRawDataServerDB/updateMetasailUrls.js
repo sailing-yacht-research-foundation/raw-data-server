@@ -11,12 +11,13 @@ const updateMetasailUrls = async () => {
   });
 
   for (const race of existingRaces) {
-    const transaction = await db.sequelize.transaction();
+    let transaction;
     try {
       const url = race.url.replace('http://', 'https://');
 
       // only update http race
       if (race.url.indexOf('https') === -1) {
+        transaction = await db.sequelize.transaction();
         await db.metasailRace.update(
           {
             url,
@@ -35,7 +36,9 @@ const updateMetasailUrls = async () => {
       });
     } catch (error) {
       console.log(error.toString());
-      await transaction.rollback();
+      if (transaction) {
+        await transaction.rollback();
+      }
       errorMessage = databaseErrorHandler(error);
     }
   }
