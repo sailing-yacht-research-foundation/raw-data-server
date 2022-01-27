@@ -31,6 +31,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
   // for each division we can create a separated race
   console.log('Saving to main database');
   const raceQsEvent = data.RaceQsEvent[0];
+  const mappedPositions = _mapPositions(data.RaceQsPosition);
   for (const [index, division] of data.RaceQsDivision.entries()) {
     const starts =
       data.RaceQsStart?.filter((t) => t.division === division.id) || [];
@@ -62,7 +63,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
         data.RaceQsWaypoint,
         data.RaceQsRoute,
       );
-      const positions = _mapPositions(data.RaceQsPosition, start);
+      const positions = _filterPositions(mappedPositions, start);
       const inputBoats = _mapBoats(data.RaceQsParticipant, start);
 
       // the start with 0 input boat should be ignored.
@@ -79,9 +80,9 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       // They may duplicate so we use the start or division prefix to know where are they from
       // so we can filter out the already saved race easily in raceQsSaveToMainDB.js file
       if (start?.original_id) {
-        raceOriginalId = `${RACEQS.START_PREFIX}${start?.original_id}`;
+        raceOriginalId = `${RACEQS.START_PREFIX}${start.event_original_id}-${start?.original_id}`;
       } else if (division.original_id) {
-        raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.original_id}`;
+        raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.event_original_id}-${division?.original_id}`;
       }
       await saveCompetitionUnit({
         event,
@@ -148,7 +149,7 @@ const _mapBoats = (boats, start) => {
     .filter((t) => t);
 };
 
-const _mapPositions = (positions, start) => {
+const _mapPositions = (positions) => {
   if (!positions) {
     return [];
   }
@@ -167,19 +168,17 @@ const _mapPositions = (positions, start) => {
         windSpeed: t.wind_speed ? Number.parseFloat(t.wind_speed) : null,
         windDirection: t.wind_angle ? Number.parseFloat(t.wind_angle) : null,
       };
-
-      // remove the position before start time.
-      if (start) {
-        const lowestTime = start.from - THRESHOLD_TIME;
-        if (mappedPosition.timestamp < lowestTime) {
-          return null;
-        }
-      }
-
       return mappedPosition;
     })
     .filter((t) => t)
     .sort((a, b) => a.timestamp - b.timestamp);
+};
+const _filterPositions = (positions, start) => {
+  if (!start) {
+    return positions;
+  }
+  const lowestTime = start.from - THRESHOLD_TIME;
+  return positions.filter((t) => t.timestamp >= lowestTime);
 };
 
 const _mapSequencedGeometries = (
