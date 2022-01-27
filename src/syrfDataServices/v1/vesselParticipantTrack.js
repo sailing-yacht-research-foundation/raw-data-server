@@ -23,13 +23,15 @@ module.exports = class VesselParticipantTrack {
   addNewPosition(
     position,
     timestamp,
-    { altitude, cog, sog, twa, windSpeed, windDirection } = {
+    { altitude, cog, sog, twa, windSpeed, windDirection, vmc, vmg } = {
       altitude: 0,
-      cog: 0,
+      cog: null,
       sog: null,
       twa: null,
-      windSpeed: undefined,
-      windDirection: undefined,
+      windSpeed: null,
+      windDirection: null,
+      vmc: null,
+      vmg: null,
     },
   ) {
     const trackData = {
@@ -41,6 +43,8 @@ module.exports = class VesselParticipantTrack {
       twa,
       windSpeed,
       windDirection,
+      vmc,
+      vmg,
     };
     this.positions.push(trackData);
     return trackData;
@@ -160,6 +164,8 @@ module.exports = class VesselParticipantTrack {
    * @returns {providedGeoJson: VesselTrackGeoJson, simplifiedGeoJson: VesselTrackGeoJson }
    */
   createGeoJsonTrack({ competitionUnitId } = {}) {
+    const returnFiniteAndNotNull = (num, defaultVal) =>
+      isFinite(num) && num !== null ? +num : defaultVal ?? null;
     const providedGeoJson = {
       type: 'Feature',
       properties: {
@@ -169,16 +175,47 @@ module.exports = class VesselParticipantTrack {
       geometry: {
         type: 'LineString',
         coordinates: this.positions.map((row) => {
-          const { position, timestamp, sog, cog, twa, altitude } = row;
-          return [
+          let {
+            position,
+            timestamp,
+            sog,
+            cog,
+            twa,
+            altitude,
+            vmc,
+            vmg,
+            windSpeed,
+          } = row;
+          const geojsonData = [
             position[0],
             position[1],
             altitude || 0,
             timestamp,
-            sog || 0,
-            cog || 0,
-            twa || 0,
           ];
+
+          [sog, cog, twa, vmc, vmg, windSpeed] = [
+            sog,
+            cog,
+            twa,
+            vmc,
+            vmg,
+            windSpeed,
+          ].map((i) => (i = returnFiniteAndNotNull(i)));
+
+          if (sog !== null || cog !== null || twa !== null) {
+            // only add these 3 if one of them is provided
+            geojsonData.push(sog);
+            geojsonData.push(cog);
+            geojsonData.push(twa);
+          }
+
+          if (vmc !== null || vmg !== null || windSpeed !== null) {
+            // only add these 3 if one of them is provided
+            geojsonData.push(vmc);
+            geojsonData.push(vmg);
+            geojsonData.push(windSpeed);
+          }
+          return geojsonData;
         }),
       },
     };
