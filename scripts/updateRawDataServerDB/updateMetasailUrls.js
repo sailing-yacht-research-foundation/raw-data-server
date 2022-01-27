@@ -1,15 +1,18 @@
+require('dotenv').config();
 const db = require('../../src/models');
-const databaseErrorHandler = require('../../src/utils/databaseErrorHandler');
 const elasticsearch = require('../../src/utils/elasticsearch');
 const Op = db.Sequelize.Op;
 const { SOURCE } = require('../../src/constants');
-const updateMetasailUrls = async () => {
-  let errorMessage = '';
+(async () => {
+  console.log('Start updateMetasailUrls script');
   const existingRaces = await db.metasailRace.findAll({
     attributes: ['id', 'url'],
     raw: true,
   });
 
+  console.log(
+    `update existingRaces, there are ${existingRaces.length} races in the database`,
+  );
   for (const race of existingRaces) {
     let transaction;
     try {
@@ -39,7 +42,6 @@ const updateMetasailUrls = async () => {
       if (transaction) {
         await transaction.rollback();
       }
-      errorMessage = databaseErrorHandler(error);
     }
   }
 
@@ -56,6 +58,9 @@ const updateMetasailUrls = async () => {
     },
   });
 
+  console.log(
+    `update existingMetaDatas, there are ${existingMetaDatas.length} metadatas in the database`,
+  );
   for (const data of existingMetaDatas) {
     const transaction = await db.sequelize.transaction();
     try {
@@ -75,11 +80,8 @@ const updateMetasailUrls = async () => {
     } catch (error) {
       console.log(error.toString());
       await transaction.rollback();
-      errorMessage = databaseErrorHandler(error);
     }
   }
 
-  return errorMessage;
-};
-
-module.exports = updateMetasailUrls;
+  console.log('Finish updateMetasailUrls script');
+})();
