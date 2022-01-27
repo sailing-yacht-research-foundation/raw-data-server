@@ -288,25 +288,32 @@ const saveCompetitionUnit = async ({
         (vp) => vp.vesselId === vesselId,
       )?.id;
       const tracker = vesselParticipantTracks[vesselParticipantId];
-      let lon, lat;
-      try {
-        lon = parseFloat(position.lon);
-        lat = parseFloat(position.lat);
-      } catch (err) {
+
+      if (
+        isNaN(position.lon) ||
+        isNaN(position.lat) ||
+        isNaN(position.timestamp)
+      ) {
         console.log(
-          `Lon (${position.lon}) or lat (${position.lat}) is not a valid float`,
-          err,
+          `Error: Lon (${position.lon}) or lat (${position.lat}) or timestamp (${position.timestamp}) is not a valid float/int`,
         );
         continue;
       }
-      tracker?.addNewPosition([lon, lat], position.timestamp, {
-        altitude: position.altitude,
-        cog: position.cog,
-        sog: position.sog,
-        twa: position.twa,
-        windSpeed: position.windSpeed,
-        windDirection: position.windDirection,
-      });
+
+      tracker?.addNewPosition(
+        [+position.lon, +position.lat],
+        +position.timestamp,
+        {
+          altitude: position.altitude,
+          cog: position.cog,
+          sog: position.sog,
+          twa: position.twa,
+          windSpeed: position.windSpeed,
+          windDirection: position.windDirection,
+          vmc: position.vmc,
+          vmg: position.vmg,
+        },
+      );
     }
 
     // Remove vessel participant track that does not have positions
