@@ -109,6 +109,8 @@ const _mapPositions = (metasailPosition, race) => {
         sog: t.speed,
         windDirection: t.wind_direction,
         timestamp: +t.time * 1000,
+        vmc: +t.vmc,
+        vmg: +t.vmg,
       };
     })
     .sort((a, b) => a.timestamp - b.timestamp);
@@ -193,16 +195,14 @@ const _mapSequencedGeometries = (
     }
     const firstPosition = _findBuoyFirstPosition(buoy.id, buoyPositions);
     courseSequencedGeometries.push({
-      ...gisUtils.createGeometryPoint(
-        {
-          lat: firstPosition.lat,
-          lon: firstPosition.lon,
-          properties: {
-            name: buoy.name,
-          },
-          markTrackerId: buoy.markTrackerId,
+      ...gisUtils.createGeometryPoint({
+        lat: firstPosition.lat,
+        lon: firstPosition.lon,
+        properties: {
+          name: buoy.name,
         },
-      ),
+        markTrackerId: buoy.markTrackerId,
+      }),
       order: order,
     });
     order++;
