@@ -202,12 +202,9 @@ module.exports = class VesselParticipantTrack {
             windSpeed,
           ].map((i) => (i = returnFiniteAndNotNull(i)));
 
-          if (sog !== null || cog !== null || twa !== null) {
-            // only add these 3 if one of them is provided
-            geojsonData.push(sog);
-            geojsonData.push(cog);
-            geojsonData.push(twa);
-          }
+          geojsonData.push(sog);
+          geojsonData.push(cog);
+          geojsonData.push(twa);
 
           if (vmc !== null || vmg !== null || windSpeed !== null) {
             // only add these 3 if one of them is provided
