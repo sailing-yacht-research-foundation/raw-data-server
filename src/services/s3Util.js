@@ -63,13 +63,35 @@ const getTrackerLogoUrl = (tracker) => {
 };
 
 const copyObject = async (params) => {
-  return await s3
-    .copyObject(params)
-    .promise();
+  return await s3.copyObject(params).promise();
 };
 
 const listObjects = async (params) => {
   return await s3.listObjects(params).promise();
+};
+
+const deleteDirectory = async (bucket, dir) => {
+  const listParams = {
+    Bucket: bucket,
+    Prefix: dir,
+  };
+
+  const listedObjects = await s3.listObjectsV2(listParams).promise();
+
+  if (listedObjects.Contents.length === 0) return;
+
+  const deleteParams = {
+    Bucket: bucket,
+    Delete: { Objects: [] },
+  };
+
+  listedObjects.Contents.forEach(({ Key }) => {
+    deleteParams.Delete.Objects.push({ Key });
+  });
+
+  await s3.deleteObjects(deleteParams).promise();
+
+  if (listedObjects.IsTruncated) await deleteDirectory(bucket, dir);
 };
 
 module.exports = {
@@ -80,4 +102,5 @@ module.exports = {
   getTrackerLogoUrl,
   copyObject,
   listObjects,
+  deleteDirectory,
 };
