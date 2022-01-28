@@ -41,7 +41,10 @@ const normalizeRace = async (
     const startTime = new Date(race.tracking_start).getTime();
     const endTime = new Date(race.tracking_stop).getTime();
     const url = race.url;
-    const handicapRules = [race.race_handicap];
+    const handicapRules =
+      race.race_handicap && race.race_handicap !== 'NONE'
+        ? [race.race_handicap]
+        : [];
     const unstructuredText = [];
     const allPositions = TracTracCompetitorPosition.filter(
       (p) => p.race_original_id === race.original_id,
