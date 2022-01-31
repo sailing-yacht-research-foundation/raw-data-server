@@ -153,25 +153,23 @@ const _mapPositions = (positions) => {
   if (!positions) {
     return [];
   }
-  return positions
-    .map((t) => {
-      if (!t.time || isNaN(t.time)) {
-        return null;
-      }
-      const mappedPosition = {
-        ...t,
-        // RaceQs does not use ms
-        timestamp: +t.time * 100,
-        vesselId: t.participant,
-        boat_original_id: t.participant_original_id.toString(),
-        cog: t.heading,
-        windSpeed: t.wind_speed ? Number.parseFloat(t.wind_speed) : null,
-        windDirection: t.wind_angle ? Number.parseFloat(t.wind_angle) : null,
-      };
-      return mappedPosition;
-    })
-    .filter((t) => t)
-    .sort((a, b) => a.timestamp - b.timestamp);
+
+  return positions.reduce((acc, pos) => {
+    if (pos.time && !isNaN(pos.time)) {
+      acc.push({
+        ...pos,
+        timestamp: +pos.time * 100,
+        vesselId: pos.participant,
+        boat_original_id: pos.participant_original_id.toString(),
+        cog: pos.heading,
+        windSpeed: pos.wind_speed ? Number.parseFloat(pos.wind_speed) : null,
+        windDirection: pos.wind_angle
+          ? Number.parseFloat(pos.wind_angle)
+          : null,
+      });
+    }
+    return acc;
+  }, []);
 };
 const _filterPositions = (positions, start) => {
   if (!start) {
