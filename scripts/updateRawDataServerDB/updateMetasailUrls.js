@@ -102,10 +102,15 @@ async function _updateElasticSearch(race, url) {
       url,
     });
   } catch (e) {
+    const { response } = e;
+    if (response?.status === 404) {
+      console.log(`Document not found for race.id = ${race.id}`);
+      return;
+    }
     console.log(
       `Error while updating elastic search data for race.id= ${race.id}`,
     );
     console.log(race);
-    console.log(e);
+    throw e;
   }
 }
