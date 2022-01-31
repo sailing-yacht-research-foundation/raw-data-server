@@ -1,6 +1,5 @@
 require('dotenv').config();
 const { SOURCE } = require('../../src/constants');
-const { getExistingData } = require('../../src/services/scrapedDataResult');
 const competitionUnitDataAccess = require('../../src/syrf-schema/dataAccess/v1/competitionUnit');
 const calendarEventDataAccess = require('../../src/syrf-schema/dataAccess/v1/calendarEvent');
 const scrapedSuccessfulUrlDataAccess = require('../../src/syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
@@ -11,80 +10,79 @@ const db = require('../../src/syrf-schema/index');
 const Op = db.Op;
 
 (async () => {
-  const existingData = await getExistingData(SOURCE.RACEQS);
-  console.log(`**********Start clean up old record for RaceQs**********`);
-  let totalProcessed = 0;
-  for (const savedData of existingData) {
-    const processed = await _deleteCompetitionUnits(savedData);
-    totalProcessed += processed;
-  }
-  console.log(
-    `**********Finished clean up old record for RaceQs, There are ${totalProcessed} competitionUnits to be cleared **********`,
-  );
+  let allCalendarEvents;
+  console.log(`**********Start clean up old record for RaceQs **********`);
+  do {
+    allCalendarEvents = await db.CalendarEvent.findAll({
+      where: {
+        source: {
+          [Op.eq]: SOURCE.RACEQS,
+        },
+      },
+      limit: 20,
+      raw: true,
+    });
+    for (const savedCalendarEvent of allCalendarEvents) {
+      await _deleteCalendarEvent(savedCalendarEvent);
+    }
+  } while (allCalendarEvents?.length);
+  console.log(`**********Finished clean up old record for RaceQs **********`);
 })();
 
-async function _deleteCompetitionUnits(scrapedData) {
+async function _deleteCalendarEvent(savedCalendarEvent) {
   let processed = 0;
-  // get all CompetitionUnits that have the same original_id
+  // get all CompetitionUnits that have the same calendar event
   const competitionUnits = await db.CompetitionUnit.findAll({
     where: {
-      scrapedOriginalId: {
-        [Op.eq]: scrapedData.original_id,
+      calendarEventId: {
+        [Op.eq]: savedCalendarEvent.id,
       },
     },
     raw: true,
   });
 
   console.log(
-    `There are ${competitionUnits.length} competitionUnits for ${scrapedData.original_id}`,
+    `There are ${competitionUnits.length} competitionUnits for ${savedCalendarEvent.scrapedOriginalId} competition units to be cleared`,
   );
   let transaction;
 
   try {
     transaction = await db.sequelize.transaction();
-    for (const currentCompetitionUnit of competitionUnits) {
-      // process all CompetitionUnit on same calendar event
-      const allCompetitionOnCalendarEvent = await db.CompetitionUnit.findAll({
-        where: {
-          calendarEventId: currentCompetitionUnit.calendarEventId,
-        },
-        attributes: ['id'],
-        raw: true,
-        transaction,
-      });
-
+    for (const competitionUnit of competitionUnits) {
       console.log(
-        `for calendarEventId = ${currentCompetitionUnit.calendarEventId}, there are  ${allCompetitionOnCalendarEvent.length} competition units to be cleared`,
+        `Start clean up the data for competitionUnit.id =  ${competitionUnit.id}`,
       );
-      for (const competitionUnit of allCompetitionOnCalendarEvent) {
-        console.log(
-          `Start clean up the data for competitionUnit.id =  ${competitionUnit.id}`,
-        );
-        await _deleteVesselParticipantTrackJsons(competitionUnit.id);
-        await _deleteOpenGraphImage(competitionUnit.id);
-        await competitionUnitDataAccess.delete(competitionUnit.id, transaction);
-        await _cleanUpElasticSearch(competitionUnit.id);
-        console.log(
-          `Finish clean up the data for competitionUnit.id =  ${competitionUnit.id}`,
+      await _deleteVesselParticipantTrackJsons(competitionUnit.id);
+      await _deleteOpenGraphImage(competitionUnit.id);
+      await competitionUnitDataAccess.delete(competitionUnit.id, transaction);
+      await _cleanUpElasticSearch(competitionUnit.id);
+      // since there are many competition unit that shared the same scrapedOriginalId, so we need to do this check
+      const countCompetitionUnit = await _countCompetitionUnitScrapedOriginalId(
+        competitionUnit.scrapedOriginalId,
+      );
+      if (countCompetitionUnit === 1) {
+        await scrapedSuccessfulUrlDataAccess.deleteByOriginalId(
+          {
+            originalId: competitionUnit.scrapedOriginalId,
+            source: SOURCE.RACEQS,
+          },
+          transaction,
         );
       }
-      await calendarEventDataAccess.delete(
-        currentCompetitionUnit.calendarEventId,
-        transaction,
-      );
+      processed++;
     }
-    await scrapedSuccessfulUrlDataAccess.deleteByOriginalId(
-      scrapedData.original_id,
-      transaction,
-    );
+    await calendarEventDataAccess.delete(savedCalendarEvent.id, transaction);
     transaction.commit();
-    processed++;
+
+    console.log(
+      `Finish clean up the data for calendarEvent.scrapedOriginalId =  ${savedCalendarEvent.scrapedOriginalId}, total number of competitionUnit = ${processed}`,
+    );
   } catch (ex) {
     if (transaction) {
       transaction.rollback();
     }
     console.log(
-      `exception happened during clean up the data for scrapedData.original_id = ${scrapedData.original_id}`,
+      `exception happened during clean up the data for calendarEvent.original_id = ${savedCalendarEvent.original_id}`,
     );
     console.log(ex);
   }
@@ -103,6 +101,7 @@ async function _deleteVesselParticipantTrackJsons(competitionUnitId) {
   } catch (ex) {
     console.log(`Exception happened during _deleteVesselParticipantTrackJsons`);
     console.log(ex);
+    throw ex;
   }
 }
 
@@ -118,10 +117,21 @@ async function _deleteOpenGraphImage(competitionUnitId) {
       `Exception happened during _deleteOpenGraphImage for competitionUnitId = ${competitionUnitId}`,
     );
     console.log(ex);
+    throw ex;
   }
 }
 async function _cleanUpElasticSearch(competitionUnitId) {
   console.log(`Start clean up elastic search = ${competitionUnitId}`);
   await elasticsearch.deleteByIds([competitionUnitId]);
   console.log(`Finished clean up elastic search = ${competitionUnitId}`);
+}
+
+async function _countCompetitionUnitScrapedOriginalId(scrapedOriginalId) {
+  return await db.CompetitionUnit.count({
+    where: {
+      scrapedOriginalId: {
+        [Op.eq]: scrapedOriginalId,
+      },
+    },
+  });
 }
