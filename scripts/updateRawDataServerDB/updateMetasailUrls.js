@@ -20,10 +20,10 @@ const { SOURCE } = require('../../src/constants');
     );
     let transaction;
     try {
-      transaction = await db.sequelize.transaction();
       const url = race.url.replace('http://', 'https://');
       // only update http race
       if (race.url.indexOf('https') === -1) {
+        transaction = await db.sequelize.transaction();
         await db.metasailRace.update(
           {
             url,
@@ -35,11 +35,9 @@ const { SOURCE } = require('../../src/constants');
             transaction,
           },
         );
+        await transaction.commit();
       }
-      await elasticsearch.updateRace(race.id, {
-        url,
-      });
-      await transaction.commit();
+      await _updateElasticSearch(race, url);
     } catch (error) {
       console.log('Error while updating existing race');
       console.log(race);
@@ -97,3 +95,17 @@ const { SOURCE } = require('../../src/constants');
 
   console.log('Finish updateMetasailUrls script');
 })();
+
+async function _updateElasticSearch(race, url) {
+  try {
+    await elasticsearch.updateRace(race.id, {
+      url,
+    });
+  } catch (e) {
+    console.log(
+      `Error while updating elastic search data for race.id= ${race.id}`,
+    );
+    console.log(race);
+    console.log(e);
+  }
+}
