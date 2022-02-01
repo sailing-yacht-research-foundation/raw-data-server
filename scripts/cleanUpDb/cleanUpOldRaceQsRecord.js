@@ -72,7 +72,7 @@ async function _deleteCalendarEvent(savedCalendarEvent) {
       processed++;
     }
     await calendarEventDataAccess.delete(savedCalendarEvent.id, transaction);
-    transaction.commit();
+    await transaction.commit();
 
     console.log(
       `Finish clean up the data for calendarEvent.scrapedOriginalId =  ${savedCalendarEvent.scrapedOriginalId}, total number of competitionUnit = ${processed}`,
