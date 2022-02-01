@@ -79,7 +79,7 @@ async function _deleteCalendarEvent(savedCalendarEvent) {
     );
   } catch (ex) {
     if (transaction) {
-      transaction.rollback();
+      await transaction.rollback();
     }
     console.log(
       `exception happened during clean up the data for calendarEvent.original_id = ${savedCalendarEvent.original_id}`,
