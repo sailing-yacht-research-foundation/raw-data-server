@@ -22,22 +22,20 @@ const { SOURCE } = require('../../src/constants');
     try {
       const url = race.url.replace('http://', 'https://');
       // only update http race
-      if (race.url.indexOf('https') === -1) {
-        transaction = await db.sequelize.transaction();
-        await db.metasailRace.update(
-          {
-            url,
+      transaction = await db.sequelize.transaction();
+      await db.metasailRace.update(
+        {
+          url,
+        },
+        {
+          where: {
+            id: race.id,
           },
-          {
-            where: {
-              id: race.id,
-            },
-            transaction,
-          },
-        );
-        await transaction.commit();
-      }
+          transaction,
+        },
+      );
       await _updateElasticSearch(race, url);
+      await transaction.commit();
     } catch (error) {
       console.log('Error while updating existing race');
       console.log(race);
