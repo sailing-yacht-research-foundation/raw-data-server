@@ -7,9 +7,12 @@ const { normalizeRace } = require('./normalization/normalizeTracTrac');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const mapTracTracToSyrf = require('../services/mappingsToSyrfDB/mapTracTracToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
-const { generateMetadataName } = require('../utils/gisUtils');
+const {
+  generateMetadataName,
+  createTurfPoint,
+  getCountryAndCity,
+} = require('../utils/gisUtils');
 const { getTrackerLogoUrl } = require('./s3Util');
-const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveTracTracData = async (data) => {
   const transaction = await db.sequelize.transaction();
