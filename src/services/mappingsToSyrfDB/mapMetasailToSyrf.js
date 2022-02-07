@@ -52,7 +52,6 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       console.log(`positions not found for race = ${race.original_id}`);
       continue;
     }
-    const rankings = _mapRankings(inputBoats, boatPositions);
 
     await saveCompetitionUnit({
       event,
@@ -67,7 +66,6 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       positions: boatPositions,
       raceMetadata,
       courseSequencedGeometries,
-      rankings,
       markTrackers,
       markTrackerPositions: buoyPositions,
       reuse: {
@@ -152,34 +150,34 @@ const _mapSequencedGeometries = (
     (t) => t.race_original_id === race.original_id,
   );
   for (const gate of metasailGate) {
-    const bouy1FirstPosition = _findBuoyFirstPosition(
+    const buoy1FirstPosition = _findBuoyFirstPosition(
       gate.buoy_1,
       buoyPositions,
     );
-    const bouy2FirstPosition = _findBuoyFirstPosition(
+    const buoy2FirstPosition = _findBuoyFirstPosition(
       gate.buoy_2,
       buoyPositions,
     );
-    const bouy1 = metasailBuoy.find((t) => t.id === gate.buoy_1);
-    const bouy2 = metasailBuoy.find((t) => t.id === gate.buoy_2);
+    const buoy1 = metasailBuoy.find((t) => t.id === gate.buoy_1);
+    const buoy2 = metasailBuoy.find((t) => t.id === gate.buoy_2);
 
-    if (!bouy1FirstPosition || !bouy2FirstPosition || !bouy1 || !bouy2) {
+    if (!buoy1FirstPosition || !buoy2FirstPosition || !buoy1 || !buoy2) {
       continue;
     }
-    bouy1.used = true;
-    bouy2.used = true;
-    const name = [bouy1.name, bouy2.name].filter((t) => t).join(' - ');
+    buoy1.used = true;
+    buoy2.used = true;
+    const name = [buoy1.name, buoy2.name].filter((t) => t).join(' - ');
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
         {
-          lat: bouy1FirstPosition.lat,
-          lon: bouy1FirstPosition.lon,
-          markTrackerId: bouy1.markTrackerId,
+          lat: buoy1FirstPosition.lat,
+          lon: buoy1FirstPosition.lon,
+          markTrackerId: buoy1.markTrackerId,
         },
         {
-          lat: bouy2FirstPosition.lat,
-          lon: bouy2FirstPosition.lon,
-          markTrackerId: bouy2.markTrackerId,
+          lat: buoy2FirstPosition.lat,
+          lon: buoy2FirstPosition.lon,
+          markTrackerId: buoy2.markTrackerId,
         },
         {
           name,
@@ -196,8 +194,8 @@ const _mapSequencedGeometries = (
     const firstPosition = _findBuoyFirstPosition(buoy.id, buoyPositions);
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryPoint({
-        lat: firstPosition.lat,
-        lon: firstPosition.lon,
+        lat: firstPosition?.lat,
+        lon: firstPosition?.lon,
         properties: {
           name: buoy.name,
         },
@@ -218,36 +216,4 @@ const _findBuoyFirstPosition = (id, buoyPositions) => {
   return position;
 };
 
-const _mapRankings = (boats, positions = []) => {
-  const rankings = [];
-
-  for (const vessel of boats) {
-    const ranking = { vesselId: vessel.id, elapsedTime: 0, finishTime: 0 };
-
-    const allVesselPositions = positions.filter((t) => t.boat === vessel.id);
-    if (!allVesselPositions.length) {
-      rankings.push(ranking);
-      continue;
-    }
-    const lastPosition = allVesselPositions[allVesselPositions.length - 1];
-    const firstPosition = allVesselPositions[0];
-    let elapsedTime = 0;
-    let finishTime = 0;
-    if (lastPosition && firstPosition) {
-      elapsedTime = lastPosition.timestamp - firstPosition.timestamp;
-      finishTime = lastPosition.timestamp;
-    }
-    ranking.elapsedTime = elapsedTime;
-    ranking.finishTime = finishTime;
-    rankings.push(ranking);
-  }
-
-  rankings.sort((a, b) => {
-    const finishedTimeA = a.finishTime || Infinity;
-    const finishedTimeB = b.finishTime || Infinity;
-    return finishedTimeA - finishedTimeB;
-  });
-
-  return rankings;
-};
 module.exports = mapMetasailToSyrf;
