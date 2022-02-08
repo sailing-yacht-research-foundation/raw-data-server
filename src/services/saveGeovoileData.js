@@ -22,10 +22,14 @@ const saveFailedUrl = async (url, error) => {
   );
 };
 
-const saveGeovoileRace = async (raceData, transaction) => {
+const _processGeovoileRaceName = (raceData) => {
   if (raceData.numLegs && raceData.numLegs > 1) {
     raceData.name = `${raceData.name} - Leg ${raceData.legNum}`;
   }
+  return raceData;
+};
+
+const saveGeovoileRace = async (raceData, transaction) => {
   await db.geovoileRace.create(raceData, { transaction });
   return raceData;
 };
@@ -90,56 +94,68 @@ const saveGeovoileData = async (data) => {
   }
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceMetadata, boats;
+  let raceMetadata;
   const courseGates = [];
-  try {
-    const race = await saveGeovoileRace(data.geovoileRace, transaction);
-    await saveGeovoileMarks(data.marks, transaction);
+  if (data.sig && data.sig.raceGates && data.sig.raceGates.length) {
+    let order = 0;
+    for (const gate of data.sig.raceGates) {
+      const line = gisUtils.createGeometryLine(
+        {
+          lat: gate._pointA[1],
+          lon: gate._pointA[0],
+        },
+        {
+          lat: gate._pointB[1],
+          lon: gate._pointB[0],
+        },
+        { name: gate.id },
+      );
+      courseGates.push({
+        id: uuidv4(),
+        race_id: data.geovoileRace.id,
+        race_original_id: data.geovoileRace.original_id,
+        order,
+        ...line,
+      });
+    }
+    order++;
+  }
+  if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
+    try {
+      _processGeovoileRaceName(data.geovoileRace);
+      await saveGeovoileRace(data.geovoileRace, transaction);
+      await saveGeovoileMarks(data.marks, transaction);
+      await saveGeovoileGates(courseGates, transaction);
+      await saveGeovoileBoats(data.boats, transaction);
+      await saveGeovoileSailors(data.sailors, transaction);
+      await saveGeovoileBoatPositions(data.positions, transaction);
+      raceMetadata = await normalizeGeovoile(data, transaction);
 
-    if (data.sig && data.sig.raceGates && data.sig.raceGates.length) {
-      let order = 0;
-      for (const gate of data.sig.raceGates) {
-        const line = gisUtils.createGeometryLine(
-          {
-            lat: gate._pointA[1],
-            lon: gate._pointA[0],
-          },
-          {
-            lat: gate._pointB[1],
-            lon: gate._pointB[0],
-          },
-          { name: gate.id },
-        );
-        courseGates.push({
-          id: uuidv4(),
-          race_id: race.id,
-          race_original_id: race.original_id,
-          order,
-          ...line,
-        });
-      }
-      order++;
+      await transaction.commit();
+    } catch (error) {
+      console.log(error);
+      await transaction.rollback();
+      errorMessage = databaseErrorHandler(error);
     }
 
-    await saveGeovoileGates(courseGates, transaction);
-    await saveGeovoileBoats(data.boats, transaction);
-    await saveGeovoileSailors(data.sailors, transaction);
-    await saveGeovoileBoatPositions(data.positions, transaction);
-    raceMetadata = await normalizeGeovoile(
-      {
-        geovoileRace: race,
-        boats: boats,
-        sailors: data.sailors,
-        positions: data.positions,
-      },
-      transaction,
-    );
+    if (errorMessage) {
+      await saveFailedUrl(data.geovoileRace.url, errorMessage);
+      if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
+        await saveFailedUrl(data.geovoileRace.scrapedUrl, errorMessage);
+      }
+    } else {
+      await saveSuccessfulUrl(
+        data.geovoileRace.original_id,
+        data.geovoileRace.url,
+      );
 
-    await transaction.commit();
-  } catch (error) {
-    console.log(error);
-    await transaction.rollback();
-    errorMessage = databaseErrorHandler(error);
+      if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
+        await saveSuccessfulUrl(
+          data.geovoileRace.original_id,
+          data.geovoileRace.scrapedUrl,
+        );
+      }
+    }
   }
 
   // temporary add of test env to avoid accidentally saving on maindb until its mocked
@@ -148,28 +164,10 @@ const saveGeovoileData = async (data) => {
     process.env.NODE_ENV !== 'test'
   ) {
     try {
+      raceMetadata = await normalizeGeovoile(data, transaction);
       await mapGeovoileToSyrf({ ...data, courseGates }, raceMetadata);
     } catch (err) {
       console.log(err);
-    }
-  }
-
-  if (errorMessage) {
-    await saveFailedUrl(data.geovoileRace.url, errorMessage);
-    if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
-      await saveFailedUrl(data.geovoileRace.scrapedUrl, errorMessage);
-    }
-  } else {
-    await saveSuccessfulUrl(
-      data.geovoileRace.original_id,
-      data.geovoileRace.url,
-    );
-
-    if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
-      await saveSuccessfulUrl(
-        data.geovoileRace.original_id,
-        data.geovoileRace.scrapedUrl,
-      );
     }
   }
 
