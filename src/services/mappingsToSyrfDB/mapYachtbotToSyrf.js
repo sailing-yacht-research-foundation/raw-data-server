@@ -33,7 +33,7 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     return { ...t, markTrackerId: buoyIdToMarkTrackerMap[t.buoy] };
   });
   const courseSequencedGeometries = _mapSequencedGeometries(
-    data.YachtBotMarks,
+    data.YachtBotMark,
     data.YachtBotBuoy,
     buoyPositions,
   );
@@ -42,8 +42,6 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     (t) => t.yacht_or_buoy === 'yacht',
   );
   const positions = _mapPositions(yachtPositions, boatMetaDataMap);
-
-  const rankings = _mapRankings(data.YachtBotYacht, yachtPositions);
 
   const race = data.YachtBotRace[0];
   await saveCompetitionUnit({
@@ -56,7 +54,6 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
     positions,
     raceMetadata,
     courseSequencedGeometries,
-    rankings,
     markTrackers: markTrackers,
     markTrackerPositions: buoyPositions,
     reuse: {
@@ -159,20 +156,20 @@ const _mapMetaDataToObject = (metadataObject, timeField, valueField) => {
 };
 
 const _mapSequencedGeometries = (
-  yachtBotMarks = [],
-  yachtBotBuoy = [],
+  marks = [],
+  buoys = [],
   buoyPositions = [],
 ) => {
   const courseSequencedGeometries = [];
   let order = 1;
 
-  for (const mark of yachtBotMarks) {
+  for (const mark of marks) {
     if (mark.processed) {
       continue;
     }
 
-    const lat = mark.positions.position.latitude;
-    const lon = mark.positions.position.longitude;
+    const lat = mark.lat;
+    const lon = mark.lon;
     if (!mark.connected_buoy) {
       courseSequencedGeometries.push({
         ...gisUtils.createGeometryPoint({
@@ -188,14 +185,12 @@ const _mapSequencedGeometries = (
       order++;
       continue;
     }
-    const connectedMark = yachtBotMarks.find(
-      (t) => t.id === mark.connected_buoy,
-    );
+    const connectedMark = marks.find((t) => t.id === mark.connected_buoy);
 
     if (connectedMark) {
       connectedMark.processed = true;
-      const connectedMarkLat = connectedMark.positions.position.latitude;
-      const connectedMarkLon = connectedMark.positions.position.longitude;
+      const connectedMarkLat = connectedMark.lat;
+      const connectedMarkLon = connectedMark.lon;
       courseSequencedGeometries.push({
         ...gisUtils.createGeometryLine(
           { lat, lon },
@@ -213,7 +208,7 @@ const _mapSequencedGeometries = (
     // find connected buoy
     const { buoy, position } = _findBuoyData(
       mark.connected_buoy_original_id,
-      yachtBotBuoy,
+      buoys,
       buoyPositions,
     );
 
@@ -238,10 +233,10 @@ const _mapSequencedGeometries = (
     });
     order++;
   }
-  if (!yachtBotBuoy?.length) {
+  if (!buoys.length) {
     return courseSequencedGeometries;
   }
-  for (const currentBuoy of yachtBotBuoy) {
+  for (const currentBuoy of buoys) {
     if (currentBuoy.processed) {
       continue;
     }
@@ -269,7 +264,7 @@ const _mapSequencedGeometries = (
       continue;
     }
 
-    const connectedBuoy = yachtBotBuoy.find(
+    const connectedBuoy = buoys.find(
       (t) => t.id === currentBuoy.connected_buoy,
     );
 
@@ -310,7 +305,7 @@ const _mapSequencedGeometries = (
 
 const _findBuoyData = (
   originalObjectId,
-  yachtBotBuoy = [],
+  buoys = [],
   buoyPositions = [],
   markAsProcess = true,
 ) => {
@@ -319,12 +314,12 @@ const _findBuoyData = (
     return;
   }
 
-  const buoy = yachtBotBuoy.find(
-    (t) => t.original_object_id === originalObjectId,
-  );
+  const buoy = buoys.find((t) => t.original_object_id === originalObjectId);
 
   if (!buoy) {
-    console.log('can not findConnectedBouyData');
+    console.log(
+      `No connected buoy. Original object id ${originalObjectId} does not exist in buoys`,
+    );
     return;
   }
 
@@ -342,29 +337,4 @@ const _findBuoyFirstPosition = (id, buoyPositions) => {
   return position;
 };
 
-const _mapRankings = (yachtBotYacht = [], positions = []) => {
-  const reversedPositions = positions.concat().reverse();
-  const rankings = [];
-  for (const yacht of yachtBotYacht) {
-    const ranking = { vesselId: yacht.id, elapsedTime: 0, finishTime: 0 };
-    const firstPosition = positions.find((t) => t.yacht === yacht.id);
-    const lastPosition = reversedPositions.find((t) => t.yacht === yacht.id);
-    if (lastPosition) {
-      ranking.finishTime = lastPosition.time;
-    }
-    if (firstPosition && lastPosition) {
-      ranking.elapsedTime = lastPosition.time - firstPosition.time;
-    }
-
-    rankings.push(ranking);
-  }
-
-  rankings.sort((a, b) => {
-    const finishedTimeA = a.finishTime || Infinity;
-    const finishedTimeB = b.finishTime || Infinity;
-    return finishedTimeA - finishedTimeB;
-  });
-
-  return rankings;
-};
 module.exports = mapYachtbotToSyrf;

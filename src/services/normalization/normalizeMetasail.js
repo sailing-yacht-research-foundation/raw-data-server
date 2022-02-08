@@ -99,19 +99,21 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      METASAIL_SOURCE,
-      transaction,
-    );
+    if (process.env.ENABLE_MAIN_DB_SAVE_METASAIL !== 'true') {
+      const tracksGeojson = JSON.stringify(
+        allPositionsToFeatureCollection(boatsToSortedPositions),
+      );
+      await db.readyAboutRaceMetadata.create(raceMetadata, {
+        fields: Object.keys(raceMetadata),
+        transaction,
+      });
+      await uploadGeoJsonToS3(
+        race.id,
+        tracksGeojson,
+        METASAIL_SOURCE,
+        transaction,
+      );
+    }
     raceMetadatas.push(raceMetadata);
   }
   return raceMetadatas;

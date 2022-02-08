@@ -114,7 +114,7 @@ exports.deleteOrphanedRacesBySource = async (source, excludedOrigIds) => {
           must_not: [
             {
               terms: {
-                scraped_original_id: excludedOrigIds,
+                'scraped_original_id.keyword': excludedOrigIds,
               },
             },
           ],

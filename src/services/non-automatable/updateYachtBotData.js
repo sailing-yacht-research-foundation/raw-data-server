@@ -54,7 +54,7 @@ const updateYachtBotData = async (data) => {
       }
     }
 
-    if (data.YachtBotMarks?.length) {
+    if (data.YachtBotMark?.length) {
       const existingMarks = await db.yachtBotMark.findAll({
         where: { race_original_id: race.original_id?.toString() },
       });
@@ -63,14 +63,14 @@ const updateYachtBotData = async (data) => {
         existingMarks.map((t) => t.original_id),
       );
 
-      data.YachtBotMarks = data.YachtBotMarks.map((t) => {
+      data.YachtBotMark = data.YachtBotMark.map((t) => {
         if (existingMarkOriginalIds.has(t.original_id)) {
           return null;
         }
         return { ...t, race: race.id };
       }).filter((t) => t);
 
-      await db.yachtBotMark.bulkCreate(data.YachtBotMarks, {
+      await db.yachtBotMark.bulkCreate(data.YachtBotMark, {
         ignoreDuplicates: true,
         validate: true,
         transaction,

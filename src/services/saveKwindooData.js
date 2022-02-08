@@ -7,9 +7,12 @@ const { normalizeRace } = require('./normalization/normalizeKwindoo');
 const mapAndSave = require('./mappingsToSyrfDB/mapKwindooToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const elasticsearch = require('../utils/elasticsearch');
-const { generateMetadataName } = require('../utils/gisUtils');
+const {
+  generateMetadataName,
+  createTurfPoint,
+  getCountryAndCity,
+} = require('../utils/gisUtils');
 const { getTrackerLogoUrl } = require('./s3Util');
-const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveKwindooData = async (data) => {
   const transaction = await db.sequelize.transaction();

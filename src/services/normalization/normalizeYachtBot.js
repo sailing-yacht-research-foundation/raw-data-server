@@ -86,14 +86,21 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  const tracksGeojson = JSON.stringify(
-    allPositionsToFeatureCollection(boatsToSortedPositions),
-  );
-  await db.readyAboutRaceMetadata.create(raceMetadata, {
-    fields: Object.keys(raceMetadata),
-    transaction,
-  });
-  await uploadGeoJsonToS3(race.id, tracksGeojson, YACHTBOT_SOURCE, transaction);
+  if (process.env.ENABLE_MAIN_DB_SAVE_YACHTBOT !== 'true') {
+    const tracksGeojson = JSON.stringify(
+      allPositionsToFeatureCollection(boatsToSortedPositions),
+    );
+    await db.readyAboutRaceMetadata.create(raceMetadata, {
+      fields: Object.keys(raceMetadata),
+      transaction,
+    });
+    await uploadGeoJsonToS3(
+      race.id,
+      tracksGeojson,
+      YACHTBOT_SOURCE,
+      transaction,
+    );
+  }
   return raceMetadata;
 };
 
