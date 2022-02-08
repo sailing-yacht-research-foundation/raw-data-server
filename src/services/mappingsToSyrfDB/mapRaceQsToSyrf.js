@@ -70,7 +70,6 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       if (inputBoats.length === 0) {
         continue;
       }
-      const rankings = _mapRankings(inputBoats, start);
       const raceName = _getRaceName(event, division, start, raceQsEvent);
 
       const raceId = start?.id || division.id;
@@ -97,7 +96,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
         positions,
         raceMetadata,
         courseSequencedGeometries,
-        rankings,
+        rankings: [],
         reuse: {
           event: true,
           boats: true,
@@ -234,27 +233,5 @@ const _mapSequencedGeometries = (
   return courseSequencedGeometries;
 };
 
-const _mapRankings = (boats = [], start) => {
-  const rankings = [];
-  for (const boat of boats) {
-    const ranking = { vesselId: boat.id, elapsedTime: 0, finishTime: 0 };
-    if (boat.finish) {
-      ranking.finishTime = new Date(boat.finish).getTime();
-    }
-    if (start) {
-      ranking.elapsedTime = ranking.finishTime - start.from;
-    } else if (boat.start && boat.finish) {
-      ranking.elapsedTime = ranking.finishTime - new Date(boat.start).getTime();
-    }
-    rankings.push(ranking);
-  }
 
-  rankings.sort((a, b) => {
-    const elapsedTimeA = a.elapsedTime || Infinity;
-    const elapsedTimeB = b.elapsedTime || Infinity;
-    return elapsedTimeA - elapsedTimeB;
-  });
-
-  return rankings;
-};
 module.exports = mapRaceQsToSyrf;
