@@ -96,7 +96,6 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
         positions,
         raceMetadata,
         courseSequencedGeometries,
-        rankings: [],
         reuse: {
           event: true,
           boats: true,
