@@ -31,6 +31,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
   // for each division we can create a separated race
   console.log('Saving to main database');
   const raceQsEvent = data.RaceQsEvent[0];
+  const mappedPositions = _mapPositions(data.RaceQsPosition);
   for (const [index, division] of data.RaceQsDivision.entries()) {
     const starts =
       data.RaceQsStart?.filter((t) => t.division === division.id) || [];
@@ -62,14 +63,13 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
         data.RaceQsWaypoint,
         data.RaceQsRoute,
       );
-      const positions = _mapPositions(data.RaceQsPosition, start);
+      const positions = _filterPositions(mappedPositions, start);
       const inputBoats = _mapBoats(data.RaceQsParticipant, start);
 
       // the start with 0 input boat should be ignored.
       if (inputBoats.length === 0) {
         continue;
       }
-      const rankings = _mapRankings(inputBoats, start);
       const raceName = _getRaceName(event, division, start, raceQsEvent);
 
       const raceId = start?.id || division.id;
@@ -79,9 +79,9 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       // They may duplicate so we use the start or division prefix to know where are they from
       // so we can filter out the already saved race easily in raceQsSaveToMainDB.js file
       if (start?.original_id) {
-        raceOriginalId = `${RACEQS.START_PREFIX}${start?.original_id}`;
+        raceOriginalId = `${RACEQS.START_PREFIX}${start.event_original_id}-${start?.original_id}`;
       } else if (division.original_id) {
-        raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.original_id}`;
+        raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.event_original_id}-${division?.original_id}`;
       }
       await saveCompetitionUnit({
         event,
@@ -96,7 +96,6 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
         positions,
         raceMetadata,
         courseSequencedGeometries,
-        rankings,
         reuse: {
           event: true,
           boats: true,
@@ -148,38 +147,34 @@ const _mapBoats = (boats, start) => {
     .filter((t) => t);
 };
 
-const _mapPositions = (positions, start) => {
+const _mapPositions = (positions) => {
   if (!positions) {
     return [];
   }
-  return positions
-    .map((t) => {
-      if (!t.time || isNaN(t.time)) {
-        return null;
-      }
-      const mappedPosition = {
-        ...t,
-        // RaceQs does not use ms
-        timestamp: +t.time * 100,
-        vesselId: t.participant,
-        boat_original_id: t.participant_original_id.toString(),
-        cog: t.heading,
-        windSpeed: t.wind_speed ? Number.parseFloat(t.wind_speed) : null,
-        windDirection: t.wind_angle ? Number.parseFloat(t.wind_angle) : null,
-      };
 
-      // remove the position before start time.
-      if (start) {
-        const lowestTime = start.from - THRESHOLD_TIME;
-        if (mappedPosition.timestamp < lowestTime) {
-          return null;
-        }
-      }
-
-      return mappedPosition;
-    })
-    .filter((t) => t)
-    .sort((a, b) => a.timestamp - b.timestamp);
+  return positions.reduce((acc, pos) => {
+    if (pos.time && !isNaN(pos.time)) {
+      acc.push({
+        ...pos,
+        timestamp: +pos.time * 100,
+        vesselId: pos.participant,
+        boat_original_id: pos.participant_original_id.toString(),
+        cog: pos.heading,
+        windSpeed: pos.wind_speed ? Number.parseFloat(pos.wind_speed) : null,
+        windDirection: pos.wind_angle
+          ? Number.parseFloat(pos.wind_angle)
+          : null,
+      });
+    }
+    return acc;
+  }, []);
+};
+const _filterPositions = (positions, start) => {
+  if (!start) {
+    return positions;
+  }
+  const lowestTime = start.from - THRESHOLD_TIME;
+  return positions.filter((t) => t.timestamp >= lowestTime);
 };
 
 const _mapSequencedGeometries = (
@@ -237,27 +232,5 @@ const _mapSequencedGeometries = (
   return courseSequencedGeometries;
 };
 
-const _mapRankings = (boats = [], start) => {
-  const rankings = [];
-  for (const boat of boats) {
-    const ranking = { vesselId: boat.id, elapsedTime: 0, finishTime: 0 };
-    if (boat.finish) {
-      ranking.finishTime = new Date(boat.finish).getTime();
-    }
-    if (start) {
-      ranking.elapsedTime = ranking.finishTime - start.from;
-    } else if (boat.start && boat.finish) {
-      ranking.elapsedTime = ranking.finishTime - new Date(boat.start).getTime();
-    }
-    rankings.push(ranking);
-  }
 
-  rankings.sort((a, b) => {
-    const elapsedTimeA = a.elapsedTime || Infinity;
-    const elapsedTimeB = b.elapsedTime || Infinity;
-    return elapsedTimeA - elapsedTimeB;
-  });
-
-  return rankings;
-};
 module.exports = mapRaceQsToSyrf;
