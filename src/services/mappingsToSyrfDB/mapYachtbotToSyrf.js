@@ -206,15 +206,16 @@ const _mapSequencedGeometries = (
       continue;
     }
     // find connected buoy
-    const { buoy, position } = _findBuoyData(
+    const buoyData = _findBuoyData(
       mark.connected_buoy_original_id,
       buoys,
       buoyPositions,
     );
 
-    if (!buoy || !position) {
+    if (!buoyData?.buoy || !buoyData.position) {
       continue;
     }
+    const { buoy, position } = buoyData;
 
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(

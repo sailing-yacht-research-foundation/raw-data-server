@@ -53,7 +53,6 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
   );
 
   const inputBoats = _mapBoats(data.TackTrackerBoat);
-  const rankings = _mapRankings(inputBoats, positions);
 
   const race = data.TackTrackerRace[0];
   await saveCompetitionUnit({
@@ -71,7 +70,6 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
     markTrackers,
     markTrackerPositions,
     courseSequencedGeometries,
-    rankings,
     reuse: {
       event: true,
     },
@@ -123,8 +121,6 @@ const _mapPositions = (positions, tackTrackerRace) => {
       boat_original_id: t.boat,
     };
   });
-
-  newPositions.sort((a, b) => a.timestamp - b.timestamp);
   return newPositions;
 };
 
@@ -133,20 +129,16 @@ const _mapMarkTrackerPositions = (positions, markTrackers) => {
     return [];
   }
   const markTrackerIds = new Set(markTrackers.map((t) => t.id));
-  const newPositions = positions
-    .map((t) => {
-      if (!markTrackerIds.has(t.boat)) {
-        return null;
-      }
-      return {
+  const newPositions = positions.reduce((acc, t) => {
+    if (markTrackerIds.has(t.boat)) {
+      acc.push({
         ...t,
         timestamp: new Date(t.time).getTime(),
         markTrackerId: t.boat,
-      };
-    })
-    .filter((t) => t);
-
-  newPositions.sort((a, b) => a.timestamp - b.timestamp);
+      });
+    }
+    return acc;
+  }, []);
   return newPositions;
 };
 
@@ -328,37 +320,6 @@ const _mapSequencedGeometries = (
   }
 
   return courseSequencedGeometries;
-};
-
-const _mapRankings = (boats, positions = []) => {
-  if (!boats) {
-    return [];
-  }
-  const rankings = [];
-  for (const vessel of boats) {
-    const ranking = { vesselId: vessel.id };
-    const boatPositions = positions.filter((t) => t.boat === vessel.id);
-
-    let elapsedTime = 0;
-    let finishTime = 0;
-    if (boatPositions.length) {
-      const firstPosition = boatPositions[0];
-      const lastPosition = boatPositions[boatPositions.length - 1];
-      elapsedTime = lastPosition.timestamp - firstPosition.timestamp;
-      finishTime = lastPosition.timestamp;
-    }
-    ranking.elapsedTime = elapsedTime;
-    ranking.finishTime = finishTime;
-    rankings.push(ranking);
-  }
-
-  rankings.sort((a, b) => {
-    const finishedTimeA = a.finishTime || Infinity;
-    const finishedTimeB = b.finishTime || Infinity;
-    return finishedTimeA - finishedTimeB;
-  });
-
-  return rankings;
 };
 
 const _getFirstMarkPosition = (markTrackerId, markTrackerPositions) => {

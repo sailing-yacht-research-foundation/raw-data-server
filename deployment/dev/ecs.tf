@@ -60,7 +60,7 @@ resource "aws_ecs_task_definition" "rds_task" {
         }
       ],
       "environment": [
-        { "name": "NODE_OPTIONS", "value": "--max_old_space_size=12288" }
+        { "name": "NODE_OPTIONS", "value": "--max_old_space_size=6144" }
       ],
       "environmentFiles": [
                {
