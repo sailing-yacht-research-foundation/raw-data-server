@@ -22,13 +22,6 @@ const saveFailedUrl = async (url, error) => {
   );
 };
 
-const _processGeovoileRaceName = (raceData) => {
-  if (raceData.numLegs && raceData.numLegs > 1) {
-    raceData.name = `${raceData.name} - Leg ${raceData.legNum}`;
-  }
-  return raceData;
-};
-
 const saveGeovoileRace = async (raceData, transaction) => {
   await db.geovoileRace.create(raceData, { transaction });
   return raceData;
@@ -95,7 +88,13 @@ const saveGeovoileData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceMetadata;
+
+  if (data?.geovoileRace?.numLegs && data?.geovoileRace?.numLegs > 1) {
+    data.geovoileRace.name = `${data?.geovoileRace.name} - Leg ${data?.geovoileRace.legNum}`;
+  }
+
   const courseGates = [];
+
   if (data.sig && data.sig.raceGates && data.sig.raceGates.length) {
     let order = 0;
     for (const gate of data.sig.raceGates) {
@@ -122,7 +121,6 @@ const saveGeovoileData = async (data) => {
   }
   if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
     try {
-      _processGeovoileRaceName(data.geovoileRace);
       await saveGeovoileRace(data.geovoileRace, transaction);
       await saveGeovoileMarks(data.marks, transaction);
       await saveGeovoileGates(courseGates, transaction);
