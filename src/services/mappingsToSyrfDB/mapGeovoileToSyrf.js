@@ -68,6 +68,7 @@ const _mapPositions = (positions, boatIdToOriginalIdMap) => {
     ...p,
     vesselId: boatIdToOriginalIdMap[p.boat_original_id],
     cog: p.heading,
+    timestamp: +p.timecode * 1000,
   }));
 };
 
