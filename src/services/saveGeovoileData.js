@@ -89,41 +89,11 @@ const saveGeovoileData = async (data) => {
   let errorMessage = '';
   let raceMetadata;
 
-  if (data?.geovoileRace?.numLegs && data?.geovoileRace?.numLegs > 1) {
-    data.geovoileRace.name = `${data?.geovoileRace.name} - Leg ${data?.geovoileRace.legNum}`;
-  }
-
-  const courseGates = [];
-
-  if (data.sig && data.sig.raceGates && data.sig.raceGates.length) {
-    let order = 0;
-    for (const gate of data.sig.raceGates) {
-      const line = gisUtils.createGeometryLine(
-        {
-          lat: gate._pointA[1],
-          lon: gate._pointA[0],
-        },
-        {
-          lat: gate._pointB[1],
-          lon: gate._pointB[0],
-        },
-        { name: gate.id },
-      );
-      courseGates.push({
-        id: uuidv4(),
-        race_id: data.geovoileRace.id,
-        race_original_id: data.geovoileRace.original_id,
-        order,
-        ...line,
-      });
-    }
-    order++;
-  }
   if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
     try {
       await saveGeovoileRace(data.geovoileRace, transaction);
       await saveGeovoileMarks(data.marks, transaction);
-      await saveGeovoileGates(courseGates, transaction);
+      await saveGeovoileGates(data.courseGates, transaction);
       await saveGeovoileBoats(data.boats, transaction);
       await saveGeovoileSailors(data.sailors, transaction);
       await saveGeovoileBoatPositions(data.positions, transaction);
@@ -163,7 +133,7 @@ const saveGeovoileData = async (data) => {
   ) {
     try {
       raceMetadata = await normalizeGeovoile(data, transaction);
-      await mapGeovoileToSyrf({ ...data, courseGates }, raceMetadata);
+      await mapGeovoileToSyrf(data, raceMetadata);
     } catch (err) {
       console.log(err);
     }
