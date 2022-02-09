@@ -85,7 +85,7 @@ const mapGeovoileToSyrf = require('../../src/services/mappingsToSyrfDB/mapGeovoi
 
         try {
           console.log(
-            `Saving to syrf DB for race original id ${race.race_code}`,
+            `Saving to syrf DB for race with scrapedUrl = ${race.scrapedUrl}`,
           );
           await mapGeovoileToSyrf(objectToPass, raceMetadata);
           console.log('Finished saving race');
