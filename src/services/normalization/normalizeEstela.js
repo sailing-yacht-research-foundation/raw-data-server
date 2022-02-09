@@ -28,7 +28,7 @@ const normalizeRace = async (
   const endTime = new Date(race.end_timestamp * 1000).getTime();
   let startPoint = createTurfPoint(race.initLat, race.initLon);
 
-  if (allPositions.length === 0) {
+  if (!allPositions?.length) {
     console.log('No positions so skipping.');
     return;
   }
