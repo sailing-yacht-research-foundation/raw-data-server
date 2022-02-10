@@ -206,7 +206,8 @@ const _mapSequencedGeometries = (
     order++;
   }
   tackTrackerMark = tackTrackerMark.filter((t) => t.lat && t.lon);
-  for (const mark of tackTrackerMark) {
+  for (const markIndex in tackTrackerMark) {
+    const mark = tackTrackerMark[markIndex];
     if (mark.used) {
       continue;
     }
@@ -233,18 +234,40 @@ const _mapSequencedGeometries = (
       newMark.order = order;
       courseSequencedGeometries.push(newMark);
       order++;
-    } else if (mark.type === 'GateMark') {
-      // we will always have 3 gate mark here
-      // For example: for a start it will be like this.
-      // [
-      //   {"name": "\"Start\"", "type": "Start"},
-      //   { "name": "\"Start\"", "type": "GateMark"},
-      //   { "name": "\"Start\"", "type": "GateMark"}
-      // ]
-      // That's why we filter by type === 'GateMark' to make gate.lengths === 2
-      const gates = tackTrackerMark.filter(
-        (t) => t.name === mark.name && !t.used && t.type === 'GateMark',
-      );
+    } else if (mark.type === 'GateMark' || mark.type === 'GateMarkCenter') {
+      /*
+        we will always have 3 gate mark here
+        For example: for a start it will be like this.
+        [
+          {"name": "\"Start\"", "type": "Start"},
+          { "name": "\"Start\"", "type": "GateMark"},
+          { "name": "\"Start\"", "type": "GateMark"}
+        ]
+        That's why we filter by type === 'GateMark' to make gate.lengths === 2
+
+        For GateMarkCenter, its name is the concatenation of 2 GateMark separated by dash (-)
+        [
+          {"name": "\"gate-4\"", "type": "GateMarkCenter"},
+          { "name": "\"gate\"", "type": "GateMark"},
+          { "name": "\"4\"", "type": "GateMark"}
+        ]
+       */
+      let gates;
+      if (mark.type === 'GateMark') {
+        gates = tackTrackerMark.filter(
+          (t) => t.name === mark.name && !t.used && t.type === 'GateMark',
+        );
+      } else {
+        const gateNames = _getNameWithoutDoubleQuote(mark.name).split('-');
+        gates = tackTrackerMark
+          .slice(markIndex)
+          .filter(
+            (t) =>
+              gateNames.includes(_getNameWithoutDoubleQuote(t.name)) &&
+              !t.used &&
+              t.type === 'GateMark',
+          );
+      }
       if (gates.length === 2) {
         const firstTracker = markTrackers.find(
           (t) =>
@@ -279,6 +302,7 @@ const _mapSequencedGeometries = (
           { name: mark.name },
         );
         gates.forEach((t) => (t.used = true));
+        line.order = order;
         courseSequencedGeometries.push(line);
       }
       order++;
