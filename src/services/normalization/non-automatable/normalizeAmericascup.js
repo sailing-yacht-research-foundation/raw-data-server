@@ -27,7 +27,7 @@ const normalizeRace = async (
   const SOURCE = 'AMERICASCUP';
   const regatta = AmericasCupRegatta;
   const race = AmericasCupRace;
-  const boats = AmericasCupBoat?.filter((b) => (b.type === 'Yacht'));
+  const boats = AmericasCupBoat?.filter((b) => b.type === 'Yacht');
   const boatPositions = AmericasCupPosition?.filter(
     (p) => p.boat_type === 'Yacht',
   );

@@ -8,11 +8,11 @@ const mapAndSave = require('./mappingsToSyrfDB/mapIsailToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveISailData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let eventUrl = [];
   let raceMetadatas;
   if (process.env.ENABLE_MAIN_DB_SAVE_ISAIL !== 'true') {
+    let eventUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.iSailEvent) {
         eventUrl = data.iSailEvent.map((row) => {
@@ -165,10 +165,11 @@ const saveISailData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (const raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

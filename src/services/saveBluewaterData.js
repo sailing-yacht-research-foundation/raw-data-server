@@ -8,11 +8,11 @@ const mapAndSave = require('./mappingsToSyrfDB/mapBluewaterToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveBluewaterData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadata;
   if (process.env.ENABLE_MAIN_DB_SAVE_BLUEWATER !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.BluewaterRace) {
         raceUrl = data.BluewaterRace.map((row) => {
@@ -150,10 +150,11 @@ const saveBluewaterData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (raceMetadata) {
+  if (!errorMessage) {
     await triggerWeatherSlicer(raceMetadata);
   }
   return errorMessage;

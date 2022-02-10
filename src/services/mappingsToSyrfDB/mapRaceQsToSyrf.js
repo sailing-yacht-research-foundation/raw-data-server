@@ -232,5 +232,4 @@ const _mapSequencedGeometries = (
   return courseSequencedGeometries;
 };
 
-
 module.exports = mapRaceQsToSyrf;
