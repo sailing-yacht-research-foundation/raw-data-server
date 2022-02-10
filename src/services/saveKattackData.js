@@ -8,12 +8,12 @@ const mapAndSave = require('./mappingsToSyrfDB/mapKattackToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveKattackData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadata;
 
   if (process.env.ENABLE_MAIN_DB_SAVE_KATTACK !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.KattackRace) {
         raceUrl = data.KattackRace.map((row) => {
@@ -114,10 +114,13 @@ const saveKattackData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  await triggerWeatherSlicer(raceMetadata);
+  if (!errorMessage) {
+    await triggerWeatherSlicer(raceMetadata);
+  }
   return errorMessage;
 };
 

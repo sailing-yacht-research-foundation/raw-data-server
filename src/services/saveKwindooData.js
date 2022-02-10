@@ -15,11 +15,11 @@ const {
 const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveKwindooData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadatas;
   if (process.env.ENABLE_MAIN_DB_SAVE_KWINDOO !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.KwindooRace) {
         raceUrl = data.KwindooRace.map((row) => {
@@ -203,11 +203,12 @@ const saveKwindooData = async (data) => {
         await mapAndSave(data, raceMetadatas);
       } catch (err) {
         console.log(err);
+        errorMessage = databaseErrorHandler(err);
       }
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (const raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

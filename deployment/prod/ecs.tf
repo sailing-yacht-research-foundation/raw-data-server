@@ -59,6 +59,9 @@ resource "aws_ecs_task_definition" "rds_task" {
           "hostPort": 3000
         }
       ],
+      "environment": [
+        { "name": "NODE_OPTIONS", "value": "--max_old_space_size=12288" }
+      ],
       "environmentFiles": [
                {
                    "value": "arn:aws:s3:::syrf-prod-env-variables/raw-data-server.env",

@@ -53,7 +53,6 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
   );
 
   const inputBoats = _mapBoats(data.TackTrackerBoat);
-  const rankings = _mapRankings(inputBoats, positions);
 
   const race = data.TackTrackerRace[0];
   await saveCompetitionUnit({
@@ -71,7 +70,6 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
     markTrackers,
     markTrackerPositions,
     courseSequencedGeometries,
-    rankings,
     reuse: {
       event: true,
     },
@@ -123,8 +121,6 @@ const _mapPositions = (positions, tackTrackerRace) => {
       boat_original_id: t.boat,
     };
   });
-
-  newPositions.sort((a, b) => a.timestamp - b.timestamp);
   return newPositions;
 };
 
@@ -133,20 +129,16 @@ const _mapMarkTrackerPositions = (positions, markTrackers) => {
     return [];
   }
   const markTrackerIds = new Set(markTrackers.map((t) => t.id));
-  const newPositions = positions
-    .map((t) => {
-      if (!markTrackerIds.has(t.boat)) {
-        return null;
-      }
-      return {
+  const newPositions = positions.reduce((acc, t) => {
+    if (markTrackerIds.has(t.boat)) {
+      acc.push({
         ...t,
         timestamp: new Date(t.time).getTime(),
         markTrackerId: t.boat,
-      };
-    })
-    .filter((t) => t);
-
-  newPositions.sort((a, b) => a.timestamp - b.timestamp);
+      });
+    }
+    return acc;
+  }, []);
   return newPositions;
 };
 
@@ -214,7 +206,8 @@ const _mapSequencedGeometries = (
     order++;
   }
   tackTrackerMark = tackTrackerMark.filter((t) => t.lat && t.lon);
-  for (const mark of tackTrackerMark) {
+  for (const markIndex in tackTrackerMark) {
+    const mark = tackTrackerMark[markIndex];
     if (mark.used) {
       continue;
     }
@@ -241,18 +234,40 @@ const _mapSequencedGeometries = (
       newMark.order = order;
       courseSequencedGeometries.push(newMark);
       order++;
-    } else if (mark.type === 'GateMark') {
-      // we will always have 3 gate mark here
-      // For example: for a start it will be like this.
-      // [
-      //   {"name": "\"Start\"", "type": "Start"},
-      //   { "name": "\"Start\"", "type": "GateMark"},
-      //   { "name": "\"Start\"", "type": "GateMark"}
-      // ]
-      // That's why we filter by type === 'GateMark' to make gate.lengths === 2
-      const gates = tackTrackerMark.filter(
-        (t) => t.name === mark.name && !t.used && t.type === 'GateMark',
-      );
+    } else if (mark.type === 'GateMark' || mark.type === 'GateMarkCenter') {
+      /*
+        we will always have 3 gate mark here
+        For example: for a start it will be like this.
+        [
+          {"name": "\"Start\"", "type": "Start"},
+          { "name": "\"Start\"", "type": "GateMark"},
+          { "name": "\"Start\"", "type": "GateMark"}
+        ]
+        That's why we filter by type === 'GateMark' to make gate.lengths === 2
+
+        For GateMarkCenter, its name is the concatenation of 2 GateMark separated by dash (-)
+        [
+          {"name": "\"gate-4\"", "type": "GateMarkCenter"},
+          { "name": "\"gate\"", "type": "GateMark"},
+          { "name": "\"4\"", "type": "GateMark"}
+        ]
+       */
+      let gates;
+      if (mark.type === 'GateMark') {
+        gates = tackTrackerMark.filter(
+          (t) => t.name === mark.name && !t.used && t.type === 'GateMark',
+        );
+      } else {
+        const gateNames = _getNameWithoutDoubleQuote(mark.name).split('-');
+        gates = tackTrackerMark
+          .slice(markIndex)
+          .filter(
+            (t) =>
+              gateNames.includes(_getNameWithoutDoubleQuote(t.name)) &&
+              !t.used &&
+              t.type === 'GateMark',
+          );
+      }
       if (gates.length === 2) {
         const firstTracker = markTrackers.find(
           (t) =>
@@ -287,6 +302,7 @@ const _mapSequencedGeometries = (
           { name: mark.name },
         );
         gates.forEach((t) => (t.used = true));
+        line.order = order;
         courseSequencedGeometries.push(line);
       }
       order++;
@@ -328,37 +344,6 @@ const _mapSequencedGeometries = (
   }
 
   return courseSequencedGeometries;
-};
-
-const _mapRankings = (boats, positions = []) => {
-  if (!boats) {
-    return [];
-  }
-  const rankings = [];
-  for (const vessel of boats) {
-    const ranking = { vesselId: vessel.id };
-    const boatPositions = positions.filter((t) => t.boat === vessel.id);
-
-    let elapsedTime = 0;
-    let finishTime = 0;
-    if (boatPositions.length) {
-      const firstPosition = boatPositions[0];
-      const lastPosition = boatPositions[boatPositions.length - 1];
-      elapsedTime = lastPosition.timestamp - firstPosition.timestamp;
-      finishTime = lastPosition.timestamp;
-    }
-    ranking.elapsedTime = elapsedTime;
-    ranking.finishTime = finishTime;
-    rankings.push(ranking);
-  }
-
-  rankings.sort((a, b) => {
-    const finishedTimeA = a.finishTime || Infinity;
-    const finishedTimeB = b.finishTime || Infinity;
-    return finishedTimeA - finishedTimeB;
-  });
-
-  return rankings;
 };
 
 const _getFirstMarkPosition = (markTrackerId, markTrackerPositions) => {
