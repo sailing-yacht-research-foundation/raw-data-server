@@ -8,11 +8,11 @@ const mapAndSave = require('./mappingsToSyrfDB/mapEstelaToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveEstelaData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadata;
   if (process.env.ENABLE_MAIN_DB_SAVE_ESTELA !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.EstelaRace) {
         raceUrl = data.EstelaRace.map((row) => {
@@ -137,10 +137,13 @@ const saveEstelaData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  await triggerWeatherSlicer(raceMetadata);
+  if (!errorMessage) {
+    await triggerWeatherSlicer(raceMetadata);
+  }
   return errorMessage;
 };
 

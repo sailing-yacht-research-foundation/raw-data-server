@@ -8,11 +8,11 @@ const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const mapTackTrackerToSyrf = require('../services/mappingsToSyrfDB/mapTackTrackerToSyrf');
 
 const saveTackTrackerData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadatas;
   if (process.env.ENABLE_MAIN_DB_SAVE_TACKTRACKER !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.TackTrackerRegatta) {
         const regattaOptions = {
@@ -159,10 +159,11 @@ const saveTackTrackerData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (const raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

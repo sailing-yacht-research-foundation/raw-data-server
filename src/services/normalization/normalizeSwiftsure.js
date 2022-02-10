@@ -129,7 +129,7 @@ const normalizeRace = async (
       id: raceMetadata.id,
     },
     raw: true,
-  })
+  });
 
   if (!metadata) {
     await db.readyAboutRaceMetadata.create(raceMetadata, {
