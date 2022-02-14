@@ -7,6 +7,8 @@ const mapRaceQsToSyrf = require('../../src/services/mappingsToSyrfDB/mapRaceQsTo
 const {
   normalizeRace,
 } = require('../../src/services/normalization/normalizeRaceQs');
+const { logFunctionTime } = require('../../src/utils/logUtils');
+
 const elasticsearch = require('../../src/utils/elasticsearch');
 (async () => {
   const limit = 10;
@@ -107,7 +109,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           raw: true,
         });
 
-        const raceQsPosition = await db.raceQsPosition.findAll(eventFilter);
+        const raceQsPosition = await _getRaceQsPosition(raceQsEvent.id);
 
         const raceQsParticipant = await db.raceQsParticipant.findAll(
           eventFilter,
@@ -132,8 +134,14 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           // in the logic,  we normalize the race by division and start
           // in case there is a start in division, raceId = start.id
           // in case there is no start, raceId = division.id
+
+          const startTimeNormalize = new Date();
           const raceMetadatas = await normalizeRace(objectToPass);
+          logFunctionTime('normalizeRace', startTimeNormalize);
+
+          const startTimeMapRaceQsToSyrf = new Date();
           await mapRaceQsToSyrf(objectToPass, raceMetadatas);
+          logFunctionTime('mapRaceQsToSyrf', startTimeMapRaceQsToSyrf);
           console.log(
             `Finished saving race raceQsEvent.original_id = ${raceQsEvent.original_id}`,
           );
@@ -157,3 +165,55 @@ const elasticsearch = require('../../src/utils/elasticsearch');
   }
   console.log('Finished saving all scraper db data to main db');
 })();
+
+async function _getRaceQsPosition(eventId) {
+  const limit = 200000;
+  let page = 0;
+  let allPositions = [];
+  let shouldContinue = true;
+  console.log(`Start getting positions for event = ${eventId}`);
+  const startTime = new Date();
+  while (shouldContinue) {
+    const startTimePage = new Date();
+    console.log(`Start getting positions for page = ${page}`);
+    const eventFilter = {
+      where: {
+        event: eventId,
+      },
+      limit,
+      offset: page * limit,
+      raw: true,
+      attributes: [
+        'id',
+        'participant',
+        'participant_original_id',
+        'time',
+        'lat',
+        'lon',
+        'heading',
+        'wind_angle',
+        'wind_speed',
+      ],
+    };
+
+    const positions = await db.raceQsPosition.findAll(eventFilter);
+    const endTimePage = new Date();
+    if (positions.length === 0) {
+      shouldContinue = false;
+      break;
+    }
+    allPositions = [...allPositions, ...positions];
+
+    console.log(
+      `Finished getting positions for page = ${page}, total time = ${endTimePage.getTime() - startTimePage.getTime()
+      } ms, number of positions = ${positions.length}`,
+    );
+    page++;
+  }
+  const endTime = new Date();
+  console.log(
+    `Finished getting positions for event = ${eventId}, total number of positions = ${allPositions.length
+    }, total time = ${endTime.getTime() - startTime.getTime()} ms`,
+  );
+  return allPositions;
+}
