@@ -85,6 +85,7 @@ module.exports = class VesselParticipantTrack {
    * @returns  Feature<LineString>
    */
   getSimplifiedTrack() {
+    console.time('getSimplifiedTrack');
     const coordinateWithTime = [];
     if (this.positions.length > 2) {
       // Turf Line String is unable to process less than 2 position
@@ -105,8 +106,7 @@ module.exports = class VesselParticipantTrack {
         });
       } catch (error) {
         console.error(
-          `Error simplifying tracks: ${
-            error instanceof Error ? error.message : '-'
+          `Error simplifying tracks: ${error instanceof Error ? error.message : '-'
           }. Returning whole track`,
         );
         return {
@@ -148,6 +148,7 @@ module.exports = class VesselParticipantTrack {
         }
       });
     }
+    console.timeEnd('getSimplifiedTrack');
     return {
       type: 'Feature',
       properties: {},
@@ -166,6 +167,8 @@ module.exports = class VesselParticipantTrack {
   createGeoJsonTrack({ competitionUnitId } = {}) {
     const returnFiniteAndNotNull = (num, defaultVal) =>
       isFinite(num) && num !== null ? +num : defaultVal ?? null;
+
+    console.time('generate providedGeoJson');
     const providedGeoJson = {
       type: 'Feature',
       properties: {
@@ -216,6 +219,7 @@ module.exports = class VesselParticipantTrack {
         }),
       },
     };
+    console.timeEnd('generate providedGeoJson');
     const simplifiedGeoJson = {
       ...this.getSimplifiedTrack(),
       properties: {

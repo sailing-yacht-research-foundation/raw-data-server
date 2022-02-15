@@ -99,6 +99,8 @@ exports.stopCompetition = async (
     vesselParticipantTracks,
   );
   const pointTracksJson = this.generatePointTracksJson(id, pointTracks);
+
+  console.log('start triggerSaveFinishedCompetition');
   await this.triggerSaveFinishedCompetition(id, {
     vesselParticipantData: null,
     windData: {},
@@ -111,18 +113,24 @@ exports.generateVesselTracksJson = (
   competitionUnitId,
   vesselParticipantTracks = {},
 ) => {
+  console.time('generateVesselTracksJson');
   const vesselTracksJson = [];
   // check vesselParticipantTrack.js for more detail
   for (const vesselParticipantId of Object.keys(vesselParticipantTracks)) {
+    const label = `generateVesselTracksJson for vesselParticipantId = ${vesselParticipantId}, number of positions = ${vesselParticipantTracks[vesselParticipantId].positions.length}`;
+    console.time(label);
     const geoJson = vesselParticipantTracks[
       vesselParticipantId
     ].createGeoJsonTrack({ competitionUnitId });
     vesselTracksJson.push(geoJson);
+    console.timeEnd(label);
   }
+  console.timeEnd('generateVesselTracksJson');
   return vesselTracksJson;
 };
 
 exports.generatePointTracksJson = (competitionUnitId, pointTracks = {}) => {
+  console.time('generatePointTracksJson');
   const pointTracksJson = [];
   // Check point track.js for detail logic
   for (const pointId of Object.keys(pointTracks)) {
@@ -131,6 +139,7 @@ exports.generatePointTracksJson = (competitionUnitId, pointTracks = {}) => {
     });
     pointTracksJson.push(geoJson);
   }
+  console.timeEnd('generatePointTracksJson');
   return pointTracksJson;
 };
 
@@ -140,6 +149,7 @@ exports.triggerSaveFinishedCompetition = async (
 ) => {
   const { vesselTracksJson, pointTracksJson } = geoJsons;
   const bucket = process.env.AWS_S3_TRACKS_GEOJSON_BUCKET;
+  console.time('uploadedVesselTrack');
   const uploadedVesselTrack = await Promise.all(
     vesselTracksJson.map(async (trackData) => {
       const { providedGeoJson, simplifiedGeoJson } = trackData;
@@ -176,6 +186,8 @@ exports.triggerSaveFinishedCompetition = async (
       };
     }),
   );
+  console.timeEnd('uploadedVesselTrack');
+  console.time('uploadedPointTrack');
   const uploadedPointTrack = await Promise.all(
     pointTracksJson.map(async (trackData) => {
       let s3Detail = null;
@@ -196,6 +208,7 @@ exports.triggerSaveFinishedCompetition = async (
       };
     }),
   );
+  console.timeEnd('uploadedPointTrack');
   const transaction = await createTransaction();
   try {
     await this.saveVesselTrackJsons(
@@ -214,7 +227,6 @@ exports.triggerSaveFinishedCompetition = async (
       uploadedPointTrack.filter((row) => row.storageKey !== ''),
       transaction,
     );
-
     await this.saveCompetitionResult(
       competitionUnitId,
       rankings.map((rank, index) => {
@@ -245,6 +257,7 @@ exports.saveVesselTrackJsons = async (
   data = [],
   transaction,
 ) => {
+  console.time('saveVesselTrackJsons');
   const dataToSave = data.map((row) => {
     const { vesselParticipantId, providedStorageKey, simplifiedStorageKey } =
       row;
@@ -261,6 +274,7 @@ exports.saveVesselTrackJsons = async (
     validate: true,
     transaction,
   });
+  console.timeEnd('saveVesselTrackJsons');
 };
 
 exports.savePointTrackJsons = async (
@@ -268,6 +282,7 @@ exports.savePointTrackJsons = async (
   data = [],
   transaction,
 ) => {
+  console.time('savePointTrackJsons');
   const dataToSave = data.map((row) => {
     const { pointId, storageKey } = row;
     return {
@@ -281,6 +296,7 @@ exports.savePointTrackJsons = async (
     validate: true,
     transaction,
   });
+  console.timeEnd('savePointTrackJsons');
 };
 
 exports.saveCompetitionResult = async (
