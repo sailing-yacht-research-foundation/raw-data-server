@@ -267,9 +267,19 @@ const saveCompetitionUnit = async ({
         if (!pointId) {
           continue;
         }
+        if (
+          isNaN(pointPosition.lon) ||
+          isNaN(pointPosition.lat) ||
+          isNaN(pointPosition.timestamp)
+        ) {
+          console.log(
+            `Error: Lon (${pointPosition.lon}) or lat (${pointPosition.lat}) or timestamp (${pointPosition.timestamp}) is not a valid float/int`,
+          );
+          continue;
+        }
         pointTracks[pointId].addNewPosition(
-          [pointPosition.lon, pointPosition.lat],
-          pointPosition.timestamp,
+          [+pointPosition.lon, +pointPosition.lat],
+          +pointPosition.timestamp,
         );
       }
     }
