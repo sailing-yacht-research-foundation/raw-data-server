@@ -63,19 +63,23 @@ const _mapSequencedGeometries = ({ lines, points, marks }) => {
   if (lines.length === 0) return;
 
   //Start line
-  const startLine = createGeometryLine(
-    {
-      lat: lines[0].lat1,
-      lon: lines[0].lon1,
-    },
-    {
-      lat: lines[0].lat2,
-      lon: lines[0].lon2,
-    },
-    { name: lines[0].name },
-  );
-  startLine.order = 0;
-  courseSequencedGeometries.push(startLine);
+  lines.forEach((p) => {
+    if (p.name.includes('Start')) {
+      const startLine = createGeometryLine(
+        {
+          lat: p.lat1,
+          lon: p.lon1,
+        },
+        {
+          lat: p.lat2,
+          lon: p.lon2,
+        },
+        { name: p.name },
+      );
+      startLine.order = index++;
+      courseSequencedGeometries.push(startLine);
+    }
+  });
 
   //Points
   if (points.length > 0)
@@ -85,7 +89,7 @@ const _mapSequencedGeometries = ({ lines, points, marks }) => {
         lon: p.lon,
         properties: { name: p.name },
       });
-      newPoint.order = ++index;
+      newPoint.order = index++;
       courseSequencedGeometries.push(newPoint);
     });
 
@@ -97,26 +101,29 @@ const _mapSequencedGeometries = ({ lines, points, marks }) => {
         lon: p.lon,
         properties: { name: p.name },
       });
-      newMark.order = ++index;
+      newMark.order = index++;
       courseSequencedGeometries.push(newMark);
     });
 
   //Finish line
-  if (lines.length > 1) {
-    const finishLine = createGeometryLine(
-      {
-        lat: lines[lines.length - 1].lat1,
-        lon: lines[lines.length - 1].lon1,
-      },
-      {
-        lat: lines[lines.length - 1].lat2,
-        lon: lines[lines.length - 1].lon2,
-      },
-      { name: lines[lines.length - 1].name },
-    );
-    finishLine.order = ++index;
-    courseSequencedGeometries.push(finishLine);
-  }
+  lines.forEach((p) => {
+    if (p.name.includes('Finish')) {
+      const finishLine = createGeometryLine(
+        {
+          lat: p.lat1,
+          lon: p.lon1,
+        },
+        {
+          lat: p.lat2,
+          lon: p.lon2,
+        },
+        { name: p.name },
+      );
+      finishLine.order = index++;
+      courseSequencedGeometries.push(finishLine);
+    }
+  });
+
   return courseSequencedGeometries;
 };
 module.exports = mapAndSave;
