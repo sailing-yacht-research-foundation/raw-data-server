@@ -4,7 +4,6 @@ const { createTransaction } = require('../../syrf-schema/utils/utils');
 const { competitionUnitStatus } = require('../../syrf-schema/enums');
 const db = require('../../syrf-schema/index');
 const { uploadStreamToS3 } = require('../../services/s3Util');
-const { logFunctionTime } = require('../../utils/logUtils');
 const { Readable } = require('stream');
 
 exports.upsert = async (
@@ -95,18 +94,11 @@ exports.stopCompetition = async (
   rankings = [],
 ) => {
   console.log('Stopping Competition');
-  const generateVesselTracksJsonStartTime = new Date();
   const vesselTracksJson = this.generateVesselTracksJson(
     id,
     vesselParticipantTracks,
   );
-  logFunctionTime(
-    'generateVesselTracksJson',
-    generateVesselTracksJsonStartTime,
-  );
-  const pointTracksJsonStartTime = new Date();
   const pointTracksJson = this.generatePointTracksJson(id, pointTracks);
-  logFunctionTime('generatePointTracksJson', pointTracksJsonStartTime);
 
   console.log('start triggerSaveFinishedCompetition');
   await this.triggerSaveFinishedCompetition(id, {
@@ -121,23 +113,24 @@ exports.generateVesselTracksJson = (
   competitionUnitId,
   vesselParticipantTracks = {},
 ) => {
+  console.time('generateVesselTracksJson');
   const vesselTracksJson = [];
   // check vesselParticipantTrack.js for more detail
   for (const vesselParticipantId of Object.keys(vesselParticipantTracks)) {
-    console.log(
-      `Start generateVesselTracksJson for vesselParticipantId = ${vesselParticipantId}, number of positions = ${vesselParticipantTracks[vesselParticipantId].positions.length}`,
-    );
-    const startTime = new Date();
+    const label = `generateVesselTracksJson for vesselParticipantId = ${vesselParticipantId}, number of positions = ${vesselParticipantTracks[vesselParticipantId].positions.length}`;
+    console.time(label);
     const geoJson = vesselParticipantTracks[
       vesselParticipantId
     ].createGeoJsonTrack({ competitionUnitId });
     vesselTracksJson.push(geoJson);
-    logFunctionTime('createGeoJsonTrack', startTime);
+    console.timeEnd(label);
   }
+  console.timeEnd('generateVesselTracksJson');
   return vesselTracksJson;
 };
 
 exports.generatePointTracksJson = (competitionUnitId, pointTracks = {}) => {
+  console.time('generatePointTracksJson');
   const pointTracksJson = [];
   // Check point track.js for detail logic
   for (const pointId of Object.keys(pointTracks)) {
@@ -146,6 +139,7 @@ exports.generatePointTracksJson = (competitionUnitId, pointTracks = {}) => {
     });
     pointTracksJson.push(geoJson);
   }
+  console.timeEnd('generatePointTracksJson');
   return pointTracksJson;
 };
 
@@ -155,7 +149,7 @@ exports.triggerSaveFinishedCompetition = async (
 ) => {
   const { vesselTracksJson, pointTracksJson } = geoJsons;
   const bucket = process.env.AWS_S3_TRACKS_GEOJSON_BUCKET;
-  const uploadedVesselTrackStartTime = new Date();
+  console.time('uploadedVesselTrack');
   const uploadedVesselTrack = await Promise.all(
     vesselTracksJson.map(async (trackData) => {
       const { providedGeoJson, simplifiedGeoJson } = trackData;
@@ -192,9 +186,8 @@ exports.triggerSaveFinishedCompetition = async (
       };
     }),
   );
-  logFunctionTime('uploadedVesselTrack', uploadedVesselTrackStartTime);
-
-  const uploadedPointTrackStartTime = new Date();
+  console.timeEnd('uploadedVesselTrack');
+  console.time('uploadedPointTrack');
   const uploadedPointTrack = await Promise.all(
     pointTracksJson.map(async (trackData) => {
       let s3Detail = null;
@@ -215,7 +208,7 @@ exports.triggerSaveFinishedCompetition = async (
       };
     }),
   );
-  logFunctionTime('uploadedPointTrack', uploadedPointTrackStartTime);
+  console.timeEnd('uploadedPointTrack');
   const transaction = await createTransaction();
   try {
     await this.saveVesselTrackJsons(
@@ -264,7 +257,7 @@ exports.saveVesselTrackJsons = async (
   data = [],
   transaction,
 ) => {
-  const startTime = new Date();
+  console.time('saveVesselTrackJsons');
   const dataToSave = data.map((row) => {
     const { vesselParticipantId, providedStorageKey, simplifiedStorageKey } =
       row;
@@ -281,7 +274,7 @@ exports.saveVesselTrackJsons = async (
     validate: true,
     transaction,
   });
-  logFunctionTime('saveVesselTrackJsons', startTime);
+  console.timeEnd('saveVesselTrackJsons');
 };
 
 exports.savePointTrackJsons = async (
@@ -289,7 +282,7 @@ exports.savePointTrackJsons = async (
   data = [],
   transaction,
 ) => {
-  const startTime = new Date();
+  console.time('savePointTrackJsons');
   const dataToSave = data.map((row) => {
     const { pointId, storageKey } = row;
     return {
@@ -303,7 +296,7 @@ exports.savePointTrackJsons = async (
     validate: true,
     transaction,
   });
-  logFunctionTime('savePointTrackJsons', startTime);
+  console.timeEnd('savePointTrackJsons');
 };
 
 exports.saveCompetitionResult = async (

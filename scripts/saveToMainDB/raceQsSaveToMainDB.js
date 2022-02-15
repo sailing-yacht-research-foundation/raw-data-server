@@ -1,13 +1,11 @@
 require('dotenv').config();
 const db = require('../../src/models');
-const Op = db.Sequelize.Op;
 const { SOURCE, RACEQS } = require('../../src/constants');
 const { getExistingData } = require('../../src/services/scrapedDataResult');
 const mapRaceQsToSyrf = require('../../src/services/mappingsToSyrfDB/mapRaceQsToSyrf');
 const {
   normalizeRace,
 } = require('../../src/services/normalization/normalizeRaceQs');
-const { logFunctionTime } = require('../../src/utils/logUtils');
 
 const elasticsearch = require('../../src/utils/elasticsearch');
 (async () => {
@@ -135,13 +133,13 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           // in case there is a start in division, raceId = start.id
           // in case there is no start, raceId = division.id
 
-          const startTimeNormalize = new Date();
+          console.time('normalizeRace');
           const raceMetadatas = await normalizeRace(objectToPass);
-          logFunctionTime('normalizeRace', startTimeNormalize);
+          console.timeEnd('normalizeRace');
 
-          const startTimeMapRaceQsToSyrf = new Date();
+          console.time('mapRaceQsToSyrf');
           await mapRaceQsToSyrf(objectToPass, raceMetadatas);
-          logFunctionTime('mapRaceQsToSyrf', startTimeMapRaceQsToSyrf);
+          console.timeEnd('mapRaceQsToSyrf');
           console.log(
             `Finished saving race raceQsEvent.original_id = ${raceQsEvent.original_id}`,
           );
