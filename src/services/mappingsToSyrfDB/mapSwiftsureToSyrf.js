@@ -7,6 +7,11 @@ const {
 const mapAndSave = async (data, raceMetadata) => {
   console.log('Saving to main database');
 
+  const eventYear = raceMetadata.start_year;
+  const eventCity = raceMetadata.start_city;
+
+  if (!raceMetadata.name) raceMetadata.name = eventYear + ' ' + eventCity;
+
   const boatIdToOriginalIdMap = {};
   const inputBoats = _mapBoats(data.swiftsureBoat, boatIdToOriginalIdMap);
 
