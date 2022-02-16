@@ -41,8 +41,8 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
       vesselId: b.original_id,
       model: b.make,
       publicName: b.boat_name ? b.boat_name : b.team_name,
+      handicap: b.scoring,
     };
-    console.log(vessel);
     return vessel;
   });
 };
