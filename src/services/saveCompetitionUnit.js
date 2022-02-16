@@ -268,6 +268,9 @@ const saveCompetitionUnit = async ({
           continue;
         }
         if (
+          pointPosition.lon === null ||
+          pointPosition.lat === null ||
+          pointPosition.timestamp === null ||
           isNaN(pointPosition.lon) ||
           isNaN(pointPosition.lat) ||
           isNaN(pointPosition.timestamp)
@@ -300,6 +303,9 @@ const saveCompetitionUnit = async ({
       const tracker = vesselParticipantTracks[vesselParticipantId];
 
       if (
+        position.lon === null ||
+        position.lat === null ||
+        position.timestamp === null ||
         isNaN(position.lon) ||
         isNaN(position.lat) ||
         isNaN(position.timestamp)
