@@ -40,7 +40,9 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
       id: b.id,
       vesselId: b.original_id,
       model: b.make,
+      publicName: b.boat_name ? b.boat_name : b.team_name,
     };
+    console.log(vessel);
     return vessel;
   });
 };
@@ -78,6 +80,25 @@ const _mapSequencedGeometries = ({ lines, points, marks }) => {
       );
       startLine.order = index++;
       courseSequencedGeometries.push(startLine);
+    }
+  });
+
+  //Halfway line
+  lines.forEach((p) => {
+    if (p.name.includes('Halfway')) {
+      const halfwaytLine = createGeometryLine(
+        {
+          lat: p.lat1,
+          lon: p.lon1,
+        },
+        {
+          lat: p.lat2,
+          lon: p.lon2,
+        },
+        { name: p.name },
+      );
+      halfwaytLine.order = index++;
+      courseSequencedGeometries.push(halfwaytLine);
     }
   });
 
