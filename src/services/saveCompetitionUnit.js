@@ -267,9 +267,22 @@ const saveCompetitionUnit = async ({
         if (!pointId) {
           continue;
         }
+        if (
+          pointPosition.lon === null ||
+          pointPosition.lat === null ||
+          pointPosition.timestamp === null ||
+          isNaN(pointPosition.lon) ||
+          isNaN(pointPosition.lat) ||
+          isNaN(pointPosition.timestamp)
+        ) {
+          console.log(
+            `Error: Lon (${pointPosition.lon}) or lat (${pointPosition.lat}) or timestamp (${pointPosition.timestamp}) is not a valid float/int`,
+          );
+          continue;
+        }
         pointTracks[pointId].addNewPosition(
-          [pointPosition.lon, pointPosition.lat],
-          pointPosition.timestamp,
+          [+pointPosition.lon, +pointPosition.lat],
+          +pointPosition.timestamp,
         );
       }
     }
@@ -290,6 +303,9 @@ const saveCompetitionUnit = async ({
       const tracker = vesselParticipantTracks[vesselParticipantId];
 
       if (
+        position.lon === null ||
+        position.lat === null ||
+        position.timestamp === null ||
         isNaN(position.lon) ||
         isNaN(position.lat) ||
         isNaN(position.timestamp)
