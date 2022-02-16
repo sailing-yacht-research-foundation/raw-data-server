@@ -8,12 +8,12 @@ const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const mapMetasailToSyrf = require('./mappingsToSyrfDB/mapMetasailToSyrf');
 
 const saveMetasailData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let eventUrl = [];
   let metasailPositions;
   let raceMetadatas;
   if (process.env.ENABLE_MAIN_DB_SAVE_METASAIL !== 'true') {
+    let eventUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.MetasailEvent) {
         eventUrl = data.MetasailEvent.map((row) => {
@@ -121,10 +121,11 @@ const saveMetasailData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (const raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

@@ -8,12 +8,12 @@ const mapAndSave = require('./mappingsToSyrfDB/mapGeoracingToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 
 const saveGeoracingData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadatas;
 
   if (process.env.ENABLE_MAIN_DB_SAVE_GEORACING !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.GeoracingRace) {
         raceUrl = data.GeoracingRace.map((row) => {
@@ -175,10 +175,11 @@ const saveGeoracingData = async (data) => {
       }
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (const raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

@@ -15,11 +15,11 @@ const {
 const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveTracTracData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   let raceMetadatas;
   if (process.env.ENABLE_MAIN_DB_SAVE_TRACTRAC !== 'true') {
+    let raceUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.SailorEmail) {
         await db.sailorEmail.bulkCreate(data.SailorEmail, {
@@ -237,11 +237,12 @@ const saveTracTracData = async (data) => {
         await mapTracTracToSyrf(data, raceMetadatas?.[0]);
       } catch (err) {
         console.log(err);
+        errorMessage = databaseErrorHandler(err);
       }
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (const raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

@@ -8,11 +8,11 @@ const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const mapRaceQsToSyrf = require('../services/mappingsToSyrfDB/mapRaceQsToSyrf');
 
 const saveRaceQsData = async (data) => {
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceMetadatas;
   if (process.env.ENABLE_MAIN_DB_SAVE_RACEQS !== 'true') {
     let eventUrl = [];
+    const transaction = await db.sequelize.transaction();
     try {
       if (data.RaceQsEvent) {
         eventUrl = data.RaceQsEvent.map((row) => {
@@ -151,12 +151,12 @@ const saveRaceQsData = async (data) => {
       raceMetadatas = await normalizeRace(data);
       await mapRaceQsToSyrf(data, raceMetadatas);
     } catch (err) {
-      console.log('error while mapRaceQsToSyrf');
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (raceMetadatas) {
+  if (raceMetadatas && !errorMessage) {
     for (raceMetadata of raceMetadatas) {
       await triggerWeatherSlicer(raceMetadata);
     }

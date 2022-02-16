@@ -1,12 +1,12 @@
 require('dotenv').config();
 const db = require('../../src/models');
-const Op = db.Sequelize.Op;
 const { SOURCE, RACEQS } = require('../../src/constants');
 const { getExistingData } = require('../../src/services/scrapedDataResult');
 const mapRaceQsToSyrf = require('../../src/services/mappingsToSyrfDB/mapRaceQsToSyrf');
 const {
   normalizeRace,
 } = require('../../src/services/normalization/normalizeRaceQs');
+
 const elasticsearch = require('../../src/utils/elasticsearch');
 (async () => {
   const limit = 10;
@@ -14,20 +14,32 @@ const elasticsearch = require('../../src/utils/elasticsearch');
   let shouldContinue = true;
   const existingData = await getExistingData(SOURCE.RACEQS);
 
+  // The saved format in main database is raceqs-start-{eventId}-{startId}.
   const savedStartOriginalIds = new Set(
     existingData
       .map((t) => t.original_id)
       .filter((t) => {
         return t?.indexOf(RACEQS.START_PREFIX) > -1;
       })
-      .map((t) => t.replace(RACEQS.START_PREFIX, '')),
+      .map((t) => t.replace(RACEQS.START_PREFIX, '').split('-')[1]),
   );
-  const savedDivisionOriginalIds = existingData
-    .map((t) => t.original_id)
-    .filter((t) => {
-      return t?.indexOf(RACEQS.DIVISION_PREFIX) > -1;
-    })
-    .map((t) => t.replace(RACEQS.DIVISION_PREFIX, ''));
+  // This map is used for map the event id with processed division ids
+  // For example: eventId = 'eventId-0' has 3 processed divisions 'divisionId-0', 'divisionId-1', 'divisionId-2'
+  // the saved format in main database is raceqs-division-{eventId}-{divisionId}.
+  // For example: raceqs-division-1234-5678. It means eventId = 1234, divisionId = 5678
+  const eventDivisionMap = {};
+  for (const savedData of existingData) {
+    if (savedData.original_id.indexOf(RACEQS.DIVISION_PREFIX) === -1) {
+      continue;
+    }
+    const [savedEventId, savedDivisionId] = savedData.original_id
+      .replace(RACEQS.DIVISION_PREFIX, '')
+      .split('-');
+    if (!eventDivisionMap[savedEventId]) {
+      eventDivisionMap[savedEventId] = new Set();
+    }
+    eventDivisionMap[savedEventId].add(savedDivisionId);
+  }
   while (shouldContinue) {
     const raceQsEvents = await db.raceQsEvent.findAll({
       raw: true,
@@ -49,20 +61,11 @@ const elasticsearch = require('../../src/utils/elasticsearch');
         const raceFilter = {
           where: {
             event: raceQsEvent.id,
-            original_id: {
-              [Op.notIn]: savedDivisionOriginalIds,
-            },
           },
           raw: true,
         };
         const raceQsDivision = await db.raceQsDivision.findAll(raceFilter);
 
-        if (!raceQsDivision.length) {
-          console.log(
-            `this raceQsEvent = ${raceQsEvent.original_id} is already processed, continue to next event`,
-          );
-          continue;
-        }
         const eventFilter = {
           where: {
             event: raceQsEvent.id,
@@ -72,6 +75,18 @@ const elasticsearch = require('../../src/utils/elasticsearch');
         // we only filter by event to make sure that the division does not have start check
         let raceQsStart = await db.raceQsStart.findAll(eventFilter);
 
+        // in case there is no start, and first division is already processed
+        if (
+          raceQsStart.length === 0 &&
+          eventDivisionMap[raceQsEvent.original_id]?.has(
+            raceQsDivision[0]?.original_id,
+          )
+        ) {
+          console.log(
+            `this raceQsEvent = ${raceQsEvent.original_id} has no start, and the first division is already processed, continue to next event`,
+          );
+          continue;
+        }
         // filter out processed start
         if (raceQsStart.length > 0) {
           raceQsStart = raceQsStart.filter(
@@ -79,6 +94,9 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           );
 
           if (!raceQsStart.length) {
+            console.log(
+              `All of starts for this raceQsEvent = ${raceQsEvent.original_id} have been processed, continue to next event`,
+            );
             continue;
           }
         }
@@ -89,7 +107,7 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           raw: true,
         });
 
-        const raceQsPosition = await db.raceQsPosition.findAll(eventFilter);
+        const raceQsPosition = await _getRaceQsPosition(raceQsEvent.id);
 
         const raceQsParticipant = await db.raceQsParticipant.findAll(
           eventFilter,
@@ -114,9 +132,17 @@ const elasticsearch = require('../../src/utils/elasticsearch');
           // in the logic,  we normalize the race by division and start
           // in case there is a start in division, raceId = start.id
           // in case there is no start, raceId = division.id
+
+          console.time('normalizeRace');
           const raceMetadatas = await normalizeRace(objectToPass);
+          console.timeEnd('normalizeRace');
+
+          console.time('mapRaceQsToSyrf');
           await mapRaceQsToSyrf(objectToPass, raceMetadatas);
-          console.log('Finished saving race');
+          console.timeEnd('mapRaceQsToSyrf');
+          console.log(
+            `Finished saving race raceQsEvent.original_id = ${raceQsEvent.original_id}`,
+          );
           // Since we change the logic of normalizeRace, so we need to delete the raceQsEvent.id
           try {
             await elasticsearch.deleteByIds([raceQsEvent.id]);
@@ -137,3 +163,55 @@ const elasticsearch = require('../../src/utils/elasticsearch');
   }
   console.log('Finished saving all scraper db data to main db');
 })();
+
+async function _getRaceQsPosition(eventId) {
+  const limit = 200000;
+  let page = 0;
+  let allPositions = [];
+  let shouldContinue = true;
+  console.log(`Start getting positions for event = ${eventId}`);
+  const startTime = new Date();
+  while (shouldContinue) {
+    const startTimePage = new Date();
+    console.log(`Start getting positions for page = ${page}`);
+    const eventFilter = {
+      where: {
+        event: eventId,
+      },
+      limit,
+      offset: page * limit,
+      raw: true,
+      attributes: [
+        'id',
+        'participant',
+        'participant_original_id',
+        'time',
+        'lat',
+        'lon',
+        'heading',
+        'wind_angle',
+        'wind_speed',
+      ],
+    };
+
+    const positions = await db.raceQsPosition.findAll(eventFilter);
+    const endTimePage = new Date();
+    if (positions.length === 0) {
+      shouldContinue = false;
+      break;
+    }
+    allPositions = [...allPositions, ...positions];
+
+    console.log(
+      `Finished getting positions for page = ${page}, total time = ${endTimePage.getTime() - startTimePage.getTime()
+      } ms, number of positions = ${positions.length}`,
+    );
+    page++;
+  }
+  const endTime = new Date();
+  console.log(
+    `Finished getting positions for event = ${eventId}, total number of positions = ${allPositions.length
+    }, total time = ${endTime.getTime() - startTime.getTime()} ms`,
+  );
+  return allPositions;
+}
