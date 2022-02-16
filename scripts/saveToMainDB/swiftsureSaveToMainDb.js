@@ -58,9 +58,9 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapSwiftsureToSy
           continue;
         }
 
-        const swifstureLines = await db.swiftsureLine.findAll(raceFilter);
-        const swifsturePoints = await db.swiftsurePoint.findAll(raceFilter);
-        const swifstureMarks = await db.swiftsureMark.findAll(raceFilter);
+        const swiftsureLines = await db.swiftsureLine.findAll(raceFilter);
+        const swiftsurePoints = await db.swiftsurePoint.findAll(raceFilter);
+        const swiftsureMarks = await db.swiftsureMark.findAll(raceFilter);
 
         const raceMetadata = (
           await db.readyAboutRaceMetadata.findAll({
@@ -83,9 +83,9 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapSwiftsureToSy
           swiftsureBoat: boats,
           swiftsurePosition: boatPositions,
           swiftsureGeometry: {
-            lines: swifstureLines,
-            marks: swifstureMarks,
-            points: swifsturePoints,
+            lines: swiftsureLines,
+            marks: swiftsureMarks,
+            points: swiftsurePoints,
           },
         };
 
