@@ -5,7 +5,6 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
-const gisUtils = require('../utils/gisUtils');
 const mapGeovoileToSyrf = require('./mappingsToSyrfDB/mapGeovoileToSyrf');
 
 const saveSuccessfulUrl = async (original_id, url) => {
@@ -85,11 +84,11 @@ const saveGeovoileData = async (data) => {
     console.log(`Race is not found`);
     return;
   }
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
   let raceMetadata;
 
   if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
+    const transaction = await db.sequelize.transaction();
     try {
       await saveGeovoileRace(data.geovoileRace, transaction);
       await saveGeovoileMarks(data.marks, transaction);
@@ -132,10 +131,11 @@ const saveGeovoileData = async (data) => {
     process.env.NODE_ENV !== 'test'
   ) {
     try {
-      raceMetadata = await normalizeGeovoile(data, transaction);
+      raceMetadata = await normalizeGeovoile(data);
       await mapGeovoileToSyrf(data, raceMetadata);
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
