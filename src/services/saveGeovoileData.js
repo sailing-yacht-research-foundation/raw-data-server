@@ -139,7 +139,7 @@ const saveGeovoileData = async (data) => {
     }
   }
 
-  if (raceMetadata) {
+  if (!errorMessage) {
     await triggerWeatherSlicer(raceMetadata);
   }
 
