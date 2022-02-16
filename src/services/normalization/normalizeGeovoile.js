@@ -92,20 +92,22 @@ const normalizeGeovoile = async (
     handicapRules,
     unstructuredText,
   );
-  const tracksGeojson = JSON.stringify(
-    allPositionsToFeatureCollection(boatsToSortedPositions),
-  );
-  await db.readyAboutRaceMetadata.create(raceMetadata, {
-    fields: Object.keys(raceMetadata),
-    transaction,
-  });
-  console.log('uploading geojson');
-  await uploadUtil.uploadGeoJsonToS3(
-    race.id,
-    tracksGeojson,
-    GEOVOILE_SOURCE,
-    transaction,
-  );
+  if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
+    const tracksGeojson = JSON.stringify(
+      allPositionsToFeatureCollection(boatsToSortedPositions),
+    );
+    await db.readyAboutRaceMetadata.create(raceMetadata, {
+      fields: Object.keys(raceMetadata),
+      transaction,
+    });
+    console.log('uploading geojson');
+    await uploadUtil.uploadGeoJsonToS3(
+      race.id,
+      tracksGeojson,
+      GEOVOILE_SOURCE,
+      transaction,
+    );
+  }
 
   return raceMetadata;
 };
