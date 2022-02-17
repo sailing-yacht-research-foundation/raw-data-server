@@ -57,9 +57,8 @@ const uploadStreamToS3 = (bucket, key) => {
 };
 
 const getTrackerLogoUrl = (tracker) => {
-  return `https://${
-    process.env.OPEN_GRAPH_BUCKET_NAME
-  }.s3.amazonaws.com/public/trackers-logos/${tracker.toLowerCase()}.png`;
+  return `https://${process.env.OPEN_GRAPH_BUCKET_NAME
+    }.s3.amazonaws.com/public/trackers-logos/${tracker.toLowerCase()}.png`;
 };
 
 const copyObject = async (params) => {
@@ -94,6 +93,14 @@ const deleteDirectory = async (bucket, dir) => {
   if (listedObjects.IsTruncated) await deleteDirectory(bucket, dir);
 };
 
+const deleteObject = async (bucket, key) => {
+  const deleteParams = {
+    Bucket: bucket,
+    Key: key,
+  };
+  await s3.deleteObject(deleteParams).promise();
+};
+
 module.exports = {
   listAllKeys,
   getObject,
@@ -103,4 +110,5 @@ module.exports = {
   copyObject,
   listObjects,
   deleteDirectory,
+  deleteObject,
 };

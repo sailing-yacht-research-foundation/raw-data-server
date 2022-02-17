@@ -5,7 +5,6 @@ const db = require('../models');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
-const gisUtils = require('../utils/gisUtils');
 const mapGeovoileToSyrf = require('./mappingsToSyrfDB/mapGeovoileToSyrf');
 
 const saveSuccessfulUrl = async (original_id, url) => {
@@ -23,9 +22,6 @@ const saveFailedUrl = async (url, error) => {
 };
 
 const saveGeovoileRace = async (raceData, transaction) => {
-  if (raceData.numLegs && raceData.numLegs > 1) {
-    raceData.name = `${raceData.name} - Leg ${raceData.legNum}`;
-  }
   await db.geovoileRace.create(raceData, { transaction });
   return raceData;
 };
@@ -88,58 +84,45 @@ const saveGeovoileData = async (data) => {
     console.log(`Race is not found`);
     return;
   }
-  const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceMetadata, boats;
-  const courseGates = [];
-  try {
-    const race = await saveGeovoileRace(data.geovoileRace, transaction);
-    await saveGeovoileMarks(data.marks, transaction);
+  let raceMetadata;
 
-    if (data.sig && data.sig.raceGates && data.sig.raceGates.length) {
-      let order = 0;
-      for (const gate of data.sig.raceGates) {
-        const line = gisUtils.createGeometryLine(
-          {
-            lat: gate._pointA[1],
-            lon: gate._pointA[0],
-          },
-          {
-            lat: gate._pointB[1],
-            lon: gate._pointB[0],
-          },
-          { name: gate.id },
-        );
-        courseGates.push({
-          id: uuidv4(),
-          race_id: race.id,
-          race_original_id: race.original_id,
-          order,
-          ...line,
-        });
-      }
-      order++;
+  if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
+    const transaction = await db.sequelize.transaction();
+    try {
+      await saveGeovoileRace(data.geovoileRace, transaction);
+      await saveGeovoileMarks(data.marks, transaction);
+      await saveGeovoileGates(data.courseGates, transaction);
+      await saveGeovoileBoats(data.boats, transaction);
+      await saveGeovoileSailors(data.sailors, transaction);
+      await saveGeovoileBoatPositions(data.positions, transaction);
+      raceMetadata = await normalizeGeovoile(data, transaction);
+
+      await transaction.commit();
+    } catch (error) {
+      console.log(error);
+      await transaction.rollback();
+      errorMessage = databaseErrorHandler(error);
     }
 
-    await saveGeovoileGates(courseGates, transaction);
-    await saveGeovoileBoats(data.boats, transaction);
-    await saveGeovoileSailors(data.sailors, transaction);
-    await saveGeovoileBoatPositions(data.positions, transaction);
-    raceMetadata = await normalizeGeovoile(
-      {
-        geovoileRace: race,
-        boats: boats,
-        sailors: data.sailors,
-        positions: data.positions,
-      },
-      transaction,
-    );
+    if (errorMessage) {
+      await saveFailedUrl(data.geovoileRace.url, errorMessage);
+      if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
+        await saveFailedUrl(data.geovoileRace.scrapedUrl, errorMessage);
+      }
+    } else {
+      await saveSuccessfulUrl(
+        data.geovoileRace.original_id,
+        data.geovoileRace.url,
+      );
 
-    await transaction.commit();
-  } catch (error) {
-    console.log(error);
-    await transaction.rollback();
-    errorMessage = databaseErrorHandler(error);
+      if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
+        await saveSuccessfulUrl(
+          data.geovoileRace.original_id,
+          data.geovoileRace.scrapedUrl,
+        );
+      }
+    }
   }
 
   // temporary add of test env to avoid accidentally saving on maindb until its mocked
@@ -148,32 +131,15 @@ const saveGeovoileData = async (data) => {
     process.env.NODE_ENV !== 'test'
   ) {
     try {
-      await mapGeovoileToSyrf({ ...data, courseGates }, raceMetadata);
+      raceMetadata = await normalizeGeovoile(data);
+      await mapGeovoileToSyrf(data, raceMetadata);
     } catch (err) {
       console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
-  if (errorMessage) {
-    await saveFailedUrl(data.geovoileRace.url, errorMessage);
-    if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
-      await saveFailedUrl(data.geovoileRace.scrapedUrl, errorMessage);
-    }
-  } else {
-    await saveSuccessfulUrl(
-      data.geovoileRace.original_id,
-      data.geovoileRace.url,
-    );
-
-    if (data.geovoileRace.url !== data.geovoileRace.scrapedUrl) {
-      await saveSuccessfulUrl(
-        data.geovoileRace.original_id,
-        data.geovoileRace.scrapedUrl,
-      );
-    }
-  }
-
-  if (raceMetadata) {
+  if (!errorMessage) {
     await triggerWeatherSlicer(raceMetadata);
   }
 
