@@ -20,7 +20,7 @@ const mapAndSave = async (data, raceMetadata) => {
     boatIdToOriginalIdMap,
   );
 
-  const mapedSequencedGeometries = _mapSequencedGeometries(
+  const mappedSequencedGeometries = _mapSequencedGeometries(
     data.swiftsureGeometry,
   );
 
@@ -28,7 +28,7 @@ const mapAndSave = async (data, raceMetadata) => {
     race: data.swiftsureRace[0],
     boats: inputBoats,
     positions: inputPositions,
-    courseSequencedGeometries: mapedSequencedGeometries,
+    courseSequencedGeometries: mappedSequencedGeometries,
     raceMetadata,
   });
 };
@@ -40,7 +40,7 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
       id: b.id,
       vesselId: b.original_id,
       model: b.make,
-      publicName: b.boat_name ? b.boat_name : b.team_name,
+      publicName: b.boat_name || b.team_name,
       handicap: b.scoring,
     };
     return vessel;
