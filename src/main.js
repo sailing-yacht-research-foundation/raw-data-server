@@ -42,9 +42,18 @@ const port = process.env.PORT || 3000;
     //       subscriptions,
     //     )
     //   : null;
+    if (process.env.ENABLE_DEBUG !== 'true') {
+      console.time = () => {}; // To disable console time since it generates too many logs
+      console.timeEnd = () => {};
+    } else {
+      console.log('Enabled debug mode. Logging console.time');
+    }
 
+    const serverStartLabel = 'Server start elapsed time';
+    console.time(serverStartLabel);
     const server = app.listen(port, () => {
       console.log(`Server has started! Listening on ${port}`);
+      console.timeEnd(serverStartLabel);
     });
 
     const shutDown = () => {

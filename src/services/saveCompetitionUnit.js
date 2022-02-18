@@ -389,6 +389,18 @@ const saveCompetitionUnit = async ({
       mainDatabaseTransaction,
     );
 
+    if (event?.url && event?.original_id) {
+      await successfulUrlDataAccess.create(
+        {
+          url: event?.url,
+          originalId: event?.original_id,
+          source,
+          createdAt: Date.now(),
+        },
+        mainDatabaseTransaction,
+      );
+    }
+
     await mainDatabaseTransaction.commit();
     console.log(`Finish saving competition unit ${raceId} into main database`);
   } catch (err) {
