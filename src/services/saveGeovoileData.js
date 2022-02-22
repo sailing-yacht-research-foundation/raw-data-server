@@ -174,18 +174,20 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   const startMark = data.marks?.find(
     (mark) => mark?.type.toLowerCase()?.indexOf('start') >= 0,
   );
-  const startGate = data.courseGates?.find(
-    (gate) => gate.properties?.name?.toLowerCase()?.indexOf('start') >= 0,
-  );
   let startPoint;
   if (startMark) {
     startPoint = createTurfPoint(startMark.lat, startMark.lon);
-  } else if (!startMark && startGate) {
-    const coordinate = startGate.coordinates[0];
-    startPoint = createTurfPoint(
-      coordinate.position[1],
-      coordinate.position[0],
+  } else {
+    const startGate = data.courseGates?.find(
+      (gate) => gate.properties?.name?.toLowerCase()?.indexOf('start') >= 0,
     );
+    if (startGate) {
+      const coordinate = startGate.coordinates[0];
+      startPoint = createTurfPoint(
+        coordinate.position[1],
+        coordinate.position[0],
+      );
+    }
   }
 
   const body = {
