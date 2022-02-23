@@ -263,6 +263,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     if (cityName) {
       body.start_city = cityName;
     }
+  } else if (event.short_description) {
+    body.start_city = event.short_description;
   }
 
   await elasticsearch.indexRace(race.id, body);
