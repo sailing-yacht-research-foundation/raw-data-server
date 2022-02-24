@@ -5,11 +5,9 @@ const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (data, raceMetadata) => {
   console.log('Saving to main database');
+  const inputBoats = _mapBoats(data.sails);
 
-  const boatIdToBoatNameMap = {};
-  const inputBoats = _mapBoats(data.sails, boatIdToBoatNameMap);
-
-  const inputPositions = _mapPositions(data.reports, boatIdToBoatNameMap);
+  const inputPositions = _mapPositions(data.reports);
 
   const mappedSequencedGeometries = _mapSequencedGeometries(raceMetadata);
 
@@ -21,12 +19,14 @@ const mapAndSave = async (data, raceMetadata) => {
     positions: inputPositions,
     courseSequencedGeometries: mappedSequencedGeometries,
     raceMetadata,
+    reuse: {
+      boats: true,
+    },
   });
 };
 
-const _mapBoats = (boats, boatIdToBoatNameMap) => {
+const _mapBoats = (boats) => {
   return boats.map((b) => {
-    boatIdToBoatNameMap[b.boat] = b.id;
     const vessel = {
       id: b.id,
       vesselId: b.original_id,
@@ -37,14 +37,14 @@ const _mapBoats = (boats, boatIdToBoatNameMap) => {
   });
 };
 
-const _mapPositions = (positions, boatIdToOriginalIdMap) => {
+const _mapPositions = (positions) => {
   return positions.map((p) => ({
     timestamp: p.timestamp * 1000,
     lon: p.lon_dec,
     lat: p.lat_dec,
     cog: p['1hour_heading'],
     sog: p['1hour_speed'],
-    vesselId: boatIdToOriginalIdMap[p.boat],
+    vesselId: p.sail_id,
   }));
 };
 
@@ -71,20 +71,6 @@ const _mapSequencedGeometries = (raceMetadata) => {
 };
 
 const saveToAwsElasticSearch = async (data, raceMetadata) => {
-  const startPoint = createTurfPoint(
-    raceMetadata.approx_start_lat,
-    raceMetadata.approx_start_lon,
-  );
-  const endPoint = createTurfPoint(
-    raceMetadata.approx_end_lat,
-    raceMetadata.approx_end_lon,
-  );
-
-  const midPoint = createTurfPoint(
-    raceMetadata.approx_mid_point.coordinates[0],
-    raceMetadata.approx_mid_point.coordinates[1],
-  );
-
   const body = {
     id: data.race.id,
     name: raceMetadata.name,
@@ -99,13 +85,13 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
     approx_start_time_ms: raceMetadata.approx_start_time_ms,
     approx_end_time_ms: raceMetadata.approx_end_time_ms,
     approx_duration_ms: raceMetadata.approx_duration_ms,
-    approx_start_point: startPoint,
+    approx_start_point: raceMetadata.approx_start_point,
     approx_start_lat: raceMetadata.approx_start_lat,
     approx_start_lon: raceMetadata.approx_start_lon,
-    approx_end_point: endPoint,
+    approx_end_point: raceMetadata.approx_end_point,
     approx_end_lat: raceMetadata.approx_end_lat,
     approx_end_lon: raceMetadata.approx_end_lon,
-    approx_mid_point: midPoint,
+    approx_mid_point: raceMetadata.approx_mid_point,
     approx_area_sq_km: raceMetadata.approx_area_sq_km,
     approx_distance_km: raceMetadata.approx_distance_km,
     num_boats: raceMetadata.num_boats,
