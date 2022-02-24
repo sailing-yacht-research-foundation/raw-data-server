@@ -84,7 +84,7 @@ module.exports = class VesselParticipantTrack {
    *
    * @returns  Feature<LineString>
    */
-  getSimplifiedTrack() {
+  async getSimplifiedTrack() {
     console.time('getSimplifiedTrack');
     const coordinateWithTime = [];
     if (this.positions.length > 2) {
@@ -106,7 +106,8 @@ module.exports = class VesselParticipantTrack {
         });
       } catch (error) {
         console.error(
-          `Error simplifying tracks: ${error instanceof Error ? error.message : '-'
+          `Error simplifying tracks: ${
+            error instanceof Error ? error.message : '-'
           }. Returning whole track`,
         );
         return {
@@ -120,12 +121,11 @@ module.exports = class VesselParticipantTrack {
           },
         };
       }
+
       // Need to consider points might repeat, so time must increases all the time
       let lastTime = 0;
-
-      simplifiedTrack.geometry.coordinates.map((coord) => {
+      for (const coord of simplifiedTrack.geometry.coordinates) {
         const nearestData = geokdbush.around(trackIndex, coord[0], coord[1]);
-
         for (let i = 0; i < nearestData.length; i++) {
           const { position, timestamp, altitude } = nearestData[i];
           if (coord[0] !== position[0] || coord[1] !== position[1]) {
@@ -146,7 +146,10 @@ module.exports = class VesselParticipantTrack {
             break;
           }
         }
-      });
+        await new Promise((resolve) => {
+          setImmediate(() => resolve());
+        }); // Need this to let the health check return since this loop takes a while to finish on big races
+      }
     }
     console.timeEnd('getSimplifiedTrack');
     return {
@@ -164,7 +167,7 @@ module.exports = class VesselParticipantTrack {
    * @param {*} properties
    * @returns {providedGeoJson: VesselTrackGeoJson, simplifiedGeoJson: VesselTrackGeoJson }
    */
-  createGeoJsonTrack({ competitionUnitId } = {}) {
+  async createGeoJsonTrack({ competitionUnitId } = {}) {
     const returnFiniteAndNotNull = (num, defaultVal) =>
       isFinite(num) && num !== null ? +num : defaultVal ?? null;
 
@@ -220,8 +223,9 @@ module.exports = class VesselParticipantTrack {
       },
     };
     console.timeEnd('generate providedGeoJson');
+    const sTrack = await this.getSimplifiedTrack();
     const simplifiedGeoJson = {
-      ...this.getSimplifiedTrack(),
+      ...sTrack,
       properties: {
         vesselParticipantId: this.id,
         competitionUnitId,

@@ -76,7 +76,7 @@ resource "aws_ecs_task_definition" "rds_task" {
           "awslogs-stream-prefix": "ecs"
         }
       },
-      "memory": 12288,
+      "memory": 16384,
       "cpu": 4096
     }
 
@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "rds_task" {
   DEFINITION
   requires_compatibilities = ["FARGATE"] # Stating that we are #using ECS Fargate
   network_mode             = "awsvpc"    # Using awsvpc as our network mode as this is required for Fargate
-  memory                   = 12288       # Specifying the memory our container requires
+  memory                   = 16384       # Specifying the memory our container requires
   cpu                      = 4096        # Specifying the CPU our container requires
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
 
