@@ -94,7 +94,7 @@ exports.stopCompetition = async (
   rankings = [],
 ) => {
   console.log('Stopping Competition');
-  const vesselTracksJson = this.generateVesselTracksJson(
+  const vesselTracksJson = await this.generateVesselTracksJson(
     id,
     vesselParticipantTracks,
   );
@@ -109,7 +109,7 @@ exports.stopCompetition = async (
   });
 };
 
-exports.generateVesselTracksJson = (
+exports.generateVesselTracksJson = async (
   competitionUnitId,
   vesselParticipantTracks = {},
 ) => {
@@ -119,7 +119,7 @@ exports.generateVesselTracksJson = (
   for (const vesselParticipantId of Object.keys(vesselParticipantTracks)) {
     const label = `generateVesselTracksJson for vesselParticipantId = ${vesselParticipantId}, number of positions = ${vesselParticipantTracks[vesselParticipantId].positions.length}`;
     console.time(label);
-    const geoJson = vesselParticipantTracks[
+    const geoJson = await vesselParticipantTracks[
       vesselParticipantId
     ].createGeoJsonTrack({ competitionUnitId });
     vesselTracksJson.push(geoJson);
