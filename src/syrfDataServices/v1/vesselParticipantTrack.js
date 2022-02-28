@@ -1,9 +1,7 @@
 const turf = require('@turf/turf');
 const { meterPerSecToKnots } = require('../../utils/gisUtils');
 
-const geokdbush = require('geokdbush');
 const { SIMPLIFICATION_TOLERANCE } = require('../../constants');
-const KDBush = require('kdbush');
 
 module.exports = class VesselParticipantTrack {
   constructor(id) {
@@ -86,14 +84,9 @@ module.exports = class VesselParticipantTrack {
    */
   async getSimplifiedTrack() {
     console.time('getSimplifiedTrack');
-    const coordinateWithTime = [];
+    let coordinates = [];
     if (this.positions.length > 2) {
       // Turf Line String is unable to process less than 2 position
-      const trackIndex = new KDBush(
-        this.positions,
-        (p) => p.position[0],
-        (p) => p.position[1],
-      );
       const lineString = turf.lineString(
         this.positions.map((row) => row.position),
       );
@@ -122,34 +115,30 @@ module.exports = class VesselParticipantTrack {
         };
       }
 
-      // Need to consider points might repeat, so time must increases all the time
-      let lastTime = 0;
-      for (const coord of simplifiedTrack.geometry.coordinates) {
-        const nearestData = geokdbush.around(trackIndex, coord[0], coord[1]);
-        for (let i = 0; i < nearestData.length; i++) {
-          const { position, timestamp, altitude } = nearestData[i];
-          if (coord[0] !== position[0] || coord[1] !== position[1]) {
-            // Should not reach here
-            break;
+      let lastSearchIndex = 0;
+      coordinates = await new Promise((resolve) => {
+        const coordinateWithTime = [];
+        simplifiedTrack.geometry.coordinates.map((coord) => {
+          for (let i = lastSearchIndex; i < this.positions.length; i++) {
+            if (
+              this.positions[i].position[0] === coord[0] &&
+              this.positions[i].position[1] === coord[1]
+            ) {
+              // Take this data
+              const { position, altitude, timestamp } = this.positions[i];
+              lastSearchIndex = i + 1;
+              coordinateWithTime.push([
+                position[0],
+                position[1],
+                altitude || 0,
+                timestamp,
+              ]);
+              break;
+            }
           }
-          if (
-            coord[0] === position[0] &&
-            coord[1] === position[1] &&
-            timestamp > lastTime
-          ) {
-            coordinateWithTime.push([
-              position[0],
-              position[1],
-              altitude || 0,
-              timestamp,
-            ]);
-            break;
-          }
-        }
-        await new Promise((resolve) => {
-          setImmediate(() => resolve());
-        }); // Need this to let the health check return since this loop takes a while to finish on big races
-      }
+        });
+        resolve(coordinateWithTime);
+      });
     }
     console.timeEnd('getSimplifiedTrack');
     return {
@@ -157,7 +146,7 @@ module.exports = class VesselParticipantTrack {
       properties: {},
       geometry: {
         type: 'LineString',
-        coordinates: coordinateWithTime,
+        coordinates,
       },
     };
   }
