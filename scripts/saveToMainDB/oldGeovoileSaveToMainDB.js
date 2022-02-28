@@ -14,8 +14,8 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
   while (shouldContinue) {
     const races = await db.oldGeovoileRace.findAll({
       where: {
-        id: {
-          [Op.notIn]: existingData.map((d) => d.id),
+        url: {
+          [Op.notIn]: existingData.map((d) => d.url),
         },
       },
       raw: true,

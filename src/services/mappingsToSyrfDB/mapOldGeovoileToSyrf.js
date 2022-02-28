@@ -18,8 +18,7 @@ const mapAndSave = async (data, raceMetadata) => {
       id: data.race.id,
       url: data.race.url,
       name: data.race.name,
-      start_time: data.race.start_time,
-      original_id: data.race.id,
+      original_id: '',
     },
     boats: inputBoats,
     positions: inputPositions,
@@ -35,7 +34,7 @@ const _mapBoats = (boats) => {
   return boats.map((b) => {
     const vessel = {
       id: b.id,
-      vesselId: b.original_id,
+      vesselId: b.name + b.class,
       model: b.class,
       publicName: b.name,
     };
