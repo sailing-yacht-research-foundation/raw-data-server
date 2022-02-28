@@ -1,6 +1,5 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
-const { createTurfPoint } = require('../../utils/gisUtils');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (data, raceMetadata) => {
@@ -27,12 +26,23 @@ const mapAndSave = async (data, raceMetadata) => {
 
 const _mapBoats = (boats) => {
   return boats.map((b) => {
+    const crewName = b.skipper;
+
     const vessel = {
       id: b.id,
       vesselId: b.original_id,
       model: b.class,
       publicName: b.boat,
     };
+
+    if (crewName) {
+      vessel.crews = [
+        {
+          publicName: crewName,
+        },
+      ];
+    }
+
     return vessel;
   });
 };
