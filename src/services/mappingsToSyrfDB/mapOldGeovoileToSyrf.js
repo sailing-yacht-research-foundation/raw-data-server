@@ -34,7 +34,7 @@ const _mapBoats = (boats) => {
   return boats.map((b) => {
     const vessel = {
       id: b.id,
-      vesselId: b.name + b.class,
+      vesselId: `${b.name}_${b.class}`,
       model: b.class,
       publicName: b.name,
     };
