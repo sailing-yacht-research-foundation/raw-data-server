@@ -272,8 +272,11 @@ exports.generateMetadataName = (eventName, raceName, startTimeMs) => {
   eventName = eventName?.trim();
   raceName = raceName?.trim();
   let name;
-  if (eventName === raceName) {
-    name = eventName;
+  if (
+    raceName &&
+    (eventName === raceName || raceName.indexOf(eventName) === 0)
+  ) {
+    name = raceName;
   } else {
     name = [eventName?.replace(/_/g, ' '), raceName?.replace(/_/g, ' ')]
       .filter(Boolean)
