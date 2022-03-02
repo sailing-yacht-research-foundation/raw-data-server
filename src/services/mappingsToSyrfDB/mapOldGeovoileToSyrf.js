@@ -74,6 +74,25 @@ const _mapSequencedGeometries = (raceMetadata) => {
 };
 
 const saveToAwsElasticSearch = async (data, raceMetadata) => {
+  const names = [];
+  const models = [];
+  const identifiers = [];
+  const unstructured_text = [];
+
+  data.boats.forEach((b) => {
+    if (b.name) {
+      names.push(b.name);
+    }
+
+    if (b.class) {
+      models.push(b.class);
+    }
+
+    if (b.id) {
+      identifiers.push(b.id);
+    }
+  });
+
   const body = {
     id: data.race.id,
     name: raceMetadata.name,
@@ -89,17 +108,18 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
     approx_end_time_ms: raceMetadata.approx_end_time_ms,
     approx_duration_ms: raceMetadata.approx_duration_ms,
     approx_start_point: raceMetadata.approx_start_point,
-    approx_start_lat: raceMetadata.approx_start_lat,
-    approx_start_lon: raceMetadata.approx_start_lon,
     approx_end_point: raceMetadata.approx_end_point,
-    approx_end_lat: raceMetadata.approx_end_lat,
-    approx_end_lon: raceMetadata.approx_end_lon,
     approx_mid_point: raceMetadata.approx_mid_point,
+    bounding_box: raceMetadata.bounding_box,
     approx_area_sq_km: raceMetadata.approx_area_sq_km,
     approx_distance_km: raceMetadata.approx_distance_km,
     num_boats: raceMetadata.num_boats,
     avg_time_between_positions: raceMetadata.avg_time_between_positions,
-    open_graph_image: raceMetadata.open_graph_image,
+    boat_models: models,
+    boat_identifiers: identifiers,
+    boat_names: names,
+    handicap_rules: raceMetadata.handicap_rules,
+    unstructured_text: [],
   };
 
   await elasticsearch.indexRace(data.race.id, body);
