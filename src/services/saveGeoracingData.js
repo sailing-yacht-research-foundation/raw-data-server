@@ -326,9 +326,15 @@ function _getStartPointVersion2(race, data) {
 
 function _getStartPointVersion3(race, data) {
   const raceLines = data.GeoracingLine?.filter((ce) => ce.race === race.id);
-  const startLine = raceLines?.find(
+  let startLine = raceLines?.find(
     (lineT) => lineT.name.toLowerCase() === '"départ"',
   );
+
+  if (!startLine) {
+    startLine = raceLines?.find(
+      (lineT) => lineT.name.toLowerCase() === '"orthodromie"',
+    );
+  }
 
   if (!startLine) {
     return null;
