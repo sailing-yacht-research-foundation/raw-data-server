@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,16 +7,18 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../../utils/gisUtils');
-const uploadUtil = require('../../uploadUtil');
+const mapAndSave = require('../../mappingsToSyrfDB/mapSapToSyrf');
 
-const normalizeRace = async (
-  { SapRace, SapBoat, SapPosition },
-  transaction,
-) => {
+const normalizeRace = async ({
+  SapRace,
+  SapBoat,
+  SapPosition,
+  SapMarks,
+  SapMarkPositions,
+}) => {
   const SOURCE = 'SAP';
-  const race = SapRace[0];
+  const race = SapRace;
   const positions = SapPosition;
   const boats = SapBoat;
   const startTime = race.start_of_tracking_ms;
@@ -84,31 +85,15 @@ const normalizeRace = async (
     unstructuredText,
     true, // Skip elastic search for now since race does not have url
   );
-  const tracksGeojson = JSON.stringify(
-    allPositionsToFeatureCollection(boatsToSortedPositions),
+
+  await mapAndSave(
+    SapRace,
+    SapBoat,
+    SapPosition,
+    SapMarks,
+    SapMarkPositions,
+    raceMetadata,
   );
-
-  const metadata = await db.readyAboutRaceMetadata.findOne({
-    where: {
-      id: raceMetadata.id,
-    },
-    raw: true,
-  });
-
-  if (!metadata) {
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    console.log('uploading geojson');
-    await uploadUtil.uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      SOURCE,
-      transaction,
-    );
-  }
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;
