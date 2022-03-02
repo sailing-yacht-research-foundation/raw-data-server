@@ -271,6 +271,16 @@ const _indexUnfinishedRaceToES = async (race, data) => {
 };
 
 function _getStartPoint(race, data) {
+  switch (race.player_version) {
+    case 2:
+      return _getStartPointVersion2(race, data);
+    case 3:
+      return _getStartPointVersion3(race, data);
+  }
+  return null;
+}
+
+function _getStartPointVersion2(race, data) {
   const activeCourse = data.GeoracingCourse?.find(
     (c) => c.race === race.id && c.active.toString() === '1',
   );
@@ -313,4 +323,29 @@ function _getStartPoint(race, data) {
     startCourseElementPoint.longitude,
   );
 }
+
+function _getStartPointVersion3(race, data) {
+  const raceLines = data.GeoracingLine?.filter((ce) => ce.race === race.id);
+  const startLine = raceLines?.find(
+    (lineT) => lineT.name.toLowerCase() === '"départ"',
+  );
+
+  if (!startLine) {
+    return null;
+  }
+  const coords = startLine.points.split('\r\n');
+  const first = coords[0];
+  if (first.includes(',')) {
+    const latf = first.split(',')[1];
+    const lonf = first.split(',')[0];
+    return createTurfPoint(latf, lonf);
+  }
+  if (first.includes(';')) {
+    const latf = first.split(';')[1];
+    const lonf = first.split(';')[0];
+    return createTurfPoint(latf, lonf);
+  }
+  return null;
+}
+
 module.exports = saveGeoracingData;
