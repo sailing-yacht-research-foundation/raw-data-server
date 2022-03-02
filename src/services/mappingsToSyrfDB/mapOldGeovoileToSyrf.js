@@ -101,12 +101,12 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
     url: raceMetadata.url,
     start_country: raceMetadata.start_country,
     start_city: raceMetadata.start_city,
-    start_year: raceMetadata.start_year,
-    start_month: raceMetadata.start_month,
-    start_day: raceMetadata.start_day,
-    approx_start_time_ms: raceMetadata.approx_start_time_ms,
-    approx_end_time_ms: raceMetadata.approx_end_time_ms,
-    approx_duration_ms: raceMetadata.approx_duration_ms,
+    start_year: Number(raceMetadata.start_year),
+    start_month: Number(raceMetadata.start_month),
+    start_day: Number(raceMetadata.start_day),
+    approx_start_time_ms: Number(raceMetadata.approx_start_time_ms),
+    approx_end_time_ms: Number(raceMetadata.approx_end_time_ms),
+    approx_duration_ms: Number(raceMetadata.approx_duration_ms),
     approx_start_point: raceMetadata.approx_start_point,
     approx_end_point: raceMetadata.approx_end_point,
     approx_mid_point: raceMetadata.approx_mid_point,
@@ -121,7 +121,7 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
     handicap_rules: raceMetadata.handicap_rules,
     unstructured_text: [],
   };
-
+  
   await elasticsearch.indexRace(data.race.id, body);
 };
 
