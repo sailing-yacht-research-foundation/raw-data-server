@@ -29,8 +29,8 @@ const normalizeRace = async (
   const id = race.id;
   const name = race.name;
   const url = race.url;
-  const startTime = parseInt(race.start);
-  const endTime = parseInt(race.stop);
+  const startTime = +race.race_start_time_utc;
+  const endTime = +race.race_start_time_utc + race.feed_length_sec * 1000;
   const boundingBox = turf.bbox(
     positionsToFeatureCollection('lat', 'lon', allPositions),
   );
