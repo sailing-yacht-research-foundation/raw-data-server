@@ -243,7 +243,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     start_year: startDate.getUTCFullYear(),
     start_month: startDate.getUTCMonth() + 1,
     start_day: startDate.getUTCDate(),
-    approx_start_time_ms: startDate.getTime(),
+    approx_start_time_ms: startDate?.getTime(),
     approx_end_time_ms: endTime?.getTime(),
     open_graph_image: getTrackerLogoUrl(SOURCE.GEORACING), // use tracker logo for unfinished races
     is_unfinished: true, // only attribute for unfinished races
