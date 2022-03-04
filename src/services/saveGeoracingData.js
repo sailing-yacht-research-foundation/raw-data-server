@@ -224,8 +224,8 @@ const saveGeoracingData = async (data) => {
 const _indexUnfinishedRaceToES = async (race, data) => {
   const event = data.GeoracingEvent[0];
 
-  const startDate = new Date(race.start_time);
-  const endTime = race.end_time;
+  const startDate = race.start_time ? new Date(race.start_time) : null;
+  const endTime = race.end_time ? new Date(race.end_time) : null;
 
   const name = generateMetadataName(
     event.name,
@@ -243,8 +243,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     start_year: startDate.getUTCFullYear(),
     start_month: startDate.getUTCMonth() + 1,
     start_day: startDate.getUTCDate(),
-    approx_start_time_ms: startDate.getTime(),
-    approx_end_time_ms: endTime,
+    approx_start_time_ms: startDate?.getTime(),
+    approx_end_time_ms: endTime?.getTime(),
     open_graph_image: getTrackerLogoUrl(SOURCE.GEORACING), // use tracker logo for unfinished races
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
