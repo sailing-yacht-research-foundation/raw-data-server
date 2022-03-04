@@ -11,7 +11,7 @@ const mapAndSave = async (data, raceMetadata) => {
 
   const mappedSequencedGeometries = _mapSequencedGeometries(raceMetadata);
 
-  await saveToAwsElasticSearch(data, raceMetadata);
+  //await saveToAwsElasticSearch(data, raceMetadata);
 
   await saveCompetitionUnit({
     race: {
@@ -121,7 +121,7 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
     handicap_rules: raceMetadata.handicap_rules,
     unstructured_text: [],
   };
-  
+
   await elasticsearch.indexRace(data.race.id, body);
 };
 

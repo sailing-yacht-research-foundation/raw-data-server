@@ -59,6 +59,13 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
           continue;
         }
 
+        let discard = false;
+        boatPositions.forEach((p) => {
+          if (!p.lat && !p.lon) discard = true;
+        });
+
+        if (discard) continue;
+
         const raceMetadata = (
           await db.readyAboutRaceMetadata.findAll({
             where: {
@@ -80,7 +87,6 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
           boats: boats,
           positions: boatPositions,
         };
-
         try {
           console.log(
             `Saving to syrf DB for race original id ${race.original_id}`,
