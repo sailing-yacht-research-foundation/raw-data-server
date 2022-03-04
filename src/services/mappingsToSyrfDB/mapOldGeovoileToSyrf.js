@@ -11,7 +11,7 @@ const mapAndSave = async (data, raceMetadata) => {
 
   const mappedSequencedGeometries = _mapSequencedGeometries(raceMetadata);
 
-  //await saveToAwsElasticSearch(data, raceMetadata);
+  await saveToAwsElasticSearch(data, raceMetadata);
 
   await saveCompetitionUnit({
     race: {
