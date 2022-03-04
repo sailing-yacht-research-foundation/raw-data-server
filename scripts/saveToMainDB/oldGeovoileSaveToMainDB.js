@@ -53,10 +53,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
         );
 
         boatPositions.forEach((p) => {
-          const convertedValue = Number(p.timestamp);
-          const obj = { ...p };
-          obj.timestamp = convertedValue;
-          return obj;
+          return { ...p, timestamp: Number(p.timestamp) };
         });
 
         const sortedPossitions = boatPositions.sort(

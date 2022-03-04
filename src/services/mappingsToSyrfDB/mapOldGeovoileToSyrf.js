@@ -43,10 +43,16 @@ const _mapBoats = (boats) => {
 };
 
 const _mapPositions = (positions) => {
+  //if there are positions bellow 12 latitude needs to be offseted
+  let shouldOffset = false;
+  if (positions[0].lat < 10) {
+    shouldOffset = true;
+  }
+
   return positions.map((p) => ({
     timestamp: p.timestamp,
-    lon: p.lon,
-    lat: p.lat,
+    lon: shouldOffset ? p.lon * 10 : p.lon,
+    lat: shouldOffset ? p.lat * 10 : p.lat,
     vesselId: p.boat_id,
   }));
 };
