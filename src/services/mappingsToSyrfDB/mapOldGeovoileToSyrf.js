@@ -1,6 +1,15 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
 const elasticsearch = require('../../utils/elasticsearch');
+const {
+  positionsToFeatureCollection,
+  getCenterOfMassOfPositions,
+  getCountryAndCity,
+  getLatFromTurfPoint,
+  getLonFromTurfPoint,
+  validateBoundingBox,
+} = require('../../utils/gisUtils');
+const turf = require('@turf/turf');
 
 const mapAndSave = async (data, raceMetadata) => {
   console.log('Saving to main database');
@@ -9,10 +18,11 @@ const mapAndSave = async (data, raceMetadata) => {
 
   const inputPositions = _mapPositions(data.positions);
 
-  const mappedSequencedGeometries = _mapSequencedGeometries(raceMetadata);
+  const metadata = await _recalculateMetadata(inputPositions, raceMetadata);
+
+  const mappedSequencedGeometries = _mapSequencedGeometries(inputPositions);
 
   await saveToAwsElasticSearch(data, raceMetadata);
-
   await saveCompetitionUnit({
     race: {
       id: data.race.id,
@@ -26,7 +36,7 @@ const mapAndSave = async (data, raceMetadata) => {
     reuse: {
       boats: true,
     },
-    raceMetadata,
+    raceMetadata: metadata,
   });
 };
 
@@ -45,32 +55,40 @@ const _mapBoats = (boats) => {
 const _mapPositions = (positions) => {
   //if there are positions bellow 12 latitude needs to be offseted
   let shouldOffset = false;
-  if (positions[0].lat < 10) {
+
+  if (
+    positions[0].lat < 10 &&
+    positions[0].lat > -10 &&
+    positions[0].lon > -10 &&
+    positions[0].lon < 10
+  ) {
     shouldOffset = true;
   }
 
   return positions.map((p) => ({
-    timestamp: p.timestamp,
+    timestamp: p.timestamp < 99999999999 ? p.timestamp * 1000 : p.timestamp,
     lon: shouldOffset ? p.lon * 10 : p.lon,
     lat: shouldOffset ? p.lat * 10 : p.lat,
     vesselId: p.boat_id,
   }));
 };
 
-const _mapSequencedGeometries = (raceMetadata) => {
+const _mapSequencedGeometries = (positions) => {
   const courseSequencedGeometries = [];
 
+  const firstPos = positions[0];
   const startPoint = createGeometryPoint({
-    lat: raceMetadata.approx_start_lat,
-    lon: raceMetadata.approx_start_lon,
+    lat: firstPos.lat,
+    lon: firstPos.lon,
     properties: { name: 'Start' },
   });
   startPoint.order = 0;
   courseSequencedGeometries.push(startPoint);
 
+  const lastPos = positions[positions.length - 1];
   const endPoint = createGeometryPoint({
-    lat: raceMetadata.approx_end_lat,
-    lon: raceMetadata.approx_end_lon,
+    lat: lastPos.lat,
+    lon: lastPos.lon,
     properties: { name: 'end' },
   });
   endPoint.order = 1;
@@ -129,6 +147,108 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
   };
 
   await elasticsearch.indexRace(data.race.id, body);
+};
+
+const _recalculateMetadata = async (positions, raceMetadata) => {
+  const first3Positions = _firstPositions(positions, 3);
+  const startPoint = getCenterOfMassOfPositions('lat', 'lon', first3Positions);
+
+  const last3Positions = _lastPositions(positions, 3);
+  const endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
+
+  const approxStartPoint = startPoint === null ? null : startPoint.geometry;
+  const approxEndPoint = endPoint === null ? null : endPoint.geometry;
+  const approxMidPoint = turf.midpoint(startPoint, endPoint).geometry;
+
+  if (approxStartPoint !== null) {
+    approxStartPoint.crs = {
+      type: 'name',
+      properties: {
+        name: 'EPSG:4326',
+      },
+    };
+  }
+
+  approxEndPoint.crs = {
+    type: 'name',
+    properties: {
+      name: 'EPSG:4326',
+    },
+  };
+
+  approxMidPoint.crs = {
+    type: 'name',
+    properties: {
+      name: 'EPSG:4326',
+    },
+  };
+
+  const approxStartLat = getLatFromTurfPoint(startPoint);
+  const approxStartLon = getLonFromTurfPoint(startPoint);
+  const approxEndLat = getLatFromTurfPoint(endPoint);
+  const approxEndLon = getLonFromTurfPoint(endPoint);
+
+  const bbox = turf.bbox(positionsToFeatureCollection('lat', 'lon', positions));
+
+  let boundingBox = null;
+
+  if (validateBoundingBox(bbox)) {
+    const bounding = turf.bboxPolygon(bbox);
+    boundingBox = bounding.geometry;
+    boundingBox.crs = {
+      type: 'name',
+      properties: {
+        name: 'EPSG:4326',
+      },
+    };
+  }
+
+  const { countryName: startCountry, cityName: startCity } =
+    await getCountryAndCity({
+      lon: startPoint.geometry.coordinates[0],
+      lat: startPoint.geometry.coordinates[1],
+    });
+
+  return {
+    ...raceMetadata,
+    start_country: startCountry,
+    start_city: startCity,
+    approx_start_point: approxStartPoint,
+    approx_start_lat: approxStartLat,
+    approx_start_lon: approxStartLon,
+    approx_end_point: approxEndPoint,
+    approx_end_lat: approxEndLat,
+    approx_end_lon: approxEndLon,
+    approx_mid_point: approxMidPoint,
+    bounding_box: boundingBox,
+  };
+};
+
+const _firstPositions = (positions, count) => {
+  const pos = [];
+  count = positions.length < count ? positions.length : count;
+
+  if (positions.length >= count) {
+    for (let i = 0; i < count; ++i) {
+      pos.push(positions[i]);
+    }
+  }
+
+  return pos;
+};
+
+const _lastPositions = (positions, count) => {
+  const pos = [];
+  count = positions.length < count ? positions.length : count;
+
+  if (positions.length >= count) {
+    for (let i = positions.length - 1; count; --i) {
+      pos.push(positions[i]);
+      --count;
+    }
+  }
+
+  return pos;
 };
 
 module.exports = mapAndSave;

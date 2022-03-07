@@ -52,15 +52,13 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
           raceFilter,
         );
 
-        boatPositions.forEach((p) => {
-          return { ...p, timestamp: Number(p.timestamp) };
+        const sortedPositions = boatPositions.sort((a, b) => {
+          a.timestamp = Number(a.timestamp);
+          b.timestamp = Number(b.timestamp);
+          return a.timestamp - b.timestamp;
         });
 
-        const sortedPossitions = boatPositions.sort(
-          (a, b) => a.timestamp - b.timestamp,
-        );
-
-        if (sortedPossitions.length === 0) {
+        if (sortedPositions.length === 0) {
           console.log(
             `Race original id ${race.id} does not have boat positions. Skipping`,
           );
@@ -68,9 +66,12 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
         }
 
         let discard = false;
-        sortedPossitions.forEach((p) => {
-          if (!p.lat && !p.lon) discard = true;
-        });
+        for (let i = 0; i < sortedPositions.length; ++i) {
+          if (!sortedPositions[i].lat && !sortedPositions[i].lon) {
+            discard = true;
+            break;
+          }
+        }
 
         if (discard) continue;
 
@@ -92,7 +93,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
         const objectToPass = {
           race: race,
           boats: boats,
-          positions: sortedPossitions,
+          positions: sortedPositions,
         };
         try {
           console.log(
