@@ -72,7 +72,7 @@ const _mapPositions = (positions, boatIdToOriginalIdMap) => {
   }));
 };
 
-const _mapSequencedGeometries = (marks, courseGates = []) => {
+const _mapSequencedGeometries = (marks = [], courseGates = []) => {
   courseGates.sort((a, b) => a.order - b.order);
   let order = 0;
 
