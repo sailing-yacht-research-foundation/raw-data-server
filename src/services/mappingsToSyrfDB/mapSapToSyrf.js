@@ -14,7 +14,7 @@ const mapAndSave = async (
 
   const inputPositions = _mapPositions(positions);
 
-  const mappedSequencedGeometries = _mapSequencedGeometries(
+  const { courseSequencedGeometries, markTrackers } = _mapSequencedGeometries(
     marks,
     markPositions,
   );
@@ -23,7 +23,14 @@ const mapAndSave = async (
       race: race,
       boats: inputBoats,
       positions: inputPositions,
-      courseSequencedGeometries: mappedSequencedGeometries,
+      courseSequencedGeometries,
+      markTrackers,
+      markTrackerPositions: markPositions.map((pos) => ({
+        timestamp: pos.timepoint_ms,
+        lat: pos.lat_deg,
+        lon: pos.lng_deg,
+        markTrackerId: pos.mark_id,
+      })),
       raceMetadata,
       reuse: {
         boats: true,
@@ -59,18 +66,91 @@ const _mapPositions = (positions) => {
 
 const _mapSequencedGeometries = (marks, marksPositions) => {
   const courseSequencedGeometries = [];
+  const markTrackers = [];
   let index = 0;
 
-  marksPositions.forEach((element) => {
-    const newPoint = createGeometryPoint({
-      lat: element.lat_deg,
-      lon: element.lng_deg,
-      properties: { name: '' },
-    });
-    newPoint.order = index++;
-    courseSequencedGeometries.push(newPoint);
+  //Start
+  marks.forEach((m) => {
+    if (m.name.includes('Start') || m.name.includes('Finish')) {
+      if (m.name.includes('1')) {
+        const firstPos = marksPositions.find((pos) => {
+          return m.id == pos.mark_id;
+        });
+
+        const startPoint = createGeometryPoint({
+          lat: firstPos.lat_deg,
+          lon: firstPos.lng_deg,
+          markTrackerId: firstPos.mark_id,
+          properties: {
+            name: m.name,
+            courseObjectId: m.id,
+          },
+        });
+        markTrackers.push({
+          id: m.id,
+          name: m.name,
+        });
+        (startPoint.id = m.id), (startPoint.order = index++);
+        courseSequencedGeometries.push(startPoint);
+      }
+    }
   });
-  return courseSequencedGeometries;
+
+  //Finish
+  marks.forEach((m) => {
+    if (m.name.includes('Start') || m.name.includes('Finish')) {
+      if (m.name.includes('2')) {
+        const endPos = marksPositions.find((pos) => {
+          return m.id == pos.mark_id;
+        });
+
+        const endPoint = createGeometryPoint({
+          lat: endPos.lat_deg,
+          lon: endPos.lng_deg,
+          markTrackerId: endPos.mark_id,
+          properties: {
+            name: m.name,
+            courseObjectId: m.id,
+          },
+        });
+        markTrackers.push({
+          id: m.id,
+          name: m.name,
+        });
+        (endPoint.id = m.id), (endPoint.order = marks.length - 1);
+        courseSequencedGeometries.push(endPoint);
+      }
+    }
+  });
+
+  marks.forEach((m) => {
+    if (!m.name.includes('Start') || !m.name.includes('Finish')) {
+      const markPos = marksPositions.find((pos) => {
+        return m.id == pos.mark_id;
+      });
+
+      const markPoint = createGeometryPoint({
+        lat: markPos.lat_deg,
+        lon: markPos.lng_deg,
+        markTrackerId: markPos.mark_id,
+        properties: {
+          name: m.name,
+          courseObjectId: m.id,
+        },
+      });
+      markTrackers.push({
+        id: m.id,
+        name: m.name,
+      });
+      (markPoint.id = m.id), (markPoint.order = index++);
+      courseSequencedGeometries.push(markPoint);
+    }
+  });
+
+  return {
+    courseSequencedGeometries,
+    markTrackers,
+  };
 };
 
 module.exports = mapAndSave;
