@@ -89,7 +89,7 @@ const _mapSequencedGeometries = (positions) => {
   const endPoint = createGeometryPoint({
     lat: lastPos.lat,
     lon: lastPos.lon,
-    properties: { name: 'end' },
+    properties: { name: 'Finish' },
   });
   endPoint.order = 1;
   courseSequencedGeometries.push(endPoint);
@@ -101,7 +101,6 @@ const saveToAwsElasticSearch = async (data, raceMetadata) => {
   const names = [];
   const models = [];
   const identifiers = [];
-  const unstructured_text = [];
 
   data.boats.forEach((b) => {
     if (b.name) {

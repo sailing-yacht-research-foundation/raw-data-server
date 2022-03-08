@@ -43,7 +43,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
 
         if (boats.length === 0) {
           console.log(
-            `Race original id ${race.id} does not have participating boats. Skipping`,
+            `Race url ${race.url} does not have participating boats. Skipping`,
           );
           continue;
         }
@@ -60,7 +60,7 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
 
         if (sortedPositions.length === 0) {
           console.log(
-            `Race original id ${race.id} does not have boat positions. Skipping`,
+            `Race url ${race.url} does not have boat positions. Skipping`,
           );
           continue;
         }
@@ -73,7 +73,10 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
           }
         }
 
-        if (discard) continue;
+        if (discard) {
+          console.log(`Race url ${race.url} has 0,0 positions. Skipping`);
+          continue;
+        }
 
         const raceMetadata = (
           await db.readyAboutRaceMetadata.findAll({
@@ -85,20 +88,26 @@ const mapAndSave = require('../../src/services/mappingsToSyrfDB/mapOldGeovoileTo
         )[0];
 
         if (!raceMetadata) {
-          console.log(
-            `Race original id ${race.id} does not have metadata. Skipping`,
-          );
+          console.log(`Race url ${race.url} does not have metadata. Skipping`);
           continue;
         }
+
+        // Add leg number in race name
+        const legParam = 'leg=';
+        if (race.url.indexOf(legParam) > -1) {
+          const legNo = race.url.split(legParam)[1];
+          if (legNo) {
+            race.name += ` Leg ${legNo}`;
+          }
+        }
+
         const objectToPass = {
           race: race,
           boats: boats,
           positions: sortedPositions,
         };
         try {
-          console.log(
-            `Saving to syrf DB for race original id ${race.original_id}`,
-          );
+          console.log(`Saving to syrf DB for race url ${race.url}`);
           await mapAndSave(objectToPass, raceMetadata);
           console.log('Finished saving race');
         } catch (err) {
