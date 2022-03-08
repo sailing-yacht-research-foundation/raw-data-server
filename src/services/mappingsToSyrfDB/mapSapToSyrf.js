@@ -2,6 +2,7 @@ const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
 const { vesselEvents } = require('../../syrf-schema/enums');
 const { v4: uuidv4 } = require('uuid');
+const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (
   race,
@@ -23,6 +24,8 @@ const mapAndSave = async (
   );
 
   const passingEvents = _mapPassings(markPassings);
+
+  await saveToAwsElasticSearch(race, boats, raceMetadata);
 
   try {
     await saveCompetitionUnit({
@@ -171,6 +174,57 @@ const _mapPassings = (passings) => {
       eventTime: p.time_as_millis,
     };
   });
+};
+
+const saveToAwsElasticSearch = async (race, boats, raceMetadata) => {
+  const names = [];
+  const models = [];
+  const identifiers = [];
+
+  boats.forEach((b) => {
+    if (b.name) {
+      names.push(b.name);
+    }
+
+    if (b.boat_class_name) {
+      models.push(b.class);
+    }
+
+    if (b.id) {
+      identifiers.push(b.id);
+    }
+  });
+
+  const body = {
+    id: race.id,
+    name: raceMetadata.name,
+    event: raceMetadata.event,
+    source: raceMetadata.source,
+    url: raceMetadata.url,
+    start_country: raceMetadata.start_country,
+    start_city: raceMetadata.start_city,
+    start_year: raceMetadata.start_year,
+    start_month: raceMetadata.start_month,
+    start_day: raceMetadata.start_day,
+    approx_start_time_ms: raceMetadata.approx_start_time_ms,
+    approx_end_time_ms: raceMetadata.approx_end_time_ms,
+    approx_duration_ms: raceMetadata.approx_duration_ms,
+    approx_start_point: raceMetadata.approx_start_point,
+    approx_end_point: raceMetadata.approx_end_point,
+    approx_mid_point: raceMetadata.approx_mid_point,
+    bounding_box: raceMetadata.bounding_box,
+    approx_area_sq_km: raceMetadata.approx_area_sq_km,
+    approx_distance_km: raceMetadata.approx_distance_km,
+    num_boats: raceMetadata.num_boats,
+    avg_time_between_positions: raceMetadata.avg_time_between_positions,
+    boat_models: models,
+    boat_identifiers: identifiers,
+    boat_names: names,
+    handicap_rules: raceMetadata.handicap_rules,
+    unstructured_text: [],
+  };
+
+  await elasticsearch.indexRace(race.id, body);
 };
 
 module.exports = mapAndSave;
