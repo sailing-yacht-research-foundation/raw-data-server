@@ -1,5 +1,7 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
+const { vesselEvents } = require('../../syrf-schema/enums');
+const { v4: uuidv4 } = require('uuid');
 
 const mapAndSave = async (
   race,
@@ -7,6 +9,7 @@ const mapAndSave = async (
   positions,
   marks,
   markPositions,
+  markPassings,
   raceMetadata,
 ) => {
   console.log('Saving to main database');
@@ -18,6 +21,9 @@ const mapAndSave = async (
     marks,
     markPositions,
   );
+
+  const passingEvents = _mapPassings(markPassings);
+
   try {
     await saveCompetitionUnit({
       race: race,
@@ -31,6 +37,7 @@ const mapAndSave = async (
         lon: pos.lng_deg,
         markTrackerId: pos.mark_id,
       })),
+      vesselParticipantEvents: passingEvents,
       raceMetadata,
       reuse: {
         boats: true,
@@ -151,6 +158,19 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
     courseSequencedGeometries,
     markTrackers,
   };
+};
+
+const _mapPassings = (passings) => {
+  return passings.map((p) => {
+    const id = uuidv4();
+    return {
+      competitionUnitId: p.race_id,
+      vesselId: p.competitor_boat_id,
+      markId: id,
+      eventType: vesselEvents.rounding,
+      eventTime: p.time_as_millis,
+    };
+  });
 };
 
 module.exports = mapAndSave;

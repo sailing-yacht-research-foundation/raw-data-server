@@ -460,6 +460,7 @@ const saveSapData = async (bucketName, fileName) => {
               SapPosition: boatPositions,
               SapMarks: marks,
               SapMarkPositions: markPositions,
+              SapMarkPassings: markPassings,
             };
             await normalizeRace(normalizeData);
           }
