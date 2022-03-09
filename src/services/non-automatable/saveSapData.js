@@ -1,21 +1,20 @@
 const { v4: uuidv4 } = require('uuid');
+const { s3 } = require('../uploadUtil');
 const fs = require('fs');
 const path = require('path');
 const temp = require('temp').track();
 const { listDirectories } = require('../../utils/fileUtils');
 const { downloadAndExtract } = require('../../utils/unzipFile');
+
 const {
   normalizeRace,
 } = require('../normalization/non-automatable/normalizeSap');
-const os = require('os');
 
 const saveSapData = async (bucketName, fileName) => {
   try {
-    const tmp = os.tmpdir();
-    let targetDir = path.join(tmp, 'sap_rawdata_1');
-    console.log(targetDir);
+    let targetDir = temp.mkdirSync('sap_rawdata');
     console.log(`Downloading file ${fileName} from s3`);
-    //await downloadAndExtract({ s3, bucketName, fileName, targetDir });
+    await downloadAndExtract({ s3, bucketName, fileName, targetDir });
     const dirName = listDirectories(targetDir)[0];
     const dirPath = path.join(targetDir, dirName);
     const allData = listDirectories(dirPath)[0];
@@ -473,7 +472,7 @@ const saveSapData = async (bucketName, fileName) => {
   } catch (e) {
     console.log('An error has occured', e);
   } finally {
-    // temp.cleanupSync();
+    temp.cleanupSync();
   }
 };
 

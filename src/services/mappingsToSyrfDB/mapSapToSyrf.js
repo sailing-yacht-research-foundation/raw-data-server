@@ -1,7 +1,6 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
-const { vesselEvents } = require('../../syrf-schema/enums');
-const { v4: uuidv4 } = require('uuid');
+const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (
@@ -23,7 +22,7 @@ const mapAndSave = async (
     markPositions,
   );
 
-  const passingEvents = _mapPassings(markPassings);
+  const passingEvents = _mapPassings(markPassings, courseSequencedGeometries);
 
   await saveToAwsElasticSearch(race, boats, raceMetadata);
 
@@ -98,7 +97,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
         });
         markTrackers.push({
           id: m.id,
-          name: m.name,
+          name: 'Start',
         });
         (startPoint.id = m.id), (startPoint.order = index++);
         courseSequencedGeometries.push(startPoint);
@@ -125,7 +124,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
         });
         markTrackers.push({
           id: m.id,
-          name: m.name,
+          name: 'Finish',
         });
         (endPoint.id = m.id), (endPoint.order = marks.length - 1);
         courseSequencedGeometries.push(endPoint);
@@ -163,14 +162,25 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
   };
 };
 
-const _mapPassings = (passings) => {
+const _mapPassings = (passings, geometry) => {
   return passings.map((p) => {
-    const id = uuidv4();
+    const eventGeometry = geometry.find((g) => {
+      return g.order === p.zero_based_waypoint_index;
+    });
+
+    if (!eventGeometry) {
+      return null;
+    }
+    const eventType =
+      eventGeometry.geometryType === geometryType.LINESTRING
+        ? vesselEvents.insideCrossing
+        : vesselEvents.rounding;
+
     return {
       competitionUnitId: p.race_id,
       vesselId: p.competitor_boat_id,
-      markId: id,
-      eventType: vesselEvents.rounding,
+      markId: eventGeometry.id,
+      eventType,
       eventTime: p.time_as_millis,
     };
   });
