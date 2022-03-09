@@ -10,6 +10,7 @@ const {
 } = require('../normalization/non-automatable/normalizeOldGeovoile');
 
 const { downloadAndExtract } = require('../../utils/unzipFile');
+const { readXmlFileToJson } = require('../../utils/fileUtils');
 
 const saveOldGeovoileData = async (bucketName, fileName) => {
   try {
@@ -149,6 +150,11 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         let racePath = path.join(skippedPath, file);
         const raceData = JSON.parse(fs.readFileSync(racePath));
 
+        const xmlFile = `${file.replace('_all_data.json', '')}.xml`;
+        const xmlPath = path.join(skippedPath, xmlFile);
+        const xmlJsonInfo = await readXmlFileToJson(xmlPath);
+        const raceConfig = xmlJsonInfo?.config;
+
         let existingRace = await db.oldGeovoileRace.findOne({
           where: { url: raceData.name_details.url },
         });
@@ -158,13 +164,16 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           continue;
         }
         transaction = await db.sequelize.transaction();
-        let raceName =
-          raceData.name_details.url.match(/(?<=www\.)(.+?)(?=\.com)/)[0] +
-          '-' +
-          raceData.name_details.url
-            .match(/\/(?:.(?!\/))+$/)[0]
-            .replace(/(\.....)/, '')
-            .replace('/', '');
+        let raceName = raceConfig?.name;
+        if (!raceName) {
+          raceName =
+            raceData.name_details.url.match(/(?<=www\.)(.+?)(?=\.com)/)[0] +
+            '-' +
+            raceData.name_details.url
+              .match(/\/(?:.(?!\/))+$/)[0]
+              .replace(/(\.....)/, '')
+              .replace('/', '');
+        }
         race = {
           id: uuidv4(),
           name: raceName,
@@ -179,6 +188,10 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
 
         for (const track of raceData.raw_tracks.tracks) {
           if (track.id === 0) continue;
+
+          const boatInfo = raceConfig?.boats.boatclass.boat?.find(
+            (b) => b.id === track.id?.toString(),
+          );
           let boat = {
             id: uuidv4(),
             race_id: race.id,
@@ -187,8 +200,8 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
             arrival: '',
             durationOrRetired: '',
             boatOrSponsor: '',
-            class: '',
-            name: `boat ${track.id}`,
+            class: raceConfig?.boats.boatclass.name,
+            name: boatInfo?.name || `boat ${track.id}`,
             q: '',
           };
           await db.oldGeovoileBoat.create(boat, {
@@ -197,19 +210,23 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
           });
           boats.push(boat);
           let endTime;
-          const initialTimestamp = track.loc[0]['0'];
-          const initialLat = track.loc[0]['1']; //lat
-          const initialLon = track.loc[0]['2']; //lon
-          for (const loc of track.loc.slice(1)) {
-            let boatPosition = {
+          let lastPos;
+          for (const loc of track.loc) {
+            const boatPosition = {
               id: uuidv4(),
               race_id: race.id,
               boat_id: boat.id,
               boat_original_id: boat.original_id,
-              lat: (loc['1'] + initialLat) / 100000,
-              lon: (loc['2'] + initialLon) / 100000,
-              timestamp: initialTimestamp + loc['0'] * 1000,
+              lat: loc[1] / 100000,
+              lon: loc[2] / 100000,
+              timestamp: loc[0] * 1000,
             };
+            if (lastPos) {
+              boatPosition.lat += lastPos.lat;
+              boatPosition.lon += lastPos.lon;
+              boatPosition.timestamp += lastPos.timestamp;
+            }
+            lastPos = boatPosition;
             boatPositions.push(boatPosition);
           }
           const _boatPositions = boatPositions.slice();
@@ -243,7 +260,7 @@ const saveOldGeovoileData = async (bucketName, fileName) => {
         if (transaction) {
           await transaction.rollback();
         }
-        console.log(`Couldn't save race ${race.name}`);
+        console.log(`Couldn't save race ${race.name}`, e);
       }
     }
   } catch (e) {

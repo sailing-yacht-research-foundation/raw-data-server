@@ -135,9 +135,10 @@ const saveGeovoileData = async (data) => {
   ) {
     try {
       const { geovoileRace } = data;
+      const now = Date.now();
       const isUnfinished =
-        geovoileRace.eventState !== 'FINISH' &&
-        geovoileRace.raceState !== 'FINISH';
+        geovoileRace.startTime * 1000 > now ||
+        geovoileRace.endTime * 1000 > now;
       if (isUnfinished) {
         console.log(
           `Future race detected for race scrapedUrl = ${geovoileRace.scrapedUrl}`,

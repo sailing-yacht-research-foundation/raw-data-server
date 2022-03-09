@@ -38,8 +38,8 @@ const normalizeRace = async (
     if (p.timestamp > positionEndTime || !positionEndTime)
       positionEndTime = p.timestamp;
     p.time = p.timestamp / 1000;
-    p.lat = p.lat.toString();
-    p.lon = p.lon.toString();
+    p.lat = +p.lat;
+    p.lon = +p.lon;
   });
 
   if (!endTime) endTime = positionEndTime;
