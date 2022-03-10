@@ -5,6 +5,7 @@ const path = require('path');
 const temp = require('temp').track();
 const { listDirectories } = require('../../utils/fileUtils');
 const { downloadAndExtract } = require('../../utils/unzipFile');
+const db = require('../../syrf-schema/index');
 
 const {
   normalizeRace,
@@ -125,6 +126,11 @@ const saveSapData = async (bucketName, fileName) => {
               console.log(
                 `Entries file ${entriesFilePath} does not exist. Trying to add prefix regatta_`,
               );
+              entriesFilePath = path.join(
+                entriesPath,
+                `regatta_${regattaEncodedName}race_${raceName}_entries.json`,
+              );
+              entriesData = JSON.parse(fs.readFileSync(entriesFilePath));
             }
             raceData = JSON.parse(fs.readFileSync(raceFilePath));
             timeData = JSON.parse(fs.readFileSync(timeFilePath));
@@ -155,6 +161,17 @@ const saveSapData = async (bucketName, fileName) => {
 
           const raceId = uuidv4();
 
+          const competitionUnit = await db.CompetitionUnit.findOne({
+            where: { scrapedOriginalId: raceInfo.id },
+          });
+
+          if (competitionUnit) {
+            console.log(
+              `Race ${competitionUnit.name} already exists, skipping`,
+            );
+            continue;
+          }
+
           for (const c of entriesData.competitors) {
             let competitor = c.competitor || c; // In some files the competitor object is nested inside the competitors object
             let competitorId = uuidv4();
@@ -178,28 +195,53 @@ const saveSapData = async (bucketName, fileName) => {
             });
           }
 
-          for (const boat of entriesData.boats) {
-            let boatId = uuidv4();
-            boats.push({
-              id: boatId,
-              original_id: boat.id,
-              race_id: raceId,
-              race_original_id: raceInfo.id,
-              race_name: competitorPositionsData.name,
-              regatta: competitorPositionsData.regatta,
-              name: boat.name,
-              sail_number: boat.sailId,
-              color: boat.color,
-              boat_class_name: boat.boatClass.name,
-              boat_class_typically_start_upwind:
-                boat.boatClass.typicallyStartsUpwind,
-              boat_class_hull_length_in_meters:
-                boat.boatClass.hullLengthInMeters,
-              boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
-              boat_class_display_name: boat.boatClass.displayName,
-              boat_class_icon_url: boat.boatClass.iconUrl,
-            });
-          }
+          if (entriesData.boats)
+            for (const boat of entriesData.boats) {
+              let boatId = uuidv4();
+              boats.push({
+                id: boatId,
+                original_id: boat.id,
+                race_id: raceId,
+                race_original_id: raceInfo.id,
+                race_name: competitorPositionsData.name,
+                regatta: competitorPositionsData.regatta,
+                name: boat.name,
+                sail_number: boat.sailId,
+                color: boat.color,
+                boat_class_name: boat.boatClass.name,
+                boat_class_typically_start_upwind:
+                  boat.boatClass.typicallyStartsUpwind,
+                boat_class_hull_length_in_meters:
+                  boat.boatClass.hullLengthInMeters,
+                boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
+                boat_class_display_name: boat.boatClass.displayName,
+                boat_class_icon_url: boat.boatClass.iconUrl,
+              });
+            }
+          else
+            for (const boat of entriesData.competitors) {
+              let boatId = uuidv4();
+              boats.push({
+                id: boatId,
+                original_id: boat.boat.id,
+                race_id: raceId,
+                race_original_id: raceInfo.id,
+                race_name: competitorPositionsData.name,
+                regatta: competitorPositionsData.regatta,
+                name: boat.boat.name,
+                sail_number: boat.boat.sailId,
+                color: boat.boat.color,
+                boat_class_name: boat.boat.boatClass.name,
+                boat_class_typically_start_upwind:
+                  boat.boat.boatClass.typicallyStartsUpwind,
+                boat_class_hull_length_in_meters:
+                  boat.boat.boatClass.hullLengthInMeters,
+                boat_class_hull_beam_in_meters:
+                  boat.boat.boatClass.hullBeamInMeters,
+                boat_class_display_name: boat.boat.boatClass.displayName,
+                boat_class_icon_url: boat.boat.boatClass.iconUrl,
+              });
+            }
 
           let race = {
             id: raceId,
@@ -460,6 +502,7 @@ const saveSapData = async (bucketName, fileName) => {
               SapMarks: marks,
               SapMarkPositions: markPositions,
               SapMarkPassings: markPassings,
+              SapCompetitors: competitors,
             };
             await normalizeRace(normalizeData);
           }

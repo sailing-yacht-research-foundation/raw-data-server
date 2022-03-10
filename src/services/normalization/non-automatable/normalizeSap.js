@@ -17,6 +17,7 @@ const normalizeRace = async ({
   SapMarks,
   SapMarkPositions,
   SapMarkPassings,
+  SapCompetitors,
 }) => {
   const SOURCE = 'SAP';
   const race = SapRace;
@@ -94,6 +95,7 @@ const normalizeRace = async ({
     SapMarks,
     SapMarkPositions,
     SapMarkPassings,
+    SapCompetitors,
     raceMetadata,
   );
 };

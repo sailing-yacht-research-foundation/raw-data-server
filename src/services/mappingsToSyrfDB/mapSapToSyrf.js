@@ -10,10 +10,14 @@ const mapAndSave = async (
   marks,
   markPositions,
   markPassings,
+  competitors,
   raceMetadata,
 ) => {
   console.log('Saving to main database');
-  const inputBoats = _mapBoats(boats);
+
+  const competitorToBoatMap = _mapCompetitorToBoat(positions, competitors);
+
+  const inputBoats = _mapBoats(boats, competitorToBoatMap);
 
   const inputPositions = _mapPositions(positions);
 
@@ -24,7 +28,7 @@ const mapAndSave = async (
 
   const passingEvents = _mapPassings(markPassings, courseSequencedGeometries);
 
-  await saveToAwsElasticSearch(race, boats, raceMetadata);
+  //await saveToAwsElasticSearch(race, boats, raceMetadata);
 
   try {
     await saveCompetitionUnit({
@@ -50,14 +54,22 @@ const mapAndSave = async (
   }
 };
 
-const _mapBoats = (boats) => {
+const _mapBoats = (boats, competitors) => {
   return boats.map((b) => {
     const vessel = {
       id: b.id,
       vesselId: b.original_id,
       model: b.boat_class_name,
       publicName: b.name,
+      globalId: b.sail_number,
     };
+
+    vessel.crews = competitors
+      .filter((c) => c.boat_id === b.id)
+      .map((c) => ({
+        id: c.id,
+        publicName: c.short_name,
+      }));
     return vessel;
   });
 };
@@ -80,6 +92,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
 
   //Start
   marks.forEach((m) => {
+    //Start
     if (m.name.includes('Start') || m.name.includes('Finish')) {
       if (m.name.includes('1')) {
         const firstPos = marksPositions.find((pos) => {
@@ -103,10 +116,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
         courseSequencedGeometries.push(startPoint);
       }
     }
-  });
-
-  //Finish
-  marks.forEach((m) => {
+    //Finish
     if (m.name.includes('Start') || m.name.includes('Finish')) {
       if (m.name.includes('2')) {
         const endPos = marksPositions.find((pos) => {
@@ -130,9 +140,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
         courseSequencedGeometries.push(endPoint);
       }
     }
-  });
 
-  marks.forEach((m) => {
     if (!m.name.includes('Start') || !m.name.includes('Finish')) {
       const markPos = marksPositions.find((pos) => {
         return m.id == pos.mark_id;
@@ -184,6 +192,25 @@ const _mapPassings = (passings, geometry) => {
       eventTime: p.time_as_millis,
     };
   });
+};
+
+const _mapCompetitorToBoat = (positions, competitors) => {
+  const competitorToBoatMap = [];
+
+  competitors.map((c) => {
+    const obj = positions.find((p) => {
+      return c.original_id === p.competitor_original_id;
+    });
+
+    if (obj)
+      competitorToBoatMap.push({
+        ...c,
+        boat_id: obj.competitor_boat_id,
+        boat_original_id: obj.competitor_boat_original_id,
+      });
+  });
+
+  return competitorToBoatMap;
 };
 
 const saveToAwsElasticSearch = async (race, boats, raceMetadata) => {
