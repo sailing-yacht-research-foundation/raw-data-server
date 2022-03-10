@@ -28,7 +28,7 @@ const mapAndSave = async (
 
   const passingEvents = _mapPassings(markPassings, courseSequencedGeometries);
 
-  //await saveToAwsElasticSearch(race, boats, raceMetadata);
+  await saveToAwsElasticSearch(race, boats, raceMetadata);
 
   try {
     await saveCompetitionUnit({
@@ -112,7 +112,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
           id: m.id,
           name: 'Start',
         });
-        (startPoint.id = m.id), (startPoint.order = index++);
+        startPoint.order = index++;
         courseSequencedGeometries.push(startPoint);
       }
     }
@@ -136,7 +136,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
           id: m.id,
           name: 'Finish',
         });
-        (endPoint.id = m.id), (endPoint.order = marks.length - 1);
+        endPoint.order = marks.length - 1;
         courseSequencedGeometries.push(endPoint);
       }
     }
@@ -159,7 +159,7 @@ const _mapSequencedGeometries = (marks, marksPositions) => {
         id: m.id,
         name: m.name,
       });
-      (markPoint.id = m.id), (markPoint.order = index++);
+      markPoint.order = index++;
       courseSequencedGeometries.push(markPoint);
     }
   });
