@@ -292,6 +292,13 @@ const saveSapData = async (bucketName, fileName) => {
             }
           }
 
+          if (boatPositions.length === 0) {
+            console.log(
+              `Race ${competitorPositionsData.name} does not have possition entries, skipping`,
+            );
+            continue;
+          }
+
           for (const leg of timeLegData.legs) {
             for (const legCompetitor of leg.competitors) {
               let legId = uuidv4();
@@ -503,6 +510,7 @@ const saveSapData = async (bucketName, fileName) => {
               SapMarkPositions: markPositions,
               SapMarkPassings: markPassings,
               SapCompetitors: competitors,
+              SapCourses: courses,
             };
             await normalizeRace(normalizeData);
           }

@@ -18,6 +18,7 @@ const normalizeRace = async ({
   SapMarkPositions,
   SapMarkPassings,
   SapCompetitors,
+  SapCourses,
 }) => {
   const SOURCE = 'SAP';
   const race = SapRace;
@@ -57,6 +58,7 @@ const normalizeRace = async ({
     boatsToSortedPositions,
     3,
   );
+
   const startPoint = getCenterOfMassOfPositions('lat', 'lon', first3Positions);
 
   const last3Positions = collectLastNPositionsFromBoatsToPositions(
@@ -96,6 +98,7 @@ const normalizeRace = async ({
     SapMarkPositions,
     SapMarkPassings,
     SapCompetitors,
+    SapCourses,
     raceMetadata,
   );
 };
