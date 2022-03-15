@@ -195,53 +195,32 @@ const saveSapData = async (bucketName, fileName) => {
             });
           }
 
-          if (entriesData.boats)
-            for (const boat of entriesData.boats) {
-              let boatId = uuidv4();
-              boats.push({
-                id: boatId,
-                original_id: boat.id,
-                race_id: raceId,
-                race_original_id: raceInfo.id,
-                race_name: competitorPositionsData.name,
-                regatta: competitorPositionsData.regatta,
-                name: boat.name,
-                sail_number: boat.sailId,
-                color: boat.color,
-                boat_class_name: boat.boatClass.name,
-                boat_class_typically_start_upwind:
-                  boat.boatClass.typicallyStartsUpwind,
-                boat_class_hull_length_in_meters:
-                  boat.boatClass.hullLengthInMeters,
-                boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
-                boat_class_display_name: boat.boatClass.displayName,
-                boat_class_icon_url: boat.boatClass.iconUrl,
-              });
-            }
-          else
-            for (const boat of entriesData.competitors) {
-              let boatId = uuidv4();
-              boats.push({
-                id: boatId,
-                original_id: boat.boat.id,
-                race_id: raceId,
-                race_original_id: raceInfo.id,
-                race_name: competitorPositionsData.name,
-                regatta: competitorPositionsData.regatta,
-                name: boat.boat.name,
-                sail_number: boat.boat.sailId,
-                color: boat.boat.color,
-                boat_class_name: boat.boat.boatClass.name,
-                boat_class_typically_start_upwind:
-                  boat.boat.boatClass.typicallyStartsUpwind,
-                boat_class_hull_length_in_meters:
-                  boat.boat.boatClass.hullLengthInMeters,
-                boat_class_hull_beam_in_meters:
-                  boat.boat.boatClass.hullBeamInMeters,
-                boat_class_display_name: boat.boat.boatClass.displayName,
-                boat_class_icon_url: boat.boat.boatClass.iconUrl,
-              });
-            }
+          let boatEntries = entriesData.boats;
+          if (!boatEntries) {
+            boatEntries = entriesData.competitors.map((c) => c.boat);
+          }
+          for (const boat of boatEntries) {
+            let boatId = uuidv4();
+            boats.push({
+              id: boatId,
+              original_id: boat.id,
+              race_id: raceId,
+              race_original_id: raceInfo.id,
+              race_name: competitorPositionsData.name,
+              regatta: competitorPositionsData.regatta,
+              name: boat.name,
+              sail_number: boat.sailId,
+              color: boat.color,
+              boat_class_name: boat.boatClass.name,
+              boat_class_typically_start_upwind:
+                boat.boatClass.typicallyStartsUpwind,
+              boat_class_hull_length_in_meters:
+                boat.boatClass.hullLengthInMeters,
+              boat_class_hull_beam_in_meters: boat.boatClass.hullBeamInMeters,
+              boat_class_display_name: boat.boatClass.displayName,
+              boat_class_icon_url: boat.boatClass.iconUrl,
+            });
+          }
 
           let race = {
             id: raceId,
@@ -433,6 +412,7 @@ const saveSapData = async (bucketName, fileName) => {
               });
             }
           }
+          removeDuplicates(courseData.waypoints);
 
           for (const course of courseData.waypoints) {
             let courseId = uuidv4();
@@ -445,18 +425,13 @@ const saveSapData = async (bucketName, fileName) => {
               passing_instruction: course.passingInstruction,
               class: course.controlPoint['@class'],
               short_name: course.controlPoint.shortName,
-              left_class: course.controlPoint?.left
-                ? course.controlPoint.left['@class']
-                : undefined,
-              left_type: course.controlPoint?.left
-                ? course.controlPoint.left.type
-                : undefined,
-              right_class: course.controlPoint?.right
-                ? course.controlPoint.right['@class']
-                : undefined,
-              right_type: course.controlPoint?.right
-                ? course.controlPoint.right.type
-                : undefined,
+              left_class: course.controlPoint?.left?.['@class'],
+              left_type: course.controlPoint?.left?.type,
+              right_class: course.controlPoint?.right?.['@class'],
+              right_type: course.controlPoint?.right?.type,
+              left_id: course.controlPoint?.left?.id,
+              right_id: course.controlPoint?.right?.id,
+              markId: course.controlPoint.id,
             });
           }
 
@@ -524,6 +499,17 @@ const saveSapData = async (bucketName, fileName) => {
     console.log('An error has occured', e);
   } finally {
     temp.cleanupSync();
+  }
+};
+
+const removeDuplicates = (courses) => {
+  for (let i = 0; i < courses.length; ++i) {
+    for (let j = 0; j < courses.length; ++j) {
+      if (i < j) {
+        if (courses[i].controlPoint.id === courses[j].controlPoint.id)
+          courses.splice(j, 1);
+      }
+    }
   }
 };
 

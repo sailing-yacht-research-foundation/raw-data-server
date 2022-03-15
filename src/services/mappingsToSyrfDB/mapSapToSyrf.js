@@ -3,7 +3,11 @@ const {
   createGeometryPoint,
   createGeometryLine,
 } = require('../../utils/gisUtils');
-const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
+const {
+  vesselEvents,
+  geometryType,
+  boatSides,
+} = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (
@@ -52,11 +56,10 @@ const mapAndSave = async (
         boats: true,
       },
     });
+    await saveToAwsElasticSearch(race, boats, raceMetadata);
   } catch (e) {
     console.log(e);
   }
-
-  await saveToAwsElasticSearch(race, boats, raceMetadata);
 };
 
 const _mapBoats = (boats, competitors) => {
@@ -94,20 +97,16 @@ const _mapPositions = (positions) => {
 const _mapSequencedGeometries = (marks, courses, marksPositions) => {
   const courseSequencedGeometries = [];
   const markTrackers = [];
-  let index = 0;
 
-  courses.forEach((c) => {
+  courses.forEach((c, index) => {
     if (c.class === 'ControlPointWithTwoMarks') {
-      const marksThatFormLine = marks.filter((m) =>
-        m.name.includes(c.course_name),
-      );
       const firstPos = marksPositions.find(
-        (p) => marksThatFormLine[0].id === p.mark_id,
+        (p) => c.left_id === p.mark_original_id,
+      );
+      const lastPos = marksPositions.find(
+        (p) => c.right_id === p.mark_original_id,
       );
 
-      const lastPos = marksPositions.find(
-        (p) => marksThatFormLine[1].id === p.mark_id,
-      );
       const line = createGeometryLine(
         {
           lat: firstPos.lat_deg,
@@ -119,7 +118,12 @@ const _mapSequencedGeometries = (marks, courses, marksPositions) => {
           lon: lastPos.lng_deg,
           markTrackerId: lastPos.mark_id,
         },
-        { name: c.course_name, courseObjectId: c.id },
+        {
+          name: c.course_name,
+          courseObjectId: c.id,
+          portPoint: 0,
+          starboardPoint: 1,
+        },
       );
 
       markTrackers.push({
@@ -130,11 +134,12 @@ const _mapSequencedGeometries = (marks, courses, marksPositions) => {
         id: lastPos.mark_id,
         name: c.course_name,
       });
-      line.order = index++;
+      line.order = index;
       courseSequencedGeometries.push(line);
     } else {
-      const markObj = marks.find((m) => m.name === c.course_name);
-      const markPos = marksPositions.find((p) => markObj.id === p.mark_id);
+      const markPos = marksPositions.find(
+        (p) => c.markId === p.mark_original_id,
+      );
 
       const mark = createGeometryPoint({
         lat: markPos.lat_deg,
@@ -147,10 +152,11 @@ const _mapSequencedGeometries = (marks, courses, marksPositions) => {
         id: markPos.mark_id,
         name: c.course_name,
       });
-      mark.order = index++;
+      mark.order = index;
       courseSequencedGeometries.push(mark);
     }
   });
+
   return {
     courseSequencedGeometries,
     markTrackers,
@@ -160,7 +166,7 @@ const _mapSequencedGeometries = (marks, courses, marksPositions) => {
 const _mapPassings = (passings, geometry) => {
   return passings.map((p) => {
     const eventGeometry = geometry.find((g) => {
-      return g.order === p.zero_based_waypoint_index;
+      return g.properties.name === p.waypoint_name;
     });
 
     if (!eventGeometry) {
