@@ -1,6 +1,5 @@
 const turf = require('@turf/turf');
-const { meterPerSecToKnots } = require('../../utils/gisUtils');
-
+const { geojsonProperties } = require('../../syrf-schema/enums');
 const { SIMPLIFICATION_TOLERANCE } = require('../../constants');
 
 module.exports = class VesselParticipantTrack {
@@ -21,7 +20,7 @@ module.exports = class VesselParticipantTrack {
   addNewPosition(
     position,
     timestamp,
-    { altitude, cog, sog, twa, windSpeed, windDirection, vmc, vmg } = {
+    { altitude, cog, sog, twa, windSpeed, windDirection, vmc, vmg, heading } = {
       altitude: 0,
       cog: null,
       sog: null,
@@ -30,6 +29,7 @@ module.exports = class VesselParticipantTrack {
       windDirection: null,
       vmc: null,
       vmg: null,
+      heading: null,
     },
   ) {
     const trackData = {
@@ -43,41 +43,12 @@ module.exports = class VesselParticipantTrack {
       windDirection,
       vmc,
       vmg,
+      heading,
     };
     this.positions.push(trackData);
     return trackData;
   }
 
-  calculateDerivedData(firstPoint, secondPoint, windDirection = undefined) {
-    const derivedCOG = turf.bearingToAngle(
-      turf.bearing(firstPoint.position, secondPoint.position),
-    );
-    const distanceFromPrev = turf.distance(
-      firstPoint.position,
-      secondPoint.position,
-      {
-        units: 'meters',
-      },
-    );
-    const timeFromPrev = secondPoint.timestamp - firstPoint.timestamp;
-    let derivedSOG = 0;
-    if (timeFromPrev === 0) {
-      // Prevent division by zero
-      derivedSOG = (distanceFromPrev / timeFromPrev) * 1000; // m/s
-    }
-    derivedSOG = meterPerSecToKnots(derivedSOG);
-    let derivedTWA;
-    if (windDirection) {
-      derivedTWA = turf.bearingToAngle(
-        parseFloat((windDirection - derivedCOG).toFixed(2)),
-      );
-    }
-    return {
-      derivedCOG,
-      derivedSOG,
-      derivedTWA,
-    };
-  }
   /**
    *
    * @returns  Feature<LineString>
@@ -159,6 +130,22 @@ module.exports = class VesselParticipantTrack {
   async createGeoJsonTrack({ competitionUnitId } = {}) {
     const returnFiniteAndNotNull = (num, defaultVal) =>
       isFinite(num) && num !== null ? +num : defaultVal ?? null;
+    const geojsonPropSet = new Set([
+      geojsonProperties.lon,
+      geojsonProperties.lat,
+      geojsonProperties.elevation,
+      geojsonProperties.time,
+    ]);
+    const geojsonExtraProp = [
+      geojsonProperties.sog,
+      geojsonProperties.cog,
+      geojsonProperties.twa,
+      geojsonProperties.vmc,
+      geojsonProperties.vmg,
+      geojsonProperties.windSpeed,
+      geojsonProperties.windDirection,
+      geojsonProperties.heading,
+    ];
 
     console.time('generate providedGeoJson');
     const providedGeoJson = {
@@ -170,17 +157,7 @@ module.exports = class VesselParticipantTrack {
       geometry: {
         type: 'LineString',
         coordinates: this.positions.map((row) => {
-          let {
-            position,
-            timestamp,
-            sog,
-            cog,
-            twa,
-            altitude,
-            vmc,
-            vmg,
-            windSpeed,
-          } = row;
+          let { position, altitude, timestamp } = row;
           const geojsonData = [
             position[0],
             position[1],
@@ -188,29 +165,26 @@ module.exports = class VesselParticipantTrack {
             timestamp,
           ];
 
-          [sog, cog, twa, vmc, vmg, windSpeed] = [
-            sog,
-            cog,
-            twa,
-            vmc,
-            vmg,
-            windSpeed,
-          ].map((i) => (i = returnFiniteAndNotNull(i)));
+          geojsonExtraProp.forEach((propName) => {
+            const propValue = returnFiniteAndNotNull(row[propName]);
+            if (propValue !== null && geojsonProperties[propName]) {
+              geojsonPropSet.add(propName);
+              geojsonData.push(propValue);
+            }
+          });
 
-          geojsonData.push(sog);
-          geojsonData.push(cog);
-          geojsonData.push(twa);
-
-          if (vmc !== null || vmg !== null || windSpeed !== null) {
-            // only add these 3 if one of them is provided
-            geojsonData.push(vmc);
-            geojsonData.push(vmg);
-            geojsonData.push(windSpeed);
-          }
           return geojsonData;
         }),
       },
     };
+    providedGeoJson.properties.detail = [...geojsonPropSet].reduce(
+      (acc, i, index) => {
+        acc[i] = index;
+        return acc;
+      },
+      {},
+    );
+
     console.timeEnd('generate providedGeoJson');
     const sTrack = await this.getSimplifiedTrack();
     const simplifiedGeoJson = {

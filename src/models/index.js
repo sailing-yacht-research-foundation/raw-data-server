@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const dbConfig = require('../configs/db.config.js');
-const { AMERICAS_CUP_TABLE_SUFFIX } = require('../constants');
 
 const sequelize = new Sequelize(
   dbConfig.database,
@@ -690,12 +689,56 @@ db.americasCup2021WindPoint =
 // === End of Americascup2021 ===
 
 // === Americas Cup ===
-for (key of AMERICAS_CUP_TABLE_SUFFIX) {
-  db[`americasCup${key}`] = require(`./americascup/americasCup${key}.model`)(
+db.americasCupAvgWind =
+  require('./americascup/americasCupAvgWind.model')(
     sequelize,
     Sequelize,
   );
-}
+db.americasCupBoat =
+  require('./americascup/americasCupBoat.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupBoatShape =
+  require('./americascup/americasCupBoatShape.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupCompoundMark =
+  require('./americascup/americasCupCompoundMark.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupCourseLimit =
+  require('./americascup/americasCupCourseLimit.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupEvent =
+  require('./americascup/americasCupEvent.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupMark =
+  require('./americascup/americasCupMark.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupRace =
+  require('./americascup/americasCupRace.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupRegatta =
+  require('./americascup/americasCupRegatta.model')(
+    sequelize,
+    Sequelize,
+  );
+db.americasCupPosition =
+  require('./americascup/americasCupPosition.model')(
+    sequelize,
+    Sequelize,
+  );
 // === End of Americas Cup ===
 
 db.sapCompetitor = require('./sap/SapCompetitor.model')(sequelize, Sequelize);
