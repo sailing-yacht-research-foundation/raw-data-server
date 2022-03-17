@@ -18,6 +18,7 @@ const {
 } = require('../normalization/non-automatable/normalizeAmericascup');
 const mapAndSave = require('../mappingsToSyrfDB/mapAmericasCupToSyrf');
 const { getExistingData } = require('../scrapedDataResult');
+const { triggerWeatherSlicer } = require('../weatherSlicerUtil');
 
 const saveAmericasCupData = async (bucketName, fileName, year) => {
   const XML_DIR_NAME = 'history';
@@ -592,6 +593,9 @@ const _normalizeAndMapRaces = async (data) => {
 
       const metadata = await normalizeRace(objectsToPass);
       await mapAndSave(objectsToPass, [metadata]);
+      if (metadata) {
+        await triggerWeatherSlicer(metadata);
+      }
     } catch (err) {
       console.log(`Failed in normalizing race ${race.original_id}`, err);
     }

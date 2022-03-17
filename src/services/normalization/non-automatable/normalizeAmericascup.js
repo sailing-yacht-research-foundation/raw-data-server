@@ -14,7 +14,7 @@ const normalizeRace = async ({
   AmericasCupRegatta,
   AmericasCupRace,
   AmericasCupBoat,
-  AmericasCupMarks,
+  AmericasCupMark,
   AmericasCupPosition,
 }) => {
   console.log('Normalizing start');
@@ -55,7 +55,7 @@ const normalizeRace = async ({
 
   const startMarks = [];
   const finishMarks = [];
-  AmericasCupMarks?.forEach((m) => {
+  AmericasCupMark?.forEach((m) => {
     if (m.name.toLowerCase().indexOf('start') > -1) {
       const existingMark = startMarks.find((sm) => sm.name === m.name);
       const isLatestMark =
