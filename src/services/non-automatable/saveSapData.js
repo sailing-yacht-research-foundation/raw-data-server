@@ -5,7 +5,8 @@ const path = require('path');
 const temp = require('temp').track();
 const { listDirectories } = require('../../utils/fileUtils');
 const { downloadAndExtract } = require('../../utils/unzipFile');
-const db = require('../../syrf-schema/index');
+const { SOURCE } = require('../../constants');
+const { getExistingData } = require('../scrapedDataResult');
 
 const {
   normalizeRace,
@@ -34,6 +35,7 @@ const saveSapData = async (bucketName, fileName) => {
     const targetTimePath = path.join(allDataPath, 'targettime');
     const timePath = path.join(allDataPath, 'times');
     const windSummaryPath = path.join(allDataPath, 'wind_summary');
+    const competitorsPath = path.join(allDataPath, 'competitors');
     const competitorPositionFiles = fs.readdirSync(competitorPositionPath);
 
     for (const competitorPositionFile of competitorPositionFiles) {
@@ -92,6 +94,11 @@ const saveSapData = async (bucketName, fileName) => {
             `${regattaEncodedName}_windsummary.json`,
           );
 
+          const competitorsFilePath = path.join(
+            competitorsPath,
+            `${regattaEncodedName}_competitors.json`,
+          );
+
           //Competitor Positions
           const competitorPositionsData = JSON.parse(
             fs.readFileSync(competitorPositionFilePath),
@@ -106,6 +113,7 @@ const saveSapData = async (bucketName, fileName) => {
           let courseData = {};
           let targetTimeData = {};
           let windSummaryData = {};
+          let competitorData = {};
 
           let competitors = [];
           let boats = [];
@@ -141,6 +149,7 @@ const saveSapData = async (bucketName, fileName) => {
             courseData = JSON.parse(fs.readFileSync(courseFilePath));
             targetTimeData = JSON.parse(fs.readFileSync(targetTimeFilePath));
             windSummaryData = JSON.parse(fs.readFileSync(windSummaryFilePath));
+            competitorData = JSON.parse(fs.readFileSync(competitorsFilePath));
           } catch (e) {
             console.log(
               `File ${competitorPositionFile} has some other files missing, skipping race`,
@@ -161,20 +170,27 @@ const saveSapData = async (bucketName, fileName) => {
 
           const raceId = uuidv4();
 
-          const competitionUnit = await db.CompetitionUnit.findOne({
-            where: { scrapedOriginalId: raceInfo.id },
-          });
+          let raceAlreadyExist = false;
+          const existingData = await getExistingData(SOURCE.SAP);
 
-          if (competitionUnit) {
-            console.log(
-              `Race ${competitionUnit.name} already exists, skipping`,
-            );
-            continue;
+          for (let i = 0; i < existingData.length; ++i) {
+            if (raceInfo.id === existingData[i].original_id) {
+              raceAlreadyExist = true;
+              break;
+            }
           }
 
+          if (raceAlreadyExist) {
+            console.log(`Race ${raceInfo.name} already exists... Skipping`);
+            raceAlreadyExist = false;
+            continue;
+          }
           for (const c of entriesData.competitors) {
             let competitor = c.competitor || c; // In some files the competitor object is nested inside the competitors object
             let competitorId = uuidv4();
+            const competitorTeam = competitorData.find(
+              (c) => c.id === competitor.id,
+            );
             competitors.push({
               id: competitorId,
               original_id: competitor.id,
@@ -192,10 +208,12 @@ const saveSapData = async (bucketName, fileName) => {
               time_on_time_factor: competitor.timeOnTimeFactor,
               time_on_distance_allowance_in_seconds_per_nautical_mile:
                 competitor.timeOnDistanceAllowanceInSecondsPerNauticalMile,
+              sailors: competitorTeam.team.sailors,
             });
           }
 
           let boatEntries = entriesData.boats;
+          // In some files the boat is inside the competitors object
           if (!boatEntries) {
             boatEntries = entriesData.competitors.map((c) => c.boat);
           }
@@ -208,7 +226,6 @@ const saveSapData = async (bucketName, fileName) => {
               race_original_id: raceInfo.id,
               race_name: competitorPositionsData.name,
               regatta: competitorPositionsData.regatta,
-              name: boat.name,
               sail_number: boat.sailId,
               color: boat.color,
               boat_class_name: boat.boatClass.name,
@@ -412,27 +429,32 @@ const saveSapData = async (bucketName, fileName) => {
               });
             }
           }
-          removeDuplicates(courseData.waypoints);
 
           for (const course of courseData.waypoints) {
-            let courseId = uuidv4();
-            courses.push({
-              id: courseId,
-              race_id: raceId,
-              race_original_id: raceInfo.id,
-              name: courseData.name,
-              course_name: course.name,
-              passing_instruction: course.passingInstruction,
-              class: course.controlPoint['@class'],
-              short_name: course.controlPoint.shortName,
-              left_class: course.controlPoint?.left?.['@class'],
-              left_type: course.controlPoint?.left?.type,
-              right_class: course.controlPoint?.right?.['@class'],
-              right_type: course.controlPoint?.right?.type,
-              left_id: course.controlPoint?.left?.id,
-              right_id: course.controlPoint?.right?.id,
-              markId: course.controlPoint.id,
-            });
+            const existingWaypoint = courses.find(
+              (c) => c.markId === course.controlPoint.id,
+            );
+
+            if (!existingWaypoint) {
+              let courseId = uuidv4();
+              courses.push({
+                id: courseId,
+                race_id: raceId,
+                race_original_id: raceInfo.id,
+                name: courseData.name,
+                course_name: course.name,
+                passing_instruction: course.passingInstruction,
+                class: course.controlPoint['@class'],
+                short_name: course.controlPoint.shortName,
+                left_class: course.controlPoint?.left?.['@class'],
+                left_type: course.controlPoint?.left?.type,
+                right_class: course.controlPoint?.right?.['@class'],
+                right_type: course.controlPoint?.right?.type,
+                left_id: course.controlPoint?.left?.id,
+                right_id: course.controlPoint?.right?.id,
+                markId: course.controlPoint.id,
+              });
+            }
           }
 
           for (const targetTime of targetTimeData.legs) {
@@ -499,17 +521,6 @@ const saveSapData = async (bucketName, fileName) => {
     console.log('An error has occured', e);
   } finally {
     temp.cleanupSync();
-  }
-};
-
-const removeDuplicates = (courses) => {
-  for (let i = 0; i < courses.length; ++i) {
-    for (let j = 0; j < courses.length; ++j) {
-      if (i < j) {
-        if (courses[i].controlPoint.id === courses[j].controlPoint.id)
-          courses.splice(j, 1);
-      }
-    }
   }
 };
 

@@ -3,11 +3,7 @@ const {
   createGeometryPoint,
   createGeometryLine,
 } = require('../../utils/gisUtils');
-const {
-  vesselEvents,
-  geometryType,
-  boatSides,
-} = require('../../syrf-schema/enums');
+const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (
@@ -22,6 +18,14 @@ const mapAndSave = async (
   raceMetadata,
 ) => {
   console.log('Saving to main database');
+
+  const event = {
+    id: race.id,
+    original_id: race.original_id,
+    name: race.regatta,
+    approxStartTimeMs: race.start_of_race_ms,
+    approxEndTimeMs: race.end_of_race_ms,
+  };
 
   const competitorToBoatMap = _mapCompetitorToBoat(positions, competitors);
 
@@ -40,6 +44,7 @@ const mapAndSave = async (
   try {
     await saveCompetitionUnit({
       race: race,
+      event,
       boats: inputBoats,
       positions: inputPositions,
       courseSequencedGeometries,
@@ -64,21 +69,25 @@ const mapAndSave = async (
 
 const _mapBoats = (boats, competitors) => {
   return boats.map((b) => {
+    const competitor = competitors.find((c) => c.boat_id === b.id);
     const vessel = {
       id: b.id,
       vesselId: b.original_id,
       model: b.boat_class_name,
-      publicName: b.name,
+      publicName: competitor ? competitor.name : b.name || b.short_name,
       globalId: b.sail_number,
       lengthInMeters: b.boat_class_hull_length_in_meters,
     };
 
-    vessel.crews = competitors
-      .filter((c) => c.boat_id === b.id)
-      .map((c) => ({
-        id: c.id,
-        publicName: c.name || c.short_name,
-      }));
+    if (competitor) {
+      vessel.crews = [
+        {
+          id: competitor.id,
+          publicName: competitor.sailors[0].name,
+        },
+      ];
+    }
+
     return vessel;
   });
 };
@@ -176,11 +185,10 @@ const _mapPassings = (passings, geometry) => {
       eventGeometry.geometryType === geometryType.LINESTRING
         ? vesselEvents.insideCrossing
         : vesselEvents.rounding;
-
     return {
       competitionUnitId: p.race_id,
       vesselId: p.competitor_boat_id,
-      markId: eventGeometry.id,
+      markId: eventGeometry.properties.courseObjectId,
       eventType,
       eventTime: p.time_as_millis,
     };
@@ -189,7 +197,6 @@ const _mapPassings = (passings, geometry) => {
 
 const _mapCompetitorToBoat = (positions, competitors) => {
   const competitorToBoatMap = [];
-
   competitors.map((c) => {
     const obj = positions.find((p) => {
       return c.original_id === p.competitor_original_id;

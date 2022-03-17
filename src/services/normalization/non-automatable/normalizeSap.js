@@ -24,8 +24,8 @@ const normalizeRace = async ({
   const race = SapRace;
   const positions = SapPosition;
   const boats = SapBoat;
-  const startTime = race.start_of_tracking_ms;
-  const endTime = race.end_of_tracking_ms;
+  const startTime = race.start_of_race_ms;
+  const endTime = race.end_of_race_ms;
 
   const boatNames = [];
   const boatModels = [];
