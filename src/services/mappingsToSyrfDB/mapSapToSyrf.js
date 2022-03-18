@@ -5,6 +5,7 @@ const {
 } = require('../../utils/gisUtils');
 const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
+const { v4: uuidv4 } = require('uuid');
 
 const mapAndSave = async (
   race,
@@ -21,7 +22,6 @@ const mapAndSave = async (
 
   const event = {
     id: race.id,
-    original_id: race.original_id,
     name: race.regatta,
     approxStartTimeMs: race.start_of_race_ms,
     approxEndTimeMs: race.end_of_race_ms,
@@ -74,20 +74,20 @@ const _mapBoats = (boats, competitors) => {
       id: b.id,
       vesselId: b.original_id,
       model: b.boat_class_name,
-      publicName: competitor ? competitor.name : b.name || b.short_name,
+      publicName: competitor?.name || b.name || b.short_name,
       globalId: b.sail_number,
       lengthInMeters: b.boat_class_hull_length_in_meters,
     };
 
     if (competitor) {
-      vessel.crews = [
-        {
-          id: competitor.id,
-          publicName: competitor.sailors[0].name,
-        },
-      ];
+      vessel.crews = competitor.sailors.map((s) => {
+        const id = uuidv4();
+        return {
+          id: id,
+          publicName: s.name,
+        };
+      });
     }
-
     return vessel;
   });
 };

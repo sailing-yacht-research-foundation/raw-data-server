@@ -38,6 +38,8 @@ const saveSapData = async (bucketName, fileName) => {
     const competitorsPath = path.join(allDataPath, 'competitors');
     const competitorPositionFiles = fs.readdirSync(competitorPositionPath);
 
+    const existingData = await getExistingData(SOURCE.SAP);
+
     for (const competitorPositionFile of competitorPositionFiles) {
       console.log(`Processing ${competitorPositionFile}`);
       try {
@@ -170,21 +172,11 @@ const saveSapData = async (bucketName, fileName) => {
 
           const raceId = uuidv4();
 
-          let raceAlreadyExist = false;
-          const existingData = await getExistingData(SOURCE.SAP);
-
-          for (let i = 0; i < existingData.length; ++i) {
-            if (raceInfo.id === existingData[i].original_id) {
-              raceAlreadyExist = true;
-              break;
-            }
-          }
-
-          if (raceAlreadyExist) {
-            console.log(`Race ${raceInfo.name} already exists... Skipping`);
-            raceAlreadyExist = false;
+          if (existingData.find((e) => e.original_id === raceInfo.id)) {
+            console.log(`Race ${raceInfo.id} already exists... Skipping`);
             continue;
           }
+
           for (const c of entriesData.competitors) {
             let competitor = c.competitor || c; // In some files the competitor object is nested inside the competitors object
             let competitorId = uuidv4();
