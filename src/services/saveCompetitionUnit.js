@@ -1,6 +1,7 @@
 const { createTransaction } = require('../syrf-schema/utils/utils');
 const failedUrlDataAccess = require('../syrf-schema/dataAccess/v1/scrapedFailedUrl');
 const successfulUrlDataAccess = require('../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
+const { participantInvitationStatus } = require('../syrf-schema/enums');
 const calendarEvent = require('../syrfDataServices/v1/calendarEvent');
 const competitionUnit = require('../syrfDataServices/v1/competitionUnit');
 const vessel = require('../syrfDataServices/v1/vessel');
@@ -57,7 +58,7 @@ const saveCompetitionUnit = async ({
     console.log('Create new calendar event');
     // 1. Save calendar event information
     let existingEvent;
-    if (reuse.event && event?.original_id) {
+    if ((reuse.event || reuse.events) && event?.original_id) {
       existingEvent = await calendarEvent.getByScrapedOriginalIdAndSource(
         event.original_id.toString(),
         source,
@@ -104,14 +105,14 @@ const saveCompetitionUnit = async ({
     const vesselParticipantsToSave = [];
     const existingVesselIdMap = new Map(); // mapping of existing vessel id with its new id to replace the positions boat ids
     let existingVessels;
-    if (reuse.boats) {
+    if (reuse.boat || reuse.boats) {
       existingVessels = await vessel.getByVesselIdAndSource(
         boats.map((b) => b.vesselId),
         source,
       );
     }
     for (const boat of boats) {
-      if (reuse.boats) {
+      if (reuse.boat || reuse.boats) {
         // some scrapers have the same boat.original_id but different info like yellowbrick
         const existingVessel = existingVessels?.find(
           (ev) => ev.vesselId === boat.vesselId,
@@ -186,6 +187,7 @@ const saveCompetitionUnit = async ({
       const addedParticipants = await participant.bulkCreate(
         participants.map((p) => ({
           ...p,
+          invitationStatus: participantInvitationStatus.SELF_REGISTERED,
           calendarEventId: newCalendarEvent.id,
         })),
         mainDatabaseTransaction,
@@ -255,7 +257,14 @@ const saveCompetitionUnit = async ({
 
       const trackerToPointMap = {};
       for (const point of realTimePoints) {
-        trackerToPointMap[point.markTrackerId] = point.id;
+        if (trackerToPointMap[point.markTrackerId]) {
+          // This is when a geometry is using the same mark tracker. Like 2 geometry line in 3 points
+          trackerToPointMap[point.markTrackerId] = []
+            .concat(trackerToPointMap[point.markTrackerId])
+            .concat(point.id);
+        } else {
+          trackerToPointMap[point.markTrackerId] = point.id;
+        }
         pointTracks[point.id] = new PointTrack(point.id);
       }
 
@@ -280,10 +289,19 @@ const saveCompetitionUnit = async ({
           );
           continue;
         }
-        pointTracks[pointId].addNewPosition(
-          [+pointPosition.lon, +pointPosition.lat],
-          +pointPosition.timestamp,
-        );
+        if (pointId instanceof Array) {
+          pointId.forEach((pId) => {
+            pointTracks[pId].addNewPosition(
+              [+pointPosition.lon, +pointPosition.lat],
+              +pointPosition.timestamp,
+            );
+          });
+        } else {
+          pointTracks[pointId].addNewPosition(
+            [+pointPosition.lon, +pointPosition.lat],
+            +pointPosition.timestamp,
+          );
+        }
       }
     }
     // Create the participant track

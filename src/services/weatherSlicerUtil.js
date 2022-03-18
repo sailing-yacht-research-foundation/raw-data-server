@@ -15,11 +15,13 @@ const triggerWeatherSlicer = async (raceMetadata) => {
         raceID: raceMetadata.id,
       },
     };
-    try {
-      await axios.post(`${slicerHost}/api/v1/`, reqBody);
-    } catch (err) {
-      console.log(err);
-    }
+    setImmediate(async () => {
+      try {
+        await axios.post(`${slicerHost}/api/v1/`, reqBody);
+      } catch (err) {
+        console.log(err);
+      }
+    });
   }
 };
 
