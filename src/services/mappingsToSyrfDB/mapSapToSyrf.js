@@ -5,7 +5,6 @@ const {
 } = require('../../utils/gisUtils');
 const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
-const { v4: uuidv4 } = require('uuid');
 
 const mapAndSave = async (
   race,
@@ -19,9 +18,9 @@ const mapAndSave = async (
   raceMetadata,
 ) => {
   console.log('Saving to main database');
-
   const event = {
     id: race.id,
+    original_id: race.regatta,
     name: race.regatta,
     approxStartTimeMs: race.start_of_race_ms,
     approxEndTimeMs: race.end_of_race_ms,
@@ -40,7 +39,6 @@ const mapAndSave = async (
   );
 
   const passingEvents = _mapPassings(markPassings, courseSequencedGeometries);
-
   try {
     await saveCompetitionUnit({
       race: race,
@@ -58,7 +56,8 @@ const mapAndSave = async (
       vesselParticipantEvents: passingEvents,
       raceMetadata,
       reuse: {
-        boats: true,
+        boat: true,
+        event: true,
       },
     });
     await saveToAwsElasticSearch(race, boats, raceMetadata);
@@ -69,7 +68,9 @@ const mapAndSave = async (
 
 const _mapBoats = (boats, competitors) => {
   return boats.map((b) => {
-    const competitor = competitors.find((c) => c.boat_id === b.id);
+    const competitor = competitors.find(
+      (c) => c.boat_original_id === b.original_id,
+    );
     const vessel = {
       id: b.id,
       vesselId: b.original_id,
@@ -78,12 +79,9 @@ const _mapBoats = (boats, competitors) => {
       globalId: b.sail_number,
       lengthInMeters: b.boat_class_hull_length_in_meters,
     };
-
     if (competitor) {
       vessel.crews = competitor.sailors.map((s) => {
-        const id = uuidv4();
         return {
-          id: id,
           publicName: s.name,
         };
       });
