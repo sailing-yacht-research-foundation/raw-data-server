@@ -4,11 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const temp = require('temp').track();
 const { listDirectories } = require('../../utils/fileUtils');
-const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
-const db = require('../../models');
-const Op = db.Sequelize.Op;
-
 const { downloadAndExtract } = require('../../utils/unzipFile');
+const { SOURCE } = require('../../constants');
+const { getExistingData } = require('../scrapedDataResult');
+
 const {
   normalizeRace,
 } = require('../normalization/non-automatable/normalizeSap');
@@ -36,11 +35,13 @@ const saveSapData = async (bucketName, fileName) => {
     const targetTimePath = path.join(allDataPath, 'targettime');
     const timePath = path.join(allDataPath, 'times');
     const windSummaryPath = path.join(allDataPath, 'wind_summary');
+    const competitorsPath = path.join(allDataPath, 'competitors');
     const competitorPositionFiles = fs.readdirSync(competitorPositionPath);
+
+    const existingData = await getExistingData(SOURCE.SAP);
 
     for (const competitorPositionFile of competitorPositionFiles) {
       console.log(`Processing ${competitorPositionFile}`);
-      let transaction;
       try {
         if (competitorPositionFile.endsWith('.json')) {
           const regattaEncodedName = competitorPositionFile
@@ -57,7 +58,10 @@ const saveSapData = async (bucketName, fileName) => {
             competitorPositionPath,
             competitorPositionFile,
           );
-          const raceFilePath = path.join(racePath, `${regattaEncodedName}_races.json`);
+          const raceFilePath = path.join(
+            racePath,
+            `${regattaEncodedName}_races.json`,
+          );
           const timeFilePath = path.join(
             timePath,
             `regatta_${regattaEncodedName}race_${raceName}_times.json`,
@@ -92,6 +96,11 @@ const saveSapData = async (bucketName, fileName) => {
             `${regattaEncodedName}_windsummary.json`,
           );
 
+          const competitorsFilePath = path.join(
+            competitorsPath,
+            `${regattaEncodedName}_competitors.json`,
+          );
+
           //Competitor Positions
           const competitorPositionsData = JSON.parse(
             fs.readFileSync(competitorPositionFilePath),
@@ -106,9 +115,11 @@ const saveSapData = async (bucketName, fileName) => {
           let courseData = {};
           let targetTimeData = {};
           let windSummaryData = {};
+          let competitorData = {};
 
           let competitors = [];
           let boats = [];
+          let boatPositions = [];
           let timeLegPositions = [];
           let maneuvers = [];
           let markPassings = [];
@@ -122,11 +133,13 @@ const saveSapData = async (bucketName, fileName) => {
             try {
               entriesData = JSON.parse(fs.readFileSync(entriesFilePath));
             } catch (e) {
-              console.log(`Entries file ${entriesFilePath} does not exist. Trying to add prefix regatta_`);
+              console.log(
+                `Entries file ${entriesFilePath} does not exist. Trying to add prefix regatta_`,
+              );
               entriesFilePath = path.join(
                 entriesPath,
                 `regatta_${regattaEncodedName}race_${raceName}_entries.json`,
-              )
+              );
               entriesData = JSON.parse(fs.readFileSync(entriesFilePath));
             }
             raceData = JSON.parse(fs.readFileSync(raceFilePath));
@@ -138,9 +151,11 @@ const saveSapData = async (bucketName, fileName) => {
             courseData = JSON.parse(fs.readFileSync(courseFilePath));
             targetTimeData = JSON.parse(fs.readFileSync(targetTimeFilePath));
             windSummaryData = JSON.parse(fs.readFileSync(windSummaryFilePath));
+            competitorData = JSON.parse(fs.readFileSync(competitorsFilePath));
           } catch (e) {
             console.log(
-              `File ${competitorPositionFile} has some other files missing, skipping race`, e.message
+              `File ${competitorPositionFile} has some other files missing, skipping race`,
+              e.message,
             );
             continue;
           }
@@ -149,47 +164,26 @@ const saveSapData = async (bucketName, fileName) => {
             (r) => r.name == competitorPositionsData.name,
           );
           if (!raceInfo) {
-            console.log(`No corresponding race with competitor position data name ${competitorPositionsData.name}. Skipping`);
+            console.log(
+              `No corresponding race with competitor position data name ${competitorPositionsData.name}. Skipping`,
+            );
             continue;
           }
 
-          const existingRace = await db.sapRace.findOne({
-            where: {
-              [Op.and]: [
-                { name: raceInfo.name },
-                { regatta: competitorPositionsData.regatta }
-              ]
-            }
-          });
-          if (existingRace) {
-            console.log(`Race ${raceInfo.name} already exist. Skipping`);
-            continue;
-          }
           const raceId = uuidv4();
 
-          const existingRegatta = await db.sapRace.findOne({
-            where: { regatta: competitorPositionsData.regatta },
-          });
-          transaction = await db.sequelize.transaction();
-          let competitorsInDB, boatsInDB;
-          if (existingRegatta) {
-            competitorsInDB = await db.sapCompetitor.findAll({
-              where: { regatta: competitorPositionsData.regatta },
-            });
-            boatsInDB = await db.sapCompetitorBoat.findAll({
-              where: { regatta: competitorPositionsData.regatta },
-            });
+          if (existingData.find((e) => e.original_id === raceInfo.id)) {
+            console.log(`Race ${raceInfo.id} already exists... Skipping`);
+            continue;
           }
-          // check if there are competitors not yet in database
-          let competitorsToBeMapped = entriesData.competitors;
-          if (competitorsInDB?.length) {
-            competitorsToBeMapped = entriesData.competitors.filter((c) => !competitorsInDB.some((cDb) => cDb.original_id === c.id))
-          }
-          const competitorsToBeSaved = [];
-          for (const c of competitorsToBeMapped) {
+
+          for (const c of entriesData.competitors) {
             let competitor = c.competitor || c; // In some files the competitor object is nested inside the competitors object
             let competitorId = uuidv4();
-            competitorsToBeSaved.push({
+            const competitorTeam = competitorData.find(
+              (c) => c.id === competitor.id,
+            );
+            competitors.push({
               id: competitorId,
               original_id: competitor.id,
               race_id: raceId,
@@ -206,38 +200,24 @@ const saveSapData = async (bucketName, fileName) => {
               time_on_time_factor: competitor.timeOnTimeFactor,
               time_on_distance_allowance_in_seconds_per_nautical_mile:
                 competitor.timeOnDistanceAllowanceInSecondsPerNauticalMile,
+              sailors: competitorTeam.team.sailors,
             });
           }
-          if (competitorsToBeSaved.length) {
-            await db.sapCompetitor.bulkCreate(competitorsToBeSaved, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
-          // combine the list of competitors
-          competitors = competitorsInDB?.length ? competitorsToBeSaved.concat(competitorsInDB) : competitorsToBeSaved;
 
           let boatEntries = entriesData.boats;
-          if (!boatEntries) { // In some files the boat is inside the competitors object
+          // In some files the boat is inside the competitors object
+          if (!boatEntries) {
             boatEntries = entriesData.competitors.map((c) => c.boat);
           }
-          // check if there are boats not yet in database
-          let boatsToBeMapped = boatEntries;
-          if (boatsInDB?.length) {
-            boatsToBeMapped = boatEntries.filter((b) => !boatsInDB.some((bDb) => bDb.original_id === b.id))
-          }
-          const boatsToBeSaved = [];
-          for (const boat of boatsToBeMapped) {
+          for (const boat of boatEntries) {
             let boatId = uuidv4();
-            boatsToBeSaved.push({
+            boats.push({
               id: boatId,
               original_id: boat.id,
               race_id: raceId,
               race_original_id: raceInfo.id,
               race_name: competitorPositionsData.name,
               regatta: competitorPositionsData.regatta,
-              name: boat.name,
               sail_number: boat.sailId,
               color: boat.color,
               boat_class_name: boat.boatClass.name,
@@ -250,13 +230,6 @@ const saveSapData = async (bucketName, fileName) => {
               boat_class_icon_url: boat.boatClass.iconUrl,
             });
           }
-          await db.sapCompetitorBoat.bulkCreate(boatsToBeSaved, {
-            ignoreDuplicates: true,
-            validate: true,
-            transaction,
-          });
-          // combine the list of boats
-          boats = boatsInDB?.length ? boatsToBeSaved.concat(boatsInDB) : boatsToBeSaved;
 
           let race = {
             id: raceId,
@@ -281,12 +254,6 @@ const saveSapData = async (bucketName, fileName) => {
             delay_to_live_ms: timeData['delayToLive-ms'],
           };
 
-          await db.sapRace.create(race, {
-            validate: true,
-            transaction,
-          });
-
-          let boatPositions = [];
           for (const competitor of competitorPositionsData.competitors) {
             for (const position of competitor.track) {
               let positionId = uuidv4();
@@ -313,17 +280,11 @@ const saveSapData = async (bucketName, fileName) => {
             }
           }
 
-          const _boatPositions = boatPositions.slice();
-          while (_boatPositions.length > 0) {
-            const splicedArray = _boatPositions.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
+          if (boatPositions.length === 0) {
+            console.log(
+              `Race ${competitorPositionsData.name} does not have possition entries, skipping`,
             );
-            await db.sapCompetitorBoatPosition.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
+            continue;
           }
 
           for (const leg of timeLegData.legs) {
@@ -363,18 +324,6 @@ const saveSapData = async (bucketName, fileName) => {
             }
           }
 
-          const _timeLegPositions = timeLegPositions.slice();
-          while (_timeLegPositions.length > 0) {
-            const splicedArray = _timeLegPositions.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
-            );
-            await db.sapCompetitorLeg.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
           for (const maneuverCompetitor of maneuverData.bycompetitor) {
             for (const maneuver of maneuverCompetitor.maneuvers) {
               let manueverId = uuidv4();
@@ -419,26 +368,14 @@ const saveSapData = async (bucketName, fileName) => {
             }
           }
 
-          const _maneuvers = maneuvers.slice();
-          while (_maneuvers.length > 0) {
-            const splicedArray = _maneuvers.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
-            );
-            await db.sapCompetitorManeuver.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
-
           for (const markPassingCompetitor of markPassingData.bycompetitor) {
             for (const markPassing of markPassingCompetitor.markpassings) {
               let markPassingId = uuidv4();
               let existingCompetitor = competitors.find(
                 (c) =>
                   c.original_id ===
-                  (markPassingCompetitor.competitor?.competitor?.id || markPassingCompetitor.competitor.id),
+                  (markPassingCompetitor.competitor?.competitor?.id ||
+                    markPassingCompetitor.competitor.id),
               );
               let existingBoat = boats.find(
                 (b) =>
@@ -459,19 +396,6 @@ const saveSapData = async (bucketName, fileName) => {
                 time_as_iso: markPassing.timeasiso,
               });
             }
-          }
-
-          const _markPassings = markPassings.slice();
-          while (_markPassings.length > 0) {
-            const splicedArray = _markPassings.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
-            );
-            await db.sapCompetitorMarkPassing.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
           }
 
           for (const mark of markPostionData.marks) {
@@ -497,66 +421,32 @@ const saveSapData = async (bucketName, fileName) => {
               });
             }
           }
-          const _marks = marks.slice();
-          while (_marks.length > 0) {
-            const splicedArray = _marks.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-            await db.sapMark.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
-
-          const _markPositions = markPositions.slice();
-          while (_markPositions.length > 0) {
-            const splicedArray = _markPositions.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
-            );
-            await db.sapCompetitorMarkPosition.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
 
           for (const course of courseData.waypoints) {
-            let courseId = uuidv4();
-            courses.push({
-              id: courseId,
-              race_id: raceId,
-              race_original_id: raceInfo.id,
-              name: courseData.name,
-              course_name: course.name,
-              passing_instruction: course.passingInstruction,
-              class: course.controlPoint['@class'],
-              short_name: course.controlPoint.shortName,
-              left_class: course.controlPoint?.left
-                ? course.controlPoint.left['@class']
-                : undefined,
-              left_type: course.controlPoint?.left
-                ? course.controlPoint.left.type
-                : undefined,
-              right_class: course.controlPoint?.right
-                ? course.controlPoint.right['@class']
-                : undefined,
-              right_type: course.controlPoint?.right
-                ? course.controlPoint.right.type
-                : undefined,
-            });
-          }
-
-          const _courses = courses.slice();
-          while (_courses.length > 0) {
-            const splicedArray = _courses.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
+            const existingWaypoint = courses.find(
+              (c) => c.markId === course.controlPoint.id,
             );
-            await db.sapCourse.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
+
+            if (!existingWaypoint) {
+              let courseId = uuidv4();
+              courses.push({
+                id: courseId,
+                race_id: raceId,
+                race_original_id: raceInfo.id,
+                name: courseData.name,
+                course_name: course.name,
+                passing_instruction: course.passingInstruction,
+                class: course.controlPoint['@class'],
+                short_name: course.controlPoint.shortName,
+                left_class: course.controlPoint?.left?.['@class'],
+                left_type: course.controlPoint?.left?.type,
+                right_class: course.controlPoint?.right?.['@class'],
+                right_type: course.controlPoint?.right?.type,
+                left_id: course.controlPoint?.left?.id,
+                right_id: course.controlPoint?.right?.id,
+                markId: course.controlPoint.id,
+              });
+            }
           }
 
           for (const targetTime of targetTimeData.legs) {
@@ -583,19 +473,6 @@ const saveSapData = async (bucketName, fileName) => {
             });
           }
 
-          const _targetTimes = targetTimes.slice();
-          while (_targetTimes.length > 0) {
-            const splicedArray = _targetTimes.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
-            );
-            await db.sapTargetTimeLeg.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
-
           for (const windSummary of windSummaryData) {
             let windSummaryId = uuidv4();
             windSummarys.push({
@@ -613,34 +490,23 @@ const saveSapData = async (bucketName, fileName) => {
             });
           }
 
-          const _windSummarys = windSummarys.slice();
-          while (_windSummarys.length > 0) {
-            const splicedArray = _windSummarys.splice(
-              0,
-              SAVE_DB_POSITION_CHUNK_COUNT,
-            );
-            await db.sapWindSummary.bulkCreate(splicedArray, {
-              ignoreDuplicates: true,
-              validate: true,
-              transaction,
-            });
-          }
           if (race) {
             let normalizeData = {
-              SapRace: [race],
+              SapRace: race,
               SapBoat: boats,
               SapPosition: boatPositions,
+              SapMarks: marks,
+              SapMarkPositions: markPositions,
+              SapMarkPassings: markPassings,
+              SapCompetitors: competitors,
+              SapCourses: courses,
             };
-            await normalizeRace(normalizeData, transaction);
+            await normalizeRace(normalizeData);
           }
-          await transaction.commit();
           console.log(`Finished saving race ${competitorPositionFile}`);
         }
       } catch (error) {
         console.log('Error processing race', error);
-        if (transaction) {
-          await transaction.rollback();
-        }
       }
     }
   } catch (e) {
