@@ -17,19 +17,6 @@ const TRACKER_MAP = {
   geovoile: 'geovoile',
 };
 
-const AMERICAS_CUP_TABLE_SUFFIX = [
-  'AvgWind',
-  'Boat',
-  'BoatShape',
-  'CompoundMark',
-  'CourseLimit',
-  'Event',
-  'Mark',
-  'Race',
-  'Regatta',
-  'Position',
-];
-
 const SOURCE = {
   BLUEWATER: 'BLUEWATER',
   ESTELA: 'ESTELA',
@@ -72,7 +59,6 @@ const RACEQS = {
 module.exports = {
   TEMPORARY_FOLDER,
   TRACKER_MAP,
-  AMERICAS_CUP_TABLE_SUFFIX,
   SAVE_DB_POSITION_CHUNK_COUNT,
   SAVE_DB_CSV_CHUNK_COUNT,
   INTERACTION_TRACK_LENGTH,

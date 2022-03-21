@@ -495,6 +495,7 @@ exports.createRace = async function (
       id,
       name,
       event,
+      event_name: eventName,
       source,
       url,
       start_country: startCountry,

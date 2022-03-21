@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -9,32 +8,27 @@ const {
   findAverageLength,
   findCenter,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../../utils/gisUtils');
-const uploadUtil = require('../../uploadUtil');
 
-const normalizeRace = async (
-  {
-    AmericasCupRegatta,
-    AmericasCupRace,
-    AmericasCupBoat,
-    AmericasCupMarks,
-    AmericasCupPosition,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  AmericasCupRegatta,
+  AmericasCupRace,
+  AmericasCupBoat,
+  AmericasCupMark,
+  AmericasCupPosition,
+}) => {
   console.log('Normalizing start');
   const SOURCE = 'AMERICASCUP';
-  const regatta = AmericasCupRegatta;
+  const regatta = AmericasCupRegatta[0];
   const race = AmericasCupRace;
   const boats = AmericasCupBoat?.filter((b) => b.type === 'Yacht');
   const boatPositions = AmericasCupPosition?.filter(
     (p) => p.boat_type === 'Yacht',
   );
-
-  if (!race || !boatPositions?.length) {
-    console.log('No race or boat positions so skipping.', race?.original_id);
-    return;
+  if (!race || !boats?.length || !boatPositions?.length) {
+    throw new Error(
+      `No race or boats or positions for race ${race?.original_id}. Skipping.`,
+    );
   }
   let startDate = new Date(race.start_time);
   let startTime;
@@ -44,13 +38,15 @@ const normalizeRace = async (
     startDate = new Date(race.start_time.replace('Y', 'T'));
     startTime = startDate.getTime();
   }
-  let endTime;
+  let endTime = race.end_time;
 
-  boatPositions.forEach((p) => {
-    if (!endTime || endTime < p.timestamp) {
-      endTime = p.timestamp;
-    }
-  });
+  if (!endTime) {
+    boatPositions.forEach((p) => {
+      if (!endTime || endTime < p.timestamp) {
+        endTime = p.timestamp;
+      }
+    });
+  }
   const boatsToSortedPositions = createBoatToPositionDictionary(
     boatPositions,
     'boat',
@@ -59,7 +55,7 @@ const normalizeRace = async (
 
   const startMarks = [];
   const finishMarks = [];
-  AmericasCupMarks?.forEach((m) => {
+  AmericasCupMark?.forEach((m) => {
     if (m.name.toLowerCase().indexOf('start') > -1) {
       const existingMark = startMarks.find((sm) => sm.name === m.name);
       const isLatestMark =
@@ -147,32 +143,7 @@ const normalizeRace = async (
     boatIdentifiers,
     handicapRules,
     unstructuredText,
-    true, // Skip elastic search for now since race does not have url
   );
-  const tracksGeojson = JSON.stringify(
-    allPositionsToFeatureCollection(boatsToSortedPositions),
-  );
-
-  const metadata = await db.readyAboutRaceMetadata.findOne({
-    where: {
-      id: raceMetadata.id,
-    },
-    raw: true,
-  });
-
-  if (!metadata) {
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    console.log('uploading geojson');
-    await uploadUtil.uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      SOURCE,
-      transaction,
-    );
-  }
   return raceMetadata;
 };
 
