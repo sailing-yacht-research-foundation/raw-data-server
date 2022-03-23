@@ -26,7 +26,7 @@ const normalizeRace = async (
 ) => {
   const ISAIL_SOURCE = 'ISAIL';
   const raceMetadatas = [];
-  if (!iSailRace || !iSailPosition || iSailPosition.length === 0) {
+  if (!iSailRace || !iSailPosition?.length) {
     console.log('No race or positions so skipping.');
     return;
   }
@@ -95,8 +95,10 @@ const normalizeRace = async (
       'time',
     );
 
-    const startObj = raceStartLines?.find((sl) => sl.name === 'start');
-    const endObj = raceStartLines?.find((sl) => sl.name === 'finish');
+    const startObj =
+      raceStartLines?.find((sl) => sl.name === 'start') || raceStartLines?.[0];
+    const endObj =
+      raceStartLines?.find((sl) => sl.name === 'finish') || raceStartLines?.[0];
     let startPoint, endPoint;
     if (startObj) {
       startPoint = findCenter(
