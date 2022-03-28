@@ -19,8 +19,7 @@ const mapAndSave = async (data, raceMetadata) => {
   );
 
   const endTime = parseInt(
-    (data.race.max_race_time - data.race.min_race_time) * 1000 +
-      obj.race.courseInfo.startTime,
+    (data.race.max_race_time - data.race.min_race_time) * 1000 + startTime,
   );
 
   const event = {
@@ -51,7 +50,8 @@ const mapAndSave = async (data, raceMetadata) => {
     obj.race.courseInfo.startTime,
   );
 
-  const rankings = _mapRankings(data.ranking, startTime);
+  const rankings = _mapRankings(data.ranking, obj.race.courseInfo.startTime);
+
   try {
     await saveCompetitionUnit({
       race: data.race,
@@ -80,6 +80,7 @@ const mapAndSave = async (data, raceMetadata) => {
         event: true,
       },
     });
+    await saveToAwsElasticSearch(data.race, data.boats, raceMetadata);
   } catch (e) {
     console.log(e);
   }
@@ -152,7 +153,7 @@ const _mapSequencedGeometries = ({ buoys, buoyPositions }) => {
       courseSequencedGeometries.push(mark);
     }
   });
-  console.log(courseSequencedGeometries);
+
   return {
     courseSequencedGeometries,
     markTrackers,
@@ -193,4 +194,44 @@ const _mapRankings = (rankings, startTime) => {
   });
 };
 
+const saveToAwsElasticSearch = async (race, boats, raceMetadata) => {
+  const names = [];
+
+  boats.teams.forEach((b) => {
+    if (b.boat_name) {
+      names.push(b.boat_name);
+    }
+  });
+
+  const body = {
+    id: race.id,
+    name: raceMetadata.name,
+    event: raceMetadata.event,
+    source: raceMetadata.source,
+    url: raceMetadata.url,
+    start_country: raceMetadata.start_country,
+    start_city: raceMetadata.start_city,
+    start_year: Number(raceMetadata.start_year),
+    start_month: Number(raceMetadata.start_month),
+    start_day: Number(raceMetadata.start_day),
+    approx_start_time_ms: Number(raceMetadata.approx_start_time_ms),
+    approx_end_time_ms: Number(raceMetadata.approx_end_time_ms),
+    approx_duration_ms: Number(raceMetadata.approx_duration_ms),
+    approx_start_point: raceMetadata.approx_start_point,
+    approx_end_point: raceMetadata.approx_end_point,
+    approx_mid_point: raceMetadata.approx_mid_point,
+    bounding_box: raceMetadata.bounding_box,
+    approx_area_sq_km: raceMetadata.approx_area_sq_km,
+    approx_distance_km: raceMetadata.approx_distance_km,
+    num_boats: raceMetadata.num_boats,
+    avg_time_between_positions: raceMetadata.avg_time_between_positions,
+    boat_models: [],
+    boat_identifiers: [],
+    boat_names: names,
+    handicap_rules: raceMetadata.handicap_rules,
+    unstructured_text: [],
+  };
+
+  await elasticsearch.indexRace(race.id, body);
+};
 module.exports = mapAndSave;
