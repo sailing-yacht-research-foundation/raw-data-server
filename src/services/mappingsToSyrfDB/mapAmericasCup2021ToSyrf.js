@@ -1,23 +1,44 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
 const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
+const s3Util = require('../s3Util');
+const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (data, raceMetadata) => {
   console.log('Saving to main database');
+
+  const eventName = data.race.event_name.split(' ').join('_');
+  const raceName = data.race.race_name.split(' ').join('_');
+  const fileName = `2021-${eventName}-${raceName}.json`;
+
+  const obj = JSON.parse(
+    await s3Util.getObject(fileName, 'americas-cup-raw-data'),
+  );
+  const startTime = parseInt(
+    (+obj.race.courseInfo.startTime + obj.race.raceStartTime) * 1000,
+  );
+
+  const endTime = parseInt(
+    (data.race.max_race_time - data.race.min_race_time) * 1000 +
+      obj.race.courseInfo.startTime,
+  );
 
   const event = {
     id: data.race.id,
     original_id: data.race.event_name,
     name: data.race.event_name,
-    approxStartTimeMs: raceMetadata.approx_start_time_ms,
-    approxEndTimeMs: raceMetadata.approx_end_time_ms,
+    approxStartTimeMs: startTime,
+    approxEndTimeMs: endTime,
   };
+  raceMetadata.approx_start_time_ms = startTime;
+  raceMetadata.approx_end_time_ms = endTime;
+  raceMetadata.approx_duration_ms = endTime - startTime;
 
   const mappedBoats = _mapBoats(data.boats);
 
   const mappedPositions = _mapPositions(
     data.boatPositions,
-    raceMetadata.approx_start_time_ms,
+    obj.race.courseInfo.startTime,
   );
 
   const { courseSequencedGeometries, markTrackers } = _mapSequencedGeometries(
@@ -27,39 +48,41 @@ const mapAndSave = async (data, raceMetadata) => {
   const passingEvents = _mapPassings(
     data.buoys.roundingTimes,
     courseSequencedGeometries,
-    raceMetadata.approx_start_time_ms,
+    obj.race.courseInfo.startTime,
   );
 
-  const rankings = _mapRankings(
-    data.ranking,
-    raceMetadata.approx_start_time_ms,
-  );
-
-  await saveCompetitionUnit({
-    race: data.race,
-    event,
-    boats: mappedBoats,
-    positions: mappedPositions,
-    courseSequencedGeometries,
-    markTrackers,
-    markTrackerPositions: data.buoys.buoyPositions.map((pos) => ({
-      timestamp: parseInt(
-        pos.coordinate_interpolator_lat_time +
-          Number(raceMetadata.approx_start_time_ms),
-      ),
-      lat: pos.coordinate_interpolator_lat,
-      lon: pos.coordinate_interpolator_lon,
-      markTrackerId: data.buoys.buoys.find((b) => b.original_id === pos.mark_id)
-        .id,
-    })),
-    vesselParticipantEvents: passingEvents,
-    rankings,
-    raceMetadata,
-    reuse: {
-      boats: true,
-      event: true,
-    },
-  });
+  const rankings = _mapRankings(data.ranking, startTime);
+  try {
+    await saveCompetitionUnit({
+      race: data.race,
+      event,
+      boats: mappedBoats,
+      positions: mappedPositions,
+      courseSequencedGeometries,
+      markTrackers,
+      markTrackerPositions: data.buoys.buoyPositions.map((pos) => ({
+        timestamp: parseInt(
+          (pos.coordinate_interpolator_lat_time +
+            obj.race.courseInfo.startTime) *
+            1000,
+        ),
+        lat: pos.coordinate_interpolator_lat,
+        lon: pos.coordinate_interpolator_lon,
+        markTrackerId: data.buoys.buoys.find(
+          (b) => b.original_id === pos.mark_id,
+        ).id,
+      })),
+      vesselParticipantEvents: passingEvents,
+      rankings,
+      raceMetadata,
+      reuse: {
+        boats: true,
+        event: true,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 const _mapBoats = ({ boats, teams }) => {
@@ -88,7 +111,7 @@ const _mapPositions = (
   return boatPositions.map((p, i) => {
     return {
       timestamp: parseInt(
-        (p.coordinate_interpolator_lat_time + Number(startTime)) * 1000,
+        (+startTime + p.coordinate_interpolator_lat_time) * 1000,
       ),
       lat: p.coordinate_interpolator_lat,
       lon: p.coordinate_interpolator_lon,
@@ -129,7 +152,7 @@ const _mapSequencedGeometries = ({ buoys, buoyPositions }) => {
       courseSequencedGeometries.push(mark);
     }
   });
-
+  console.log(courseSequencedGeometries);
   return {
     courseSequencedGeometries,
     markTrackers,
@@ -154,14 +177,14 @@ const _mapPassings = (passings, geometry, startTime) => {
       vesselId: p.boat_id,
       markId: eventGeometry.properties.courseObjectId,
       eventType,
-      eventTime: parseInt(p.time + Number(startTime)),
+      eventTime: parseInt((p.time + startTime) * 1000),
     };
   });
 };
 
 const _mapRankings = (rankings, startTime) => {
   return rankings?.map((r) => {
-    const finishTime = parseInt(r.rank_interpolator_time + Number(startTime));
+    const finishTime = parseInt(r.rank_interpolator_time + startTime);
     return {
       vesselId: r.boat_id,
       finishTime,
