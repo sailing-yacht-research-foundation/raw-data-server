@@ -237,7 +237,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   const body = {
     id: race.id,
     name,
-    event: event.id,
+    event_name: event.name,
     source: SOURCE.GEORACING,
     url: race.url,
     start_year: startDate.getUTCFullYear(),

@@ -238,7 +238,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   const body = {
     id: race.id,
     name,
-    event: regatta.id,
+    event_name: regatta.name,
     source: SOURCE.KWINDOO,
     url: race.url,
     start_year: startDate.getUTCFullYear(),
