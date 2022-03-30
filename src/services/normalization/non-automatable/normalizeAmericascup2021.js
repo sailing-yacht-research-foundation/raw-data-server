@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -10,25 +9,16 @@ const {
   createRace,
   allPositionsToFeatureCollection,
 } = require('../../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../../uploadUtil');
+const mapAndSave = require('../../mappingsToSyrfDB/mapAmericasCup2021ToSyrf');
 
-const normalizeRace = async (
-  {
-    AmericasCup2021Race,
-    AmericasCup2021Boat,
-    AmericasCup2021Position,
-    AmericasCup2021Team,
-    AmericasCup2021Model,
-  },
-  transaction,
-) => {
+const normalizeRace = async (data) => {
   const SOURCE = 'AMERICASCUP2021';
-  const race = AmericasCup2021Race[0];
-  const positions = AmericasCup2021Position;
-  const boats = AmericasCup2021Boat;
-  const startTime = race.start_time * 1000;
-  const endTime = (race.max_race_time - race.min_race_time) * 1000 + startTime;
-  const boatModels = AmericasCup2021Model;
+  const race = data.race;
+  const positions = data.boatPositions.boatPositions;
+  const boats = data.boats.boats;
+  const startTime = (race.start_time + race.race_start_time) * 1000;
+  const endTime = (race.max_race_time + race.start_time) * 1000;
+  const boatModels = data.model;
 
   const boatNames = [];
   const boatIdentifiers = [];
@@ -37,7 +27,7 @@ const normalizeRace = async (
 
   boats.forEach((b) => {
     boatIdentifiers.push(b.original_id);
-    let team = AmericasCup2021Team.find((t) => t.id === b.team_id);
+    let team = data.boats.teams.find((t) => t.id === b.team_id);
     if (team?.boat_name) {
       boatNames.push(team?.boat_name);
     }
@@ -94,24 +84,7 @@ const normalizeRace = async (
     true, // Skip elastic search for now since race does not have url
   );
 
-  const metadata = await db.readyAboutRaceMetadata.findOne({
-    where: {
-      id: raceMetadata.id,
-    },
-    raw: true,
-  });
-
-  if (!metadata) {
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-    await uploadGeoJsonToS3(race.id, tracksGeojson, SOURCE, transaction);
-  }
-  return raceMetadata;
+  mapAndSave(data, raceMetadata);
 };
 
 exports.normalizeRace = normalizeRace;

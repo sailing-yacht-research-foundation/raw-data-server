@@ -1,43 +1,24 @@
 const { saveCompetitionUnit } = require('../saveCompetitionUnit');
 const { createGeometryPoint } = require('../../utils/gisUtils');
 const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
-const s3Util = require('../s3Util');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (data, raceMetadata) => {
   console.log('Saving to main database');
 
-  const eventName = data.race.event_name.split(' ').join('_');
-  const raceName = data.race.race_name.split(' ').join('_');
-  const fileName = `2021-${eventName}-${raceName}.json`;
-
-  const obj = JSON.parse(
-    await s3Util.getObject(fileName, 'americas-cup-raw-data'),
-  );
-  const startTime = parseInt(
-    (+obj.race.courseInfo.startTime + obj.race.raceStartTime) * 1000,
-  );
-
-  const endTime = parseInt(
-    (data.race.max_race_time - data.race.min_race_time) * 1000 + startTime,
-  );
-
   const event = {
     id: data.race.id,
     original_id: data.race.event_name,
     name: data.race.event_name,
-    approxStartTimeMs: startTime,
-    approxEndTimeMs: endTime,
+    approxStartTimeMs: raceMetadata.approx_start_time_ms,
+    approxEndTimeMs: raceMetadata.approx_end_time_ms,
   };
-  raceMetadata.approx_start_time_ms = startTime;
-  raceMetadata.approx_end_time_ms = endTime;
-  raceMetadata.approx_duration_ms = endTime - startTime;
 
   const mappedBoats = _mapBoats(data.boats);
 
   const mappedPositions = _mapPositions(
     data.boatPositions,
-    obj.race.courseInfo.startTime,
+    data.race.start_time,
   );
 
   const { courseSequencedGeometries, markTrackers } = _mapSequencedGeometries(
@@ -47,10 +28,9 @@ const mapAndSave = async (data, raceMetadata) => {
   const passingEvents = _mapPassings(
     data.buoys.roundingTimes,
     courseSequencedGeometries,
-    obj.race.courseInfo.startTime,
+    data.race.start_time,
   );
-
-  const rankings = _mapRankings(data.ranking, obj.race.courseInfo.startTime);
+  const rankings = _mapRankings(data.ranking, data.race.start_time);
 
   try {
     await saveCompetitionUnit({
@@ -61,11 +41,10 @@ const mapAndSave = async (data, raceMetadata) => {
       courseSequencedGeometries,
       markTrackers,
       markTrackerPositions: data.buoys.buoyPositions.map((pos) => ({
-        timestamp: parseInt(
-          (pos.coordinate_interpolator_lat_time +
-            obj.race.courseInfo.startTime) *
-            1000,
-        ),
+        timestamp:
+          parseInt(
+            pos.coordinate_interpolator_lat_time + data.race.start_time,
+          ) * 1000,
         lat: pos.coordinate_interpolator_lat,
         lon: pos.coordinate_interpolator_lon,
         markTrackerId: data.buoys.buoys.find(
@@ -111,9 +90,8 @@ const _mapPositions = (
 ) => {
   return boatPositions.map((p, i) => {
     return {
-      timestamp: parseInt(
-        (+startTime + p.coordinate_interpolator_lat_time) * 1000,
-      ),
+      timestamp:
+        parseInt(p.coordinate_interpolator_lat_time + startTime) * 1000,
       lat: p.coordinate_interpolator_lat,
       lon: p.coordinate_interpolator_lon,
       vesselId: p.boat_id,
@@ -178,14 +156,14 @@ const _mapPassings = (passings, geometry, startTime) => {
       vesselId: p.boat_id,
       markId: eventGeometry.properties.courseObjectId,
       eventType,
-      eventTime: parseInt((p.time + startTime) * 1000),
+      eventTime: parseInt(p.time + startTime) * 1000,
     };
   });
 };
 
 const _mapRankings = (rankings, startTime) => {
   return rankings?.map((r) => {
-    const finishTime = parseInt(r.rank_interpolator_time + startTime);
+    const finishTime = parseInt(r.rank_interpolator_time + startTime) * 1000;
     return {
       vesselId: r.boat_id,
       finishTime,

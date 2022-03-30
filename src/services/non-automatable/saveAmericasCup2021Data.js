@@ -1,19 +1,25 @@
 const { v4: uuidv4 } = require('uuid');
-
-const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
-const db = require('../../models');
 const s3Util = require('../s3Util');
 const {
   normalizeRace,
 } = require('../normalization/non-automatable/normalizeAmericascup2021');
+const { SOURCE } = require('../../constants');
+const { getExistingData } = require('../scrapedDataResult');
 
 const saveAmericasCup2021Data = async (data) => {
-  const transaction = await db.sequelize.transaction();
   try {
     let race = {};
     let boatPositions = [];
     let boats = [];
     let teams = [];
+    let boatTwds = [];
+    let boatTwss = [];
+    let boatVmgs = [];
+    let buoys = [];
+    let buoyPositions = [];
+    let roundingTimes = [];
+    let boatRanks = [];
+    let rankings = [];
     if (data.race) {
       let raceId = uuidv4();
       race = {
@@ -30,6 +36,7 @@ const saveAmericasCup2021Data = async (data) => {
         last_packet_time: data.race.lastPacketTime,
         packet_id: data.race.courseInfo.packetId,
         start_time: data.race.courseInfo.startTime,
+        race_start_time: data.race.raceStartTime,
         num_legs: data.race.courseInfo.numLegs,
         course_angle: data.race.courseInfo.courseAngle,
         race_status: data.race.courseInfo.raceStatus,
@@ -39,7 +46,6 @@ const saveAmericasCup2021Data = async (data) => {
         scene_center_utm_lat: data.race.sceneCenterUTM.y,
         sim_time: data.race.simTime,
       };
-      await db.americasCup2021Race.create(race, { transaction });
 
       let raceStatus = data.race.raceStatusInterp.valHistory.map((row) => {
         return {
@@ -49,12 +55,6 @@ const saveAmericasCup2021Data = async (data) => {
           race_status_interpolator_value: row[0],
           race_status_interpolator_time: row[1],
         };
-      });
-
-      await db.americasCup2021RaceStatus.bulkCreate(raceStatus, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       teams = data.appConfig.teams.map((row) => {
@@ -79,12 +79,6 @@ const saveAmericasCup2021Data = async (data) => {
         };
       });
 
-      await db.americasCup2021Team.bulkCreate(teams, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
       let boatKeys = Object.keys(data.race.boats);
       boats = boatKeys.map((key) => {
         return {
@@ -101,11 +95,6 @@ const saveAmericasCup2021Data = async (data) => {
           rank: data.race.boats[key].rank,
           foil_move_time: data.race.boats[key].foilMoveTime,
         };
-      });
-      await db.americasCup2021Boat.bulkCreate(boats, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       boatKeys.map((bKey) => {
@@ -159,19 +148,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      const _boatPositions = boatPositions.slice();
-      while (_boatPositions.length > 0) {
-        const splicedArray = _boatPositions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
-        await db.americasCup2021BoatPosition.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
       let boatLeftFoilPositions = [];
 
       boatKeys.map((bKey) => {
@@ -194,15 +170,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatLeftFoilPosition.bulkCreate(
-        boatLeftFoilPositions,
-        {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        },
-      );
-
       let boatLeftFoilStates = [];
 
       boatKeys.map((bKey) => {
@@ -223,12 +190,6 @@ const saveAmericasCup2021Data = async (data) => {
           };
           boatLeftFoilStates.push(boatLeftFoilState);
         }
-      });
-
-      await db.americasCup2021BoatLeftFoilState.bulkCreate(boatLeftFoilStates, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       let boatRightFoilPositions = [];
@@ -253,15 +214,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatRightFoilPosition.bulkCreate(
-        boatRightFoilPositions,
-        {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        },
-      );
-
       let boatRightFoilStates = [];
 
       boatKeys.map((bKey) => {
@@ -284,15 +236,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatRightFoilState.bulkCreate(
-        boatRightFoilStates,
-        {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        },
-      );
-
       let boatLegs = [];
 
       boatKeys.map((bKey) => {
@@ -312,12 +255,6 @@ const saveAmericasCup2021Data = async (data) => {
           };
           boatLegs.push(boatLeg);
         }
-      });
-
-      await db.americasCup2021BoatLeg.bulkCreate(boatLegs, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       let boatPenalties = [];
@@ -342,12 +279,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatPenalty.bulkCreate(boatPenalties, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
       let boatProtests = [];
 
       boatKeys.map((bKey) => {
@@ -370,14 +301,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatProtest.bulkCreate(boatProtests, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
-      let boatRanks = [];
-
       boatKeys.map((bKey) => {
         for (const boatIndex in data.race.boats[bKey].rankInterp.valHistory) {
           let boatRank = {
@@ -395,12 +318,6 @@ const saveAmericasCup2021Data = async (data) => {
           };
           boatRanks.push(boatRank);
         }
-      });
-
-      await db.americasCup2021BoatRank.bulkCreate(boatRanks, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       let boatRudderAngles = [];
@@ -424,12 +341,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatRudderAngle.bulkCreate(boatRudderAngles, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
       let boatSows = [];
 
       boatKeys.map((bKey) => {
@@ -449,12 +360,6 @@ const saveAmericasCup2021Data = async (data) => {
           };
           boatSows.push(boatSow);
         }
-      });
-
-      await db.americasCup2021BoatSow.bulkCreate(boatSows, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       let boatStatuses = [];
@@ -478,14 +383,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      await db.americasCup2021BoatStatus.bulkCreate(boatStatuses, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
-      let boatTwds = [];
-
       boatKeys.map((bKey) => {
         for (const boatIndex in data.race.boats[bKey].twdInterp.valHistory) {
           let boatTwd = {
@@ -504,18 +401,6 @@ const saveAmericasCup2021Data = async (data) => {
           boatTwds.push(boatTwd);
         }
       });
-
-      const _boatTwds = boatTwds.slice();
-      while (_boatTwds.length > 0) {
-        const splicedArray = _boatTwds.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-        await db.americasCup2021BoatTwd.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
-      let boatTwss = [];
 
       boatKeys.map((bKey) => {
         for (const boatIndex in data.race.boats[bKey].twsInterp.valHistory) {
@@ -536,18 +421,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      const _boatTwss = boatTwss.slice();
-      while (_boatTwss.length > 0) {
-        const splicedArray = _boatTwss.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-        await db.americasCup2021BoatTws.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
-      let boatVmgs = [];
-
       boatKeys.map((bKey) => {
         for (const boatIndex in data.race.boats[bKey].vmgInterp.valHistory) {
           let boatVmg = {
@@ -567,18 +440,8 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      const _boatVmgs = boatVmgs.slice();
-      while (_boatVmgs.length > 0) {
-        const splicedArray = _boatVmgs.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-        await db.americasCup2021BoatVmg.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
       let buoyKeys = Object.keys(data.race.buoys);
-      let buoys = buoyKeys.map((key) => {
+      buoys = buoyKeys.map((key) => {
         return {
           id: uuidv4(),
           race_id: raceId,
@@ -589,13 +452,7 @@ const saveAmericasCup2021Data = async (data) => {
           last_leg_visible: data.race.buoys[key].lastLegVisible,
         };
       });
-      await db.americasCup2021Buoy.bulkCreate(buoys, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
 
-      let buoyPositions = [];
       buoyKeys.map((key) => {
         for (const buoyIndex in data.race.buoys[key].headingInterp.valHistory) {
           let buoyPosition = {
@@ -628,19 +485,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      const _buoyPositions = buoyPositions.slice();
-      while (_buoyPositions.length > 0) {
-        const splicedArray = _buoyPositions.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
-        await db.americasCup2021BuoyPosition.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
       let buoyPositionStates = [];
       buoyKeys.map((key) => {
         for (const stateIndex in data.race.buoys[key].stateInterp.valHistory) {
@@ -658,20 +502,7 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      const _buoyPositionState = buoyPositionStates.slice();
-      while (_buoyPositionState.length > 0) {
-        const splicedArray = _buoyPositionState.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
-        await db.americasCup2021BuoyPositionState.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
-      let rankings = data.race.rankings.map((row) => {
+      rankings = data.race.rankings.map((row) => {
         return {
           id: uuidv4(),
           race_id: raceId,
@@ -689,13 +520,6 @@ const saveAmericasCup2021Data = async (data) => {
         };
       });
 
-      await db.americasCup2021Ranking.bulkCreate(rankings, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
-      });
-
-      let roundingTimes = [];
       let roundingTimesKeys = Object.keys(data.race.roundingTimesByMarkId);
       roundingTimesKeys.map((rkey) => {
         let keys = Object.keys(data.race.roundingTimesByMarkId[rkey]);
@@ -716,12 +540,6 @@ const saveAmericasCup2021Data = async (data) => {
           };
           roundingTimes.push(roundingTime);
         }
-      });
-
-      await db.americasCup2021RoundingTime.bulkCreate(roundingTimes, {
-        ignoreDuplicates: true,
-        validate: true,
-        transaction,
       });
 
       let windDatas = [];
@@ -748,16 +566,6 @@ const saveAmericasCup2021Data = async (data) => {
           wind_speed_time: data.race.windData.windSpeed.valHistory[i][1],
         };
         windDatas.push(windData);
-      }
-
-      const _windDatas = windDatas.slice();
-      while (_windDatas.length > 0) {
-        const splicedArray = _windDatas.splice(0, SAVE_DB_POSITION_CHUNK_COUNT);
-        await db.americasCup2021WindData.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
       }
 
       let windPoints = [];
@@ -803,19 +611,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      const _windPoints = windPoints.slice();
-      while (_windPoints.length > 0) {
-        const splicedArray = _windPoints.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
-        await db.americasCup2021WindPoint.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-
       let boundaryPackets = [];
       data.race.courseBoundary.boundaryPackets.valHistory.forEach((row) => {
         row[0].points.forEach((point) => {
@@ -830,43 +625,45 @@ const saveAmericasCup2021Data = async (data) => {
           boundaryPackets.push(boundaryPacket);
         });
       });
-
-      const _boundaryPackets = boundaryPackets.slice();
-      while (_boundaryPackets.length > 0) {
-        const splicedArray = _boundaryPackets.splice(
-          0,
-          SAVE_DB_POSITION_CHUNK_COUNT,
-        );
-        await db.americasCup2021BoundaryPacket.bulkCreate(splicedArray, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
     }
     if (data.race) {
       let normalizeData = {
-        AmericasCup2021Race: [race],
-        AmericasCup2021Boat: boats,
-        AmericasCup2021Position: boatPositions,
-        AmericasCup2021Team: teams,
-        AmericasCup2021Model: [data.appConfig.defaultboatmodel.name],
+        race,
+        boats: {
+          boats,
+          teams,
+        },
+        boatPositions: {
+          boatPositions,
+          boatTwds,
+          boatTwss,
+          boatVmgs,
+        },
+        buoys: {
+          buoys,
+          buoyPositions,
+          roundingTimes,
+        },
+        ranking: boatRanks,
+        model: [data.appConfig.defaultboatmodel.name],
       };
-      await normalizeRace(normalizeData, transaction);
+      await normalizeRace(normalizeData);
     }
-    await transaction.commit();
   } catch (error) {
     console.log(error);
-    await transaction.rollback();
   }
 };
 
 const downloadAndProcessFiles = async (bucketName) => {
   let fileNames = await s3Util.listAllKeys(bucketName);
+  const existingData = await getExistingData(SOURCE.AMERICASCUP2021);
+
   for (const index in fileNames) {
     try {
       const fileName = fileNames[index];
-      console.log(`Processing file ${fileName} ${index} of ${fileNames.length-1}`);
+      console.log(
+        `Processing file ${fileName} ${index} of ${fileNames.length - 1}`,
+      );
       let rawData = await s3Util.getObject(fileName, bucketName);
       let destructuredFileName = fileName.split('-');
       let raceData = JSON.parse(rawData);
@@ -874,10 +671,7 @@ const downloadAndProcessFiles = async (bucketName) => {
       raceData.raceName = destructuredFileName[2]
         .replace('.json', '')
         .replace('_', ' ');
-      let race = await db.americasCup2021Race.findOne({
-        where: { original_id: raceData.race.raceId.toString() },
-      });
-      if (!race) {
+      if (!existingData.find((e) => e.original_id == raceData.race.raceId)) {
         await saveAmericasCup2021Data(raceData);
       } else {
         console.log(`Race ${fileName} already exists`);
