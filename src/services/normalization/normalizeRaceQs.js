@@ -162,7 +162,7 @@ const normalizeRace = async (
   return raceMetadatas;
 };
 
-const _getWayPoints = (start, raceQsWaypoint, raceQsRoute) => {
+const _getWayPoints = (start, raceQsWaypoint = [], raceQsRoute = []) => {
   if (!start) {
     return [];
   }

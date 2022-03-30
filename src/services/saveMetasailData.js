@@ -184,6 +184,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   const body = {
     id: race.id,
     name,
+    event_name: event?.name,
     source: SOURCE.METASAIL,
     url: race.url,
     start_year: startDate.getUTCFullYear(),

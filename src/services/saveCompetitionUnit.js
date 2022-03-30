@@ -107,7 +107,7 @@ const saveCompetitionUnit = async ({
     let existingVessels;
     if (reuse.boat || reuse.boats) {
       existingVessels = await vessel.getByVesselIdAndSource(
-        boats.map((b) => b.vesselId),
+        boats.map((b) => b.vesselId?.toString()),
         source,
       );
     }
