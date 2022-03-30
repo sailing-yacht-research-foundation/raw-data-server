@@ -1,6 +1,6 @@
 const {
   deleteOrphanedRacesBySource,
-  getUnfinishedRaceIdsBySource,
+  getUnfinishedRacesBySource,
 } = require('../utils/elasticsearch');
 
 // This is in case tracker website deletes an unfinished race before its finished
@@ -13,10 +13,14 @@ const cleanUnfinishedRaces = async (source, excludedOrigIds) => {
 };
 
 // This is to reuse the uid by the scraper so when race is finished it will have same uid
-const getUnfinishedRaceIds = async (source) => {
+const getUnfinishedRaces = async (source) => {
   return (
-    (await getUnfinishedRaceIdsBySource(source))?.reduce((prev, row) => {
-      prev[row._source.scraped_original_id] = row._source.id;
+    (await getUnfinishedRacesBySource(source))?.reduce((prev, row) => {
+      prev[row._source.scraped_original_id] = {
+        id: row._source.id,
+        approx_end_time_ms: row._source.approx_end_time_ms,
+        forceScrape: row._source.forceScrape,
+      };
       return prev;
     }, {}) || {}
   );
@@ -24,5 +28,5 @@ const getUnfinishedRaceIds = async (source) => {
 
 module.exports = {
   cleanUnfinishedRaces,
-  getUnfinishedRaceIds,
+  getUnfinishedRaces,
 };

@@ -126,13 +126,18 @@ exports.deleteOrphanedRacesBySource = async (source, excludedOrigIds) => {
   }
 };
 
-exports.getUnfinishedRaceIdsBySource = async (source) => {
+exports.getUnfinishedRacesBySource = async (source) => {
   if (api && source) {
     const allHits = [];
     let totalHitCount = 0;
     const size = 50;
     const reqBody = {
-      _source: ['id', 'scraped_original_id'],
+      _source: [
+        'id',
+        'scraped_original_id',
+        'approx_end_time_ms',
+        'forceScrape',
+      ],
       from: 0,
       size,
       query: {
