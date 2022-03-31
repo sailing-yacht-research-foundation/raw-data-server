@@ -30,7 +30,11 @@ const mapAndSave = async (data, raceMetadata) => {
     courseSequencedGeometries,
     data.race.start_time,
   );
-  const rankings = _mapRankings(data.ranking, data.race.start_time);
+  const rankings = _mapRankings(
+    data.ranking,
+    data.race.start_time,
+    data.boats.boats,
+  );
 
   try {
     await saveCompetitionUnit({
@@ -161,8 +165,11 @@ const _mapPassings = (passings, geometry, startTime) => {
   });
 };
 
-const _mapRankings = (rankings, startTime) => {
-  return rankings?.map((r) => {
+const _mapRankings = (rankings, startTime, boats) => {
+  const filteredRankings = [];
+  const lastRankings = [];
+
+  const ranks = rankings?.map((r) => {
     const finishTime = parseInt(r.rank_interpolator_time + startTime) * 1000;
     return {
       vesselId: r.boat_id,
@@ -170,15 +177,26 @@ const _mapRankings = (rankings, startTime) => {
       elapsedTime: finishTime - startTime,
     };
   });
+
+  boats.forEach((b) => {
+    const arr = ranks.filter((r) => r.vesselId === b.id);
+    filteredRankings.push(arr);
+  });
+
+  filteredRankings.forEach((r) => {
+    lastRankings.push(r[r.length - 1]);
+  });
+
+  return lastRankings;
 };
 
-const saveToAwsElasticSearch = async (race, boats, raceMetadata) => {
+const saveToAwsElasticSearch = async (race, { boats, teams }, raceMetadata) => {
   const names = [];
 
-  boats.teams.forEach((b) => {
-    if (b.boat_name) {
-      names.push(b.boat_name);
-    }
+  boats.forEach((b) => {
+    names.push(
+      teams.find((t) => b.team_original_id === t.original_id).boat_name,
+    );
   });
 
   const body = {

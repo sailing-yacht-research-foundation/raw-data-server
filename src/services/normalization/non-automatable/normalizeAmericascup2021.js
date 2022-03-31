@@ -7,7 +7,6 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../../utils/gisUtils');
 const mapAndSave = require('../../mappingsToSyrfDB/mapAmericasCup2021ToSyrf');
 

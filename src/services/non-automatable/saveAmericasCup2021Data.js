@@ -19,7 +19,6 @@ const saveAmericasCup2021Data = async (data) => {
     let buoyPositions = [];
     let roundingTimes = [];
     let boatRanks = [];
-    let rankings = [];
     if (data.race) {
       let raceId = uuidv4();
       race = {
@@ -46,16 +45,6 @@ const saveAmericasCup2021Data = async (data) => {
         scene_center_utm_lat: data.race.sceneCenterUTM.y,
         sim_time: data.race.simTime,
       };
-
-      let raceStatus = data.race.raceStatusInterp.valHistory.map((row) => {
-        return {
-          id: uuidv4(),
-          race_id: raceId,
-          race_original_id: data.race.raceId,
-          race_status_interpolator_value: row[0],
-          race_status_interpolator_time: row[1],
-        };
-      });
 
       teams = data.appConfig.teams.map((row) => {
         return {
@@ -148,159 +137,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      let boatLeftFoilPositions = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].leftFoilPosition
-          .valHistory) {
-          let boatLeftFoilPosition = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            left_foil_position_interpolator_value:
-              data.race.boats[bKey].leftFoilPosition.valHistory[boatIndex][0],
-            left_foil_position_interpolator_time:
-              data.race.boats[bKey].leftFoilPosition.valHistory[boatIndex][1],
-          };
-          boatLeftFoilPositions.push(boatLeftFoilPosition);
-        }
-      });
-
-      let boatLeftFoilStates = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].leftFoilState
-          .valHistory) {
-          let boatLeftFoilState = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            left_foil_state_interpolator_value:
-              data.race.boats[bKey].leftFoilState.valHistory[boatIndex][0],
-            left_foil_state_interpolator_time:
-              data.race.boats[bKey].leftFoilState.valHistory[boatIndex][1],
-          };
-          boatLeftFoilStates.push(boatLeftFoilState);
-        }
-      });
-
-      let boatRightFoilPositions = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].rightFoilPosition
-          .valHistory) {
-          let boatRightFoilPosition = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            right_foil_position_interpolator_value:
-              data.race.boats[bKey].rightFoilPosition.valHistory[boatIndex][0],
-            right_foil_position_interpolator_time:
-              data.race.boats[bKey].rightFoilPosition.valHistory[boatIndex][1],
-          };
-          boatRightFoilPositions.push(boatRightFoilPosition);
-        }
-      });
-
-      let boatRightFoilStates = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].rightFoilState
-          .valHistory) {
-          let boatRightFoilState = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            right_foil_state_interpolator_value:
-              data.race.boats[bKey].rightFoilState.valHistory[boatIndex][0],
-            right_foil_state_interpolator_time:
-              data.race.boats[bKey].rightFoilState.valHistory[boatIndex][1],
-          };
-          boatRightFoilStates.push(boatRightFoilState);
-        }
-      });
-
-      let boatLegs = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].legInterp.valHistory) {
-          let boatLeg = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            leg_interpolator_value:
-              data.race.boats[bKey].legInterp.valHistory[boatIndex][0],
-            leg_interpolator_time:
-              data.race.boats[bKey].legInterp.valHistory[boatIndex][1],
-          };
-          boatLegs.push(boatLeg);
-        }
-      });
-
-      let boatPenalties = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].penaltyCountInterp
-          .valHistory) {
-          let boatPenalty = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            penalty_count_interpolator_value:
-              data.race.boats[bKey].penaltyCountInterp.valHistory[boatIndex][0],
-            penalty_count_interpolator_time:
-              data.race.boats[bKey].penaltyCountInterp.valHistory[boatIndex][1],
-          };
-          boatPenalties.push(boatPenalty);
-        }
-      });
-
-      let boatProtests = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].protestInterp
-          .valHistory) {
-          let boatProtest = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            protest_interpolator_value:
-              data.race.boats[bKey].protestInterp.valHistory[boatIndex][0],
-            protest_interpolator_time:
-              data.race.boats[bKey].protestInterp.valHistory[boatIndex][1],
-          };
-          boatProtests.push(boatProtest);
-        }
-      });
-
       boatKeys.map((bKey) => {
         for (const boatIndex in data.race.boats[bKey].rankInterp.valHistory) {
           let boatRank = {
@@ -317,69 +153,6 @@ const saveAmericasCup2021Data = async (data) => {
               data.race.boats[bKey].rankInterp.valHistory[boatIndex][1],
           };
           boatRanks.push(boatRank);
-        }
-      });
-
-      let boatRudderAngles = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].ruddleAngle.valHistory) {
-          let boatRudderAngle = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            rudder_angle__value:
-              data.race.boats[bKey].ruddleAngle.valHistory[boatIndex][0],
-            rudder_angle__time:
-              data.race.boats[bKey].ruddleAngle.valHistory[boatIndex][1],
-          };
-          boatRudderAngles.push(boatRudderAngle);
-        }
-      });
-
-      let boatSows = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].sowInterp.valHistory) {
-          let boatSow = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            sow_interpolator_value:
-              data.race.boats[bKey].sowInterp.valHistory[boatIndex][0],
-            sow_interpolator_time:
-              data.race.boats[bKey].sowInterp.valHistory[boatIndex][1],
-          };
-          boatSows.push(boatSow);
-        }
-      });
-
-      let boatStatuses = [];
-
-      boatKeys.map((bKey) => {
-        for (const boatIndex in data.race.boats[bKey].statusInterp.valHistory) {
-          let boatStatus = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            boat_id: boats.find(
-              (x) => x.original_id === data.race.boats[bKey].boatId,
-            ).id,
-            boat_original_id: data.race.boats[bKey].boatId,
-            status_interpolator_value:
-              data.race.boats[bKey].statusInterp.valHistory[boatIndex][0],
-            status_interpolator_time:
-              data.race.boats[bKey].statusInterp.valHistory[boatIndex][1],
-          };
-          boatStatuses.push(boatStatus);
         }
       });
 
@@ -485,41 +258,6 @@ const saveAmericasCup2021Data = async (data) => {
         }
       });
 
-      let buoyPositionStates = [];
-      buoyKeys.map((key) => {
-        for (const stateIndex in data.race.buoys[key].stateInterp.valHistory) {
-          let buoyPositionState = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            mark_id: data.race.buoys[key].markId,
-            state_interpolator_value:
-              data.race.buoys[key].stateInterp.valHistory[stateIndex][0],
-            state_interpolator_time:
-              data.race.buoys[key].stateInterp.valHistory[stateIndex][1],
-          };
-          buoyPositionStates.push(buoyPositionState);
-        }
-      });
-
-      rankings = data.race.rankings.map((row) => {
-        return {
-          id: uuidv4(),
-          race_id: raceId,
-          race_original_id: data.race.raceId,
-          boat_id: boats.find((x) => x.original_id === row.boat_id).id,
-          boat_original_id: row.boat_id,
-          rank: row.rank,
-          leg: row.leg,
-          dtl: row.dtl,
-          secs_to_leader: row.secsToLeader,
-          penalty_count: row.penaltyCount,
-          protest_active: row.protestActive,
-          status: row.status,
-          speed: row.speed,
-        };
-      });
-
       let roundingTimesKeys = Object.keys(data.race.roundingTimesByMarkId);
       roundingTimesKeys.map((rkey) => {
         let keys = Object.keys(data.race.roundingTimesByMarkId[rkey]);
@@ -540,90 +278,6 @@ const saveAmericasCup2021Data = async (data) => {
           };
           roundingTimes.push(roundingTime);
         }
-      });
-
-      let windDatas = [];
-      for (
-        var i = 0;
-        i < data.race.windData.downwindLaylineAngle.valHistory.length;
-        i++
-      ) {
-        let windData = {
-          id: uuidv4(),
-          race_id: raceId,
-          race_original_id: data.race.raceId,
-          wind_heading_value: data.race.windData.windHeading.valHistory[i][0],
-          wind_heading_time: data.race.windData.windHeading.valHistory[i][1],
-          upwind_layline_angle_value:
-            data.race.windData.upwindLaylineAngle.valHistory[i][0],
-          upwind_layline_angle_time:
-            data.race.windData.upwindLaylineAngle.valHistory[i][1],
-          downwind_layline_angle_value:
-            data.race.windData.downwindLaylineAngle.valHistory[i][0],
-          downwind_layline_angle_time:
-            data.race.windData.downwindLaylineAngle.valHistory[i][1],
-          wind_speed_value: data.race.windData.windSpeed.valHistory[i][0],
-          wind_speed_time: data.race.windData.windSpeed.valHistory[i][1],
-        };
-        windDatas.push(windData);
-      }
-
-      let windPoints = [];
-      let windPointKeys = Object.keys(data.race.windPoints);
-
-      windPointKeys.map((wpKey) => {
-        for (
-          var i = 0;
-          i < data.race.windPoints[wpKey].headingInterp.valHistory.length;
-          i++
-        ) {
-          let windPoint = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            wind_point_id: data.race.windPoints[wpKey].Id,
-            coordinate_interpolator_lon:
-              data.race.windPoints[wpKey].coordIntepolator.yCerp.valHistory[
-                i
-              ][0],
-            coordinate_interpolator_lon_time:
-              data.race.windPoints[wpKey].coordIntepolator.yCerp.valHistory[
-                i
-              ][1],
-            coordinate_interpolator_lat:
-              data.race.windPoints[wpKey].coordIntepolator.xCerp.valHistory[
-                i
-              ][0],
-            coordinate_interpolator_lat_time:
-              data.race.windPoints[wpKey].coordIntepolator.xCerp.valHistory[
-                i
-              ][1],
-            heading_interpolator_value:
-              data.race.windPoints[wpKey].headingInterp.valHistory[i][0],
-            heading_interpolator_lat_time:
-              data.race.windPoints[wpKey].headingInterp.valHistory[i][1],
-            wind_speed_interpolator_value:
-              data.race.windPoints[wpKey].windSpeed.valHistory[i][0],
-            wind_speed_interpolator_time:
-              data.race.windPoints[wpKey].windSpeed.valHistory[i][1],
-          };
-          windPoints.push(windPoint);
-        }
-      });
-
-      let boundaryPackets = [];
-      data.race.courseBoundary.boundaryPackets.valHistory.forEach((row) => {
-        row[0].points.forEach((point) => {
-          let boundaryPacket = {
-            id: uuidv4(),
-            race_id: raceId,
-            race_original_id: data.race.raceId,
-            packet_id: row[0].packetId,
-            coordinate_interpolator_lon: point[0],
-            coordinate_interpolator_lat: point[1],
-          };
-          boundaryPackets.push(boundaryPacket);
-        });
       });
     }
     if (data.race) {
