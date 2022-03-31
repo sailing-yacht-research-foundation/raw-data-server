@@ -6,6 +6,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeMetasail');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const mapMetasailToSyrf = require('./mappingsToSyrfDB/mapMetasailToSyrf');
+const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
@@ -197,6 +198,12 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   };
   if (+race.stop > 0) {
     body.approx_end_time_ms = +race.stop;
+  } else {
+    if (startTimeMs > Date.now()) {
+      body.status = competitionUnitStatus.ONGOING;
+    } else {
+      body.status = competitionUnitStatus.SCHEDULED;
+    }
   }
 
   if (startPoint) {

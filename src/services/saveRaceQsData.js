@@ -6,6 +6,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeRaceQs');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
 const mapRaceQsToSyrf = require('../services/mappingsToSyrfDB/mapRaceQsToSyrf');
+const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
@@ -159,7 +160,8 @@ const saveRaceQsData = async (data) => {
       const now = Date.now();
       const startTime = +race.from;
       const endTime = +race.till;
-      const isUnfinished = startTime > now || !endTime || endTime > now;
+      const isUnfinished =
+        startTime > now || (startTime && !endTime) || endTime > now;
       if (isUnfinished) {
         console.log(
           `Future race detected for race original id ${race.original_id}`,
@@ -225,11 +227,20 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     start_month: startDate.getUTCMonth() + 1,
     start_day: startDate.getUTCDate(),
     approx_start_time_ms: startTimeMs,
-    approx_end_time_ms: endTimeMs,
     open_graph_image: getTrackerLogoUrl(SOURCE.RACEQS), // use tracker logo for unfinished races
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  if (endTimeMs) {
+    body.approx_end_time_ms = endTimeMs;
+  } else {
+    if (startTimeMs > Date.now()) {
+      body.status = competitionUnitStatus.ONGOING;
+    } else {
+      body.status = competitionUnitStatus.SCHEDULED;
+    }
+  }
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;
