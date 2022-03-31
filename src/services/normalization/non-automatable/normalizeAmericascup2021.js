@@ -27,8 +27,8 @@ const normalizeRace = async (data) => {
   boats.forEach((b) => {
     boatIdentifiers.push(b.original_id);
     let team = data.boats.teams.find((t) => t.id === b.team_id);
-    if (team?.boat_name) {
-      boatNames.push(team?.boat_name);
+    if (team?.name) {
+      boatNames.push(team.name);
     }
   });
 
@@ -83,7 +83,7 @@ const normalizeRace = async (data) => {
     true, // Skip elastic search for now since race does not have url
   );
 
-  mapAndSave(data, raceMetadata);
+  await mapAndSave(data, raceMetadata);
 };
 
 exports.normalizeRace = normalizeRace;

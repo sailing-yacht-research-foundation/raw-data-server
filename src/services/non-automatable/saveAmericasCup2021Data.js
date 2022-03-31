@@ -56,7 +56,7 @@ const saveAmericasCup2021Data = async (data) => {
           abbreviation: row.abbr,
           flag_id: row.flag_id,
           color: row.color,
-          boat_name: row.boatmodel?.name,
+          boat_model_name: row.boatmodel?.name,
           top_mast_offset_x: row.boatmodel?.topMastOffset.x,
           top_mast_offset_y: row.boatmodel?.topMastOffset.y,
           top_mast_offset_z: row.boatmodel?.topMastOffset.z,
@@ -77,7 +77,7 @@ const saveAmericasCup2021Data = async (data) => {
           original_id: data.race.boats[key].boatId,
           team_id: teams.find(
             (x) => x.original_id === data.race.boats[key].teamId,
-          ).id,
+          )?.id,
           team_original_id: data.race.boats[key].teamId,
           current_leg: data.race.boats[key].current_leg,
           distance_to_leader: data.race.boats[key].distance_to_leader,

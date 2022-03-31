@@ -63,7 +63,7 @@ const mapAndSave = async (data, raceMetadata) => {
         event: true,
       },
     });
-    await saveToAwsElasticSearch(data.race, data.boats, raceMetadata);
+    await saveToAwsElasticSearch(data.race, data.boats, raceMetadata, data.model);
   } catch (e) {
     console.log(e);
   }
@@ -166,42 +166,40 @@ const _mapPassings = (passings, geometry, startTime) => {
 };
 
 const _mapRankings = (rankings, startTime, boats) => {
-  const filteredRankings = [];
-  const lastRankings = [];
-
-  const ranks = rankings?.map((r) => {
+  const ranksMap = rankings?.reduce((acc, r) => {
     const finishTime = parseInt(r.rank_interpolator_time + startTime) * 1000;
-    return {
-      vesselId: r.boat_id,
-      finishTime,
-      elapsedTime: finishTime - startTime,
-    };
-  });
+    const boatData = boats.find((b) => b.id === r.boat_id);
+    const existingBoatRank = acc[r.boat_id];
+    const isLatestRank = existingBoatRank?.finishTime > boatData?.finishTime;
+    if ((!existingBoatRank && boatData) || isLatestRank) {
+      acc[r.boat_id] = {
+        vesselId: r.boat_id,
+        finishTime,
+        elapsedTime: finishTime - startTime,
+      };
+    }
+    return acc;
+  }, {});
 
-  boats.forEach((b) => {
-    const arr = ranks.filter((r) => r.vesselId === b.id);
-    filteredRankings.push(arr);
-  });
-
-  filteredRankings.forEach((r) => {
-    lastRankings.push(r[r.length - 1]);
-  });
-
-  return lastRankings;
+  return ranksMap ? Object.values(ranksMap) : undefined;
 };
 
-const saveToAwsElasticSearch = async (race, { boats, teams }, raceMetadata) => {
-  const names = [];
+const saveToAwsElasticSearch = async (race, { boats, teams }, raceMetadata, boatModels) => {
+  const boatNames = [];
+  const boatIdentifiers = [];
 
   boats.forEach((b) => {
-    names.push(
-      teams.find((t) => b.team_original_id === t.original_id).boat_name,
-    );
+    boatIdentifiers.push(b.original_id);
+    const boatName = teams.find((t) => b.team_original_id === t.original_id)?.name;
+    if (boatName) {
+      boatNames.push(boatName);
+    }
   });
 
   const body = {
     id: race.id,
     name: raceMetadata.name,
+    event_name: race.event_name,
     event: raceMetadata.event,
     source: raceMetadata.source,
     url: raceMetadata.url,
@@ -221,9 +219,9 @@ const saveToAwsElasticSearch = async (race, { boats, teams }, raceMetadata) => {
     approx_distance_km: raceMetadata.approx_distance_km,
     num_boats: raceMetadata.num_boats,
     avg_time_between_positions: raceMetadata.avg_time_between_positions,
-    boat_models: [],
-    boat_identifiers: [],
-    boat_names: names,
+    boat_models: boatModels,
+    boat_identifiers: boatIdentifiers,
+    boat_names: boatNames,
     handicap_rules: raceMetadata.handicap_rules,
     unstructured_text: [],
   };
