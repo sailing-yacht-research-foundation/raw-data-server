@@ -6,6 +6,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeBluewater');
 const mapAndSave = require('./mappingsToSyrfDB/mapBluewaterToSyrf');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   createTurfPoint,
@@ -156,7 +157,9 @@ const saveBluewaterData = async (data) => {
       const raceStartTimeMs = new Date(race.start_time).getTime();
       const raceEndTimeMs = new Date(race.track_time_finish).getTime();
       const isUnfinished =
-        raceStartTimeMs > now || !race.track_time_finish || raceEndTimeMs > now;
+        raceStartTimeMs > now ||
+        (raceStartTimeMs && !race.track_time_finish) ||
+        raceEndTimeMs > now;
       if (isUnfinished) {
         console.log(
           `Future race detected for race original id ${race.original_id}`,
@@ -233,6 +236,12 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   };
   if (race.track_time_finish && !isNaN(endTime)) {
     body.approx_end_time_ms = endTime;
+  } else {
+    if (startTime > Date.now()) {
+      body.status = competitionUnitStatus.ONGOING;
+    } else {
+      body.status = competitionUnitStatus.SCHEDULED;
+    }
   }
 
   if (startPoint) {
