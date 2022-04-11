@@ -35,7 +35,7 @@ const {
   registerFailure,
 } = require('../services/scrapedDataResult');
 const {
-  getUnfinishedRaceIds,
+  getUnfinishedRaces,
   cleanUnfinishedRaces,
 } = require('../services/competitionUnit');
 
@@ -318,8 +318,8 @@ router.get(
   validateTrackerSource,
   async (req, res) => {
     try {
-      const idMap = await getUnfinishedRaceIds(req.params.tracker);
-      res.json(idMap);
+      const racesMap = await getUnfinishedRaces(req.params.tracker);
+      res.json(racesMap);
     } catch (err) {
       console.log(err);
       res.status(500).json({
