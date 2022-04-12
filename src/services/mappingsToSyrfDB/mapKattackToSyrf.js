@@ -36,7 +36,7 @@ const mapAndSave = async (data, raceMetadata) => {
   // Use different startTime because kattack startTime only contains date.
   raceMetadata.approx_start_time_ms = +race.race_start_time_utc;
   raceMetadata.approx_end_time_ms =
-    +race.race_start_time_utc + +(race.feed_length_sec * 1000);
+    +race.race_start_time_utc + +(race.race_length_sec * 1000);
 
   // Hide the Kattack Race paradigm since their positions are absolute and cannot show in playback properly
   let event;

@@ -115,7 +115,8 @@ const saveKattackData = async (data) => {
       const now = Date.now();
       const raceStartTime = +race.race_start_time_utc;
       const raceEndTime =
-        +race.race_start_time_utc + race.feed_length_sec * 1000;
+        +race.race_start_time_utc + race.race_length_sec * 1000;
+
       const isUnfinished = raceStartTime > now || raceEndTime > now;
 
       if (isUnfinished) {
@@ -156,7 +157,7 @@ const saveKattackData = async (data) => {
 
 const _indexUnfinishedRaceToES = async (race, data) => {
   const startTimeMs = +race.race_start_time_utc;
-  const endTimeMs = +race.race_start_time_utc + race.feed_length_sec * 1000;
+  const endTimeMs = +race.race_start_time_utc + race.race_length_sec * 1000;
   const startDate = new Date(startTimeMs);
   const startWaypoint = data.KattackWaypoint?.[0];
   let startPoint;
