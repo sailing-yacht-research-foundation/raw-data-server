@@ -86,8 +86,34 @@ const normalizeRace = async (
       'boat',
       'timestamp',
     );
+
+    const _setFirstMarkPosition = (markObject, { latKey, lonKey, nameKey }) => {
+      if (+markObject[latKey] === 0 && +markObject[lonKey] === 0) {
+        const markBoat = TackTrackerBoat.find(
+          (b) => b.race === race.id && b.name === markObject[nameKey],
+        );
+        const markFirstPos = TackTrackerPosition.find(
+          (p) => p.race === race.id && p.boat === markBoat.id,
+        );
+        if (markFirstPos) {
+          markObject[latKey] = markFirstPos.lat;
+          markObject[lonKey] = markFirstPos.lon;
+        }
+      }
+    };
+
     let startPoint;
-    if (startMark) {
+    if (startMark && startMark.start_mark_lat) {
+      _setFirstMarkPosition(startMark, {
+        latKey: 'start_mark_lat',
+        lonKey: 'start_mark_lon',
+        nameKey: 'start_mark_name',
+      });
+      _setFirstMarkPosition(startMark, {
+        latKey: 'start_pin_lat',
+        lonKey: 'start_pin_lon',
+        nameKey: 'start_pin_name',
+      });
       startPoint = findCenter(
         startMark.start_mark_lat,
         startMark.start_mark_lon,
@@ -104,6 +130,16 @@ const normalizeRace = async (
 
     let endPoint;
     if (finishMark) {
+      _setFirstMarkPosition(finishMark, {
+        latKey: 'finish_mark_lat',
+        lonKey: 'finish_mark_lon',
+        nameKey: 'finish_mark_name',
+      });
+      _setFirstMarkPosition(finishMark, {
+        latKey: 'finish_pin_lat',
+        lonKey: 'finish_pin_lon',
+        nameKey: 'finish_pin_name',
+      });
       endPoint = findCenter(
         finishMark.finish_mark_lat,
         finishMark.finish_mark_lon,

@@ -83,6 +83,8 @@ const normalizeRace = async (
     deviceIdentifiers.push(d.sail_no);
   });
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
+  // Exclude buoy races for now bec buoy race positions are relative to an undetermined position and always in Ghana
+  const shouldIncludeToES = !(url.indexOf('BuoyPlayer.aspx') > -1);
   const raceMetadata = await createRace(
     id,
     name,
@@ -102,6 +104,7 @@ const normalizeRace = async (
     deviceIdentifiers,
     handicapRules,
     unstructuredText,
+    shouldIncludeToES,
   );
   if (process.env.ENABLE_MAIN_DB_SAVE_KATTACK !== 'true') {
     const tracksGeojson = JSON.stringify(
