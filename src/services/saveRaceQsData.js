@@ -44,8 +44,15 @@ const saveRaceQsData = async (data) => {
 
     if (data.RaceQsEvent.length) {
       try {
-        raceMetadatas = await normalizeRace(data);
-        await mapRaceQsToSyrf(data, raceMetadatas);
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnits = await mapRaceQsToSyrf(
+          data,
+          raceMetadatas,
+        );
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

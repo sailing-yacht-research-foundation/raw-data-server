@@ -16,8 +16,7 @@ const normalizeRace = async ({
 }) => {
   const YACHTBOT_SOURCE = 'YACHTBOT';
   if (!YachtBotRace || !YachtBotPosition || YachtBotPosition.length === 0) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
   const race = YachtBotRace[0];
   const allPositions = YachtBotPosition;
@@ -64,7 +63,7 @@ const normalizeRace = async ({
   const endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -84,7 +83,6 @@ const normalizeRace = async ({
     handicapRules,
     unstructuredText,
   );
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

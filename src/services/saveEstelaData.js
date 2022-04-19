@@ -9,7 +9,7 @@ const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveEstelaData = async (data) => {
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, esBody;
 
   if (process.env.NODE_ENV !== 'test') {
     try {
@@ -40,8 +40,12 @@ const saveEstelaData = async (data) => {
       data.EstelaRace = finishedRaces;
 
       if (data.EstelaRace?.length) {
-        raceMetadata = await normalizeRace(data);
-        await mapAndSave(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+        await elasticsearch.updateEventAndIndexRaces(
+          [esBody],
+          [savedCompetitionUnit],
+        );
       }
     } catch (err) {
       console.log(err);

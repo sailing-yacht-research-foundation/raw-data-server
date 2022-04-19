@@ -55,7 +55,7 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
   const inputBoats = _mapBoats(data.TackTrackerBoat);
 
   const race = data.TackTrackerRace[0];
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     event,
     race: {
       id: race.id,

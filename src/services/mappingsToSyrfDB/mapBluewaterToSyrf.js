@@ -41,7 +41,7 @@ const mapAndSave = async (data, raceMetadata) => {
     courseSequencedGeometries = _mapSequencedGeometries(bluewaterMap);
   }
 
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     race: data.BluewaterRace.map((r) => ({
       ...r,
       url: r.referral_url,

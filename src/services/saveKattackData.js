@@ -42,8 +42,15 @@ const saveKattackData = async (data) => {
 
     if (data.KattackRace?.length) {
       try {
-        raceMetadata = await normalizeRace(data);
-        await mapAndSave(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+        // Exclude buoy races for now bec buoy race positions are relative to an undetermined position and always in Ghana
+        if (!(raceMetadata?.url.indexOf('BuoyPlayer.aspx') > -1)) {
+          await elasticsearch.updateEventAndIndexRaces(
+            [esBody],
+            [savedCompetitionUnit],
+          );
+        }
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

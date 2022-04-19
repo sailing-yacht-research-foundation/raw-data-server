@@ -14,7 +14,7 @@ const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveBluewaterData = async (data) => {
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, esBody;
 
   // temporary add of test env to avoid accidentally saving on maindb until its mocked
   if (process.env.NODE_ENV !== 'test') {
@@ -46,10 +46,14 @@ const saveBluewaterData = async (data) => {
     }
     data.BluewaterRace = finishedRaces;
 
-    if (data.BluewaterRace.length) {
+    if (data.BluewaterRace?.length) {
       try {
-        raceMetadata = await normalizeRace(data);
-        await mapAndSave(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+        await elasticsearch.updateEventAndIndexRaces(
+          [esBody],
+          [savedCompetitionUnit],
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

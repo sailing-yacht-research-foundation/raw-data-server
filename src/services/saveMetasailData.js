@@ -49,8 +49,15 @@ const saveMetasailData = async (data) => {
 
     if (data.MetasailRace?.length) {
       try {
-        raceMetadatas = await normalizeRace(data);
-        await mapMetasailToSyrf(data, raceMetadatas);
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnits = await mapMetasailToSyrf(
+          data,
+          raceMetadatas,
+        );
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

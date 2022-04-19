@@ -37,8 +37,15 @@ const saveGeovoileData = async (data) => {
           );
         }
       } else {
-        raceMetadata = await normalizeGeovoile(data);
-        await mapGeovoileToSyrf(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeGeovoile(data));
+        const savedCompetitionUnit = await mapGeovoileToSyrf(
+          data,
+          raceMetadata,
+        );
+        await elasticsearch.updateEventAndIndexRaces(
+          [esBody],
+          [savedCompetitionUnit],
+        );
       }
     } catch (err) {
       console.log(err);

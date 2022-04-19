@@ -25,7 +25,7 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
   );
 
   const race = data.YellowbrickRace[0];
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     race: {
       original_id: race.race_code,
       name: race.title,

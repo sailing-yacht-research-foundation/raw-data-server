@@ -43,10 +43,12 @@ const saveISailData = async (data) => {
 
     if (data.iSailRace.length) {
       try {
-        raceMetadatas = await normalizeRace(data);
-        if (raceMetadatas?.length) {
-          await mapAndSave(data, raceMetadatas);
-        }
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

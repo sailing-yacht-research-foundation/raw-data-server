@@ -13,7 +13,7 @@ const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveGeoracingData = async (data) => {
   let errorMessage = '';
-  let raceMetadatas;
+  let raceMetadatas, esBodies;
 
   if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];
@@ -44,9 +44,13 @@ const saveGeoracingData = async (data) => {
 
     data.GeoracingRace = finishedRaces;
     if (data.GeoracingRace.length > 0) {
-      raceMetadatas = await normalizeRace(data);
       try {
-        await mapAndSave(data, raceMetadatas);
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

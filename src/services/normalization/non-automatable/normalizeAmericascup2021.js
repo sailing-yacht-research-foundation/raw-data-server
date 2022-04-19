@@ -61,7 +61,7 @@ const normalizeRace = async (data) => {
   const endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  const { raceMetadata } = await createRace(
     race.id,
     race.race_name,
     race.event_name,
@@ -80,7 +80,6 @@ const normalizeRace = async (data) => {
     boatIdentifiers,
     handicapRules,
     unstructuredText,
-    true, // Skip elastic search for now since race does not have url
   );
 
   await mapAndSave(data, raceMetadata);

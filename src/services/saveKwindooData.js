@@ -41,10 +41,13 @@ const saveKwindooData = async (data) => {
     }
     data.KwindooRace = finishedRaces;
     if (data.KwindooRace.length > 0) {
-      raceMetadatas = await normalizeRace(data);
-
       try {
-        await mapAndSave(data, raceMetadatas);
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

@@ -19,14 +19,14 @@ const normalizeRace = async ({
 }) => {
   const TRACTRAC_SOURCE = 'TRACTRAC';
   const raceMetadatas = [];
+  const esBodies = [];
 
   if (
     !TracTracRace ||
     !TracTracCompetitorPosition ||
     TracTracCompetitorPosition.length === 0
   ) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
 
   const event = TracTracEvent?.[0];
@@ -95,7 +95,7 @@ const normalizeRace = async ({
     }
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       race.name,
       event?.name,
@@ -116,8 +116,9 @@ const normalizeRace = async ({
       unstructuredText,
     );
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

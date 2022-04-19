@@ -21,10 +21,10 @@ const normalizeRace = async ({
   const KWINDOO_SOURCE = 'KWINDOO';
   const regatta = KwindooRegatta?.[0];
   const raceMetadatas = [];
+  const esBodies = [];
   const runningGroups = KwindooRunningGroup;
   if (!KwindooRace || !KwindooPosition || KwindooPosition.length === 0) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
 
   for (const race of KwindooRace) {
@@ -115,7 +115,7 @@ const normalizeRace = async ({
     }
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       race.name,
       regatta?.name,
@@ -136,8 +136,9 @@ const normalizeRace = async ({
       unstructuredText,
     );
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

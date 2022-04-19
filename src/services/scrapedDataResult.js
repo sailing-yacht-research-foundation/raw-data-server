@@ -35,12 +35,12 @@ const registerFailure = async (source, url, error) => {
 };
 
 const _getSuccessData = async (source) => {
-  const successData = (await syrfSuccessfulUrlDAL.getAll(source.toUpperCase())).map(
-    (s) => ({
-      ...s,
-      original_id: s.originalId,
-    }),
-  );
+  const successData = (
+    await syrfSuccessfulUrlDAL.getAll(source.toUpperCase())
+  ).map((s) => ({
+    ...s,
+    original_id: s.originalId,
+  }));
   return (
     successData?.map((row) => ({
       url: row.url,

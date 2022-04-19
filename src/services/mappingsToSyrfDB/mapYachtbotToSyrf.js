@@ -44,7 +44,7 @@ const mapYachtbotToSyrf = async (data, raceMetadata) => {
   const positions = _mapPositions(yachtPositions, boatMetaDataMap);
 
   const race = data.YachtBotRace[0];
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     race: {
       original_id: race.original_id.toString(),
       name: race.name,

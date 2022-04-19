@@ -25,6 +25,7 @@ const normalizeRace = async ({
   const RACEQS_SOURCE = 'RACEQS';
   const regatta = RaceQsRegatta?.[0];
   const raceMetadatas = [];
+  const esBodies = [];
 
   if (!RaceQsRegatta || !RaceQsPosition || RaceQsPosition.length === 0) {
     console.log('No event or positions so skipping.');
@@ -40,8 +41,7 @@ const normalizeRace = async ({
   availablePositions.sort((a, b) => a.timestamp - b.timestamp);
 
   if (availablePositions.length === 0) {
-    console.log('No event positions so skipping.');
-    return;
+    throw new Error('No event positions so skipping.');
   }
   const event = RaceQsEvent[0];
   for (const [index, division] of RaceQsDivision.entries()) {
@@ -120,7 +120,7 @@ const normalizeRace = async ({
         boatsToSortedPositions,
       );
       const raceName = _getRaceName(regatta, division, start, event);
-      const raceMetadata = await createRace(
+      const { raceMetadata, esBody } = await createRace(
         id,
         raceName, // for raceQs event is race
         regatta?.name,
@@ -141,9 +141,10 @@ const normalizeRace = async ({
         unstructuredText,
       );
       raceMetadatas.push(raceMetadata);
+      esBodies.push(esBody);
     } while (starts.length);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 const _getWayPoints = (start, raceQsWaypoint = [], raceQsRoute = []) => {

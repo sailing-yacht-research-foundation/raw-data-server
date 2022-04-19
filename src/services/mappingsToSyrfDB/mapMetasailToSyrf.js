@@ -23,6 +23,7 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
     };
   })[0];
 
+  const savedCompetitionUnits = [];
   for (const race of data.MetasailRace) {
     const raceMetadata = raceMetadatas.find((t) => t.id === race.id);
     if (!raceMetadata) {
@@ -53,7 +54,7 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       continue;
     }
 
-    await saveCompetitionUnit({
+    const cu = await saveCompetitionUnit({
       event,
       race: {
         id: race.id,
@@ -73,7 +74,9 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
         event: true,
       },
     });
+    savedCompetitionUnits.push(cu);
   }
+  return savedCompetitionUnits;
 };
 
 const _mapBoats = (boats = [], race) => {

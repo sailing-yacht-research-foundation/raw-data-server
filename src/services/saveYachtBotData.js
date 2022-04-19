@@ -39,8 +39,15 @@ const saveYachtBotData = async (data) => {
 
     if (data.YachtBotRace?.length) {
       try {
-        raceMetadata = await normalizeRace(data);
-        await mapYachtbotToSyrf(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapYachtbotToSyrf(
+          data,
+          raceMetadata,
+        );
+        await elasticsearch.updateEventAndIndexRaces(
+          [esBody],
+          [savedCompetitionUnit],
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

@@ -46,7 +46,7 @@ const mapAndSave = async (data, raceMetadata) => {
     };
   }
 
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     event,
     race,
     boats: inputBoats,

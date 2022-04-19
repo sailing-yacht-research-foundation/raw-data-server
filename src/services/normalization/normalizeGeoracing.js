@@ -22,14 +22,14 @@ const normalizeRace = async ({
   const GEORACING_SOURCE = 'GEORACING';
   const eventObj = GeoracingEvent?.[0];
   const raceMetadatas = [];
+  const esBodies = [];
 
   let actorPositions = GeoracingPosition?.filter(
     (p) => p.trackable_type === 'actor' && !!p.lat && !!p.lon && !!p.timestamp,
   );
 
   if (!GeoracingRace || !actorPositions || actorPositions.length === 0) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
 
   for (const race of GeoracingRace) {
@@ -170,7 +170,7 @@ const normalizeRace = async ({
     });
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       race.name,
       eventObj?.name,
@@ -191,8 +191,9 @@ const normalizeRace = async ({
       unstructuredText,
     );
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

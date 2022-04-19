@@ -43,8 +43,11 @@ const saveTackTrackerData = async (data) => {
     data.TackTrackerRace = finishedRaces;
     if (data.TackTrackerRace.length > 0) {
       try {
-        raceMetadatas = await normalizeRace(data);
-        await mapTackTrackerToSyrf(data, raceMetadatas?.[0]);
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapRaceQsToSyrf(data, raceMetadatas);
+        await elasticsearch.updateEventAndIndexRaces(esBodies, [
+          savedCompetitionUnit,
+        ]);
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

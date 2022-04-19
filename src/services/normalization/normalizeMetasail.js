@@ -17,10 +17,10 @@ const normalizeRace = async ({
   MetasailPosition,
 }) => {
   if (!MetasailPosition || MetasailPosition.length === 0) {
-    console.log('No positions, skip');
-    return;
+    throw new Error('No positions, skip');
   }
   const raceMetadatas = [];
+  const esBodies = [];
   const event = MetasailEvent?.[0];
   for (const race of MetasailRace) {
     const id = race.id;
@@ -78,7 +78,7 @@ const normalizeRace = async ({
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
 
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       race.name,
       event?.name,
@@ -99,8 +99,9 @@ const normalizeRace = async ({
       unstructuredText,
     );
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

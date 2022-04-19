@@ -67,7 +67,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   );
 
   const race = data.TracTracRace[0];
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     event,
     race: {
       id: race.id,

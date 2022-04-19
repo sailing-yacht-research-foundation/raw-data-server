@@ -22,11 +22,7 @@ const normalizeRace = async ({
     !YellowbrickPosition ||
     YellowbrickPosition.length === 0
   ) {
-    console.log(
-      'No race or positions so skipping. Length is',
-      YellowbrickPosition?.length,
-    );
-    return;
+    throw new Error('No race or positions so skipping.');
   }
   const YELLOWBRICK_SOURCE = 'YELLOWBRICK';
   const race = YellowbrickRace[0];
@@ -96,7 +92,7 @@ const normalizeRace = async ({
     endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
   }
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -116,7 +112,6 @@ const normalizeRace = async ({
     handicapRules,
     unstructuredText,
   );
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

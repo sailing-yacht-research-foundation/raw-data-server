@@ -20,8 +20,7 @@ const normalizeGeovoile = async ({
   const race = geovoileRace;
   const allPositions = positions;
   if (!allPositions || allPositions.length === 0) {
-    console.log('No positions so skipping.');
-    return;
+    throw new Error('No positions so skipping.');
   }
   const id = race.id;
   const name = race.name;
@@ -71,7 +70,7 @@ const normalizeGeovoile = async ({
     unstructuredText.push(`${sailor.first_name} ${sailor.last_name}`);
   }
 
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -91,7 +90,6 @@ const normalizeGeovoile = async ({
     handicapRules,
     unstructuredText,
   );
-  return raceMetadata;
 };
 
 exports.normalizeGeovoile = normalizeGeovoile;

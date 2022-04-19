@@ -39,8 +39,15 @@ const saveYellowbrickData = async (data) => {
       data.YellowbrickRace = finishedRaces;
 
       if (data.YellowbrickRace.length) {
-        raceMetadata = await normalizeRace(data);
-        await mapYellowBrickToSyrf(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapYellowBrickToSyrf(
+          data,
+          raceMetadata,
+        );
+        await elasticsearch.updateEventAndIndexRaces(
+          [esBody],
+          [savedCompetitionUnit],
+        );
       }
     } catch (err) {
       console.log(err);

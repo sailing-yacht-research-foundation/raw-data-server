@@ -22,6 +22,19 @@ exports.indexRace = async (id, body) => {
   }
 };
 
+exports.updateEventAndIndexRaces = async (
+  esBodies = [],
+  competitionUnits = [],
+) => {
+  for (const esBody of esBodies) {
+    const updatedCU = competitionUnits?.find((cu) => cu.id === esBody.id);
+    if (updatedCU?.calendarEventId) {
+      esBody.event = updatedCU.calendarEventId;
+    }
+    await exports.indexRace(esBody.id, esBody);
+  }
+};
+
 exports.updateRace = async (id, body) => {
   if (api) {
     return await api.post(`races/_doc/${id}/_update`, {

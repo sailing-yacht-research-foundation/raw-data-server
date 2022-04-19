@@ -28,8 +28,7 @@ const normalizeRace = async ({
   let startPoint = createTurfPoint(race.initLat, race.initLon);
 
   if (!allPositions?.length) {
-    console.log('No positions so skipping.');
-    return;
+    throw new Error('No positions so skipping.');
   }
 
   const boundingBox = turf.bbox(
@@ -73,7 +72,7 @@ const normalizeRace = async ({
   }
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -93,7 +92,6 @@ const normalizeRace = async ({
     handicapRules,
     unstructuredText,
   );
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

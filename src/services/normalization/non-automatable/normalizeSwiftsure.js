@@ -99,7 +99,7 @@ const normalizeRace = async ({
 
   const name = race.welcome.match(/>(.*)<\/h1>/)?.[1] || '';
 
-  const raceMetadata = await createRace(
+  const { raceMetadata } = await createRace(
     race.id,
     name,
     null, // event name

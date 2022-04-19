@@ -20,14 +20,14 @@ const normalizeRace = async ({
 }) => {
   const TACKTRACKER_SOURCE = 'TACKTRACKER';
   const raceMetadatas = [];
+  const esBodies = [];
 
   if (
     !TackTrackerRace ||
     !TackTrackerPosition ||
     TackTrackerPosition.length === 0
   ) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
 
   for (const race of TackTrackerRace) {
@@ -149,7 +149,7 @@ const normalizeRace = async ({
     }
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       name,
       null, // event name. TackTracker's regatta has no name
@@ -170,8 +170,9 @@ const normalizeRace = async ({
       unstructuredText,
     );
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

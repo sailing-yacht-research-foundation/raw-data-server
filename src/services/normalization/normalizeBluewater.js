@@ -111,7 +111,7 @@ const normalizeRace = async ({
     boatsToSortedPositions,
   );
 
-  const raceMetadata = await createRace(
+  return await createRace(
     race.id,
     race.name,
     null, // event name
@@ -131,7 +131,6 @@ const normalizeRace = async ({
     handicapRules,
     unstructuredText,
   );
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

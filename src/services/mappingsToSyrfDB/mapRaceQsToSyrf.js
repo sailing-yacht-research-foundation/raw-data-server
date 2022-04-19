@@ -32,6 +32,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
   console.log('Saving to main database');
   const raceQsEvent = data.RaceQsEvent[0];
   const mappedPositions = _mapPositions(data.RaceQsPosition);
+  const savedCompetitionUnits = [];
   for (const [index, division] of data.RaceQsDivision.entries()) {
     const starts =
       data.RaceQsStart?.filter((t) => t.division === division.id) || [];
@@ -83,7 +84,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       } else if (division.original_id) {
         raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.event_original_id}-${division?.original_id}`;
       }
-      await saveCompetitionUnit({
+      const cu = await saveCompetitionUnit({
         event,
         race: {
           id: raceId,
@@ -102,8 +103,10 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
         },
         competitionUnitData: start?.type ? { handicap: [start?.type] } : null,
       });
+      savedCompetitionUnits.push(cu);
     } while (starts.length);
   }
+  return savedCompetitionUnits;
 };
 
 const _getRaceName = (event, division, start, raceQsEvent) => {

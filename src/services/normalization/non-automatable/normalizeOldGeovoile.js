@@ -66,7 +66,7 @@ const normalizeRace = async (
   const endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  const { raceMetadata } = await createRace(
     race.id,
     race.name,
     null, // event name
@@ -85,7 +85,6 @@ const normalizeRace = async (
     identifiers,
     handicapRules,
     unstructuredText,
-    true, // Skip elastic search for now since race does not have url
   );
   const tracksGeojson = JSON.stringify(
     allPositionsToFeatureCollection(boatsToSortedPositions),

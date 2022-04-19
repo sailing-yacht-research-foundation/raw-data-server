@@ -29,7 +29,7 @@ const mapAndSave = async (data, raceMetadata) => {
     raceMetadata.approx_start_time_ms,
   );
 
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     race: data.EstelaRace[0],
     boats: inputBoats,
     positions: inputPositions,
