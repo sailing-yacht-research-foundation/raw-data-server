@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createTurfPoint,
   createBoatToPositionDictionary,
@@ -9,14 +8,14 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  { KattackRace, KattackPosition, KattackWaypoint, KattackDevice },
-  transaction,
-) => {
+const normalizeRace = async ({
+  KattackRace,
+  KattackPosition,
+  KattackWaypoint,
+  KattackDevice,
+}) => {
   const KATTACK_SOURCE = 'KATTACK';
   const race = KattackRace[0];
   const allPositions = KattackPosition;
@@ -106,21 +105,6 @@ const normalizeRace = async (
     unstructuredText,
     shouldIncludeToES,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_KATTACK !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      KATTACK_SOURCE,
-      transaction,
-    );
-  }
   return raceMetadata;
 };
 

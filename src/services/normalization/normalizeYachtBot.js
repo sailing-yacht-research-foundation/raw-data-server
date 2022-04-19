@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,14 +7,13 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  { YachtBotRace, YachtBotPosition, YachtBotYacht },
-  transaction,
-) => {
+const normalizeRace = async ({
+  YachtBotRace,
+  YachtBotPosition,
+  YachtBotYacht,
+}) => {
   const YACHTBOT_SOURCE = 'YACHTBOT';
   if (!YachtBotRace || !YachtBotPosition || YachtBotPosition.length === 0) {
     console.log('No race or positions so skipping.');
@@ -86,21 +84,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_YACHTBOT !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      YACHTBOT_SOURCE,
-      transaction,
-    );
-  }
   return raceMetadata;
 };
 

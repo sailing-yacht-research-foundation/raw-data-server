@@ -1,18 +1,14 @@
-const { v4: uuidv4 } = require('uuid');
-
 const { SAVE_DB_POSITION_CHUNK_COUNT } = require('../../constants');
 const db = require('../../models');
-const { normalizeRace } = require('../normalization/normalizeSwiftsure');
+const {
+  normalizeRace,
+} = require('../normalization/non-automatable/normalizeSwiftsure');
 
 const saveSwiftsureData = async (data) => {
   const transaction = await db.sequelize.transaction();
   let errorMessage = '';
-  let raceUrl = [];
   try {
     if (data.SwiftsureRace) {
-      raceUrl = data.SwiftsureRace.map((row) => {
-        return { url: row.url, original_id: row.original_id };
-      });
       await db.swiftsureRace.bulkCreate(data.SwiftsureRace, {
         ignoreDuplicates: true,
         validate: true,

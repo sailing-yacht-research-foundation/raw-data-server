@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,15 +7,15 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 const METASAIL_SOURCE = 'METASAIL';
 
-const normalizeRace = async (
-  { MetasailEvent, MetasailRace, MetasailBoat, MetasailPosition },
-  transaction,
-) => {
+const normalizeRace = async ({
+  MetasailEvent,
+  MetasailRace,
+  MetasailBoat,
+  MetasailPosition,
+}) => {
   if (!MetasailPosition || MetasailPosition.length === 0) {
     console.log('No positions, skip');
     return;
@@ -99,21 +98,6 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    if (process.env.ENABLE_MAIN_DB_SAVE_METASAIL !== 'true') {
-      const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions),
-      );
-      await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
-      });
-      await uploadGeoJsonToS3(
-        race.id,
-        tracksGeojson,
-        METASAIL_SOURCE,
-        transaction,
-      );
-    }
     raceMetadatas.push(raceMetadata);
   }
   return raceMetadatas;

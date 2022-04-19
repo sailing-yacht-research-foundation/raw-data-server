@@ -26,41 +26,21 @@ const registerFailure = async (source, url, error) => {
   if (!source || !url || !error) {
     return;
   }
-
-  if (process.env[`ENABLE_MAIN_DB_SAVE_${source.toUpperCase()}`] === 'true') {
-    await syrfFailedUrlDAL.create({
-      url: url,
-      error,
-      source: source.toUpperCase(),
-      createdAt: Date.now(),
-    });
-  } else {
-    let failedModel = db[`${TRACKER_MAP[source.toLowerCase()]}FailedUrl`];
-    await failedModel?.create({
-      id: uuidv4(),
-      url,
-      error,
-    });
-  }
+  await syrfFailedUrlDAL.create({
+    url: url,
+    error,
+    source: source.toUpperCase(),
+    createdAt: Date.now(),
+  });
 };
 
 const _getSuccessData = async (source) => {
-  let successData;
-  if (process.env[`ENABLE_MAIN_DB_SAVE_${source.toUpperCase()}`] === 'true') {
-    successData = (await syrfSuccessfulUrlDAL.getAll(source.toUpperCase())).map(
-      (s) => ({
-        ...s,
-        original_id: s.originalId,
-      }),
-    );
-  } else {
-    const successModel =
-      db[`${TRACKER_MAP[source.toLowerCase()]}SuccessfulUrl`];
-    successData = await successModel?.findAll({
-      attributes: ['url', 'original_id'],
-      raw: true,
-    });
-  }
+  const successData = (await syrfSuccessfulUrlDAL.getAll(source.toUpperCase())).map(
+    (s) => ({
+      ...s,
+      original_id: s.originalId,
+    }),
+  );
   return (
     successData?.map((row) => ({
       url: row.url,
@@ -71,16 +51,7 @@ const _getSuccessData = async (source) => {
 };
 
 const _getFailedData = async (source) => {
-  let failedData;
-  if (process.env[`ENABLE_MAIN_DB_SAVE_${source.toUpperCase()}`] === 'true') {
-    failedData = await syrfFailedUrlDAL.getAll(source.toUpperCase());
-  } else {
-    const failedModel = db[`${TRACKER_MAP[source.toLowerCase()]}FailedUrl`];
-    failedData = await failedModel?.findAll({
-      attributes: ['url', 'error'],
-      raw: true,
-    });
-  }
+  const failedData = await syrfFailedUrlDAL.getAll(source.toUpperCase());
   return (
     failedData?.map((row) => {
       return { url: row.url, status: 'failed' };

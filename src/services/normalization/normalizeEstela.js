@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,14 +7,14 @@ const {
   findAverageLength,
   createRace,
   createTurfPoint,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  { EstelaRace, EstelaPosition, EstelaDorsal, EstelaBuoy },
-  transaction,
-) => {
+const normalizeRace = async ({
+  EstelaRace,
+  EstelaPosition,
+  EstelaDorsal,
+  EstelaBuoy,
+}) => {
   const ESTELA_SOURCE = 'ESTELA';
   const race = EstelaRace[0];
   const allPositions = EstelaPosition;
@@ -94,17 +93,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_ESTELA !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(race.id, tracksGeojson, ESTELA_SOURCE, transaction);
-  }
   return raceMetadata;
 };
 

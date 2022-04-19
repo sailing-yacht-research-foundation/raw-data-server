@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createTurfPoint,
   createBoatToPositionDictionary,
@@ -9,20 +8,15 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  {
-    YellowbrickRace,
-    YellowbrickPosition,
-    YellowbrickCourseNode,
-    YellowbrickTeam,
-    YellowbrickTag,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  YellowbrickRace,
+  YellowbrickPosition,
+  YellowbrickCourseNode,
+  YellowbrickTeam,
+  YellowbrickTag,
+}) => {
   if (
     !YellowbrickRace ||
     !YellowbrickPosition ||
@@ -122,22 +116,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_YELLOWBRICK !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      YELLOWBRICK_SOURCE,
-      transaction,
-    );
-  }
   return raceMetadata;
 };
 

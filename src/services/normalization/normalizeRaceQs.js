@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -9,25 +8,20 @@ const {
   findAverageLength,
   createRace,
   createTurfPoint,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 const THRESHOLD_TIME = 600000;
 const moment = require('moment');
 
-const normalizeRace = async (
-  {
-    RaceQsEvent,
-    RaceQsRegatta,
-    RaceQsWaypoint,
-    RaceQsPosition,
-    RaceQsParticipant,
-    RaceQsDivision,
-    RaceQsStart,
-    RaceQsRoute,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  RaceQsEvent,
+  RaceQsRegatta,
+  RaceQsWaypoint,
+  RaceQsPosition,
+  RaceQsParticipant,
+  RaceQsDivision,
+  RaceQsStart,
+  RaceQsRoute,
+}) => {
   const RACEQS_SOURCE = 'RACEQS';
   const regatta = RaceQsRegatta?.[0];
   const raceMetadatas = [];
@@ -146,16 +140,6 @@ const normalizeRace = async (
         handicaps,
         unstructuredText,
       );
-      if (process.env.ENABLE_MAIN_DB_SAVE_RACEQS !== 'true') {
-        const tracksGeojson = JSON.stringify(
-          allPositionsToFeatureCollection(boatsToSortedPositions),
-        );
-        await db.readyAboutRaceMetadata.create(raceMetadata, {
-          fields: Object.keys(raceMetadata),
-          transaction,
-        });
-        await uploadGeoJsonToS3(id, tracksGeojson, RACEQS_SOURCE, transaction);
-      }
       raceMetadatas.push(raceMetadata);
     } while (starts.length);
   }

@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -9,21 +8,16 @@ const {
   findAverageLength,
   createRace,
   createTurfPoint,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  {
-    KwindooRace,
-    KwindooRegatta,
-    KwindooBoat,
-    KwindooWaypoint,
-    KwindooPosition,
-    KwindooRunningGroup,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  KwindooRace,
+  KwindooRegatta,
+  KwindooBoat,
+  KwindooWaypoint,
+  KwindooPosition,
+  KwindooRunningGroup,
+}) => {
   const KWINDOO_SOURCE = 'KWINDOO';
   const regatta = KwindooRegatta?.[0];
   const raceMetadatas = [];
@@ -141,18 +135,6 @@ const normalizeRace = async (
       handicaps,
       unstructuredText,
     );
-
-    if (process.env.ENABLE_MAIN_DB_SAVE_KWINDOO !== 'true') {
-      const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions),
-      );
-
-      await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
-      });
-      await uploadGeoJsonToS3(id, tracksGeojson, KWINDOO_SOURCE, transaction);
-    }
     raceMetadatas.push(raceMetadata);
   }
   return raceMetadatas;
