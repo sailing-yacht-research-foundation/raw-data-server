@@ -183,3 +183,46 @@ exports.getUnfinishedRacesBySource = async (source) => {
     return null;
   }
 };
+
+exports.getRaceWithDanglingEventsBySource = async (source, dbEventIds = []) => {
+  if (api && source) {
+    const reqBody = {
+      _source: ['id'],
+      from: 0,
+      size: 10000,
+      query: {
+        bool: {
+          must: [
+            {
+              term: {
+                'source.keyword': source.toUpperCase(),
+              },
+            },
+            {
+              exists: {
+                field: 'event',
+              },
+            },
+          ],
+          must_not: [
+            {
+              exists: {
+                field: 'is_unfinished',
+              },
+            },
+            {
+              terms: {
+                'event.keyword': dbEventIds,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const esResult = await api.post(`races/_search`, reqBody);
+
+    return esResult.data.hits.hits;
+  } else {
+    return [];
+  }
+};
