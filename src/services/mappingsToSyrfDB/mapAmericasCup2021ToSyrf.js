@@ -63,7 +63,12 @@ const mapAndSave = async (data, raceMetadata) => {
         event: true,
       },
     });
-    await saveToAwsElasticSearch(data.race, data.boats, raceMetadata, data.model);
+    await saveToAwsElasticSearch(
+      data.race,
+      data.boats,
+      raceMetadata,
+      data.model,
+    );
   } catch (e) {
     console.log(e);
   }
@@ -184,13 +189,20 @@ const _mapRankings = (rankings, startTime, boats) => {
   return ranksMap ? Object.values(ranksMap) : undefined;
 };
 
-const saveToAwsElasticSearch = async (race, { boats, teams }, raceMetadata, boatModels) => {
+const saveToAwsElasticSearch = async (
+  race,
+  { boats, teams },
+  raceMetadata,
+  boatModels,
+) => {
   const boatNames = [];
   const boatIdentifiers = [];
 
   boats.forEach((b) => {
     boatIdentifiers.push(b.original_id);
-    const boatName = teams.find((t) => b.team_original_id === t.original_id)?.name;
+    const boatName = teams.find(
+      (t) => b.team_original_id === t.original_id,
+    )?.name;
     if (boatName) {
       boatNames.push(boatName);
     }

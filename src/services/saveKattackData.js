@@ -1,7 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
-
-const { SAVE_DB_POSITION_CHUNK_COUNT, SOURCE } = require('../constants');
-const db = require('../models');
+const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKattack');
 const mapAndSave = require('./mappingsToSyrfDB/mapKattackToSyrf');
@@ -14,102 +11,7 @@ const saveKattackData = async (data) => {
   let errorMessage = '';
   let raceMetadata;
 
-  if (process.env.ENABLE_MAIN_DB_SAVE_KATTACK !== 'true') {
-    let raceUrl = [];
-    const transaction = await db.sequelize.transaction();
-    try {
-      if (data.KattackRace) {
-        raceUrl = data.KattackRace.map((row) => {
-          return { url: row.url, original_id: row.original_id };
-        });
-        await db.kattackRace.bulkCreate(data.KattackRace, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.KattackYachtClub) {
-        await db.kattackYachtClub.bulkCreate(data.KattackYachtClub, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.KattackDevice) {
-        await db.kattackDevice.bulkCreate(data.KattackDevice, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.KattackPosition) {
-        const positions = data.KattackPosition.slice(); // clone array to avoid mutating the data
-        while (positions.length > 0) {
-          const splicedArray = positions.splice(
-            0,
-            SAVE_DB_POSITION_CHUNK_COUNT,
-          );
-          await db.kattackPosition.bulkCreate(splicedArray, {
-            ignoreDuplicates: true,
-            validate: true,
-            transaction,
-          });
-        }
-      }
-      if (data.KattackWaypoint) {
-        await db.kattackWaypoint.bulkCreate(data.KattackWaypoint, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.KattackRace) {
-        raceMetadata = await normalizeRace(data, transaction);
-      }
-      await transaction.commit();
-    } catch (error) {
-      console.log(error);
-      await transaction.rollback();
-      errorMessage = databaseErrorHandler(error);
-    }
-
-    if (raceUrl.length > 0) {
-      if (errorMessage) {
-        await db.kattackFailedUrl.bulkCreate(
-          raceUrl.map((row) => {
-            return {
-              id: uuidv4(),
-              url: row.url,
-              error: errorMessage,
-            };
-          }),
-          {
-            ignoreDuplicates: true,
-            validate: true,
-          },
-        );
-      } else {
-        await db.kattackSuccessfulUrl.bulkCreate(
-          raceUrl.map((row) => {
-            return {
-              id: uuidv4(),
-              url: row.url,
-              original_id: row.original_id,
-            };
-          }),
-          {
-            ignoreDuplicates: true,
-            validate: true,
-          },
-        );
-      }
-    }
-  }
-
-  if (
-    process.env.ENABLE_MAIN_DB_SAVE_KATTACK === 'true' &&
-    process.env.NODE_ENV !== 'test'
-  ) {
+  if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];
     for (const race of data.KattackRace) {
       const now = Date.now();
@@ -140,8 +42,15 @@ const saveKattackData = async (data) => {
 
     if (data.KattackRace?.length) {
       try {
-        raceMetadata = await normalizeRace(data);
-        await mapAndSave(data, raceMetadata);
+        ({ raceMetadata, esBody } = await normalizeRace(data));
+        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+        // Exclude buoy races for now bec buoy race positions are relative to an undetermined position and always in Ghana
+        if (!(raceMetadata?.url.indexOf('BuoyPlayer.aspx') > -1)) {
+          await elasticsearch.updateEventAndIndexRaces(
+            [esBody],
+            [savedCompetitionUnit],
+          );
+        }
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

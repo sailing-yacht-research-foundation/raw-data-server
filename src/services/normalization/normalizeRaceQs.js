@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -9,28 +8,24 @@ const {
   findAverageLength,
   createRace,
   createTurfPoint,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 const THRESHOLD_TIME = 600000;
 const moment = require('moment');
 
-const normalizeRace = async (
-  {
-    RaceQsEvent,
-    RaceQsRegatta,
-    RaceQsWaypoint,
-    RaceQsPosition,
-    RaceQsParticipant,
-    RaceQsDivision,
-    RaceQsStart,
-    RaceQsRoute,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  RaceQsEvent,
+  RaceQsRegatta,
+  RaceQsWaypoint,
+  RaceQsPosition,
+  RaceQsParticipant,
+  RaceQsDivision,
+  RaceQsStart,
+  RaceQsRoute,
+}) => {
   const RACEQS_SOURCE = 'RACEQS';
   const regatta = RaceQsRegatta?.[0];
   const raceMetadatas = [];
+  const esBodies = [];
 
   if (!RaceQsRegatta || !RaceQsPosition || RaceQsPosition.length === 0) {
     console.log('No event or positions so skipping.');
@@ -46,8 +41,7 @@ const normalizeRace = async (
   availablePositions.sort((a, b) => a.timestamp - b.timestamp);
 
   if (availablePositions.length === 0) {
-    console.log('No event positions so skipping.');
-    return;
+    throw new Error('No event positions so skipping.');
   }
   const event = RaceQsEvent[0];
   for (const [index, division] of RaceQsDivision.entries()) {
@@ -126,7 +120,7 @@ const normalizeRace = async (
         boatsToSortedPositions,
       );
       const raceName = _getRaceName(regatta, division, start, event);
-      const raceMetadata = await createRace(
+      const { raceMetadata, esBody } = await createRace(
         id,
         raceName, // for raceQs event is race
         regatta?.name,
@@ -146,20 +140,11 @@ const normalizeRace = async (
         handicaps,
         unstructuredText,
       );
-      if (process.env.ENABLE_MAIN_DB_SAVE_RACEQS !== 'true') {
-        const tracksGeojson = JSON.stringify(
-          allPositionsToFeatureCollection(boatsToSortedPositions),
-        );
-        await db.readyAboutRaceMetadata.create(raceMetadata, {
-          fields: Object.keys(raceMetadata),
-          transaction,
-        });
-        await uploadGeoJsonToS3(id, tracksGeojson, RACEQS_SOURCE, transaction);
-      }
       raceMetadatas.push(raceMetadata);
+      esBodies.push(esBody);
     } while (starts.length);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 const _getWayPoints = (start, raceQsWaypoint = [], raceQsRoute = []) => {

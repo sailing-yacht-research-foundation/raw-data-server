@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createTurfPoint,
   createBoatToPositionDictionary,
@@ -9,30 +8,21 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  {
-    YellowbrickRace,
-    YellowbrickPosition,
-    YellowbrickCourseNode,
-    YellowbrickTeam,
-    YellowbrickTag,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  YellowbrickRace,
+  YellowbrickPosition,
+  YellowbrickCourseNode,
+  YellowbrickTeam,
+  YellowbrickTag,
+}) => {
   if (
     !YellowbrickRace ||
     !YellowbrickPosition ||
     YellowbrickPosition.length === 0
   ) {
-    console.log(
-      'No race or positions so skipping. Length is',
-      YellowbrickPosition?.length,
-    );
-    return;
+    throw new Error('No race or positions so skipping.');
   }
   const YELLOWBRICK_SOURCE = 'YELLOWBRICK';
   const race = YellowbrickRace[0];
@@ -102,7 +92,7 @@ const normalizeRace = async (
     endPoint = getCenterOfMassOfPositions('lat', 'lon', last3Positions);
   }
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -122,23 +112,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_YELLOWBRICK !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      YELLOWBRICK_SOURCE,
-      transaction,
-    );
-  }
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

@@ -1,7 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
-
-const { SAVE_DB_POSITION_CHUNK_COUNT, SOURCE } = require('../constants');
-const db = require('../models');
+const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeMetasail');
 const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
@@ -17,111 +14,9 @@ const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveMetasailData = async (data) => {
   let errorMessage = '';
-  let metasailPositions;
   let raceMetadatas;
-  if (process.env.ENABLE_MAIN_DB_SAVE_METASAIL !== 'true') {
-    let eventUrl = [];
-    const transaction = await db.sequelize.transaction();
-    try {
-      if (data.MetasailEvent) {
-        eventUrl = data.MetasailEvent.map((row) => {
-          return { url: row.url, original_id: row.original_id };
-        });
-        await db.metasailEvent.bulkCreate(data.MetasailEvent, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.MetasailRace) {
-        await db.metasailRace.bulkCreate(data.MetasailRace, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.MetasailBoat) {
-        await db.metasailBoat.bulkCreate(data.MetasailBoat, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.MetasailBuoy) {
-        await db.metasailBuoy.bulkCreate(data.MetasailBuoy, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.MetasailGate) {
-        await db.metasailGate.bulkCreate(data.MetasailGate, {
-          ignoreDuplicates: true,
-          validate: true,
-          transaction,
-        });
-      }
-      if (data.MetasailPosition) {
-        metasailPositions = data.MetasailPosition.slice();
-        while (metasailPositions.length > 0) {
-          const splicedArray = metasailPositions.splice(
-            0,
-            SAVE_DB_POSITION_CHUNK_COUNT,
-          );
-          await db.metasailPosition.bulkCreate(splicedArray, {
-            ignoreDuplicates: true,
-            validate: true,
-            transaction,
-          });
-        }
-      }
 
-      if (data.MetasailRace) {
-        raceMetadatas = await normalizeRace(data, transaction);
-      }
-      await transaction.commit();
-    } catch (error) {
-      await transaction.rollback();
-      errorMessage = databaseErrorHandler(error);
-    }
-
-    if (eventUrl.length > 0) {
-      if (errorMessage) {
-        await db.metasailFailedUrl.bulkCreate(
-          eventUrl.map((row) => {
-            return {
-              id: uuidv4(),
-              url: row.url,
-              error: errorMessage,
-            };
-          }),
-          {
-            ignoreDuplicates: true,
-            validate: true,
-          },
-        );
-      } else {
-        await db.metasailSuccessfulUrl.bulkCreate(
-          eventUrl.map((row) => {
-            return {
-              id: uuidv4(),
-              url: row.url,
-              original_id: row.original_id,
-            };
-          }),
-          {
-            ignoreDuplicates: true,
-            validate: true,
-          },
-        );
-      }
-    }
-  }
-
-  if (
-    process.env.ENABLE_MAIN_DB_SAVE_METASAIL === 'true' &&
-    process.env.NODE_ENV !== 'test'
-  ) {
+  if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];
     for (const race of data.MetasailRace) {
       const now = Date.now();
@@ -154,8 +49,15 @@ const saveMetasailData = async (data) => {
 
     if (data.MetasailRace?.length) {
       try {
-        raceMetadatas = await normalizeRace(data);
-        await mapMetasailToSyrf(data, raceMetadatas);
+        ({ raceMetadatas, esBodies } = await normalizeRace(data));
+        const savedCompetitionUnits = await mapMetasailToSyrf(
+          data,
+          raceMetadatas,
+        );
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
       } catch (err) {
         console.log(err);
         errorMessage = databaseErrorHandler(err);

@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -9,33 +8,28 @@ const {
   findAverageLength,
   createRace,
   createTurfPoint,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  {
-    GeoracingEvent,
-    GeoracingRace,
-    GeoracingActor,
-    GeoracingPosition,
-    GeoracingCourseObject,
-    GeoracingCourseElement,
-    GeoracingLine,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  GeoracingEvent,
+  GeoracingRace,
+  GeoracingActor,
+  GeoracingPosition,
+  GeoracingCourseObject,
+  GeoracingCourseElement,
+  GeoracingLine,
+}) => {
   const GEORACING_SOURCE = 'GEORACING';
   const eventObj = GeoracingEvent?.[0];
   const raceMetadatas = [];
+  const esBodies = [];
 
   let actorPositions = GeoracingPosition?.filter(
     (p) => p.trackable_type === 'actor' && !!p.lat && !!p.lon && !!p.timestamp,
   );
 
   if (!GeoracingRace || !actorPositions || actorPositions.length === 0) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
 
   for (const race of GeoracingRace) {
@@ -176,7 +170,7 @@ const normalizeRace = async (
     });
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       race.name,
       eventObj?.name,
@@ -196,25 +190,10 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    if (process.env.ENABLE_MAIN_DB_SAVE_GEORACING !== 'true') {
-      const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions),
-      );
-
-      await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
-      });
-      await uploadGeoJsonToS3(
-        race.id,
-        tracksGeojson,
-        GEORACING_SOURCE,
-        transaction,
-      );
-    }
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

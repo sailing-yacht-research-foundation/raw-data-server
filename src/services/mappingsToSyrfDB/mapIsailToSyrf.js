@@ -38,6 +38,7 @@ const mapAndSave = async (data, raceMetadatas) => {
     };
   })[0];
 
+  const savedCompetitionUnits = [];
   for (const raceIndex in data.iSailRace) {
     const race = data.iSailRace[raceIndex];
     const raceMetadata = raceMetadatas.find((m) => m.id === race.id);
@@ -121,7 +122,7 @@ const mapAndSave = async (data, raceMetadatas) => {
       url: race.url,
       scrapedUrl: race.url,
     };
-    await saveCompetitionUnit({
+    const cu = await saveCompetitionUnit({
       event,
       race: inputRace,
       boats: inputBoats,
@@ -134,7 +135,9 @@ const mapAndSave = async (data, raceMetadatas) => {
         event: true,
       },
     });
+    savedCompetitionUnits.push(cu);
   }
+  return savedCompetitionUnits;
 };
 
 const _mapBoats = (boats) => {

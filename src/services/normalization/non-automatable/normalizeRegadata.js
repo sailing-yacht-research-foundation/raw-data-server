@@ -124,7 +124,7 @@ const normalizeRegadata = async (
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
 
-  const raceMetadata = await createRace(
+  const { raceMetadata } = await createRace(
     race.id,
     name,
     null, // event name
@@ -143,7 +143,6 @@ const normalizeRegadata = async (
     boatIdentifiers,
     handicapRules,
     unstructuredText,
-    true, // Skip elastic search for now since race does not have url
   );
 
   const tracksGeojson = JSON.stringify(

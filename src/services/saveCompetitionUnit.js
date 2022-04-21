@@ -409,6 +409,7 @@ const saveCompetitionUnit = async ({
 
     await mainDatabaseTransaction.commit();
     console.log(`Finish saving competition unit ${raceId} into main database`);
+    return newCompetitionUnit;
   } catch (err) {
     console.log(
       `Error during saving competition unit ${raceId} into main database`,

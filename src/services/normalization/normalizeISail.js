@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,27 +7,22 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
   findCenter,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  {
-    iSailEvent,
-    iSailRace,
-    iSailPosition,
-    iSailStartline,
-    iSailEventParticipant,
-    iSailTrack,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  iSailEvent,
+  iSailRace,
+  iSailPosition,
+  iSailStartline,
+  iSailEventParticipant,
+  iSailTrack,
+}) => {
   const ISAIL_SOURCE = 'ISAIL';
   const raceMetadatas = [];
+  const esBodies = [];
   if (!iSailRace || !iSailPosition?.length) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
   const event = iSailEvent?.[0];
   for (const index in iSailRace) {
@@ -140,7 +134,7 @@ const normalizeRace = async (
       boatIdentifiers.push(b.sail_no);
     });
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       race.name,
       event?.name,
@@ -160,25 +154,10 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    if (process.env.ENABLE_MAIN_DB_SAVE_ISAIL !== 'true') {
-      const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions),
-      );
-
-      await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
-      });
-      await uploadGeoJsonToS3(
-        race.id,
-        tracksGeojson,
-        ISAIL_SOURCE,
-        transaction,
-      );
-    }
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;

@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,21 +7,20 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
 const { SOURCE } = require('../../constants');
-const uploadUtil = require('../uploadUtil');
 
-const normalizeGeovoile = async (
-  { geovoileRace, boats, sailors, positions },
-  transaction,
-) => {
+const normalizeGeovoile = async ({
+  geovoileRace,
+  boats,
+  sailors,
+  positions,
+}) => {
   const GEOVOILE_SOURCE = SOURCE.GEOVOILE;
   const race = geovoileRace;
   const allPositions = positions;
   if (!allPositions || allPositions.length === 0) {
-    console.log('No positions so skipping.');
-    return;
+    throw new Error('No positions so skipping.');
   }
   const id = race.id;
   const name = race.name;
@@ -72,7 +70,7 @@ const normalizeGeovoile = async (
     unstructuredText.push(`${sailor.first_name} ${sailor.last_name}`);
   }
 
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -92,24 +90,6 @@ const normalizeGeovoile = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_GEOVOILE !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    console.log('uploading geojson');
-    await uploadUtil.uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      GEOVOILE_SOURCE,
-      transaction,
-    );
-  }
-
-  return raceMetadata;
 };
 
 exports.normalizeGeovoile = normalizeGeovoile;
