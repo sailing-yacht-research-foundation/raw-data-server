@@ -1,6 +1,5 @@
 const turf = require('@turf/turf');
 const uuid = require('uuid');
-const elasticsearch = require('./elasticsearch');
 const uploadUtil = require('../services/uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
 const cities = require('all-the-cities');
@@ -313,7 +312,6 @@ exports.createRace = async function (
   boatIdentifiers,
   handicapRules,
   unstructuredText,
-  skipElasticSearch = false,
 ) {
   let name = exports.generateMetadataName(eventName, raceName, startTimeMs);
 
@@ -485,45 +483,39 @@ exports.createRace = async function (
     great_circle: greatCircle,
     open_graph_image: openGraphImage,
   };
+  const boatIdentifiersFiltered = exports.filterList(boatIdentifiers);
+  const boatNamesFiltered = exports.filterList(boatNames);
 
-  // Only used by ElasticSearch
-  if (!skipElasticSearch) {
-    const boatIdentifiersFiltered = exports.filterList(boatIdentifiers);
-    const boatNamesFiltered = exports.filterList(boatNames);
-
-    const body = {
-      id,
-      name,
-      event,
-      event_name: eventName,
-      source,
-      url,
-      start_country: startCountry,
-      start_city: startCity,
-      start_year: startYear,
-      start_month: startMonth,
-      start_day: startDay,
-      approx_start_time_ms: approxStartTimeMs,
-      approx_end_time_ms: approxEndTimeMs,
-      approx_duration_ms: approxDurationMs,
-      approx_start_point: approxStartPoint,
-      approx_mid_point: approxMidPoint,
-      approx_end_point: approxEndPoint,
-      bounding_box: boundingBox,
-      approx_area_sq_km: approxAreaSqKm,
-      approx_distance_km: approxDistanceKm,
-      num_boats: numBoats,
-      avg_time_between_positions: avgTimeBetweenPositions,
-      boat_models: boatModelsFiltered,
-      boat_identifiers: boatIdentifiersFiltered,
-      boat_names: boatNamesFiltered,
-      handicap_rules: handicapRules,
-      unstructured_text: unstructuredText,
-    };
-
-    await elasticsearch.indexRace(id, body);
-  }
-  return raceMetadata;
+  const esBody = {
+    id,
+    name,
+    event,
+    event_name: eventName,
+    source,
+    url,
+    start_country: startCountry,
+    start_city: startCity,
+    start_year: startYear,
+    start_month: startMonth,
+    start_day: startDay,
+    approx_start_time_ms: approxStartTimeMs,
+    approx_end_time_ms: approxEndTimeMs,
+    approx_duration_ms: approxDurationMs,
+    approx_start_point: approxStartPoint,
+    approx_mid_point: approxMidPoint,
+    approx_end_point: approxEndPoint,
+    bounding_box: boundingBox,
+    approx_area_sq_km: approxAreaSqKm,
+    approx_distance_km: approxDistanceKm,
+    num_boats: numBoats,
+    avg_time_between_positions: avgTimeBetweenPositions,
+    boat_models: boatModelsFiltered,
+    boat_identifiers: boatIdentifiersFiltered,
+    boat_names: boatNamesFiltered,
+    handicap_rules: handicapRules,
+    unstructured_text: unstructuredText,
+  };
+  return { raceMetadata, esBody };
 };
 
 const convertDMSToDD = function (degrees, minutes, seconds, direction) {

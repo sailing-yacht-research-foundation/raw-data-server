@@ -28,7 +28,7 @@ const mapGeovoileToSyrf = async (data, raceMetadata) => {
   // rankings
   const rankings = _mapRankings(data.boats, data.geovoileRace);
 
-  await saveCompetitionUnit({
+  return await saveCompetitionUnit({
     race: data.geovoileRace,
     boats: inputBoats,
     positions: inputPositions,

@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createTurfPoint,
   createBoatToPositionDictionary,
@@ -9,22 +8,21 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  { KattackRace, KattackPosition, KattackWaypoint, KattackDevice },
-  transaction,
-) => {
+const normalizeRace = async ({
+  KattackRace,
+  KattackPosition,
+  KattackWaypoint,
+  KattackDevice,
+}) => {
   const KATTACK_SOURCE = 'KATTACK';
   const race = KattackRace[0];
   const allPositions = KattackPosition;
   const waypoints = KattackWaypoint;
   const devices = KattackDevice;
   if (!allPositions || allPositions.length === 0) {
-    console.log('No positions so skipping.');
-    return;
+    throw new Error('No positions so skipping.');
   }
   const id = race.id;
   const name = race.name;
@@ -83,7 +81,7 @@ const normalizeRace = async (
     deviceIdentifiers.push(d.sail_no);
   });
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-  const raceMetadata = await createRace(
+  return await createRace(
     id,
     name,
     null, // event name
@@ -103,22 +101,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_KATTACK !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      KATTACK_SOURCE,
-      transaction,
-    );
-  }
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

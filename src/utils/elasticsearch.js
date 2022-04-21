@@ -22,6 +22,19 @@ exports.indexRace = async (id, body) => {
   }
 };
 
+exports.updateEventAndIndexRaces = async (
+  esBodies = [],
+  competitionUnits = [],
+) => {
+  for (const esBody of esBodies) {
+    const updatedCU = competitionUnits?.find((cu) => cu.id === esBody.id);
+    if (updatedCU?.calendarEventId) {
+      esBody.event = updatedCU.calendarEventId;
+    }
+    await exports.indexRace(esBody.id, esBody);
+  }
+};
+
 exports.updateRace = async (id, body) => {
   if (api) {
     return await api.post(`races/_doc/${id}/_update`, {
@@ -168,5 +181,48 @@ exports.getUnfinishedRacesBySource = async (source) => {
     return allHits;
   } else {
     return null;
+  }
+};
+
+exports.getRaceWithDanglingEventsBySource = async (source, dbEventIds = []) => {
+  if (api && source) {
+    const reqBody = {
+      _source: ['id'],
+      from: 0,
+      size: 10000,
+      query: {
+        bool: {
+          must: [
+            {
+              term: {
+                'source.keyword': source.toUpperCase(),
+              },
+            },
+            {
+              exists: {
+                field: 'event',
+              },
+            },
+          ],
+          must_not: [
+            {
+              exists: {
+                field: 'is_unfinished',
+              },
+            },
+            {
+              terms: {
+                'event.keyword': dbEventIds,
+              },
+            },
+          ],
+        },
+      },
+    };
+    const esResult = await api.post(`races/_search`, reqBody);
+
+    return esResult.data.hits.hits;
+  } else {
+    return [];
   }
 };

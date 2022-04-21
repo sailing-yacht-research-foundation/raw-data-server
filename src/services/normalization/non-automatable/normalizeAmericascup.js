@@ -124,7 +124,7 @@ const normalizeRace = async ({
 
   const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
 
-  const raceMetadata = await createRace(
+  const { raceMetadata } = await createRace(
     race.id,
     race.name,
     regatta.name,

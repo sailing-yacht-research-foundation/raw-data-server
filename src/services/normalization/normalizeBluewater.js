@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -10,20 +9,15 @@ const {
   findCenter,
   createRace,
   createTurfPoint,
-  allPositionsToFeatureCollection,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 
-const normalizeRace = async (
-  {
-    BluewaterRace,
-    BluewaterPosition,
-    BluewaterMap,
-    BluewaterBoat,
-    BluewaterBoatHandicap,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  BluewaterRace,
+  BluewaterPosition,
+  BluewaterMap,
+  BluewaterBoat,
+  BluewaterBoatHandicap,
+}) => {
   const BLUEWATER_SOURCE = 'BLUEWATER';
   const race = BluewaterRace[0];
   const positions = BluewaterPosition;
@@ -117,7 +111,7 @@ const normalizeRace = async (
     boatsToSortedPositions,
   );
 
-  const raceMetadata = await createRace(
+  return await createRace(
     race.id,
     race.name,
     null, // event name
@@ -137,23 +131,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  if (process.env.ENABLE_MAIN_DB_SAVE_BLUEWATER !== 'true') {
-    const tracksGeojson = JSON.stringify(
-      allPositionsToFeatureCollection(boatsToSortedPositions),
-    );
-
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    await uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      BLUEWATER_SOURCE,
-      transaction,
-    );
-  }
-  return raceMetadata;
 };
 
 exports.normalizeRace = normalizeRace;

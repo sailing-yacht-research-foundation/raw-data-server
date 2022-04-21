@@ -34,6 +34,7 @@ const mapAndSave = async (data, raceMetadatas) => {
     };
   })[0];
 
+  const savedCompetitionUnits = [];
   for (const race of data.KwindooRace) {
     const raceMetadata = raceMetadatas?.find((m) => m.id === race.id);
     if (!raceMetadata) {
@@ -64,7 +65,7 @@ const mapAndSave = async (data, raceMetadatas) => {
       url: race.url,
       scrapedUrl: event.url,
     };
-    await saveCompetitionUnit({
+    const cu = await saveCompetitionUnit({
       event,
       race: inputRace,
       boats: inputBoats,
@@ -76,7 +77,9 @@ const mapAndSave = async (data, raceMetadatas) => {
         boat: true,
       },
     });
+    savedCompetitionUnits.push(cu);
   }
+  return savedCompetitionUnits;
 };
 
 const _mapBoats = (boats) => {

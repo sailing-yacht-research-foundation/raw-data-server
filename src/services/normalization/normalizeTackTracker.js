@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,32 +7,27 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
   findCenter,
 } = require('../../utils/gisUtils');
-const { uploadGeoJsonToS3 } = require('../uploadUtil');
 const markIdentifiers = new Set(['Mark', 'Marker', 'CourseMark']);
 
-const normalizeRace = async (
-  {
-    TackTrackerRace,
-    TackTrackerPosition,
-    TackTrackerStart,
-    TackTrackerFinish,
-    TackTrackerBoat,
-  },
-  transaction,
-) => {
+const normalizeRace = async ({
+  TackTrackerRace,
+  TackTrackerPosition,
+  TackTrackerStart,
+  TackTrackerFinish,
+  TackTrackerBoat,
+}) => {
   const TACKTRACKER_SOURCE = 'TACKTRACKER';
   const raceMetadatas = [];
+  const esBodies = [];
 
   if (
     !TackTrackerRace ||
     !TackTrackerPosition ||
     TackTrackerPosition.length === 0
   ) {
-    console.log('No race or positions so skipping.');
-    return;
+    throw new Error('No race or positions so skipping.');
   }
 
   for (const race of TackTrackerRace) {
@@ -86,8 +80,34 @@ const normalizeRace = async (
       'boat',
       'timestamp',
     );
+
+    const _setFirstMarkPosition = (markObject, { latKey, lonKey, nameKey }) => {
+      if (+markObject[latKey] === 0 && +markObject[lonKey] === 0) {
+        const markBoat = TackTrackerBoat.find(
+          (b) => b.race === race.id && b.name === markObject[nameKey],
+        );
+        const markFirstPos = TackTrackerPosition.find(
+          (p) => p.race === race.id && p.boat === markBoat.id,
+        );
+        if (markFirstPos) {
+          markObject[latKey] = markFirstPos.lat;
+          markObject[lonKey] = markFirstPos.lon;
+        }
+      }
+    };
+
     let startPoint;
-    if (startMark) {
+    if (startMark && startMark.start_mark_lat) {
+      _setFirstMarkPosition(startMark, {
+        latKey: 'start_mark_lat',
+        lonKey: 'start_mark_lon',
+        nameKey: 'start_mark_name',
+      });
+      _setFirstMarkPosition(startMark, {
+        latKey: 'start_pin_lat',
+        lonKey: 'start_pin_lon',
+        nameKey: 'start_pin_name',
+      });
       startPoint = findCenter(
         startMark.start_mark_lat,
         startMark.start_mark_lon,
@@ -104,6 +124,16 @@ const normalizeRace = async (
 
     let endPoint;
     if (finishMark) {
+      _setFirstMarkPosition(finishMark, {
+        latKey: 'finish_mark_lat',
+        lonKey: 'finish_mark_lon',
+        nameKey: 'finish_mark_name',
+      });
+      _setFirstMarkPosition(finishMark, {
+        latKey: 'finish_pin_lat',
+        lonKey: 'finish_pin_lon',
+        nameKey: 'finish_pin_name',
+      });
       endPoint = findCenter(
         finishMark.finish_mark_lat,
         finishMark.finish_mark_lon,
@@ -119,7 +149,7 @@ const normalizeRace = async (
     }
 
     const roughLength = findAverageLength('lat', 'lon', boatsToSortedPositions);
-    const raceMetadata = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       name,
       null, // event name. TackTracker's regatta has no name
@@ -139,25 +169,10 @@ const normalizeRace = async (
       handicapRules,
       unstructuredText,
     );
-    if (process.env.ENABLE_MAIN_DB_SAVE_TACKTRACKER !== 'true') {
-      const tracksGeojson = JSON.stringify(
-        allPositionsToFeatureCollection(boatsToSortedPositions),
-      );
-
-      await db.readyAboutRaceMetadata.create(raceMetadata, {
-        fields: Object.keys(raceMetadata),
-        transaction,
-      });
-      await uploadGeoJsonToS3(
-        race.id,
-        tracksGeojson,
-        TACKTRACKER_SOURCE,
-        transaction,
-      );
-    }
     raceMetadatas.push(raceMetadata);
+    esBodies.push(esBody);
   }
-  return raceMetadatas;
+  return { raceMetadatas, esBodies };
 };
 
 exports.normalizeRace = normalizeRace;
