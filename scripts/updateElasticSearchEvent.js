@@ -37,20 +37,25 @@ const elasticsearch = require('../src/utils/elasticsearch');
       for (const esRace of esRaces) {
         try {
           const dbRace = dbRaces.find((r) => r.raceId === esRace._id);
-          if (dbRace?.eventId) {
-            console.log(
-              `Update esRace ${esRace._id} with event id ${dbRace.eventId}`,
-            );
-            elasticsearch.updateRace(esRace._id, {
-              event: dbRace.eventId,
-            });
+          if (dbRace) {
+            if (dbRace.eventId) {
+              console.log(
+                `Update esRace ${esRace._id} with event id ${dbRace.eventId}`,
+              );
+              elasticsearch.updateRace(esRace._id, {
+                event: dbRace.eventId,
+              });
+            }
+          } else {
+            // If esRace._id does not exist in DB, then it is dangling race and delete
+            elasticsearch.deleteByIds(esRace._id);
           }
         } catch (err) {
           console.log(
-            `Error occured updating race ${esRace.id} source ${source}`,
+            `Error occured updating race ${esRace._id} source ${source}`,
             err,
           );
-          failedIds.push({ id: esRace.id, source, error: err });
+          failedIds.push({ id: esRace._id, source, error: err });
         }
       }
     } catch (err) {

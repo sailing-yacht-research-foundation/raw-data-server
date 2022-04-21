@@ -1,6 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
-const db = require('../models');
-const { TRACKER_MAP } = require('../constants');
 const syrfSuccessfulUrlDAL = require('../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
 const syrfFailedUrlDAL = require('../syrf-schema/dataAccess/v1/scrapedFailedUrl');
 
@@ -27,7 +24,7 @@ const registerFailure = async (source, url, error) => {
     return;
   }
   await syrfFailedUrlDAL.create({
-    url: url,
+    url,
     error,
     source: source.toUpperCase(),
     createdAt: Date.now(),
