@@ -86,6 +86,9 @@ const normalizeRace = async ({
         const markBoat = TackTrackerBoat.find(
           (b) => b.race === race.id && b.name === markObject[nameKey],
         );
+        if (!markBoat) {
+          return;
+        }
         const markFirstPos = TackTrackerPosition.find(
           (p) => p.race === race.id && p.boat === markBoat.id,
         );
@@ -114,7 +117,13 @@ const normalizeRace = async ({
         startMark.start_pin_lat,
         startMark.start_pin_lon,
       );
-    } else {
+    }
+
+    if (
+      !startPoint ||
+      (startPoint.geometry.coordinates[0] === 0 &&
+        startPoint.geometry.coordinates[1] === 0)
+    ) {
       const first3Positions = collectFirstNPositionsFromBoatsToPositions(
         boatsToSortedPositions,
         3,

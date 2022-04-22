@@ -13,7 +13,7 @@ const saveGeovoileData = async (data) => {
     return;
   }
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, esBody;
 
   // temporary add of test env to avoid accidentally saving on maindb until its mocked
   if (process.env.NODE_ENV !== 'test') {

@@ -15,7 +15,7 @@ const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveTackTrackerData = async (data) => {
   let errorMessage = '';
-  let raceMetadatas;
+  let raceMetadatas, esBodies;
 
   if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];
@@ -44,7 +44,10 @@ const saveTackTrackerData = async (data) => {
     if (data.TackTrackerRace.length > 0) {
       try {
         ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnit = await mapRaceQsToSyrf(data, raceMetadatas);
+        const savedCompetitionUnit = await mapTackTrackerToSyrf(
+          data,
+          raceMetadatas?.[0],
+        );
         await elasticsearch.updateEventAndIndexRaces(esBodies, [
           savedCompetitionUnit,
         ]);

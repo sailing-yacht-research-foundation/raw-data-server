@@ -9,7 +9,7 @@ const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveYachtBotData = async (data) => {
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, esBody;
 
   if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];
