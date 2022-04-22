@@ -9,7 +9,7 @@ const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveKattackData = async (data) => {
   let errorMessage = '';
-  let raceMetadata;
+  let raceMetadata, esBody;
 
   if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];

@@ -13,7 +13,7 @@ const { getTrackerLogoUrl } = require('./s3Util');
 
 const saveISailData = async (data) => {
   let errorMessage = '';
-  let raceMetadatas;
+  let raceMetadatas, esBodies;
 
   if (process.env.NODE_ENV !== 'test') {
     const finishedRaces = [];

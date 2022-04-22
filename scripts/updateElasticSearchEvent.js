@@ -42,7 +42,7 @@ const elasticsearch = require('../src/utils/elasticsearch');
               console.log(
                 `Update esRace ${esRace._id} with event id ${dbRace.eventId}`,
               );
-              elasticsearch.updateRace(esRace._id, {
+              await elasticsearch.updateRace(esRace._id, {
                 event: dbRace.eventId,
               });
             }
