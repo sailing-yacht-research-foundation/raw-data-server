@@ -1,3 +1,4 @@
+require('./src/services/__tests__/dbDALmocks');
 jest.mock('aws-sdk', () => {
   const mockS3Instance = {
     upload: jest.fn().mockReturnThis(),
@@ -9,18 +10,9 @@ jest.mock('aws-sdk', () => {
 });
 jest.mock('./src/utils/createMapScreenshot');
 jest.mock('./src/utils/elasticsearch');
-jest.mock('./src/syrfDataServices/v1/googleAPI', () => {
-  return {
-    reverseGeoCode: jest.fn().mockReturnValue({
-      countryCode: 'USA',
-      countryName: 'United States of America',
-      stateName: 'New York',
-      cityName: 'New York',
-    }),
-  };
-});
+jest.useFakeTimers();
 
-jest.setTimeout(60000);
+console.time = () => {}; // Disable console time since it generates too many logs
 afterAll(() => {
   jest.restoreAllMocks();
 });

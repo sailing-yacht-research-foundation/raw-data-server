@@ -1,5 +1,8 @@
 const { zonedTimeToUtc } = require('date-fns-tz');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
+const vesselParticipantTrackJsonDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantTrackJson');
+const competitionPointTrackJsonDAL = require('../../syrf-schema/dataAccess/v1/competitionPointTrackJson');
+const competitionResultDAL = require('../../syrf-schema/dataAccess/v1/competitionResult');
 const { createTransaction } = require('../../syrf-schema/utils/utils');
 const { competitionUnitStatus } = require('../../syrf-schema/enums');
 const db = require('../../syrf-schema/index');
@@ -269,11 +272,7 @@ exports.saveVesselTrackJsons = async (
       simplifiedStorageKey,
     };
   });
-  await db.VesselParticipantTrackJson.bulkCreate(dataToSave, {
-    ignoreDuplicates: true,
-    validate: true,
-    transaction,
-  });
+  await vesselParticipantTrackJsonDAL.bulkCreate(dataToSave, transaction);
   console.timeEnd('saveVesselTrackJsons');
 };
 
@@ -291,11 +290,7 @@ exports.savePointTrackJsons = async (
       storageKey,
     };
   });
-  await db.CompetitionPointTrackJson.bulkCreate(dataToSave, {
-    ignoreDuplicates: true,
-    validate: true,
-    transaction,
-  });
+  await competitionPointTrackJsonDAL.bulkCreate(dataToSave, transaction);
   console.timeEnd('savePointTrackJsons');
 };
 
@@ -314,9 +309,5 @@ exports.saveCompetitionResult = async (
       rank,
     };
   });
-  await db.CompetitionResult.bulkCreate(dataToSave, {
-    ignoreDuplicates: true,
-    validate: true,
-    transaction,
-  });
+  await competitionResultDAL.bulkCreate(dataToSave, transaction);
 };
