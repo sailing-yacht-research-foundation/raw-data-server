@@ -10,14 +10,9 @@ const mockPage = {
   evaluate: jest.fn(),
   waitForNetworkIdle: jest.fn(),
   screenshot: jest.fn(async () => {
-    const image = await new Promise((resolve, reject) => {
-      new Jimp(300, 530, 'white', (err, image) => {
-        if (err) reject(err);
-        resolve(image);
-      });
-    });
+    const image = await new Jimp(300, 530, 'white');
 
-    return image.getBufferAsync(Jimp.MIME_PNG);
+    return image.getBufferAsync(Jimp.MIME_JPEG);
   }),
 };
 const mockBrowser = {
@@ -60,11 +55,10 @@ describe('createMapScreenshot - function to generate an open graph image of a co
     expect(mockPage.waitForNetworkIdle).toHaveBeenCalledTimes(1);
     expect(mockPage.screenshot).toHaveBeenCalledTimes(1);
     expect(mockBrowser.close).toHaveBeenCalledTimes(1);
-
     expect(spy).toHaveBeenCalledTimes(2);
 
     const image = await Jimp.read(result);
-    expect(image.getMIME()).toEqual(Jimp.MIME_PNG);
+    expect(image.getMIME()).toEqual(Jimp.MIME_JPEG);
   });
   it('should throw error when no required environment is setup', async () => {
     delete process.env.MAPBOX_ID;

@@ -17,7 +17,7 @@ const {
   americasCup2021BoatVmg,
 } = require('../../schemas/parquets/americasCup2021');
 const yyyymmddFormat = require('../../utils/yyyymmddFormat');
-const uploadUtil = require('../uploadUtil');
+const uploadUtil = require('../../utils/uploadUtil');
 
 const getRaces = async () => {
   const races = await db.americasCup2021Race.findAll({ raw: true });

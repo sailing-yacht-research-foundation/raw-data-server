@@ -26,7 +26,8 @@ function deserializeBson(buffer, options) {
       throw new Error('Corrupted BSON file: the last object is incomplete.');
     } else if (_buffer[nextSize - 1] !== 0) {
       throw new Error(
-        `Corrupted BSON file: the ${_result.length + 1
+        `Corrupted BSON file: the ${
+          _result.length + 1
         }-th object does not end with 0.`,
       );
     }

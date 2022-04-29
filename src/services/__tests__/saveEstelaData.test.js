@@ -26,7 +26,9 @@ describe('Storing Estela data to DB', () => {
     createDorsal = jest.spyOn(db.estelaDorsal, 'bulkCreate');
     createPlayer = jest.spyOn(db.estelaPlayer, 'bulkCreate');
     createResult = jest.spyOn(db.estelaResult, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.estelaBuoy.destroy({ truncate: true });
@@ -87,6 +89,8 @@ describe('Storing Estela data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

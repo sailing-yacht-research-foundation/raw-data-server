@@ -5,7 +5,7 @@ const parquet = require('parquetjs-lite');
 const db = require('../models');
 const Op = db.Sequelize.Op;
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 const {
   kattackCombined,
   kattackPosition,

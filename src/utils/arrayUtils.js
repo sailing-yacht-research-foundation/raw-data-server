@@ -7,13 +7,13 @@
  */
 function appendArray(array1, array2) {
   if (!array2 || !array2.length) {
-      return;
+    return;
   }
   array2.forEach((a) => {
-      array1.push(a);
+    array1.push(a);
   });
 }
 
 module.exports = {
   appendArray,
-}
+};

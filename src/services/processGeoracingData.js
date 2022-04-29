@@ -9,7 +9,7 @@ const {
   georacingPosition,
 } = require('../schemas/parquets/georacing');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getEvents = async () => {
   const events = await db.georacingEvent.findAll({ raw: true });

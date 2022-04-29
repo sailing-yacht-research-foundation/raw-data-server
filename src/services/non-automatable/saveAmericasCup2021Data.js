@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const s3Util = require('../s3Util');
+const s3Util = require('../../utils/s3Util');
 const {
   normalizeRace,
 } = require('../normalization/non-automatable/normalizeAmericascup2021');

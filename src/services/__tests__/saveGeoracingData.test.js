@@ -36,7 +36,9 @@ describe('Storing georacing data to DB', () => {
     createSplittime = jest.spyOn(db.georacingSplittime, 'bulkCreate');
     createSO = jest.spyOn(db.georacingSplittimeObject, 'bulkCreate');
     createWeather = jest.spyOn(db.georacingWeather, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.georacingEvent.destroy({ truncate: true });
@@ -127,6 +129,8 @@ describe('Storing georacing data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

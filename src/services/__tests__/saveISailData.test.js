@@ -36,7 +36,9 @@ describe('Storing iSail data to DB', () => {
     createRounding = jest.spyOn(db.iSailRounding, 'bulkCreate');
     createStartline = jest.spyOn(db.iSailStartline, 'bulkCreate');
     createTrack = jest.spyOn(db.iSailTrack, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.iSailClass.destroy({ truncate: true });
@@ -127,6 +129,8 @@ describe('Storing iSail data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

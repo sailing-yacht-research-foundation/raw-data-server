@@ -2,14 +2,14 @@ const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKwindoo');
 const mapAndSave = require('./mappingsToSyrfDB/mapKwindooToSyrf');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
   createTurfPoint,
   getCountryAndCity,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveKwindooData = async (data) => {
   let errorMessage = '';

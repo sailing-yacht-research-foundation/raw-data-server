@@ -3,7 +3,7 @@ const { SOURCE } = require('../../src/constants');
 const competitionUnitDataAccess = require('../../src/syrf-schema/dataAccess/v1/competitionUnit');
 const calendarEventDataAccess = require('../../src/syrf-schema/dataAccess/v1/calendarEvent');
 const scrapedSuccessfulUrlDataAccess = require('../../src/syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
-const s3Util = require('../../src/services/s3Util');
+const s3Util = require('../../src/utils/s3Util');
 const elasticsearch = require('../../src/utils/elasticsearch');
 
 const db = require('../../src/syrf-schema/index');

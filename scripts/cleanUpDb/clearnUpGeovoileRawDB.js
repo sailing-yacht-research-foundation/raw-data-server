@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { SOURCE } = require('../../src/constants');
-const s3Util = require('../../src/services/s3Util');
+const s3Util = require('../../src/utils/s3Util');
 const elasticsearch = require('../../src/utils/elasticsearch');
 
 const db = require('../../src/models/index');

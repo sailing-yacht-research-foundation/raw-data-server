@@ -1,4 +1,4 @@
-require('./src/services/__tests__/dbDALmocks');
+require('./src/test-files/dbDALmocks');
 jest.mock('aws-sdk', () => {
   const mockS3Instance = {
     upload: jest.fn().mockReturnThis(),
@@ -10,8 +10,7 @@ jest.mock('aws-sdk', () => {
 });
 jest.mock('./src/utils/createMapScreenshot');
 jest.mock('./src/utils/elasticsearch');
-jest.useFakeTimers();
-
+jest.mock('./src/utils/weatherSlicerUtil');
 console.time = () => {}; // Disable console time since it generates too many logs
 afterAll(() => {
   jest.restoreAllMocks();

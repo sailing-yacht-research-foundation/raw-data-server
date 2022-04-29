@@ -1,4 +1,4 @@
-const { s3 } = require('../../uploadUtil');
+const { s3 } = require('../../../utils/uploadUtil');
 const { deserializeBsonFromFile } = require('../../bsonUtil');
 const fs = require('fs');
 const path = require('path');

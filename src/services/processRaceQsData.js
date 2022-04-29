@@ -9,7 +9,7 @@ const {
   raceQsPosition,
 } = require('../schemas/parquets/raceQs');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getRegattas = async () => {
   const regattas = await db.raceQsRegatta.findAll({ raw: true });

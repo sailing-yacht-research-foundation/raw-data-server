@@ -9,7 +9,7 @@ const {
   yellowbrickPosition,
 } = require('../schemas/parquets/yellowbrick');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getRaces = async () => {
   const races = await db.yellowbrickRace.findAll({ raw: true });

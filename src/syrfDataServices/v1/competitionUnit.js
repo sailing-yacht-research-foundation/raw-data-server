@@ -5,8 +5,7 @@ const competitionPointTrackJsonDAL = require('../../syrf-schema/dataAccess/v1/co
 const competitionResultDAL = require('../../syrf-schema/dataAccess/v1/competitionResult');
 const { createTransaction } = require('../../syrf-schema/utils/utils');
 const { competitionUnitStatus } = require('../../syrf-schema/enums');
-const db = require('../../syrf-schema/index');
-const { uploadStreamToS3 } = require('../../services/s3Util');
+const { uploadStreamToS3 } = require('../../utils/s3Util');
 const { Readable } = require('stream');
 
 exports.upsert = async (

@@ -9,7 +9,7 @@ const {
   regadataReport,
 } = require('../../schemas/parquets/regadata');
 const yyyymmddFormat = require('../../utils/yyyymmddFormat');
-const uploadUtil = require('../uploadUtil');
+const uploadUtil = require('../../utils/uploadUtil');
 
 const getRaces = async () => {
   const races = await db.regadataRace.findAll({ raw: true });

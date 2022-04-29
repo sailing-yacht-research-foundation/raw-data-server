@@ -141,6 +141,9 @@ describe('Storing bluewater data to DB', () => {
       expect.anything(),
     );
     expect(commitSpy).toHaveBeenCalled();
-    expect(elasticSearchSpy).toHaveBeenCalledWith([expect.objectContaining(expectedJsonData.ElasticSearchBody)], [expect.objectContaining(expectedJsonData.CompetitionUnit)]);
+    expect(elasticSearchSpy).toHaveBeenCalledWith(
+      [expect.objectContaining(expectedJsonData.ElasticSearchBody)],
+      [expect.objectContaining(expectedJsonData.CompetitionUnit)],
+    );
   });
 });

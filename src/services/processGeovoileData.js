@@ -9,7 +9,7 @@ const {
   modernGeovoileBoatPosition,
 } = require('../schemas/parquets/modernGeovoile');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getRaces = async () => {
   const races = await db.geovoileRace.findAll({ raw: true });

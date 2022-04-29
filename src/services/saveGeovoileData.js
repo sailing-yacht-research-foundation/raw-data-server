@@ -1,10 +1,10 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
 const mapGeovoileToSyrf = require('./mappingsToSyrfDB/mapGeovoileToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveGeovoileData = async (data) => {

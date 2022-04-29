@@ -29,7 +29,9 @@ describe('Storing yellowbrick data to DB', () => {
     createPosition = jest.spyOn(db.yellowbrickPosition, 'bulkCreate');
     createTag = jest.spyOn(db.yellowbrickTag, 'bulkCreate');
     createTeam = jest.spyOn(db.yellowbrickTeam, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.yellowbrickRace.destroy({ truncate: true });
@@ -92,6 +94,8 @@ describe('Storing yellowbrick data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

@@ -1,6 +1,6 @@
-jest.mock('../../syrf-schema/utils/utils', () => {
+jest.mock('../syrf-schema/utils/utils', () => {
   return {
-    ...jest.requireActual('../../syrf-schema/utils/utils'),
+    ...jest.requireActual('../syrf-schema/utils/utils'),
     createTransaction: jest.fn().mockResolvedValue({
       commit: jest.fn(),
       rollback: jest.fn(),
@@ -9,45 +9,45 @@ jest.mock('../../syrf-schema/utils/utils', () => {
 });
 
 // DAL Mocks
-jest.mock('../../syrf-schema/dataAccess/v1/calendarEvent', () => {
+jest.mock('../syrf-schema/dataAccess/v1/calendarEvent', () => {
   return {
     upsert: jest.fn((id, data) =>
       Promise.resolve(Object.assign({}, data, id ? { id } : {})),
     ),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/vesselParticipantGroup', () => {
+jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantGroup', () => {
   return {
     upsert: jest.fn((id, data) =>
       Promise.resolve(Object.assign({}, data, id ? { id } : {})),
     ),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/vessel', () => {
+jest.mock('../syrf-schema/dataAccess/v1/vessel', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
     getByVesselIdAndSource: jest.fn().mockResolvedValue(null),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/vesselParticipant', () => {
+jest.mock('../syrf-schema/dataAccess/v1/vesselParticipant', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
     addParticipant: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/participant', () => {
+jest.mock('../syrf-schema/dataAccess/v1/participant', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/markTracker', () => {
+jest.mock('../syrf-schema/dataAccess/v1/markTracker', () => {
   return {
     upsert: jest.fn((id, data) =>
       Promise.resolve(Object.assign({}, data, id ? { id } : {})),
     ),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/course', () => {
+jest.mock('../syrf-schema/dataAccess/v1/course', () => {
   return {
     clearPoints: jest.fn(() => Promise.resolve(null)),
     bulkInsertPoints: jest.fn((data) => Promise.resolve(data)),
@@ -56,122 +56,122 @@ jest.mock('../../syrf-schema/dataAccess/v1/course', () => {
     ),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/competitionUnit', () => {
+jest.mock('../syrf-schema/dataAccess/v1/competitionUnit', () => {
   return {
     upsert: jest.fn((id, data) =>
       Promise.resolve(Object.assign({}, data, id ? { id } : {})),
     ),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/vesselParticipantEvent', () => {
+jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantEvent', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/vesselParticipantTrackJson', () => {
+jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantTrackJson', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/competitionPointTrackJson', () => {
+jest.mock('../syrf-schema/dataAccess/v1/competitionPointTrackJson', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/competitionResult', () => {
+jest.mock('../syrf-schema/dataAccess/v1/competitionResult', () => {
   return {
     bulkCreate: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl', () => {
+jest.mock('../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl', () => {
   return {
     create: jest.fn((data) => Promise.resolve(data)),
   };
 });
-jest.mock('../../syrf-schema/dataAccess/v1/scrapedFailedUrl', () => {
+jest.mock('../syrf-schema/dataAccess/v1/scrapedFailedUrl', () => {
   return {
     create: jest.fn((data) => Promise.resolve(data)),
   };
 });
 
 // Entities Mocks
-jest.mock('../../syrf-schema/entities/CalendarEvent', () => () => {
+jest.mock('../syrf-schema/entities/CalendarEvent', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('CalendarEvent', {});
 });
-jest.mock('../../syrf-schema/entities/CompetitionUnit', () => () => {
+jest.mock('../syrf-schema/entities/CompetitionUnit', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('CompetitionUnit', {});
 });
-jest.mock('../../syrf-schema/entities/Course', () => () => {
+jest.mock('../syrf-schema/entities/Course', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('Course', {});
 });
-jest.mock('../../syrf-schema/entities/CoursePoint', () => () => {
+jest.mock('../syrf-schema/entities/CoursePoint', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('CoursePoint', {});
 });
-jest.mock('../../syrf-schema/entities/UserProfile', () => () => {
+jest.mock('../syrf-schema/entities/UserProfile', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserProfile', {});
 });
-jest.mock('../../syrf-schema/entities/UserShareableInfo', () => () => {
+jest.mock('../syrf-schema/entities/UserShareableInfo', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserShareableInfo', {});
 });
-jest.mock('../../syrf-schema/entities/Participant', () => () => {
+jest.mock('../syrf-schema/entities/Participant', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('Participant', {});
 });
-jest.mock('../../syrf-schema/entities/Vessel', () => () => {
+jest.mock('../syrf-schema/entities/Vessel', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselLifeRaft', {});
 });
-jest.mock('../../syrf-schema/entities/VesselLifeRaft', () => () => {
+jest.mock('../syrf-schema/entities/VesselLifeRaft', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselLifeRaft', {});
 });
-jest.mock('../../syrf-schema/entities/VesselParticipant', () => () => {
+jest.mock('../syrf-schema/entities/VesselParticipant', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselParticipant', {});
 });
-jest.mock('../../syrf-schema/entities/VesselParticipantCrew', () => () => {
+jest.mock('../syrf-schema/entities/VesselParticipantCrew', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselParticipantCrew', {});
 });
-jest.mock('../../syrf-schema/entities/VesselParticipantGroup', () => () => {
+jest.mock('../syrf-schema/entities/VesselParticipantGroup', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselParticipantGroup', {});
 });
-jest.mock('../../syrf-schema/entities/VesselEditor', () => () => {
+jest.mock('../syrf-schema/entities/VesselEditor', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselEditor', {});
 });
-jest.mock('../../syrf-schema/entities/VesselGroupEditor', () => () => {
+jest.mock('../syrf-schema/entities/VesselGroupEditor', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('VesselGroupEditor', {});
 });
-jest.mock('../../syrf-schema/entities/CourseSequencedGeometry', () => () => {
+jest.mock('../syrf-schema/entities/CourseSequencedGeometry', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('CourseSequencedGeometry', {});
 });
 jest.mock(
-  '../../syrf-schema/entities/CourseUnsequencedTimedGeometry',
+  '../syrf-schema/entities/CourseUnsequencedTimedGeometry',
   () => () => {
     const SequelizeMock = require('sequelize-mock');
     const dbMock = new SequelizeMock();
@@ -179,102 +179,102 @@ jest.mock(
   },
 );
 jest.mock(
-  '../../syrf-schema/entities/CourseUnsequencedUntimedGeometry',
+  '../syrf-schema/entities/CourseUnsequencedUntimedGeometry',
   () => () => {
     const SequelizeMock = require('sequelize-mock');
     const dbMock = new SequelizeMock();
     return dbMock.define('CourseUnsequencedUntimedGeometry', {});
   },
 );
-jest.mock('../../syrf-schema/entities/Developer', () => () => {
+jest.mock('../syrf-schema/entities/Developer', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('Developer', {});
 });
 jest.mock(
-  '../../syrf-schema/entities/VesselParticipantCrewTrackJson',
+  '../syrf-schema/entities/VesselParticipantCrewTrackJson',
   () => () => {
     const SequelizeMock = require('sequelize-mock');
     const dbMock = new SequelizeMock();
     return dbMock.define('VesselParticipantCrewTrackJson', {});
   },
 );
-jest.mock('../../syrf-schema/entities/TrackHistory', () => () => {
+jest.mock('../syrf-schema/entities/TrackHistory', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('TrackHistory', {});
 });
-jest.mock('../../syrf-schema/entities/MarkTracker', () => () => {
+jest.mock('../syrf-schema/entities/MarkTracker', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('MarkTracker', {});
 });
-jest.mock('../../syrf-schema/entities/ExpeditionSubscription', () => () => {
+jest.mock('../syrf-schema/entities/ExpeditionSubscription', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('ExpeditionSubscription', {});
 });
-jest.mock('../../syrf-schema/entities/Group', () => () => {
+jest.mock('../syrf-schema/entities/Group', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('Group', {});
 });
-jest.mock('../../syrf-schema/entities/GroupMember', () => () => {
+jest.mock('../syrf-schema/entities/GroupMember', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('GroupMember', {});
 });
-jest.mock('../../syrf-schema/entities/CalendarEditor', () => () => {
+jest.mock('../syrf-schema/entities/CalendarEditor', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('CalendarEditor', {});
 });
-jest.mock('../../syrf-schema/entities/CalendarGroupEditor', () => () => {
+jest.mock('../syrf-schema/entities/CalendarGroupEditor', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('CalendarGroupEditor', {});
 });
-jest.mock('../../syrf-schema/entities/UserFollower', () => () => {
+jest.mock('../syrf-schema/entities/UserFollower', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserFollower', {});
 });
-jest.mock('../../syrf-schema/entities/UserStream', () => () => {
+jest.mock('../syrf-schema/entities/UserStream', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserStream', {});
 });
-jest.mock('../../syrf-schema/entities/ExternalServiceCredential', () => () => {
+jest.mock('../syrf-schema/entities/ExternalServiceCredential', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('ExternalServiceCredential', {});
 });
-jest.mock('../../syrf-schema/entities/SubscriptionTier', () => () => {
+jest.mock('../syrf-schema/entities/SubscriptionTier', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('SubscriptionTier', {});
 });
-jest.mock('../../syrf-schema/entities/ParticipationCharge', () => () => {
+jest.mock('../syrf-schema/entities/ParticipationCharge', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('ParticipationCharge', {});
 });
-jest.mock('../../syrf-schema/entities/UserNotification', () => () => {
+jest.mock('../syrf-schema/entities/UserNotification', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserNotification', {});
 });
-jest.mock('../../syrf-schema/entities/UserSetting', () => () => {
+jest.mock('../syrf-schema/entities/UserSetting', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserSetting', {});
 });
-jest.mock('../../syrf-schema/entities/ScrapedSuccessfulUrl', () => () => {
+jest.mock('../syrf-schema/entities/ScrapedSuccessfulUrl', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('ScrapedSuccessfulUrl', {});
 });
-jest.mock('../../syrf-schema/entities/ScrapedFailedUrl', () => () => {
+jest.mock('../syrf-schema/entities/ScrapedFailedUrl', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define(
