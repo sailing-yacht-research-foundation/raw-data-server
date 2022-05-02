@@ -9,7 +9,7 @@ const {
   yachtbotPosition,
 } = require('../schemas/parquets/yachtBot');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getRaces = async () => {
   const races = await db.yachtBotRace.findAll({ raw: true });

@@ -1,5 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
-const { s3 } = require('../uploadUtil');
+const { s3 } = require('../../utils/uploadUtil');
 const fs = require('fs');
 const path = require('path');
 const temp = require('temp').track();

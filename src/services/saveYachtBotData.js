@@ -1,11 +1,11 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeYachtBot');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const mapYachtbotToSyrf = require('../services/mappingsToSyrfDB/mapYachtbotToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveYachtBotData = async (data) => {
   let errorMessage = '';

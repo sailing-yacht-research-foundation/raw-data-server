@@ -9,7 +9,7 @@ const {
   tractracCompetitorPosition,
 } = require('../schemas/parquets/tractrac');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getEvents = async () => {
   const events = await db.tractracEvent.findAll({ raw: true });

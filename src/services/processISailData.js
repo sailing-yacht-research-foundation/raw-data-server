@@ -6,7 +6,7 @@ const db = require('../models');
 const Op = db.Sequelize.Op;
 const { iSailCombined, iSailPosition } = require('../schemas/parquets/iSail');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getParticipants = async (eventIDs) => {
   const participants = await db.iSailEventParticipant.findAll({

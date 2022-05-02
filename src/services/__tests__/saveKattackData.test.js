@@ -8,7 +8,12 @@ const saveKattackData = require('../saveKattackData');
 const jsonData = require('../../test-files/kattack.json');
 
 describe('Storing kattack data to DB', () => {
-  let createYachtClub, createRace, createDevice, createPosition, createWaypoint, axiosPostSpy;
+  let createYachtClub,
+    createRace,
+    createDevice,
+    createPosition,
+    createWaypoint,
+    axiosPostSpy;
 
   beforeAll(async () => {
     await db.sequelize.sync();
@@ -17,7 +22,9 @@ describe('Storing kattack data to DB', () => {
     createDevice = jest.spyOn(db.kattackDevice, 'bulkCreate');
     createPosition = jest.spyOn(db.kattackPosition, 'bulkCreate');
     createWaypoint = jest.spyOn(db.kattackWaypoint, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.kattackYachtClub.destroy({ truncate: true });
@@ -66,6 +73,8 @@ describe('Storing kattack data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

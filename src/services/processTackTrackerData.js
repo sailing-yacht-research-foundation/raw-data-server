@@ -9,7 +9,7 @@ const {
   tackTrackerPosition,
 } = require('../schemas/parquets/tackTracker');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getRegattas = async () => {
   const regattas = await db.tackTrackerRegatta.findAll({ raw: true });

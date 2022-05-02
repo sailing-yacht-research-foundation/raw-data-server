@@ -50,7 +50,9 @@ describe('Storing trac trac data to DB', () => {
       'bulkCreate',
     );
     createRoute = jest.spyOn(db.tractracRoute, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.tractracEvent.destroy({ truncate: true });
@@ -108,7 +110,11 @@ describe('Storing trac trac data to DB', () => {
       expect.anything(),
     );
     expect(createEvent).toHaveBeenCalledWith(
-      [Object.assign({}, jsonData.TracTracEvent[0], { TracTracRaces: jsonData.TracTracRace })],
+      [
+        Object.assign({}, jsonData.TracTracEvent[0], {
+          TracTracRaces: jsonData.TracTracRace,
+        }),
+      ],
       expect.anything(),
     );
     expect(createCompetitor).toHaveBeenCalledWith(
@@ -144,6 +150,8 @@ describe('Storing trac trac data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

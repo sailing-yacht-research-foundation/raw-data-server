@@ -16,7 +16,9 @@ describe('Storing YachtBot data to DB', () => {
     createBuoy = jest.spyOn(db.yachtBotBuoy, 'bulkCreate');
     createYacht = jest.spyOn(db.yachtBotYacht, 'bulkCreate');
     createPosition = jest.spyOn(db.yachtBotPosition, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.yachtBotRace.destroy({ truncate: true });
@@ -59,6 +61,8 @@ describe('Storing YachtBot data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

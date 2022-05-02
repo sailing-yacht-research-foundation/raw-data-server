@@ -1,5 +1,5 @@
 const db = require('../../../models');
-const uploadUtil = require('../../uploadUtil');
+const uploadUtil = require('../../../utils/uploadUtil');
 const elasticsearch = require('../../../utils/elasticsearch');
 const mapScreenshotUtil = require('../../../utils/createMapScreenshot');
 const googleAPI = require('../../../syrfDataServices/v1/googleAPI');
@@ -86,18 +86,13 @@ const scraperTestMappings = [
 ];
 
 describe('Normalization test', () => {
-  let indexRaceSpy,
-    uploadGeoJsonSpy,
-    reverseGeoCodeSpy,
-    mapScreenshotSpy,
-    uploadDataSpy;
+  let indexRaceSpy, reverseGeoCodeSpy, mapScreenshotSpy, uploadDataSpy;
   beforeAll(async () => {
     await db.readyAboutRaceMetadata.sync();
     await db.readyAboutTrackGeoJsonLookup.sync();
     indexRaceSpy = jest.spyOn(elasticsearch, 'indexRace');
     mapScreenshotSpy = jest.spyOn(mapScreenshotUtil, 'createMapScreenshot');
     reverseGeoCodeSpy = jest.spyOn(googleAPI, 'reverseGeoCode');
-    uploadGeoJsonSpy = jest.spyOn(uploadUtil, 'uploadGeoJsonToS3');
     uploadDataSpy = jest.spyOn(uploadUtil, 'uploadDataToS3');
   });
   afterAll(async () => {
@@ -113,7 +108,7 @@ describe('Normalization test', () => {
 
   describe.each(scraperTestMappings)(
     'when calling normalizeRace on $filename',
-    ({ filename, testData, raceTable, source }) => {
+    ({ filename, testData, raceTable }) => {
       it('should save metadata to readyAboutRaceMetadatas, call elasticsearch indexRace and upload to s3', async () => {
         const { normalizeRace } = require(`../../normalization/${filename}`);
         const jsonData = require(`../../../test-files/${testData}`);
@@ -126,14 +121,6 @@ describe('Normalization test', () => {
         expect(mapScreenshotSpy).toHaveBeenCalledTimes(races.length); // For uploading the opengraph image
         expect(uploadDataSpy).toHaveBeenCalledTimes(races.length); // For uploading the opengraph image
         expect(reverseGeoCodeSpy).toHaveBeenCalledTimes(races.length);
-        races.forEach((race) => {
-          expect(uploadGeoJsonSpy).toHaveBeenCalledWith(
-            race.id,
-            expect.anything(),
-            source,
-            undefined,
-          );
-        });
       });
     },
   );

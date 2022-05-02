@@ -3,7 +3,7 @@ const temp = require('temp').track();
 const db = require('../models');
 const { liveDataSchema } = require('../schemas/parquets/liveData');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 const writeToParquet = require('./writeToParquet');
 
 const getDataPoints = async () => {

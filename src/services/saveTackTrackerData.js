@@ -1,7 +1,7 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeTackTracker');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const mapTackTrackerToSyrf = require('../services/mappingsToSyrfDB/mapTackTrackerToSyrf');
 const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
@@ -11,7 +11,7 @@ const {
   createTurfPoint,
   findCenter,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveTackTrackerData = async (data) => {
   let errorMessage = '';

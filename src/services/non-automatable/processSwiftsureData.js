@@ -9,7 +9,7 @@ const {
   swiftsurePosition,
 } = require('../../schemas/parquets/swiftsure');
 const yyyymmddFormat = require('../../utils/yyyymmddFormat');
-const uploadUtil = require('../uploadUtil');
+const uploadUtil = require('../../utils/uploadUtil');
 
 const getRaces = async () => {
   const races = await db.swiftsureRace.findAll({ raw: true });
@@ -53,7 +53,10 @@ const processSwiftsureData = async (optionalPath) => {
   const linksMap = await getObjectToRaceMapping('swiftsureLink', raceList);
   const marksMap = await getObjectToRaceMapping('swiftsureMark', raceList);
   const pointsMap = await getObjectToRaceMapping('swiftsurePoint', raceList);
-  const sponsorsMap = await getObjectToRaceMapping('swiftsureSponsor', raceList);
+  const sponsorsMap = await getObjectToRaceMapping(
+    'swiftsureSponsor',
+    raceList,
+  );
 
   const writer = await parquet.ParquetWriter.openFile(
     swiftsureCombined,

@@ -9,7 +9,7 @@ const {
   metasailCombined,
 } = require('../schemas/parquets/metasail');
 const yyyymmddFormat = require('../utils/yyyymmddFormat');
-const uploadUtil = require('./uploadUtil');
+const uploadUtil = require('../utils/uploadUtil');
 
 const getEvents = async () => {
   const events = await db.metasailEvent.findAll({ raw: true });

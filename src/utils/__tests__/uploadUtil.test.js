@@ -1,13 +1,10 @@
 const AWS = require('aws-sdk');
 const path = require('path');
-const db = require('../../models');
 const {
   uploadFileToS3,
-  uploadGeoJsonToS3,
   uploadDataToS3,
   deleteObjectInS3,
 } = require('../uploadUtil');
-const geojsonData = require('../../test-files/bluewater.json');
 
 describe('uploadFileToS3 test', () => {
   let s3;
@@ -40,48 +37,6 @@ describe('uploadFileToS3 test', () => {
       );
 
       expect(actual).toEqual('');
-    });
-  });
-
-  describe('Uploading geojson file to S3', () => {
-    const raceId = '1b140104-0bc8-11ec-9a03-0242ac130003';
-    const source = 'BLUEWATER';
-
-    beforeAll(async () => {
-      await db.readyAboutTrackGeoJsonLookup.sync();
-    });
-    afterAll(async () => {
-      await db.readyAboutTrackGeoJsonLookup.destroy({ truncate: true });
-      await db.sequelize.close();
-    });
-
-    it('should upload correctly', async () => {
-      const mockLocation = 'jest-bucket-test.geojson';
-      const uploadSpy = jest.spyOn(s3, 'upload');
-      s3.promise.mockResolvedValueOnce({
-        Location: mockLocation,
-      });
-      const createLookup = jest.spyOn(
-        db.readyAboutTrackGeoJsonLookup,
-        'create',
-      );
-      const actual = await uploadGeoJsonToS3(raceId, geojsonData, source);
-      expect(actual).toBe(mockLocation);
-      expect(createLookup).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: raceId,
-          source: source,
-          s3_id: expect.any(String),
-        }),
-        expect.anything(),
-      );
-      expect(uploadSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
-          Bucket: expect.anything(),
-          Key: expect.stringMatching(/\.geojson$/),
-          Body: geojsonData,
-        }),
-      );
     });
   });
 

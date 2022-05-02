@@ -1,7 +1,7 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeMetasail');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const mapMetasailToSyrf = require('./mappingsToSyrfDB/mapMetasailToSyrf');
 const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
@@ -10,7 +10,7 @@ const {
   createTurfPoint,
   getCountryAndCity,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveMetasailData = async (data) => {
   let errorMessage = '';

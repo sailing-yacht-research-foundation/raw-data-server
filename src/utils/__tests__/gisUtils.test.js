@@ -26,7 +26,6 @@ const {
   createGeometryLine,
 } = require('../gisUtils');
 const { reverseGeoCode } = require('../../syrfDataServices/v1/googleAPI');
-const esUtil = require('../elasticsearch');
 const { geometryType } = require('../../syrf-schema/enums');
 
 describe('gis_utils.js', () => {
@@ -383,8 +382,6 @@ describe('gis_utils.js', () => {
     });
   });
   it.only('#createRace should create and return correct race meta data', async () => {
-    const indexRaceSpy = jest.spyOn(esUtil, 'indexRace').mockResolvedValue({});
-
     const id = 'testraceid';
     const name = 'Race 1';
     const eventName = 'event1';
@@ -475,7 +472,7 @@ describe('gis_utils.js', () => {
       },
     };
 
-    const r = await createRace(
+    const { raceMetadata, esBody } = await createRace(
       id,
       name,
       eventName,
@@ -527,12 +524,13 @@ describe('gis_utils.js', () => {
       handicap_rules: handicapRules,
       great_circle: greatCircle,
     };
-    expect(r).toEqual(expectedResult);
+    expect(raceMetadata).toEqual(expectedResult);
 
     const expectedIndexedBody = {
       id,
       name: `${eventName} - ${name}`,
       event: eventId,
+      event_name: eventName,
       source,
       url,
       start_country: startCountry,
@@ -557,7 +555,7 @@ describe('gis_utils.js', () => {
       handicap_rules: handicapRules,
       unstructured_text: unstructuredText,
     };
-    expect(indexRaceSpy).toHaveBeenCalledWith(id, expectedIndexedBody);
+    expect(esBody).toEqual(expectedIndexedBody);
   });
 
   it('#convertDMSToDD should convert the  DMS parts into Decimal', () => {

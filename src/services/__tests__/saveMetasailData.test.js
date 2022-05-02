@@ -25,7 +25,9 @@ describe('Storing Metasail data to DB', () => {
     createBuoy = jest.spyOn(db.metasailBuoy, 'bulkCreate');
     createGate = jest.spyOn(db.metasailGate, 'bulkCreate');
     createPosition = jest.spyOn(db.metasailPosition, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.metasailEvent.destroy({ truncate: true });
@@ -80,6 +82,8 @@ describe('Storing Metasail data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

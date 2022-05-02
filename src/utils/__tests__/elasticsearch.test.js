@@ -11,11 +11,11 @@ describe('elasticsearch.js', () => {
     beforeAll(() => {
       oldEnvHost = process.env.AWS_ES_HOST;
       process.env.AWS_ES_HOST = 'http://test-elasticsearch';
-    })
+    });
     afterEach(() => {
       process.env.AWS_ES_HOST = oldEnvHost;
       jest.restoreAllMocks();
-    })
+    });
 
     it('should index race data', async () => {
       const { indexRace } = require('../elasticsearch');
@@ -25,12 +25,10 @@ describe('elasticsearch.js', () => {
         name: 'test race',
       };
       const fakedResp = { id: raceId };
-      axios.put.mockResolvedValueOnce(fakedResp)
+      axios.put.mockResolvedValueOnce(fakedResp);
 
       const r = await indexRace('raceid', raceData);
-      expect(axios.put).toHaveBeenCalledWith(
-        `races/_doc/${raceId}`,
-        raceData);
+      expect(axios.put).toHaveBeenCalledWith(`races/_doc/${raceId}`, raceData);
       expect(r).toEqual(fakedResp);
     });
 
@@ -50,7 +48,8 @@ describe('elasticsearch.js', () => {
         expect(err).toEqual(fakedError);
         expect(axios.put).toHaveBeenCalledWith(
           `races/_doc/${raceId}`,
-          raceData);
+          raceData,
+        );
       }
     });
   });

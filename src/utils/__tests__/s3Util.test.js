@@ -18,12 +18,7 @@ describe('s3Util.js', () => {
         Bucket: 'bucketName',
         Key: 'path/to/file.txt',
       };
-      const mockPromise = new Promise((resolve, reject) => {
-        // mock a response from s3 after done uploading
-        setTimeout(() => {
-          resolve(mockResult);
-        }, 100);
-      });
+      const mockPromise = Promise.resolve(mockResult);
 
       s3.promise.mockResolvedValueOnce(mockPromise);
       const { writeStream, uploadPromise } = uploadStreamToS3(
