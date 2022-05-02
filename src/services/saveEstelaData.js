@@ -11,46 +11,48 @@ const saveEstelaData = async (data) => {
   let errorMessage = '';
   let raceMetadata, esBody;
 
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      const finishedRaces = [];
-      for (const race of data.EstelaRace) {
-        const now = Date.now();
-        const raceStartTime = race.start_timestamp * 1000;
-        const raceEndTime = race.end_timestamp * 1000;
-        const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
-        if (isUnfinished) {
-          console.log(
-            `Future race detected for race original id ${race.original_id}`,
-          );
-          try {
-            // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-            await _indexUnfinishedRaceToES(race);
-          } catch (err) {
-            console.log(
-              `Failed indexing unfinished race original id ${race.original_id}`,
-              err,
-            );
-            errorMessage = databaseErrorHandler(err);
-          }
-        } else {
-          finishedRaces.push(race);
-        }
-      }
-      data.EstelaRace = finishedRaces;
+  if (!data?.EstelaRace) {
+    return;
+  }
 
-      if (data.EstelaRace?.length) {
-        ({ raceMetadata, esBody } = await normalizeRace(data));
-        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
-        await elasticsearch.updateEventAndIndexRaces(
-          [esBody],
-          [savedCompetitionUnit],
+  try {
+    const finishedRaces = [];
+    for (const race of data.EstelaRace) {
+      const now = Date.now();
+      const raceStartTime = race.start_timestamp * 1000;
+      const raceEndTime = race.end_timestamp * 1000;
+      const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
+      if (isUnfinished) {
+        console.log(
+          `Future race detected for race original id ${race.original_id}`,
         );
+        try {
+          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+          await _indexUnfinishedRaceToES(race);
+        } catch (err) {
+          console.log(
+            `Failed indexing unfinished race original id ${race.original_id}`,
+            err,
+          );
+          errorMessage = databaseErrorHandler(err);
+        }
+      } else {
+        finishedRaces.push(race);
       }
-    } catch (err) {
-      console.log(err);
-      errorMessage = databaseErrorHandler(err);
     }
+    data.EstelaRace = finishedRaces;
+
+    if (data.EstelaRace?.length) {
+      ({ raceMetadata, esBody } = await normalizeRace(data));
+      const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+      await elasticsearch.updateEventAndIndexRaces(
+        [esBody],
+        [savedCompetitionUnit],
+      );
+    }
+  } catch (err) {
+    console.log(err);
+    errorMessage = databaseErrorHandler(err);
   }
 
   if (!errorMessage) {

@@ -81,6 +81,7 @@ describe('Storing bluewater data to DB', () => {
   it('should not save anything when json data is empty', async () => {
     await saveBluewaterData();
     expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should save data correctly', async () => {
@@ -102,10 +103,10 @@ describe('Storing bluewater data to DB', () => {
       expect.anything(),
     );
     expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(
-      expectedJsonData.Participants.length,
+      expectedJsonData.VesselParticipants.length,
     );
     expect(participantBulkCreateSpy).toHaveBeenCalledTimes(
-      expectedJsonData.Participants.length,
+      expectedJsonData.VesselParticipants.length,
     );
     expectedJsonData.Participants.forEach((p) => {
       expect(participantBulkCreateSpy).toHaveBeenCalledWith(
