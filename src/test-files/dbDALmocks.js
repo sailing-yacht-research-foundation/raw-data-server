@@ -269,6 +269,11 @@ jest.mock('../syrf-schema/entities/UserSetting', () => () => {
   const dbMock = new SequelizeMock();
   return dbMock.define('UserSetting', {});
 });
+jest.mock('../syrf-schema/entities/ParticipantWaiverAgreement', () => () => {
+  const SequelizeMock = require('sequelize-mock');
+  const dbMock = new SequelizeMock();
+  return dbMock.define('ParticipantWaiverAgreement', {});
+});
 jest.mock('../syrf-schema/entities/ScrapedSuccessfulUrl', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
