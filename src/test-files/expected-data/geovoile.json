@@ -1,0 +1,296 @@
+{
+  "CalendarEvent": {
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "France",
+    "city": "Carantec",
+    "source": "GEOVOILE",
+    "openGraphImage": "mockLocation",
+    "status": "COMPLETED",
+    "approximateStartTime": 1631448000000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 13,
+    "startMonth": 9,
+    "startYear": 2021,
+    "approximateEndTime": 1632042102000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 20,
+    "endMonth": 9,
+    "endYear": 2021,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [-3.9119123624332195, 48.722474348611726]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "Solitaire du Figaro 2021",
+    "startTime": 1631448000000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-3.9119123624332195, 48.722474348611726],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-3.901602028822528, 48.72502659869215],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-3.93121, 48.72111], [-3.88253, 48.72111], [-3.88253, 48.73116999999999], [-3.93121, 48.73116999999999], [-3.93121, 48.72111]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "endTime": 1632042102000,
+    "openGraphImage": "mockLocation",
+    "country": "France",
+    "city": "Carantec",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "1b7ea9bf-2b96-4998-90bf-3844dd5697cc",
+    "scrapedUrl": "http://lasolitaire.geovoile.com/2021/tracker/",
+    "approximateStart": 1631448000000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [
+    {
+      "id": "daaeb5fb-4b7f-478a-bd97-1fc5e025c7d1",
+      "publicName": "Breizh Cola",
+      "vesselId": "44",
+      "source": "GEOVOILE"
+    }, {
+      "id": "55693906-43b4-431e-ba4f-0995d4433dde",
+      "publicName": "Ageas - Team Baie de Saint Brieuc",
+      "vesselId": "14",
+      "source": "GEOVOILE"
+    }
+  ],
+  "VesselParticipants": [
+    {
+      "vesselId": "daaeb5fb-4b7f-478a-bd97-1fc5e025c7d1",
+      "isCommittee": false
+    }, {
+      "vesselId": "55693906-43b4-431e-ba4f-0995d4433dde",
+      "isCommittee": false
+    }
+  ],
+  "Participants": [
+    [{
+      "id": "bd0cbe8b-b129-4f91-b5d2-59e3e6eee948",
+      "publicName": "G.Mahé",
+      "invitationStatus": "SELF_REGISTERED"
+    }],
+    [{
+      "id": "bc90f993-0b7e-4083-8e6e-e13bdf494d68",
+      "publicName": "M.Garnier",
+      "invitationStatus": "SELF_REGISTERED"
+    }]
+  ],
+  "Course": {
+    "name": "Solitaire du Figaro 2021",
+    "competitionUnitId": null,
+    "courseSequencedGeometries": [{
+        "geometryType": "Point",
+        "properties": {
+          "name": "Baie de Morlaix",
+          "type": "city",
+          "poi": true
+        },
+        "coordinates": [[-3.8888300000000005, 48.69750000000002]],
+        "order": 0,
+        "points": [{
+            "position": [-3.8888300000000005, 48.69750000000002],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "buoy",
+          "type": "buoy",
+          "poi": true
+        },
+        "coordinates": [[-9.603, 51.38933]],
+        "order": 0,
+        "points": [{
+            "position": [-9.603, 51.38933],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Saint-Nazaire",
+          "type": "start",
+          "poi": true
+        },
+        "coordinates": [[-2.1999999999999993, 47.28333000000001]],
+        "order": 0,
+        "points": [{
+            "position": [-2.1999999999999993, 47.28333000000001],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "buoy",
+          "type": "buoy",
+          "poi": true
+        },
+        "coordinates": [[-2.663830000000001, 47.001329999999996]],
+        "order": 0,
+        "points": [{
+            "position": [-2.663830000000001, 47.001329999999996],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "buoy",
+          "type": "buoy",
+          "poi": true
+        },
+        "coordinates": [[-2.3466699999999996, 47.16733000000002]],
+        "order": 0,
+        "points": [{
+            "position": [-2.3466699999999996, 47.16733000000002],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "buoyS",
+          "type": "buoyS",
+          "poi": true
+        },
+        "coordinates": [[-2.601330000000001, 47.16499999999999]],
+        "order": 0,
+        "points": [{
+            "position": [-2.601330000000001, 47.16499999999999],
+            "markTrackerId": null
+          }
+        ]
+      }
+    ]
+  },
+  "CompetitionResults": [
+    {
+      "competitionUnitId": "295c5217-6677-4bb7-827c-fb1a55ccfb09",
+      "finishTime": 1631820725000,
+      "time": 365525000,
+      "rank": 1
+    }, {
+      "competitionUnitId": "295c5217-6677-4bb7-827c-fb1a55ccfb09",
+      "finishTime": 1631832122000,
+      "time": 376922000,
+      "rank": 2
+    }
+  ],
+  "ElasticSearchBody": {
+    "id": "295c5217-6677-4bb7-827c-fb1a55ccfb09",
+    "name": "Solitaire du Figaro 2021",
+    "event": null,
+    "event_name": null,
+    "source": "GEOVOILE",
+    "url": "http://lasolitaire.geovoile.com/2021/tracker/",
+    "start_country": "France",
+    "start_city": "Carantec",
+    "start_year": 2021,
+    "start_month": 9,
+    "start_day": 12,
+    "approx_start_time_ms": 1631448000000,
+    "approx_end_time_ms": 1632042102000,
+    "approx_duration_ms": 594102000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-3.9119123624332195, 48.722474348611726],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [-3.90675732643278, 48.723750588632285],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [-3.901602028822528, 48.72502659869215],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[-3.93121, 48.72111], [-3.88253, 48.72111], [-3.88253, 48.73116999999999], [-3.93121, 48.73116999999999], [-3.93121, 48.72111]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 4.003228369272828,
+    "approx_distance_km": 0.8078006617583945,
+    "num_boats": 2,
+    "avg_time_between_positions": 674500,
+    "boat_models": [],
+    "boat_identifiers": ["55693906-43b4-431e-ba4f-0995d4433dde", "daaeb5fb-4b7f-478a-bd97-1fc5e025c7d1"],
+    "boat_names": ["Ageas - Team Baie de Saint Brieuc", "Breizh Cola"],
+    "handicap_rules": [],
+    "unstructured_text": ["Maël Garnier", "Gildas Mahé"]
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "295c5217-6677-4bb7-827c-fb1a55ccfb09",
+    "name": "Solitaire du Figaro 2021",
+    "source": "GEOVOILE",
+    "url": "http://lasolitaire.geovoile.com/2021/tracker/",
+    "start_year": 2021,
+    "start_month": 9,
+    "start_day": 12,
+    "approx_start_time_ms": 1631448000000,
+    "approx_end_time_ms": 1632042102000,
+    "is_unfinished": true,
+    "scraped_original_id": "http://lasolitaire.geovoile.com/2021/tracker/",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-2.1999999999999993, 47.28333000000001]
+    },
+    "start_country": "France",
+    "start_city": "Saint-Nazaire"
+  }
+}

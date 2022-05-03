@@ -8,49 +8,42 @@ const { getTrackerLogoUrl } = require('../utils/s3Util');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveGeovoileData = async (data) => {
-  if (!data.geovoileRace) {
-    console.log(`Race is not found`);
+  if (!data?.geovoileRace) {
     return;
   }
   let errorMessage = '';
   let raceMetadata, esBody;
 
   // temporary add of test env to avoid accidentally saving on maindb until its mocked
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      const { geovoileRace } = data;
-      const now = Date.now();
-      const isUnfinished =
-        geovoileRace.startTime * 1000 > now ||
-        geovoileRace.endTime * 1000 > now;
-      if (isUnfinished) {
+  try {
+    const { geovoileRace } = data;
+    const now = Date.now();
+    const isUnfinished =
+      geovoileRace.startTime * 1000 > now || geovoileRace.endTime * 1000 > now;
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race scrapedUrl = ${geovoileRace.scrapedUrl}`,
+      );
+      try {
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(geovoileRace, data);
+      } catch (err) {
         console.log(
-          `Future race detected for race scrapedUrl = ${geovoileRace.scrapedUrl}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(geovoileRace, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race scrapedUrl ${geovoileRace.scrapedUrl}`,
-            err,
-          );
-        }
-      } else {
-        ({ raceMetadata, esBody } = await normalizeGeovoile(data));
-        const savedCompetitionUnit = await mapGeovoileToSyrf(
-          data,
-          raceMetadata,
-        );
-        await elasticsearch.updateEventAndIndexRaces(
-          [esBody],
-          [savedCompetitionUnit],
+          `Failed indexing unfinished race scrapedUrl ${geovoileRace.scrapedUrl}`,
+          err,
         );
       }
-    } catch (err) {
-      console.log(err);
-      errorMessage = databaseErrorHandler(err);
+    } else {
+      ({ raceMetadata, esBody } = await normalizeGeovoile(data));
+      const savedCompetitionUnit = await mapGeovoileToSyrf(data, raceMetadata);
+      await elasticsearch.updateEventAndIndexRaces(
+        [esBody],
+        [savedCompetitionUnit],
+      );
     }
+  } catch (err) {
+    console.log(err);
+    errorMessage = databaseErrorHandler(err);
   }
 
   if (!errorMessage && raceMetadata) {
