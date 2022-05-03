@@ -1,0 +1,398 @@
+{
+  "CalendarEvent": {
+    "name": "Monaco Sportsboat Winter Series (Act II)",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Monaco",
+    "city": "Fontvieille",
+    "source": "GEORACING",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": 100356,
+    "status": "COMPLETED",
+    "approximateStartTime": 1481241600000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 9,
+    "startMonth": 12,
+    "startYear": 2016,
+    "approximateEndTime": 1481414400000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 11,
+    "endMonth": 12,
+    "endYear": 2016,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [7.436119482449852, 43.720359414523166]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "GC 32. Race 3",
+    "startTime": 1481379480000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [7.436119482449852, 43.720359414523166],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [7.436097030300908, 43.72039127705497],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[7.435958299999999, 43.720034999999996], [7.436304799999999, 43.720034999999996], [7.436304799999999, 43.720768299999996], [7.435958299999999, 43.720768299999996], [7.435958299999999, 43.720034999999996]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792",
+    "endTime": 1481380759000,
+    "openGraphImage": "mockLocation",
+    "country": "Monaco",
+    "city": "Fontvieille",
+    "status": "COMPLETED",
+    "scrapedOriginalId": 93491,
+    "scrapedUrl": "https://player.georacing.com/?event=100356&race=93491",
+    "approximateStart": 1481379480000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [
+    {
+      "id": "7abac60b-a3a9-419f-9060-e1b472f955dc",
+      "publicName": "ENGIE",
+      "globalId": 1,
+      "vesselId": 10074772,
+      "model": "GC32",
+      "lengthInMeters": 10,
+      "source": "GEORACING"
+    }, {
+      "id": "53218728-01e0-4ea0-88e3-3e65c141cf80",
+      "publicName": "MALZIA",
+      "globalId": "",
+      "vesselId": 10074773,
+      "model": "GC32",
+      "lengthInMeters": 10,
+      "source": "GEORACING"
+    }, {
+      "id": "59ae4459-1e99-480f-a200-47de6fa44328",
+      "publicName": "REAL TEAM",
+      "globalId": "",
+      "vesselId": 10074774,
+      "model": "GC32",
+      "lengthInMeters": 10,
+      "source": "GEORACING"
+    }
+  ],
+  "VesselParticipants": [
+    {
+      "vesselId": "7abac60b-a3a9-419f-9060-e1b472f955dc"
+    }, {
+      "vesselId": "53218728-01e0-4ea0-88e3-3e65c141cf80"
+    }, {
+      "vesselId": "59ae4459-1e99-480f-a200-47de6fa44328"
+    }
+  ],
+  "Participants": [],
+  "Course": {
+    "name": "Course 1",
+    "competitionUnitId": null,
+    "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Start",
+          "courseObjectId": 171274
+        },
+        "coordinates": [[7.4343967437744, 43.727873063745], [7.4343967437744, 43.727873063745]],
+        "id": "6b0de638-e6b6-432a-ab31-5ce2f01ea729",
+        "order": 1,
+        "points": [{
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "56f454e7-eb8b-4170-90c9-bc3867d3ab59"
+          }, {
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "87293d04-fd67-4cfb-a129-1a758f102b93"
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "1S",
+          "courseObjectId": 171275
+        },
+        "coordinates": [[7.4343967437744, 43.727873063745]],
+        "id": "59c2e29a-57f5-4893-a1bc-e0742ca9cbf1",
+        "order": 2,
+        "points": [{
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "8f973b29-0326-4cc5-b66f-e0c2d8a96b3d"
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Gate 2",
+          "courseObjectId": 171276
+        },
+        "coordinates": [[7.4343967437744, 43.727873063745], [7.4343967437744, 43.727873063745]],
+        "id": "98a68a64-288c-4cd9-a5f7-2b34f563a6cb",
+        "order": 3,
+        "points": [{
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "dffdb192-2464-4095-bed7-4c584432572d"
+          }, {
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "2019902b-a27d-4b95-865f-4f3ac99a01a1"
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Gate 1",
+          "courseObjectId": 171277
+        },
+        "coordinates": [[7.4343967437744, 43.727873063745], [7.4343967437744, 43.727873063745]],
+        "id": "04344ec0-d2fe-493f-b351-80f28f5a3610",
+        "order": 4,
+        "points": [{
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "fd78b154-f464-46d4-aee2-18d539f545a3"
+          }, {
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "0623d2c6-15e9-49f3-821d-c0555087ed1e"
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Finish",
+          "courseObjectId": 171278
+        },
+        "coordinates": [[7.4343967437744, 43.727873063745], [7.4343967437744, 43.727873063745]],
+        "id": "8f1428f2-c6fd-46f3-81e5-12b14d7f3120",
+        "order": 5,
+        "points": [{
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "f618dbbd-82cb-4010-a29b-fe5edb28d59b"
+          }, {
+            "position": [7.4343967437744, 43.727873063745],
+            "markTrackerId": "c28ae114-07b1-495e-a7d1-638ee4dd70b5"
+          }
+        ]
+      }
+    ]
+  },
+  "MarkTrackers": [
+    {
+      "name": "RC Start",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "Start Buoy",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "1S",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "2P",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "2S",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "1P",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "1S",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "2P",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }, {
+      "name": "2S",
+      "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+    }
+  ],
+  "VesselParticipantEvents": [
+    {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "6b0de638-e6b6-432a-ab31-5ce2f01ea729",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:17:40.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "6b0de638-e6b6-432a-ab31-5ce2f01ea729",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:17:43.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "6b0de638-e6b6-432a-ab31-5ce2f01ea729",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:17:50.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "59c2e29a-57f5-4893-a1bc-e0742ca9cbf1",
+      "eventType": "VesselPointRounding",
+      "eventTime": "2016-12-10T14:19:09.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "59c2e29a-57f5-4893-a1bc-e0742ca9cbf1",
+      "eventType": "VesselPointRounding",
+      "eventTime": "2016-12-10T14:19:26.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "59c2e29a-57f5-4893-a1bc-e0742ca9cbf1",
+      "eventType": "VesselPointRounding",
+      "eventTime": "2016-12-10T14:19:35.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "98a68a64-288c-4cd9-a5f7-2b34f563a6cb",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:24:42.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "98a68a64-288c-4cd9-a5f7-2b34f563a6cb",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:25:30.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "98a68a64-288c-4cd9-a5f7-2b34f563a6cb",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:25:44.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "04344ec0-d2fe-493f-b351-80f28f5a3610",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:30:48.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "04344ec0-d2fe-493f-b351-80f28f5a3610",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:31:20.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "04344ec0-d2fe-493f-b351-80f28f5a3610",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:31:37.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "8f1428f2-c6fd-46f3-81e5-12b14d7f3120",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:36:22.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "8f1428f2-c6fd-46f3-81e5-12b14d7f3120",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:36:27.000Z"
+    }, {
+      "competitionUnitId": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+      "markId": "8f1428f2-c6fd-46f3-81e5-12b14d7f3120",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": "2016-12-10T14:37:26.000Z"
+    }
+  ],
+  "ElasticSearchBodies": [{
+    "id": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+    "name": "Monaco Sportsboat Winter Series (Act II) - GC 32. Race 3",
+    "event": "376d3f4d-05ca-4ce2-85a6-2977bba13792",
+    "event_name": "Monaco Sportsboat Winter Series (Act II)",
+    "source": "GEORACING",
+    "url": "https://player.georacing.com/?event=100356&race=93491",
+    "start_country": "Monaco",
+    "start_city": "Fontvieille",
+    "start_year": 2016,
+    "start_month": 12,
+    "start_day": 10,
+    "approx_start_time_ms": 1481379480000,
+    "approx_end_time_ms": 1481380759000,
+    "approx_duration_ms": 1279000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [7.436119482449852, 43.720359414523166],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [7.436108256378365, 43.72037534578962],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [7.436097030300908, 43.72039127705497],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[7.435958299999999, 43.720034999999996], [7.436304799999999, 43.720034999999996], [7.436304799999999, 43.720768299999996], [7.435958299999999, 43.720768299999996], [7.435958299999999, 43.720034999999996]]],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "approx_area_sq_km": 0.0022756112723244016,
+    "approx_distance_km": 0.003975943421611832,
+    "num_boats": 3,
+    "avg_time_between_positions": 800,
+    "boat_models": ["GC32"],
+    "boat_identifiers": [],
+    "boat_names": ["ENGIE", "MALZIA", "REAL TEAM"],
+    "handicap_rules": [],
+    "unstructured_text": ["Monaco"]
+    }
+  ],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "3fc678dd-84a8-4448-a9b7-ec7237ea0465",
+    "name": "Monaco Sportsboat Winter Series (Act II) - GC 32. Race 3",
+    "event_name": "Monaco Sportsboat Winter Series (Act II)",
+    "source": "GEORACING",
+    "url": "https://player.georacing.com/?event=100356&race=93491",
+    "start_year": 2016,
+    "start_month": 12,
+    "start_day": 10,
+    "approx_start_time_ms": 1481379480000,
+    "approx_end_time_ms": 1481380759000,
+    "is_unfinished": true,
+    "scraped_original_id": "93491",
+    "approx_start_point": {
+        "type": "Point",
+        "coordinates": [7.4343967437744, 43.727873063745]
+    },
+    "start_country": "Monaco",
+    "start_city": "La Condamine"
+  }
+}
