@@ -102,5 +102,86 @@
       }]
     }]
   },
-  "ElasticSearchBody": {}
+  "ElasticSearchBody": {
+    "id": "f6373964-9496-46ba-b907-fa90f8c6fb62",
+    "name": "Regata Diumenge 11-04-2021",
+    "source": "ESTELA",
+    "url": "https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021",
+    "start_country": "Spain",
+    "start_city": "Palamós",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 11,
+    "approx_start_time_ms": 1618136700000,
+    "approx_end_time_ms": 1618142804000,
+    "approx_duration_ms": 6104000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [3.1180188, 41.8491494],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [3.117714649265677, 41.84899495040119],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [3.1174105, 41.848840499999994],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[3.117395, 41.848831], [3.117426, 41.848831], [3.117426, 41.84885], [3.117395, 41.84885], [3.117395, 41.848831]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 0.00000543700957756119,
+    "approx_distance_km": 0.060979379901067624,
+    "num_boats": 1,
+    "avg_time_between_positions": 500,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["AG Sailing"],
+    "handicap_rules": [],
+    "unstructured_text": []
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "f6373964-9496-46ba-b907-fa90f8c6fb62",
+    "name": "Regata Diumenge 11-04-2021",
+    "source": "ESTELA",
+    "url": "https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021",
+    "start_country": "Spain",
+    "start_city": "Palamós",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 11,
+    "approx_start_time_ms": 1618136700000,
+    "approx_end_time_ms": 1618142804000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [3.1180188, 41.8491494]
+    },
+    "is_unfinished": true,
+    "scraped_original_id": "6985"
+  }
 }

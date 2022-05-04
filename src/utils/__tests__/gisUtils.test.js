@@ -381,7 +381,7 @@ describe('gis_utils.js', () => {
       expect(r).toBe(false);
     });
   });
-  it.only('#createRace should create and return correct race meta data', async () => {
+  it('#createRace should create and return correct race meta data', async () => {
     const id = 'testraceid';
     const name = 'Race 1';
     const eventName = 'event1';

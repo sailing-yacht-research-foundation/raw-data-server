@@ -1,3 +1,4 @@
+const { addDays } = require('date-fns');
 const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
 const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
 const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
@@ -31,7 +32,7 @@ describe('Storing estela data to DB', () => {
     vesselParticipantEventBulkCreateSpy,
     scrapedSuccessfulUrlCreateSpy,
     commitSpy,
-    elasticSearchSpy;
+    elasticSearchUpdateSpy;
 
   beforeAll(async () => {
     calendarEventUpsertSpy = jest.spyOn(calendarEventDAL, 'upsert');
@@ -69,7 +70,10 @@ describe('Storing estela data to DB', () => {
     jest
       .spyOn(utils, 'createTransaction')
       .mockResolvedValue({ commit: commitSpy, rollback: jest.fn() });
-    elasticSearchSpy = jest.spyOn(elasticsearch, 'updateEventAndIndexRaces');
+    elasticSearchUpdateSpy = jest.spyOn(
+      elasticsearch,
+      'updateEventAndIndexRaces',
+    );
   });
   afterAll(async () => {
     jest.restoreAllMocks();
@@ -142,9 +146,58 @@ describe('Storing estela data to DB', () => {
       expect.anything(),
     );
     expect(commitSpy).toHaveBeenCalled();
-    expect(elasticSearchSpy).toHaveBeenCalledWith(
+    expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
       [expect.objectContaining(expectedJsonData.ElasticSearchBody)],
       [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
+  });
+
+  describe('when saving an unfinished race', () => {
+    let futureDate, elasticSearchIndexSpy;
+    beforeEach(() => {
+      const now = new Date();
+      futureDate = addDays(now, 1);
+      elasticSearchIndexSpy = jest.spyOn(elasticsearch, 'indexRace');
+    });
+    it('should only call elastic search to index and do not save in db when start time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.EstelaRace[0].start_timestamp =
+        futureDate.getTime() / 1000;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.start_year = futureDate.getFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getDate();
+      expectedElasticsearchBody.approx_start_time_ms = futureDate.getTime();
+
+      await saveEstelaData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
+
+    it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.EstelaRace[0].end_timestamp =
+        futureDate.getTime() / 1000;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+
+      await saveEstelaData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
   });
 });

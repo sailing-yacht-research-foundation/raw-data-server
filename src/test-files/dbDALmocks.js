@@ -14,6 +14,7 @@ jest.mock('../syrf-schema/dataAccess/v1/calendarEvent', () => {
     upsert: jest.fn((id, data) =>
       Promise.resolve(Object.assign({}, data, id ? { id } : {})),
     ),
+    getByScrapedOriginalIdAndSource: jest.fn(() => Promise.resolve()),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantGroup', () => {
@@ -30,8 +31,11 @@ jest.mock('../syrf-schema/dataAccess/v1/vessel', () => {
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vesselParticipant', () => {
+  const uuid = require('uuid');
   return {
-    bulkCreate: jest.fn((data) => Promise.resolve(data)),
+    bulkCreate: jest.fn((data) =>
+      Promise.resolve(data.map((d) => ({ id: uuid.v4(), ...d }))),
+    ),
     addParticipant: jest.fn((data) => Promise.resolve(data)),
   };
 });
@@ -268,6 +272,11 @@ jest.mock('../syrf-schema/entities/UserSetting', () => () => {
   const SequelizeMock = require('sequelize-mock');
   const dbMock = new SequelizeMock();
   return dbMock.define('UserSetting', {});
+});
+jest.mock('../syrf-schema/entities/ParticipantWaiverAgreement', () => () => {
+  const SequelizeMock = require('sequelize-mock');
+  const dbMock = new SequelizeMock();
+  return dbMock.define('ParticipantWaiverAgreement', {});
 });
 jest.mock('../syrf-schema/entities/ScrapedSuccessfulUrl', () => () => {
   const SequelizeMock = require('sequelize-mock');

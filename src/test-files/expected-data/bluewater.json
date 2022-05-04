@@ -295,5 +295,24 @@
     "boat_names": ["ALIEN", "FOXY LADY"],
     "handicap_rules": [],
     "unstructured_text": ["Alien was built in Hobart in 1996 and with southern ocean racing in mind. Under her former owner, Mike Welsh, Alien competed successfully in the Sydney Hobart, coming second in its division in 1999, before being modified for bay racing. Justin Brenan purchased ALIEN 2008 and, with ocean racing in mind, restored the designer’s original stability by adding 250 kg additional ballast.", "I I love to sail. I have been involved in boats for thirty years. Looking forward to the King Iland race."]
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+    "name": "2021 ORCV Melbourne to Port Fairy Race",
+    "source": "BLUEWATER",
+    "url": "https://race.bluewatertracks.com/2021-orcv-melbourne-to-port-fairy-race",
+    "start_country": "Australia",
+    "start_city": "Queenscliff",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 1,
+    "approx_start_time_ms": 1617305400000,
+    "approx_end_time_ms": 1617760800000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [144.66759995402717, -38.27398501835957]
+    },
+    "is_unfinished": true,
+    "scraped_original_id": "605b1b069dbcc81862098de5"
   }
 }
