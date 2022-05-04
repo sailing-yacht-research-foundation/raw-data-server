@@ -39,7 +39,7 @@ const normalizeRace = async ({
         let isPositionInRaceTime;
         const isAfterStart = pos.time >= race.start * 1000;
         const isBeforeEnd = pos.time <= race.stop * 1000;
-        if (index === 0) {
+        if (index === '0') {
           // include positions before start if race is earliest
           isPositionInRaceTime = isBeforeEnd;
         } else if (index === iSailRace.length - 1) {

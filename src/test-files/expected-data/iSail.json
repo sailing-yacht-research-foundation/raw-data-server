@@ -1,0 +1,397 @@
+{
+  "CalendarEvent": {
+    "name": "SuperKaagCup",
+    "externalUrl": "http://app.i-sail.com/eventDetails/344",
+    "locationName": "De Kaag",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Netherlands",
+    "city": "Warmond",
+    "source": "ISAIL",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": 344,
+    "status": "COMPLETED",
+    "approximateStartTime": 1535230800000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 26,
+    "startMonth": 8,
+    "startYear": 2018,
+    "approximateEndTime": 1535230800000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 26,
+    "endMonth": 8,
+    "endYear": 2018,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [4.543563744665282, 52.20431253021224]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "Race 1",
+    "startTime": 1535272500000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [4.543563744665282, 52.20431253021224],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [4.542148276066085, 52.20444557250074],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[4.536712, 52.19712], [4.537315, 52.19712], [4.537315, 52.197345], [4.536712, 52.197345], [4.536712, 52.19712]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "b982813a-e1e2-446c-8117-76fcbe9ac9db",
+    "endTime": 1535274300000,
+    "openGraphImage": "mockLocation",
+    "country": "Netherlands",
+    "city": "Warmond",
+    "status": "COMPLETED",
+    "scrapedOriginalId": 1035,
+    "scrapedUrl": "http://app.i-sail.com/eventDetails/344/raceDetails?race=Race+1",
+    "approximateStart": 1535272500000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "348afb19-6af4-4f16-b3b0-65ea2b11a0c0",
+      "publicName": "Bruno en Tijn",
+      "globalId": "1174",
+      "vesselId": 6398,
+      "model": "RS Feva",
+      "source": "ISAIL"
+    }, {
+      "id": "54ae1995-d034-4349-9d96-033a988ea170",
+      "publicName": "Wietske en Tjalle",
+      "globalId": "421",
+      "vesselId": 6400,
+      "model": "RS Feva",
+      "source": "ISAIL"
+    }, {
+      "id": "3fed9650-4b5d-4ca6-aaa0-456ecf15caeb",
+      "publicName": "Sebastiaan en Borg",
+      "globalId": "4309",
+      "vesselId": 6399,
+      "model": "RS Feva",
+      "source": "ISAIL"
+    }
+  ],
+  "VesselParticipants": [
+    {
+      "vesselId": "348afb19-6af4-4f16-b3b0-65ea2b11a0c0"
+    }, {
+      "vesselId": "54ae1995-d034-4349-9d96-033a988ea170"
+    }, {
+      "vesselId": "3fed9650-4b5d-4ca6-aaa0-456ecf15caeb"
+    }
+  ],
+  "Participants": [],
+  "Course": {
+    "name": "SuperKaagCup - Race 1",
+    "competitionUnitId": null,
+    "calendarEventId": "b982813a-e1e2-446c-8117-76fcbe9ac9db",
+    "courseSequencedGeometries": [{
+        "geometryType": "Point",
+        "properties": {
+          "name": "1",
+          "courseMarkId": 3750
+        },
+        "coordinates": [[4.5395425125503, 52.201262609395]],
+        "order": 1,
+        "points": [{
+            "position": [4.5395425125503, 52.201262609395],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "3",
+          "courseMarkId": 3751
+        },
+        "coordinates": [[4.5431359308013, 52.20044781987]],
+        "order": 2,
+        "points": [{
+            "position": [4.5431359308013, 52.20044781987],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "4",
+          "courseMarkId": 3752
+        },
+        "coordinates": [[4.5454265373, 52.204715252735]],
+        "order": 3,
+        "points": [{
+            "position": [4.5454265373, 52.204715252735],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "5",
+          "courseMarkId": 3755
+        },
+        "coordinates": [[4.5429929401588, 52.204992457705]],
+        "order": 6,
+        "points": [{
+            "position": [4.5429929401588, 52.204992457705],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "start",
+          "courseMarkId": 3749
+        },
+        "coordinates": [[4.5444232099303, 52.204233625396], [4.5427042763481, 52.204391428785]],
+        "order": 4,
+        "points": [{
+            "position": [4.5444232099303, 52.204233625396]
+          }, {
+            "position": [4.5427042763481, 52.204391428785]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "finish",
+          "courseMarkId": 3756
+        },
+        "coordinates": [[4.5415741014272, 52.20450063775], [4.5427224492819, 52.204390504465]],
+        "order": 7,
+        "points": [{
+            "position": [4.5415741014272, 52.20450063775]
+          }, {
+            "position": [4.5427224492819, 52.204390504465]
+          }
+        ]
+      }
+    ]
+  },
+  "MarkTrackers": [],
+  "VesselParticipantEvents": [
+    {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "f663582a-fc74-4ab0-91a6-cc69ee290668",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1535272805000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "f663582a-fc74-4ab0-91a6-cc69ee290668",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1535272805000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "f663582a-fc74-4ab0-91a6-cc69ee290668",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1535272815000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "e9330310-5aec-4ae8-872d-e99ad94f19d3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273088000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "e9330310-5aec-4ae8-872d-e99ad94f19d3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273096000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "e9330310-5aec-4ae8-872d-e99ad94f19d3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273104000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "dc244d58-1221-4b13-b34b-15d71aab493b",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273232000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "dc244d58-1221-4b13-b34b-15d71aab493b",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273239000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "dc244d58-1221-4b13-b34b-15d71aab493b",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273285000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "fe37e657-77b9-4dc5-981e-016ef240e19d",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273499000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "fe37e657-77b9-4dc5-981e-016ef240e19d",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273511000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "fe37e657-77b9-4dc5-981e-016ef240e19d",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535273535000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "c7f2b420-12cf-4ee6-bc0e-f52683b8d971",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535274184000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "c7f2b420-12cf-4ee6-bc0e-f52683b8d971",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535274185000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "c7f2b420-12cf-4ee6-bc0e-f52683b8d971",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1535274189000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "f00a59a5-b8e6-4555-b78e-bda6db96b409",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1535274249000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "f00a59a5-b8e6-4555-b78e-bda6db96b409",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1535274250000
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "markId": "f00a59a5-b8e6-4555-b78e-bda6db96b409",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1535274252000
+    }
+  ],
+  "CompetitionResults": [{
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "finishTime": 1535274249000,
+      "time": 1749000,
+      "rank": 1
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "finishTime": 1535274250000,
+      "time": 1750000,
+      "rank": 2
+    }, {
+      "competitionUnitId": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+      "finishTime": 1535274252000,
+      "time": 1752000,
+      "rank": 3
+    }
+  ],
+  "ElasticSearchBodies": [{
+    "id": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+    "name": "SuperKaagCup - Race 1",
+    "event": "b982813a-e1e2-446c-8117-76fcbe9ac9db",
+    "event_name": "SuperKaagCup",
+    "source": "ISAIL",
+    "url": "http://app.i-sail.com/eventDetails/344/raceDetails?race=Race+1",
+    "start_country": "Netherlands",
+    "start_city": "Warmond",
+    "start_year": 2018,
+    "start_month": 8,
+    "start_day": 26,
+    "approx_start_time_ms": 1535272500000,
+    "approx_end_time_ms": 1535274300000,
+    "approx_duration_ms": 1800000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [4.543563744665282, 52.20431253021224],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [4.542856011425165, 52.20437905347328],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [4.542148276066085, 52.20444557250074],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[4.536712, 52.19712], [4.537315, 52.19712], [4.537315, 52.197345], [4.536712, 52.197345], [4.536712, 52.19712]]],
+      "crs": {
+      "type": "name",
+      "properties": {
+        "name": "EPSG:4326"
+      }
+      }
+    },
+    "approx_area_sq_km": 0.0010305377715994534,
+    "approx_distance_km": 0.09758571293294924,
+    "num_boats": 3,
+    "avg_time_between_positions": 1000,
+    "boat_models": ["RS Feva"],
+    "boat_identifiers": ["421", "1174", "4309"],
+    "boat_names": ["Bruno en Tijn", "Wietske en Tjalle", "Sebastiaan en Borg"],
+    "handicap_rules": [],
+    "unstructured_text": []
+    }
+  ],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "2cacbc44-6198-4d9e-8c12-c5bb98210101",
+    "name": "SuperKaagCup - Race 1",
+    "event_name": "SuperKaagCup",
+    "source": "ISAIL",
+    "url": "http://app.i-sail.com/eventDetails/344/raceDetails?race=Race+1",
+    "start_year": 2018,
+    "start_month": 8,
+    "start_day": 26,
+    "approx_start_time_ms": 1535272500000,
+    "approx_end_time_ms": 1535274300000,
+    "is_unfinished": true,
+    "scraped_original_id": "1035",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [4.543563744665282, 52.20431253021224]
+    },
+    "start_country": "Netherlands",
+    "start_city": "Warmond"
+  }
+}

@@ -1,136 +1,227 @@
-const axios = require('axios');
-const db = require('../../models');
-const normalizeObj = require('../normalization/normalizeISail');
-const normalizeSpy = jest
-  .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
+const { addDays } = require('date-fns');
+const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
+const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
+const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
+const vesselParticipantDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
+const participantDAL = require('../../syrf-schema/dataAccess/v1/participant');
+const markTrackerDAL = require('../../syrf-schema/dataAccess/v1/markTracker');
+const courseDAL = require('../../syrf-schema/dataAccess/v1/course');
+const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
+const competitionResultDAL = require('../../syrf-schema/dataAccess/v1/competitionResult');
+const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
+const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
+const utils = require('../../syrf-schema/utils/utils');
+const elasticsearch = require('../../utils/elasticsearch');
+
+const { SOURCE } = require('../../constants');
 const saveISailData = require('../saveISailData');
 const jsonData = require('../../test-files/iSail.json');
+const expectedJsonData = require('../../test-files/expected-data/iSail.json');
 
 describe('Storing iSail data to DB', () => {
-  let createClass,
-    createCourseMark,
-    createEvent,
-    createEventParticipant,
-    createEventTracksData,
-    createMark,
-    createPosition,
-    createRace,
-    createResult,
-    createRounding,
-    createStartline,
-    createTrack,
-    axiosPostSpy;
+  let calendarEventUpsertSpy,
+    vesselParticipantGroupUpsertSpy,
+    vesselGetByVesselIdAndSourceSpy,
+    vesselBulkCreateSpy,
+    vesselParticipantBulkCreateSpy,
+    vesselParticipantAddParticipantSpy,
+    participantBulkCreateSpy,
+    markTrackerUpsertSpy,
+    courseUpsertSpy,
+    courseBulkInsertPointsSpy,
+    competitionUnitUpsertSpy,
+    competitionResultBulkCreateSpy,
+    vesselParticipantEventBulkCreateSpy,
+    scrapedSuccessfulUrlCreateSpy,
+    commitSpy,
+    elasticSearchUpdateSpy;
 
   beforeAll(async () => {
-    await db.sequelize.sync();
-    createClass = jest.spyOn(db.iSailClass, 'bulkCreate');
-    createCourseMark = jest.spyOn(db.iSailCourseMark, 'bulkCreate');
-    createEvent = jest.spyOn(db.iSailEvent, 'bulkCreate');
-    createEventParticipant = jest.spyOn(db.iSailEventParticipant, 'bulkCreate');
-    createEventTracksData = jest.spyOn(db.iSailEventTracksData, 'bulkCreate');
-    createMark = jest.spyOn(db.iSailMark, 'bulkCreate');
-    createPosition = jest.spyOn(db.iSailPosition, 'bulkCreate');
-    createRace = jest.spyOn(db.iSailRace, 'bulkCreate');
-    createResult = jest.spyOn(db.iSailResult, 'bulkCreate');
-    createRounding = jest.spyOn(db.iSailRounding, 'bulkCreate');
-    createStartline = jest.spyOn(db.iSailStartline, 'bulkCreate');
-    createTrack = jest.spyOn(db.iSailTrack, 'bulkCreate');
-    axiosPostSpy = jest
-      .spyOn(axios, 'post')
-      .mockImplementation(() => Promise.resolve());
+    calendarEventUpsertSpy = jest.spyOn(calendarEventDAL, 'upsert');
+    vesselParticipantGroupUpsertSpy = jest.spyOn(
+      vesselParticipantGroupDAL,
+      'upsert',
+    );
+    vesselGetByVesselIdAndSourceSpy = jest.spyOn(
+      vesselDAL,
+      'getByVesselIdAndSource',
+    );
+    vesselBulkCreateSpy = jest.spyOn(vesselDAL, 'bulkCreate');
+    vesselParticipantBulkCreateSpy = jest.spyOn(
+      vesselParticipantDAL,
+      'bulkCreate',
+    );
+    vesselParticipantAddParticipantSpy = jest.spyOn(
+      vesselParticipantDAL,
+      'addParticipant',
+    );
+    participantBulkCreateSpy = jest.spyOn(participantDAL, 'bulkCreate');
+    markTrackerUpsertSpy = jest.spyOn(markTrackerDAL, 'upsert');
+    courseUpsertSpy = jest.spyOn(courseDAL, 'upsert');
+    courseBulkInsertPointsSpy = jest.spyOn(courseDAL, 'bulkInsertPoints');
+    competitionUnitUpsertSpy = jest.spyOn(competitionUnitDAL, 'upsert');
+    competitionResultBulkCreateSpy = jest.spyOn(
+      competitionResultDAL,
+      'bulkCreate',
+    );
+    vesselParticipantEventBulkCreateSpy = jest.spyOn(
+      vesselParticipantEventDAL,
+      'bulkCreate',
+    );
+    scrapedSuccessfulUrlCreateSpy = jest.spyOn(
+      scrapedSuccessfulUrlDAL,
+      'create',
+    );
+    commitSpy = jest.fn().mockResolvedValue();
+    jest
+      .spyOn(utils, 'createTransaction')
+      .mockResolvedValue({ commit: commitSpy, rollback: jest.fn() });
+    elasticSearchUpdateSpy = jest.spyOn(
+      elasticsearch,
+      'updateEventAndIndexRaces',
+    );
   });
   afterAll(async () => {
-    await db.iSailClass.destroy({ truncate: true });
-    await db.iSailEvent.destroy({ truncate: true });
-    await db.iSailRace.destroy({ truncate: true });
-    await db.iSailEventParticipant.destroy({ truncate: true });
-    await db.iSailEventTracksData.destroy({ truncate: true });
-    await db.iSailPosition.destroy({ truncate: true });
-    await db.iSailTrack.destroy({ truncate: true });
-    await db.iSailMark.destroy({ truncate: true });
-    await db.iSailStartline.destroy({ truncate: true });
-    await db.iSailCourseMark.destroy({ truncate: true });
-    await db.iSailRounding.destroy({ truncate: true });
-    await db.iSailResult.destroy({ truncate: true });
-    await db.iSailFailedUrl.destroy({ truncate: true });
-    await db.iSailSuccessfulUrl.destroy({ truncate: true });
-    await db.sequelize.close();
+    jest.restoreAllMocks();
   });
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should not save anything when empty data', async () => {
-    await saveISailData({});
-    expect(createClass).toHaveBeenCalledTimes(0);
-    expect(createCourseMark).toHaveBeenCalledTimes(0);
-    expect(createEvent).toHaveBeenCalledTimes(0);
-    expect(createEventParticipant).toHaveBeenCalledTimes(0);
-    expect(createEventTracksData).toHaveBeenCalledTimes(0);
-    expect(createMark).toHaveBeenCalledTimes(0);
-    expect(createPosition).toHaveBeenCalledTimes(0);
-    expect(createRace).toHaveBeenCalledTimes(0);
-    expect(createResult).toHaveBeenCalledTimes(0);
-    expect(createRounding).toHaveBeenCalledTimes(0);
-    expect(createStartline).toHaveBeenCalledTimes(0);
-    expect(createTrack).toHaveBeenCalledTimes(0);
-    expect(normalizeSpy).toHaveBeenCalledTimes(0);
-    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
+  it('should not save anything when json data is empty', async () => {
+    await saveISailData();
+    expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
   });
+
   it('should save data correctly', async () => {
     await saveISailData(jsonData);
-    expect(createClass).toHaveBeenCalledWith(
-      jsonData.iSailClass,
+
+    const race = jsonData.iSailRace[0];
+    expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
+      jsonData.iSailEvent[0].id,
+      expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );
-    expect(createCourseMark).toHaveBeenCalledWith(
-      jsonData.iSailCourseMark,
+    expect(vesselParticipantGroupUpsertSpy).toHaveBeenCalledTimes(1);
+    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(0); // this will only be called if reuse boat is true
+    expect(vesselBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.Vessels,
       expect.anything(),
     );
-    expect(createEvent).toHaveBeenCalledWith(
-      jsonData.iSailEvent,
+    expect(vesselParticipantBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.VesselParticipants,
       expect.anything(),
     );
-    expect(createEventParticipant).toHaveBeenCalledWith(
-      jsonData.iSailEventParticipant,
+    expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(0);
+    expect(participantBulkCreateSpy).toHaveBeenCalledTimes(0);
+    expectedJsonData.Participants?.forEach((p) => {
+      expect(participantBulkCreateSpy).toHaveBeenCalledWith(
+        p,
+        expect.anything(),
+      );
+    });
+    expect(markTrackerUpsertSpy).toHaveBeenCalledTimes(
+      expectedJsonData.MarkTrackers.length,
+    );
+    expectedJsonData.MarkTrackers?.forEach((m) => {
+      expect(markTrackerUpsertSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining(m),
+        expect.anything(),
+      );
+    });
+    expect(courseBulkInsertPointsSpy).toHaveBeenCalledTimes(1);
+    expect(courseUpsertSpy).toHaveBeenCalledWith(
+      null,
+      expect.objectContaining({
+        ...expectedJsonData.Course,
+        courseSequencedGeometries:
+          expectedJsonData.Course.courseSequencedGeometries.map((g) =>
+            expect.objectContaining(g),
+          ),
+      }),
       expect.anything(),
     );
-    expect(createEventTracksData).toHaveBeenCalledWith(
-      jsonData.iSailEventTracksData,
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledWith(
+      race.id,
+      expect.objectContaining(expectedJsonData.CompetitionUnit),
       expect.anything(),
     );
-    expect(createMark).toHaveBeenCalledWith(
-      jsonData.iSailMark,
+    expect(competitionResultBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.CompetitionResults?.map((cr) =>
+        expect.objectContaining(cr),
+      ),
       expect.anything(),
     );
-    expect(createPosition).toHaveBeenCalledWith(
-      jsonData.iSailPosition,
+    expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipantEvents?.length ? 1 : 0,
+    );
+    expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.VesselParticipantEvents.map((i) =>
+        expect.objectContaining(i),
+      ),
       expect.anything(),
     );
-    expect(createRace).toHaveBeenCalledWith(
-      jsonData.iSailRace,
+    expect(scrapedSuccessfulUrlCreateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: race.url,
+        originalId: race.original_id,
+        source: SOURCE.ISAIL,
+      }),
       expect.anything(),
     );
-    expect(createResult).toHaveBeenCalledWith(
-      jsonData.iSailResult,
-      expect.anything(),
+    expect(commitSpy).toHaveBeenCalled();
+    expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
+      expect.objectContaining(expectedJsonData.ElasticSearchBodies),
+      [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
-    expect(createRounding).toHaveBeenCalledWith(
-      jsonData.iSailRounding,
-      expect.anything(),
-    );
-    expect(createStartline).toHaveBeenCalledWith(
-      jsonData.iSailStartline,
-      expect.anything(),
-    );
-    expect(createTrack).toHaveBeenCalledWith(
-      jsonData.iSailTrack,
-      expect.anything(),
-    );
-    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(
-      process.env.GEO_DATA_SLICER ? 1 : 0,
-    );
+  });
+
+  describe('when saving an unfinished race', () => {
+    let futureDate, elasticSearchIndexSpy;
+    beforeEach(() => {
+      const now = new Date();
+      futureDate = addDays(now, 1);
+      elasticSearchIndexSpy = jest.spyOn(elasticsearch, 'indexRace');
+    });
+    it('should only call elastic search to index and do not save in db when start time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.iSailRace[0].start = futureDate.getTime() / 1000;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.start_year = futureDate.getFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getDate();
+      expectedElasticsearchBody.approx_start_time_ms = futureDate.getTime();
+
+      await saveISailData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
+
+    it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.iSailRace[0].stop = futureDate.getTime() / 1000;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+
+      await saveISailData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
   });
 });
