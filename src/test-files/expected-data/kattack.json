@@ -1,0 +1,218 @@
+{
+  "CalendarEvent": {
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "United States",
+    "city": "Pensacola Beach",
+    "source": "KATTACK",
+    "openGraphImage": "mockLocation",
+    "status": "COMPLETED",
+    "approximateStartTime": 1525968000000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 11,
+    "startMonth": 5,
+    "startYear": 2018,
+    "approximateEndTime": 1526515200000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 17,
+    "endMonth": 5,
+    "endYear": 2018,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [-87.29222, 30.25416]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "2018 Regatta al Sol - Racing",
+    "startTime": 1525968000000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-87.29222, 30.25416],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-86.75555, 21.27777],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-87.27301, 30.27755], [-71.3507661834, 30.27755], [-71.3507661834, 41.57407568], [-87.27301, 41.57407568], [-87.27301, 30.27755]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "endTime": 1526515200000,
+    "openGraphImage": "mockLocation",
+    "country": "United States",
+    "city": "Pensacola Beach",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "1721",
+    "scrapedUrl": "http://kws.kattack.com/GEPlayer/GMPosDisplay.aspx?FeedID=1721",
+    "approximateStart": 1525968000000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "40b915ef-bb7d-404d-95b9-d1ce10fff359",
+      "publicName": "Atlantic Union II",
+      "vesselId": "0-8306558.3^1721^8835f05f-a158-40f9-8df9-d53b135448e9",
+      "source": "KATTACK"
+    }, {
+      "id": "36d02dae-a964-4405-adc8-1e52a0ec41a5",
+      "publicName": "Hot Pursuit",
+      "vesselId": "0-8097309.1^1721^2f8e73fe-7e8a-4713-908c-3ba7dfaefcde",
+      "source": "KATTACK"
+    }, {
+      "id": "832fc7c6-6919-428f-87b2-43c21cb767c4",
+      "publicName": "Madam J",
+      "vesselId": "0-2849672.1^1721^16b721d2-8fce-4ca3-a916-f9e26b26c11f",
+      "source": "KATTACK"
+    }
+  ],
+  "VesselParticipants": [{
+      "vesselId": "40b915ef-bb7d-404d-95b9-d1ce10fff359",
+      "isCommittee": false
+    }, {
+      "vesselId": "36d02dae-a964-4405-adc8-1e52a0ec41a5",
+      "isCommittee": false
+    }, {
+      "vesselId": "832fc7c6-6919-428f-87b2-43c21cb767c4",
+      "isCommittee": false
+    }
+  ],
+  "Participants": [],
+  "Course": {
+    "name": "2018 Regatta al Sol - Racing",
+    "competitionUnitId": null,
+    "courseSequencedGeometries": [{
+        "geometryType": "Point",
+        "properties": {
+          "name": "Sol Start"
+        },
+        "coordinates": [[-87.29222, 30.25416]],
+        "order": 0,
+        "points": [{
+            "position": [-87.29222, 30.25416],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Sol Finish"
+        },
+        "coordinates": [[-86.75555, 21.27777]],
+        "order": 1,
+        "points": [{
+            "position": [-86.75555, 21.27777],
+            "markTrackerId": null
+          }
+        ]
+      }
+    ]
+  },
+  "ElasticSearchBody": {
+    "id": "5b53bd5a-ead0-4158-a7a6-8bcce052c5dc",
+    "name": "2018 Regatta al Sol - Racing",
+    "event": null,
+    "event_name": null,
+    "source": "KATTACK",
+    "url": "http://kws.kattack.com/GEPlayer/GMPosDisplay.aspx?FeedID=1721",
+    "start_country": "United States",
+    "start_city": "Pensacola Beach",
+    "start_year": 2018,
+    "start_month": 5,
+    "start_day": 10,
+    "approx_start_time_ms": 1525968000000,
+    "approx_end_time_ms": 1526515200000,
+    "approx_duration_ms": 547200000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-87.29222, 30.25416],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [-87.0137182044727, 25.766210633713957],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [-86.75555, 21.27777],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[-87.27301, 30.27755], [-71.3507661834, 30.27755], [-71.3507661834, 41.57407568], [-87.27301, 41.57407568], [-87.27301, 30.27755]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 1801994.9849054911,
+    "approx_distance_km": 999.5711374501477,
+    "num_boats": 9,
+    "avg_time_between_positions": 145600,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["Atlantic Union II", "Hot Pursuit", "Madam J"],
+    "handicap_rules": [],
+    "unstructured_text": []
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "5b53bd5a-ead0-4158-a7a6-8bcce052c5dc",
+    "name": "2018 Regatta al Sol - Racing",
+    "source": "KATTACK",
+    "url": "http://kws.kattack.com/GEPlayer/GMPosDisplay.aspx?FeedID=1721",
+    "start_year": 2018,
+    "start_month": 5,
+    "start_day": 10,
+    "approx_start_time_ms": 1525968000000,
+    "approx_end_time_ms": 1652298638266,
+    "is_unfinished": true,
+    "scraped_original_id": "1721",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-87.29222, 30.25416]
+    },
+    "start_country": "United States",
+    "start_city": "Pensacola Beach"
+  }
+}
