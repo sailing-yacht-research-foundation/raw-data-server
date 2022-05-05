@@ -3,7 +3,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeBluewater');
 const mapAndSave = require('./mappingsToSyrfDB/mapBluewaterToSyrf');
 const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
-const { competitionUnitStatus } = require('../syrf-schema/enums');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   createTurfPoint,
@@ -108,13 +108,9 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   };
   if (race.track_time_finish && !isNaN(endTime)) {
     body.approx_end_time_ms = endTime;
-  } else {
-    if (startTime > Date.now()) {
-      body.status = competitionUnitStatus.ONGOING;
-    } else {
-      body.status = competitionUnitStatus.SCHEDULED;
-    }
   }
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

@@ -1,6 +1,7 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
 const mapGeovoileToSyrf = require('./mappingsToSyrfDB/mapGeovoileToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
@@ -89,6 +90,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.scrapedUrl,
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;
