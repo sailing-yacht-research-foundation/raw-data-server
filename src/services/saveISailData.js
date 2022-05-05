@@ -15,44 +15,46 @@ const saveISailData = async (data) => {
   let errorMessage = '';
   let raceMetadatas, esBodies;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.iSailRace) {
-      const now = Date.now();
-      const startTime = race.start * 1000;
-      const endTime = race.stop * 1000;
-      const isUnfinished = startTime > now || endTime > now;
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.iSailRace = finishedRaces;
+  if (!data?.iSailRace) {
+    return;
+  }
 
-    if (data.iSailRace.length) {
+  const finishedRaces = [];
+  for (const race of data.iSailRace) {
+    const now = Date.now();
+    const startTime = race.start * 1000;
+    const endTime = race.stop * 1000;
+    const isUnfinished = startTime > now || endTime > now;
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
-        await elasticsearch.updateEventAndIndexRaces(
-          esBodies,
-          savedCompetitionUnits,
-        );
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.iSailRace = finishedRaces;
+
+  if (data.iSailRace.length) {
+    try {
+      ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
+      await elasticsearch.updateEventAndIndexRaces(
+        esBodies,
+        savedCompetitionUnits,
+      );
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
