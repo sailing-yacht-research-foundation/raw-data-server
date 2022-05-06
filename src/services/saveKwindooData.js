@@ -16,43 +16,45 @@ const saveKwindooData = async (data) => {
   let errorMessage = '';
   let raceMetadatas, esBodies;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.KwindooRace) {
-      const now = Date.now();
-      const raceStartTime = race.start_timestamp * 1000;
-      const raceEndTime = race.end_timestamp * 1000;
-      const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.KwindooRace = finishedRaces;
-    if (data.KwindooRace.length > 0) {
+  if (!data?.KwindooRace) {
+    return;
+  }
+
+  const finishedRaces = [];
+  for (const race of data.KwindooRace) {
+    const now = Date.now();
+    const raceStartTime = race.start_timestamp * 1000;
+    const raceEndTime = race.end_timestamp * 1000;
+    const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
-        await elasticsearch.updateEventAndIndexRaces(
-          esBodies,
-          savedCompetitionUnits,
-        );
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.KwindooRace = finishedRaces;
+  if (data.KwindooRace.length > 0) {
+    try {
+      ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
+      await elasticsearch.updateEventAndIndexRaces(
+        esBodies,
+        savedCompetitionUnits,
+      );
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
