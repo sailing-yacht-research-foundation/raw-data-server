@@ -1,0 +1,342 @@
+{
+  "CalendarEvent": {
+    "name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5",
+    "externalUrl": "https://www.metasail.it/past/233",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Italy",
+    "city": "Autonomous Province of Trento",
+    "source": "METASAIL",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": "233",
+    "status": "COMPLETED",
+    "approximateStartTime": 1630598400000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 3,
+    "startMonth": 9,
+    "startYear": 2021,
+    "approximateEndTime": 1630943999000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 7,
+    "endMonth": 9,
+    "endYear": 2021,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [10.837713333333333, 45.85272]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5  M32 (MARSTROM 32) R 8 (race id: 12574)",
+    "startTime": 1630766458217,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [10.837713333333333, 45.85272],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [10.838326666666667, 45.852673333333335],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[10.83367, 45.84559], [10.84397, 45.84559], [10.84397, 45.86451], [10.83367, 45.86451], [10.83367, 45.84559]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597",
+    "endTime": 1630768439413,
+    "openGraphImage": "mockLocation",
+    "country": "Italy",
+    "city": "Autonomous Province of Trento",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "12574",
+    "scrapedUrl": "https://app.metasail.it/(S(lk54qdcz5wowcs2mimhnlogu))/ViewRecordedRace2021.aspx?idgara=12574&token=OFCD",
+    "approximateStart": 1630766458217,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "de5d1e8d-5008-4b3f-8877-5a96d4484c64",
+      "publicName": "Inga",
+      "globalId": "SWE 44",
+      "vesselId": "7|H0979|SWE 44",
+      "source": "METASAIL"
+    }, {
+      "id": "a60baa91-d9dc-47f6-8827-17180d82e037",
+      "publicName": "Leeloo",
+      "globalId": "NED 82",
+      "vesselId": "8|H0248|NED 82",
+      "source": "METASAIL"
+    }, {
+      "id": "177cd1ad-ce93-4b82-afc4-8482b390a547",
+      "publicName": "Vikings",
+      "globalId": "SWE 68",
+      "vesselId": "9|H0280|SWE 68",
+      "source": "METASAIL"
+    }, {
+      "id": "ebc0b859-70b1-4b06-9a88-ea89bd46e777",
+      "publicName": "Vitamina Rapida",
+      "globalId": "ITA 22",
+      "vesselId": "10|H0368|ITA 22",
+      "source": "METASAIL"
+    }, {
+      "id": "7b8cffec-f831-4841-96bc-37cc36c24506",
+      "publicName": "Vitamina Veloce",
+      "globalId": "ITA 04",
+      "vesselId": "11|H0357|ITA 04",
+      "source": "METASAIL"
+    }
+  ],
+  "VesselParticipants": [{
+      "vesselId": "de5d1e8d-5008-4b3f-8877-5a96d4484c64"
+    }, {
+      "vesselId": "a60baa91-d9dc-47f6-8827-17180d82e037"
+    }, {
+      "vesselId": "177cd1ad-ce93-4b82-afc4-8482b390a547"
+    }, {
+      "vesselId": "ebc0b859-70b1-4b06-9a88-ea89bd46e777"
+    }, {
+      "vesselId": "7b8cffec-f831-4841-96bc-37cc36c24506"
+    }
+  ],
+  "Participants": [],
+  "Course": {
+    "name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5  M32 (MARSTROM 32) R 8 (race id: 12574)",
+    "competitionUnitId": null,
+    "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Race Committtee - Start/Finish"
+        },
+        "coordinates": [[10.83746, 45.84758], [10.83802, 45.84869]],
+        "order": 1,
+        "points": [{
+            "position": [10.83746, 45.84758]
+          }, {
+            "position": [10.83802, 45.84869]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "LW1 - LW2"
+        },
+        "coordinates": [[10.84221, 45.86451], [10.84102, 45.86445]],
+        "order": 3,
+        "points": [{
+            "position": [10.84221, 45.86451]
+          }, {
+            "position": [10.84102, 45.86445]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "WW1 - WW2"
+        },
+        "coordinates": [[10.83909, 45.84559], [10.83821, 45.84578]],
+        "order": 4,
+        "points": [{
+            "position": [10.83909, 45.84559]
+          }, {
+            "position": [10.83821, 45.84578]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "LW1 - LW2"
+        },
+        "coordinates": [[10.84221, 45.86451], [10.84102, 45.86445]],
+        "order": 5,
+        "points": [{
+            "position": [10.84221, 45.86451]
+          }, {
+            "position": [10.84102, 45.86445]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Race Committtee - Start/Finish"
+        },
+        "coordinates": [[10.83746, 45.84758], [10.83802, 45.84869]],
+        "order": 7,
+        "points": [{
+            "position": [10.83746, 45.84758]
+          }, {
+            "position": [10.83802, 45.84869]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Reach"
+        },
+        "coordinates": [[10.84397, 45.84714]],
+        "order": 2,
+        "points": [{
+            "position": [10.84397, 45.84714]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Reach"
+        },
+        "coordinates": [[10.84397, 45.84714]],
+        "order": 6,
+        "points": [{
+            "position": [10.84397, 45.84714]
+          }
+        ]
+      }
+    ]
+  },
+  "MarkTrackers": [{
+      "name": "Race Committtee",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "Start/Finish",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "Reach",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "LW1",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "LW2",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "WW1",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "WW2",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "LW1",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "LW2",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "Reach",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "Race Committtee",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }, {
+      "name": "Start/Finish",
+      "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597"
+    }
+  ],
+  "ElasticSearchBodies": [{
+      "id": "db0005a8-57c0-4b7e-8ca2-38b0d60c57ac",
+      "name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5  M32 (MARSTROM 32) R 8 (race id: 12574)",
+      "event": "86884f1e-421e-4cba-ba3a-34005b237597",
+      "event_name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5",
+      "source": "METASAIL",
+      "url": "https://app.metasail.it/(S(lk54qdcz5wowcs2mimhnlogu))/ViewRecordedRace2021.aspx?idgara=12574&token=OFCD",
+      "start_country": "Italy",
+      "start_city": "Autonomous Province of Trento",
+      "start_year": 2021,
+      "start_month": 9,
+      "start_day": 4,
+      "approx_start_time_ms": 1630766458217,
+      "approx_end_time_ms": 1630768439413,
+      "approx_duration_ms": 1981196,
+      "approx_start_point": {
+        "type": "Point",
+        "coordinates": [10.837713333333333, 45.85272],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_mid_point": {
+        "type": "Point",
+        "coordinates": [10.838020000128662, 45.85269666707682],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_end_point": {
+        "type": "Point",
+        "coordinates": [10.838326666666667, 45.852673333333335],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "bounding_box": {
+        "type": "Polygon",
+        "coordinates": [[[10.83367, 45.84559], [10.84397, 45.84559], [10.84397, 45.86451], [10.83367, 45.86451], [10.83367, 45.84559]]],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_area_sq_km": 1.68192611681215,
+      "approx_distance_km": 0.04778401780917761,
+      "num_boats": 5,
+      "avg_time_between_positions": 0.35714285714285715,
+      "boat_models": ["M32 (MARSTROM 32)"],
+      "boat_identifiers": [],
+      "boat_names": ["Inga", "Leeloo", "Vikings", "Vitamina Rapida", "Vitamina Veloce"],
+      "handicap_rules": [],
+      "unstructured_text": []
+    }
+  ],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "db0005a8-57c0-4b7e-8ca2-38b0d60c57ac",
+    "name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5  M32 (MARSTROM 32) R 8 (race id: 12574)",
+    "event_name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5",
+    "source": "METASAIL",
+    "url": "https://app.metasail.it/(S(lk54qdcz5wowcs2mimhnlogu))/ViewRecordedRace2021.aspx?idgara=12574&token=OFCD",
+    "start_year": 2021,
+    "start_month": 9,
+    "start_day": 4,
+    "approx_start_time_ms": 1630766458217,
+    "is_unfinished": true,
+    "scraped_original_id": "12574",
+    "approx_end_time_ms": 1630768439413,
+    "approx_start_point": {
+        "type": "Point",
+        "coordinates": [10.83746, 45.84758]
+    },
+    "start_country": "Italy",
+    "start_city": "Autonomous Province of Trento"
+  }
+}

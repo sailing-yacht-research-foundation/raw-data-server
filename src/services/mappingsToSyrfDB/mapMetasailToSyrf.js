@@ -164,7 +164,7 @@ const _mapSequencedGeometries = (
     const buoy1 = metasailBuoy.find((t) => t.id === gate.buoy_1);
     const buoy2 = metasailBuoy.find((t) => t.id === gate.buoy_2);
 
-    if (!buoy1FirstPosition || !buoy2FirstPosition || !buoy1 || !buoy2) {
+    if (!buoy1 || !buoy2) {
       continue;
     }
     buoy1.used = true;
@@ -173,21 +173,22 @@ const _mapSequencedGeometries = (
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
         {
-          lat: buoy1FirstPosition.lat,
-          lon: buoy1FirstPosition.lon,
+          lat: +buoy1.lat || +buoy1FirstPosition.lat,
+          lon: +buoy1.lon || +buoy1FirstPosition.lon,
           markTrackerId: buoy1.markTrackerId,
         },
         {
-          lat: buoy2FirstPosition.lat,
-          lon: buoy2FirstPosition.lon,
+          lat: +buoy2.lat || +buoy2FirstPosition.lat,
+          lon: +buoy2.lon || +buoy2FirstPosition.lon,
           markTrackerId: buoy2.markTrackerId,
         },
         {
           name,
         },
       ),
-      order: order,
+      order: gate.order || order,
     });
+    order++;
   }
 
   for (const buoy of metasailBuoy) {
@@ -197,14 +198,14 @@ const _mapSequencedGeometries = (
     const firstPosition = _findBuoyFirstPosition(buoy.id, buoyPositions);
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryPoint({
-        lat: firstPosition?.lat,
-        lon: firstPosition?.lon,
+        lat: buoy.lat || firstPosition?.lat,
+        lon: buoy.lon || firstPosition?.lon,
         properties: {
           name: buoy.name,
         },
         markTrackerId: buoy.markTrackerId,
       }),
-      order: order,
+      order: buoy.order || order,
     });
     order++;
   }
