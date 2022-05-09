@@ -96,7 +96,7 @@ const _mapBoats = (boats) => {
       vesselId: b.original_id,
       model: b.boat_type_alias,
       handicap: b.handycap ? { handicap: b.handycap } : null,
-      isCommmittee: b.not_racer?.toString() === '1',
+      isCommittee: b.not_racer?.toString() === '1',
     };
 
     // Boat Crew

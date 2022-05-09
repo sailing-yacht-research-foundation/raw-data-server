@@ -1,141 +1,213 @@
-const axios = require('axios');
-const db = require('../../models');
-const normalizeObj = require('../normalization/normalizeKwindoo');
-const normalizeSpy = jest
-  .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
-const saveKwindooData = require('../saveKwindooData');
+const { addDays } = require('date-fns');
+const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
+const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
+const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
+const vesselParticipantDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
+const participantDAL = require('../../syrf-schema/dataAccess/v1/participant');
+const markTrackerDAL = require('../../syrf-schema/dataAccess/v1/markTracker');
+const courseDAL = require('../../syrf-schema/dataAccess/v1/course');
+const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
+const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
+const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
+const utils = require('../../syrf-schema/utils/utils');
+const elasticsearch = require('../../utils/elasticsearch');
 
+const { SOURCE } = require('../../constants');
+const saveKwindooData = require('../saveKwindooData');
 const jsonData = require('../../test-files/kwindoo.json');
+const expectedJsonData = require('../../test-files/expected-data/kwindoo.json');
 
 describe('Storing kwindoo data to DB', () => {
-  let createRegattaOwner,
-    createRegatta,
-    createRace,
-    createComment,
-    createHomeportLocation,
-    createMarker,
-    createMIA,
-    createPOI,
-    createPosition,
-    createRunningGroup,
-    createVideoStream,
-    createWaypoint,
-    axiosPostSpy;
+  let calendarEventUpsertSpy,
+    vesselParticipantGroupUpsertSpy,
+    vesselGetByVesselIdAndSourceSpy,
+    vesselBulkCreateSpy,
+    vesselParticipantBulkCreateSpy,
+    vesselParticipantAddParticipantSpy,
+    participantBulkCreateSpy,
+    markTrackerUpsertSpy,
+    courseUpsertSpy,
+    courseBulkInsertPointsSpy,
+    competitionUnitUpsertSpy,
+    vesselParticipantEventBulkCreateSpy,
+    scrapedSuccessfulUrlCreateSpy,
+    commitSpy,
+    elasticSearchUpdateSpy;
 
   beforeAll(async () => {
-    await db.sequelize.sync();
-    createRegattaOwner = jest.spyOn(db.kwindooRegattaOwner, 'bulkCreate');
-    createRegatta = jest.spyOn(db.kwindooRegatta, 'bulkCreate');
-    createRace = jest.spyOn(db.kwindooRace, 'bulkCreate');
-    createComment = jest.spyOn(db.kwindooComment, 'bulkCreate');
-    createHomeportLocation = jest.spyOn(
-      db.kwindooHomeportLocation,
+    calendarEventUpsertSpy = jest.spyOn(calendarEventDAL, 'upsert');
+    vesselParticipantGroupUpsertSpy = jest.spyOn(
+      vesselParticipantGroupDAL,
+      'upsert',
+    );
+    vesselGetByVesselIdAndSourceSpy = jest.spyOn(
+      vesselDAL,
+      'getByVesselIdAndSource',
+    );
+    vesselBulkCreateSpy = jest.spyOn(vesselDAL, 'bulkCreate');
+    vesselParticipantBulkCreateSpy = jest.spyOn(
+      vesselParticipantDAL,
       'bulkCreate',
     );
-    createMarker = jest.spyOn(db.kwindooMarker, 'bulkCreate');
-    createMIA = jest.spyOn(db.kwindooMIA, 'bulkCreate');
-    createPOI = jest.spyOn(db.kwindooPOI, 'bulkCreate');
-    createPosition = jest.spyOn(db.kwindooPosition, 'bulkCreate');
-    createRunningGroup = jest.spyOn(db.kwindooRunningGroup, 'bulkCreate');
-    createVideoStream = jest.spyOn(db.kwindooVideoStream, 'bulkCreate');
-    createWaypoint = jest.spyOn(db.kwindooWaypoint, 'bulkCreate');
-    axiosPostSpy = jest
-      .spyOn(axios, 'post')
-      .mockImplementation(() => Promise.resolve());
+    vesselParticipantAddParticipantSpy = jest.spyOn(
+      vesselParticipantDAL,
+      'addParticipant',
+    );
+    participantBulkCreateSpy = jest.spyOn(participantDAL, 'bulkCreate');
+    markTrackerUpsertSpy = jest.spyOn(markTrackerDAL, 'upsert');
+    courseUpsertSpy = jest.spyOn(courseDAL, 'upsert');
+    courseBulkInsertPointsSpy = jest.spyOn(courseDAL, 'bulkInsertPoints');
+    competitionUnitUpsertSpy = jest.spyOn(competitionUnitDAL, 'upsert');
+    vesselParticipantEventBulkCreateSpy = jest.spyOn(
+      vesselParticipantEventDAL,
+      'bulkCreate',
+    );
+    scrapedSuccessfulUrlCreateSpy = jest.spyOn(
+      scrapedSuccessfulUrlDAL,
+      'create',
+    );
+    commitSpy = jest.fn().mockResolvedValue();
+    jest
+      .spyOn(utils, 'createTransaction')
+      .mockResolvedValue({ commit: commitSpy, rollback: jest.fn() });
+    elasticSearchUpdateSpy = jest.spyOn(
+      elasticsearch,
+      'updateEventAndIndexRaces',
+    );
   });
   afterAll(async () => {
-    await db.kwindooRegattaOwner.destroy({ truncate: true });
-    await db.kwindooRegatta.destroy({ truncate: true });
-    await db.kwindooRace.destroy({ truncate: true });
-    await db.kwindooBoat.destroy({ truncate: true });
-    await db.kwindooComment.destroy({ truncate: true });
-    await db.kwindooHomeportLocation.destroy({ truncate: true });
-    await db.kwindooMarker.destroy({ truncate: true });
-    await db.kwindooMIA.destroy({ truncate: true });
-    await db.kwindooPOI.destroy({ truncate: true });
-    await db.kwindooPosition.destroy({ truncate: true });
-    await db.kwindooRunningGroup.destroy({ truncate: true });
-    await db.kwindooVideoStream.destroy({ truncate: true });
-    await db.kwindooWaypoint.destroy({ truncate: true });
-    await db.kwindooFailedUrl.destroy({ truncate: true });
-    await db.kwindooSuccessfulUrl.destroy({ truncate: true });
-    await db.sequelize.close();
+    jest.restoreAllMocks();
   });
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should not save anything when empty data', async () => {
-    await saveKwindooData({});
-    expect(createRegattaOwner).toHaveBeenCalledTimes(0);
-    expect(createRegatta).toHaveBeenCalledTimes(0);
-    expect(createRace).toHaveBeenCalledTimes(0);
-    expect(createComment).toHaveBeenCalledTimes(0);
-    expect(createHomeportLocation).toHaveBeenCalledTimes(0);
-    expect(createMarker).toHaveBeenCalledTimes(0);
-    expect(createMIA).toHaveBeenCalledTimes(0);
-    expect(createPOI).toHaveBeenCalledTimes(0);
-    expect(createPosition).toHaveBeenCalledTimes(0);
-    expect(createRunningGroup).toHaveBeenCalledTimes(0);
-    expect(createVideoStream).toHaveBeenCalledTimes(0);
-    expect(createWaypoint).toHaveBeenCalledTimes(0);
-    expect(normalizeSpy).toHaveBeenCalledTimes(0);
-    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
+  it('should not save anything when json data is empty', async () => {
+    await saveKwindooData();
+    expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
   });
+
   it('should save data correctly', async () => {
     await saveKwindooData(jsonData);
-    expect(createRegattaOwner).toHaveBeenCalledWith(
-      jsonData.KwindooRegattaOwner,
+
+    const race = jsonData.KwindooRace[0];
+    expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
+      jsonData.KwindooRegatta[0].id,
+      expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );
-    expect(createRegatta).toHaveBeenCalledWith(
-      jsonData.KwindooRegatta,
+    expect(vesselParticipantGroupUpsertSpy).toHaveBeenCalledTimes(1);
+    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(1); // this will only be called if reuse boat is true
+    expect(vesselBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.Vessels,
       expect.anything(),
     );
-    expect(createRace).toHaveBeenCalledWith(
-      jsonData.KwindooRace,
+    expect(vesselParticipantBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.VesselParticipants,
       expect.anything(),
     );
-    expect(createComment).toHaveBeenCalledWith(
-      jsonData.KwindooComment,
+    expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipants.length,
+    );
+    expect(participantBulkCreateSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipants.length,
+    );
+    expectedJsonData.Participants.forEach((p) => {
+      expect(participantBulkCreateSpy).toHaveBeenCalledWith(
+        p,
+        expect.anything(),
+      );
+    });
+    expect(markTrackerUpsertSpy).toHaveBeenCalledTimes(0);
+    expectedJsonData.MarkTrackers?.forEach((m) => {
+      expect(markTrackerUpsertSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining(m),
+        expect.anything(),
+      );
+    });
+    expect(courseBulkInsertPointsSpy).toHaveBeenCalledTimes(1);
+    expect(courseUpsertSpy).toHaveBeenCalledWith(
+      null,
+      expect.objectContaining({
+        ...expectedJsonData.Course,
+        courseSequencedGeometries:
+          expectedJsonData.Course.courseSequencedGeometries.map((g) =>
+            expect.objectContaining(g),
+          ),
+      }),
       expect.anything(),
     );
-    expect(createHomeportLocation).toHaveBeenCalledWith(
-      jsonData.KwindooHomeportLocation,
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledWith(
+      race.id,
+      expect.objectContaining(expectedJsonData.CompetitionUnit),
       expect.anything(),
     );
-    expect(createMarker).toHaveBeenCalledWith(
-      jsonData.KwindooMarker,
+    expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipantEvents?.length ? 1 : 0,
+    );
+    expect(scrapedSuccessfulUrlCreateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: race.url,
+        originalId: race.original_id,
+        source: SOURCE.KWINDOO,
+      }),
       expect.anything(),
     );
-    expect(createMIA).toHaveBeenCalledWith(
-      jsonData.KwindooMIA,
-      expect.anything(),
+    expect(commitSpy).toHaveBeenCalled();
+    expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
+      expect.objectContaining(expectedJsonData.ElasticSearchBodies),
+      [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
-    expect(createPOI).toHaveBeenCalledWith(
-      jsonData.KwindooPOI,
-      expect.anything(),
-    );
-    expect(createPosition).toHaveBeenCalledWith(
-      jsonData.KwindooPosition,
-      expect.anything(),
-    );
-    expect(createRunningGroup).toHaveBeenCalledWith(
-      jsonData.KwindooRunningGroup,
-      expect.anything(),
-    );
-    expect(createVideoStream).toHaveBeenCalledWith(
-      jsonData.KwindooVideoStream,
-      expect.anything(),
-    );
-    expect(createWaypoint).toHaveBeenCalledWith(
-      jsonData.KwindooWaypoint,
-      expect.anything(),
-    );
-    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(
-      process.env.GEO_DATA_SLICER ? 1 : 0,
-    );
+  });
+
+  describe('when saving an unfinished race', () => {
+    let futureDate, elasticSearchIndexSpy;
+    beforeEach(() => {
+      const now = new Date();
+      futureDate = addDays(now, 1);
+      elasticSearchIndexSpy = jest.spyOn(elasticsearch, 'indexRace');
+    });
+    it('should only call elastic search to index and do not save in db when start time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.KwindooRace[0].start_timestamp =
+        futureDate.getTime() / 1000;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.start_year = futureDate.getFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getDate();
+      expectedElasticsearchBody.approx_start_time_ms = futureDate.getTime();
+
+      await saveKwindooData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
+
+    it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.KwindooRace[0].end_timestamp =
+        futureDate.getTime() / 1000;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+
+      await saveKwindooData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
   });
 });

@@ -1,0 +1,343 @@
+{
+  "CalendarEvent": {
+    "name": "M32 Series Europe - Event #4 Aarhus",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Denmark",
+    "city": "Aarhus",
+    "source": "KWINDOO",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": 1765,
+    "status": "COMPLETED",
+    "approximateStartTime": 1530192757000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 29,
+    "startMonth": 6,
+    "startYear": 2018,
+    "approximateEndTime": 1530194275000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 29,
+    "endMonth": 6,
+    "endYear": 2018,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "Race 4",
+    "startTime": 1530192757000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[10.229976, 56.16838324], [10.23199789, 56.16838324], [10.23199789, 56.16981607], [10.229976, 56.16981607], [10.229976, 56.16838324]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1",
+    "endTime": 1530194275000,
+    "openGraphImage": "mockLocation",
+    "country": "Denmark",
+    "city": "Aarhus",
+    "status": "COMPLETED",
+    "scrapedOriginalId": 4750,
+    "scrapedUrl": "https://www.kwindoo.com/tracking/1765-m32-series-europe-event-4-aarhus?race_id=4750",
+    "approximateStart": 1530192757000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "8f757096-bda8-4fac-b63a-d251e4b3958c",
+      "publicName": "Vitamina",
+      "globalId": "",
+      "vesselId": 19693,
+      "model": "catamaran",
+      "handicap": null,
+      "source": "KWINDOO"
+    }, {
+      "id": "10b32c6d-c36e-467a-8aed-cc5820bd564d",
+      "publicName": "GAC Pindar",
+      "globalId": 22,
+      "vesselId": 22684,
+      "model": "m32",
+      "handicap": null,
+      "source": "KWINDOO"
+    }, {
+      "id": "649e772d-bb72-4f1c-8ea6-bc436b12b778",
+      "publicName": "Warrer Racing",
+      "globalId": null,
+      "vesselId": 23314,
+      "model": "catamaran",
+      "handicap": null,
+      "source": "KWINDOO"
+    }
+  ],
+  "VesselParticipants": [{
+      "vesselId": "8f757096-bda8-4fac-b63a-d251e4b3958c",
+      "handicap": null,
+      "isCommittee": false
+    }, {
+      "vesselId": "10b32c6d-c36e-467a-8aed-cc5820bd564d",
+      "handicap": null,
+      "isCommittee": false
+    }, {
+      "vesselId": "649e772d-bb72-4f1c-8ea6-bc436b12b778",
+      "handicap": null,
+      "isCommittee": false
+    }
+  ],
+  "Participants": [
+    [{
+      "publicName": "diego battisti",
+      "invitationStatus": "SELF_REGISTERED",
+      "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1"
+    }],
+    [{
+      "publicName": "Ian Williams",
+      "invitationStatus": "SELF_REGISTERED",
+      "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1"
+    }],
+    [{
+      "publicName": "Jonas Warrer",
+      "invitationStatus": "SELF_REGISTERED",
+      "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1"
+    }]
+  ],
+  "Course": {
+    "name": "M32 Series Europe - Event #4 Aarhus - Race 4",
+    "competitionUnitId": null,
+    "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "A - B",
+          "role": "start",
+          "diameter": 365.18902761126117,
+          "side": "port",
+          "primary_marker_approach_radius": 200,
+          "secondary_marker_approach_radius": 200,
+          "primary_marker_id": 22933,
+          "secondary_marker_id": 22936
+        },
+        "coordinates": [["10.23629176", "56.17008381"], ["10.23883450", "56.16963882"]],
+        "order": 0,
+        "points": [{
+            "position": ["10.23629176", "56.17008381"]
+          }, {
+            "position": ["10.23883450", "56.16963882"]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Round",
+          "role": "middle",
+          "side": "port",
+          "approach_radius": 200,
+          "marker_id": 22939
+        },
+        "coordinates": [["10.23752401", "56.17087631"]],
+        "order": 1,
+        "points": [{
+            "position": ["10.23752401", "56.17087631"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "D - E",
+          "role": "middle",
+          "diameter": 273.77343905252144,
+          "side": "starboard",
+          "primary_marker_approach_radius": 200,
+          "secondary_marker_approach_radius": 200,
+          "primary_marker_id": 22942,
+          "secondary_marker_id": 22945
+        },
+        "coordinates": [["10.23522044", "56.17407467"], ["10.23406708", "56.17391043"]],
+        "order": 2,
+        "points": [{
+            "position": ["10.23522044", "56.17407467"]
+          }, {
+            "position": ["10.23406708", "56.17391043"]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "F - G",
+          "role": "middle",
+          "diameter": 281.8552123402281,
+          "side": "port",
+          "primary_marker_approach_radius": 200,
+          "secondary_marker_approach_radius": 200,
+          "primary_marker_id": 22948,
+          "secondary_marker_id": 22951
+        },
+        "coordinates": [["10.23814672", "56.16765825"], ["10.23682612", "56.16764929"]],
+        "order": 3,
+        "points": [{
+            "position": ["10.23814672", "56.16765825"]
+          }, {
+            "position": ["10.23682612", "56.16764929"]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "D - E",
+          "role": "middle",
+          "diameter": 273.77343905252144,
+          "side": "starboard",
+          "primary_marker_approach_radius": 200,
+          "secondary_marker_approach_radius": 200,
+          "primary_marker_id": 22942,
+          "secondary_marker_id": 22945
+        },
+        "coordinates": [["10.23522044", "56.17407467"], ["10.23406708", "56.17391043"]],
+        "order": 4,
+        "points": [{
+            "position": ["10.23522044", "56.17407467"]
+          }, {
+            "position": ["10.23406708", "56.17391043"]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "A - B",
+          "role": "finish",
+          "diameter": 365.18902761126117,
+          "side": "starboard",
+          "primary_marker_approach_radius": 200,
+          "secondary_marker_approach_radius": 200,
+          "primary_marker_id": 22933,
+          "secondary_marker_id": 22936
+        },
+        "coordinates": [["10.23629176", "56.17008381"], ["10.23883450", "56.16963882"]],
+        "order": 10000,
+        "points": [{
+            "position": ["10.23629176", "56.17008381"]
+          }, {
+            "position": ["10.23883450", "56.16963882"]
+          }
+        ]
+      }
+    ]
+  },
+  "ElasticSearchBodies": [{
+    "id": "ae6af6e8-dac5-4139-951f-3ff0039556d6",
+    "name": "M32 Series Europe - Event #4 Aarhus - Race 4",
+    "event": "743c7233-6aa7-4739-bd03-61260b6133f1",
+    "event_name": "M32 Series Europe - Event #4 Aarhus",
+    "source": "KWINDOO",
+    "url": "https://www.kwindoo.com/tracking/1765-m32-series-europe-event-4-aarhus?race_id=4750",
+    "start_country": "Denmark",
+    "start_city": "Aarhus",
+    "start_year": 2018,
+    "start_month": 6,
+    "start_day": 28,
+    "approx_start_time_ms": 1530192757000,
+    "approx_end_time_ms": 1530194275000,
+    "approx_duration_ms": 1518000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[10.229976, 56.16838324], [10.23199789, 56.16838324], [10.23199789, 56.16981607], [10.229976, 56.16981607], [10.229976, 56.16838324]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 0.019987106196993495,
+    "approx_distance_km": 0.03427839491515123,
+    "num_boats": 3,
+    "avg_time_between_positions": 6000,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["Vitamina", "GAC Pindar", "Warrer Racing"],
+    "handicap_rules": [],
+    "unstructured_text": []
+  }],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "ae6af6e8-dac5-4139-951f-3ff0039556d6",
+    "name": "M32 Series Europe - Event #4 Aarhus - Race 4",
+    "event_name": "M32 Series Europe - Event #4 Aarhus",
+    "source": "KWINDOO",
+    "url": "https://www.kwindoo.com/tracking/1765-m32-series-europe-event-4-aarhus?race_id=4750",
+    "start_year": 2018,
+    "start_month": 6,
+    "start_day": 28,
+    "approx_start_time_ms": 1530192757000,
+    "approx_end_time_ms": 1530194275000,
+    "is_unfinished": true,
+    "scraped_original_id": "4750",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [10.23629176, 56.17008381]
+    },
+    "start_country": "Denmark",
+    "start_city": "Aarhus"
+  }
+}
