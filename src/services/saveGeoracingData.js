@@ -3,6 +3,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeGeoracing');
 const mapAndSave = require('./mappingsToSyrfDB/mapGeoracingToSyrf');
 const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
@@ -96,6 +97,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

@@ -10,6 +10,7 @@ const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionU
 const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
 const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
 const utils = require('../../syrf-schema/utils/utils');
+const { competitionUnitStatus } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const { SOURCE } = require('../../constants');
@@ -182,10 +183,11 @@ describe('Storing georacing data to DB', () => {
       const expectedElasticsearchBody = JSON.parse(
         JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
       );
-      expectedElasticsearchBody.start_year = futureDate.getFullYear();
-      expectedElasticsearchBody.start_month = futureDate.getMonth() + 1;
-      expectedElasticsearchBody.start_day = futureDate.getDate();
+      expectedElasticsearchBody.start_year = futureDate.getUTCFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getUTCMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getUTCDate();
       expectedElasticsearchBody.approx_start_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.SCHEDULED;
 
       await saveGeoracingData(unfinishedJsonData);
 
@@ -207,6 +209,7 @@ describe('Storing georacing data to DB', () => {
         JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
       );
       expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.ONGOING;
 
       await saveGeoracingData(unfinishedJsonData);
 

@@ -3,6 +3,7 @@ const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKattack');
 const mapAndSave = require('./mappingsToSyrfDB/mapKattackToSyrf');
 const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const { getTrackerLogoUrl } = require('../utils/s3Util');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
@@ -19,8 +20,7 @@ const saveKattackData = async (data) => {
   for (const race of data.KattackRace) {
     const now = Date.now();
     const raceStartTime = +race.race_start_time_utc;
-    const raceEndTime =
-      +race.race_start_time_utc + race.race_length_sec * 1000;
+    const raceEndTime = +race.race_start_time_utc + race.race_length_sec * 1000;
 
     const isUnfinished = raceStartTime > now || raceEndTime > now;
 
@@ -90,6 +90,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;
