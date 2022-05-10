@@ -16,52 +16,54 @@ const saveMetasailData = async (data) => {
   let errorMessage = '';
   let raceMetadatas, esBodies;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.MetasailRace) {
-      const now = Date.now();
-      const raceStartTime = +race.start;
-      const raceEndTime = +race.stop;
-      const isUnfinished =
-        raceStartTime > now ||
-        raceEndTime > now ||
-        raceEndTime < 0 ||
-        typeof race.stop === 'undefined';
+  if (!data?.MetasailRace) {
+    return;
+  }
 
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.MetasailRace = finishedRaces;
+  const finishedRaces = [];
+  for (const race of data.MetasailRace) {
+    const now = Date.now();
+    const raceStartTime = +race.start;
+    const raceEndTime = +race.stop;
+    const isUnfinished =
+      raceStartTime > now ||
+      raceEndTime > now ||
+      raceEndTime < 0 ||
+      typeof race.stop === 'undefined';
 
-    if (data.MetasailRace?.length) {
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnits = await mapMetasailToSyrf(
-          data,
-          raceMetadatas,
-        );
-        await elasticsearch.updateEventAndIndexRaces(
-          esBodies,
-          savedCompetitionUnits,
-        );
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.MetasailRace = finishedRaces;
+
+  if (data.MetasailRace?.length) {
+    try {
+      ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      const savedCompetitionUnits = await mapMetasailToSyrf(
+        data,
+        raceMetadatas,
+      );
+      await elasticsearch.updateEventAndIndexRaces(
+        esBodies,
+        savedCompetitionUnits,
+      );
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
