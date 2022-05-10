@@ -18,9 +18,7 @@ describe('Unzip a gzipped file from a read stream to a write stream', () => {
     const mockError = new Error('Mocked Error Here!');
 
     const thePromise = gunzipFile(mockReadable, mockWriteable);
-    setTimeout(() => {
-      mockWriteable.emit('error', mockError);
-    }, 100);
+    mockWriteable.emit('error', mockError);
 
     await expect(thePromise).rejects.toEqual(mockError);
   });
@@ -30,9 +28,7 @@ describe('Unzip a gzipped file from a read stream to a write stream', () => {
     const mockWriteable = new PassThrough();
 
     const thePromise = gunzipFile(mockReadable, mockWriteable);
-    setTimeout(() => {
-      mockReadable.emit('data', 'plain string');
-    }, 100);
+    mockReadable.emit('data', 'plain string');
 
     await expect(thePromise).rejects.toEqual(
       expect.objectContaining({ code: 'Z_DATA_ERROR' }),
@@ -44,19 +40,27 @@ describe('Unzip a gzipped file from a read stream to a write stream', () => {
       const mockReadable = new PassThrough();
       const mockWriteable = new PassThrough();
       const s3 = new AWS.S3();
-      s3.getObject.mockResolvedValue({ createReadStream: jest.fn().mockReturnValue(mockReadable) });
+      s3.getObject.mockResolvedValue({
+        createReadStream: jest.fn().mockReturnValue(mockReadable),
+      });
       jest.spyOn(fs, 'createWriteStream').mockReturnValue(mockWriteable);
-      // extract.mockResolvedValue('')
 
       const targetDir = 'directoryToExtraction';
       setTimeout(() => {
         mockReadable.emit('data', 'plain string');
         mockReadable.emit('end', 'message end');
       }, 100);
-      await downloadAndExtract({ s3, bucketName: 'bucketName', fileName: 'fileName', targetDir })
+      await downloadAndExtract({
+        s3,
+        bucketName: 'bucketName',
+        fileName: 'fileName',
+        targetDir,
+      });
 
-      expect(s3.getObject).toHaveBeenCalledTimes(1)
-      expect(extract).toHaveBeenCalledWith(expect.any(String), {dir: targetDir })
-    })
+      expect(s3.getObject).toHaveBeenCalledTimes(1);
+      expect(extract).toHaveBeenCalledWith(expect.any(String), {
+        dir: targetDir,
+      });
+    });
   });
 });

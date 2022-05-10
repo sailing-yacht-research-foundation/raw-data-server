@@ -1,5 +1,4 @@
 const turf = require('@turf/turf');
-const db = require('../../../models');
 const {
   createBoatToPositionDictionary,
   positionsToFeatureCollection,
@@ -8,14 +7,13 @@ const {
   getCenterOfMassOfPositions,
   findAverageLength,
   createRace,
-  allPositionsToFeatureCollection,
 } = require('../../../utils/gisUtils');
-const uploadUtil = require('../../uploadUtil');
 
-const normalizeRace = async (
-  { OldGeovoileRace, OldGeovoileBoat, OldGeovoilePosition },
-  transaction,
-) => {
+const normalizeRace = async ({
+  OldGeovoileRace,
+  OldGeovoileBoat,
+  OldGeovoilePosition,
+}) => {
   const SOURCE = 'OLDGEOVOILE';
   const race = OldGeovoileRace[0];
   const positions = OldGeovoilePosition;
@@ -86,30 +84,6 @@ const normalizeRace = async (
     handicapRules,
     unstructuredText,
   );
-  const tracksGeojson = JSON.stringify(
-    allPositionsToFeatureCollection(boatsToSortedPositions),
-  );
-
-  const metadata = await db.readyAboutRaceMetadata.findOne({
-    where: {
-      id: raceMetadata.id,
-    },
-    raw: true,
-  });
-
-  if (!metadata) {
-    await db.readyAboutRaceMetadata.create(raceMetadata, {
-      fields: Object.keys(raceMetadata),
-      transaction,
-    });
-    console.log('uploading geojson');
-    await uploadUtil.uploadGeoJsonToS3(
-      race.id,
-      tracksGeojson,
-      SOURCE,
-      transaction,
-    );
-  }
   return raceMetadata;
 };
 

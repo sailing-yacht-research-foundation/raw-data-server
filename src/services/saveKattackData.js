@@ -2,59 +2,61 @@ const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeKattack');
 const mapAndSave = require('./mappingsToSyrfDB/mapKattackToSyrf');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveKattackData = async (data) => {
   let errorMessage = '';
   let raceMetadata, esBody;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.KattackRace) {
-      const now = Date.now();
-      const raceStartTime = +race.race_start_time_utc;
-      const raceEndTime =
-        +race.race_start_time_utc + race.race_length_sec * 1000;
+  if (!data?.KattackRace) {
+    return;
+  }
 
-      const isUnfinished = raceStartTime > now || raceEndTime > now;
+  const finishedRaces = [];
+  for (const race of data.KattackRace) {
+    const now = Date.now();
+    const raceStartTime = +race.race_start_time_utc;
+    const raceEndTime = +race.race_start_time_utc + race.race_length_sec * 1000;
 
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.KattackRace = finishedRaces;
+    const isUnfinished = raceStartTime > now || raceEndTime > now;
 
-    if (data.KattackRace?.length) {
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadata, esBody } = await normalizeRace(data));
-        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
-        // Exclude buoy races for now bec buoy race positions are relative to an undetermined position and always in Ghana
-        if (!(raceMetadata?.url.indexOf('BuoyPlayer.aspx') > -1)) {
-          await elasticsearch.updateEventAndIndexRaces(
-            [esBody],
-            [savedCompetitionUnit],
-          );
-        }
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.KattackRace = finishedRaces;
+
+  if (data.KattackRace?.length) {
+    try {
+      ({ raceMetadata, esBody } = await normalizeRace(data));
+      const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+      // Exclude buoy races for now bec buoy race positions are relative to an undetermined position and always in Ghana
+      if (!(raceMetadata?.url.indexOf('BuoyPlayer.aspx') > -1)) {
+        await elasticsearch.updateEventAndIndexRaces(
+          [esBody],
+          [savedCompetitionUnit],
+        );
+      }
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
@@ -88,6 +90,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

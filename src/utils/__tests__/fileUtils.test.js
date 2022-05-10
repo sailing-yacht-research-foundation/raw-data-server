@@ -12,26 +12,35 @@ jest.mock('csvtojson');
 describe('fileUtil.js', () => {
   const existingPath = 'existingPath';
   const expectedJson = {
-    "Race": {
-      "RaceID": "123",
-      "Course": {
-        "CompoundMark": [{
-          "Name": "Mark0",
-          "Mark": [{
-            "SeqID": "1",
-          }, {
-            "SeqID": "2",
-          }]
-        }, {
-          "Name": "Mark1",
-          "Mark": [{
-            "SeqID": "3",
-          }, {
-            "SeqID": "4",
-          }]
-        }]
-      }
-    }
+    Race: {
+      RaceID: '123',
+      Course: {
+        CompoundMark: [
+          {
+            Name: 'Mark0',
+            Mark: [
+              {
+                SeqID: '1',
+              },
+              {
+                SeqID: '2',
+              },
+            ],
+          },
+          {
+            Name: 'Mark1',
+            Mark: [
+              {
+                SeqID: '3',
+              },
+              {
+                SeqID: '4',
+              },
+            ],
+          },
+        ],
+      },
+    },
   };
 
   describe('When listDirectories is called', () => {
@@ -52,12 +61,17 @@ describe('fileUtil.js', () => {
     ];
 
     beforeAll(() => {
-      readdirSyncSpy = jest.spyOn(fs, 'readdirSync').mockReturnValue(mockDirValues);
+      readdirSyncSpy = jest
+        .spyOn(fs, 'readdirSync')
+        .mockReturnValue(mockDirValues);
     });
 
     it('should call readdirsync, filter with directory only and return the names', () => {
       const result = listDirectories(existingPath);
-      expect (readdirSyncSpy).toHaveBeenCalledWith(existingPath, expect.anything());
+      expect(readdirSyncSpy).toHaveBeenCalledWith(
+        existingPath,
+        expect.anything(),
+      );
       expect(result).toEqual(['csv', 'history']);
     });
   });
@@ -80,7 +94,9 @@ describe('fileUtil.js', () => {
     `;
 
     beforeEach(() => {
-      jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === existingPath);
+      jest
+        .spyOn(fs, 'existsSync')
+        .mockImplementation((path) => path === existingPath);
       jest.spyOn(fs, 'readFileSync').mockReturnValue(mockXml);
     });
     afterAll(() => {
@@ -92,16 +108,18 @@ describe('fileUtil.js', () => {
       expect(result).toBeUndefined();
     });
 
-    it('should return json representation of xml if path exist', async() => {
+    it('should return json representation of xml if path exist', async () => {
       const result = await readXmlFileToJson(existingPath);
-      expect(result).toEqual(expectedJson)
-    })
+      expect(result).toEqual(expectedJson);
+    });
   });
 
   describe('When readCsvFileToJson is called', () => {
     let fromFileSpy;
     beforeEach(() => {
-      jest.spyOn(fs, 'existsSync').mockImplementation((path) => path === existingPath);
+      jest
+        .spyOn(fs, 'existsSync')
+        .mockImplementation((path) => path === existingPath);
       fromFileSpy = jest.fn().mockResolvedValue(expectedJson);
       csvtojson.mockImplementation(() => ({ fromFile: fromFileSpy }));
     });
@@ -116,8 +134,8 @@ describe('fileUtil.js', () => {
 
     it('should return json representation of csv if path exist', async () => {
       const result = await readCsvFileToJson(existingPath);
-      expect(result).toEqual(expectedJson)
+      expect(result).toEqual(expectedJson);
       expect(fromFileSpy).toHaveBeenCalledWith(existingPath);
-    })
+    });
   });
 });

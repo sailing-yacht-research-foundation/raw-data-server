@@ -1,67 +1,69 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeMetasail');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const mapMetasailToSyrf = require('./mappingsToSyrfDB/mapMetasailToSyrf');
-const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
   createTurfPoint,
   getCountryAndCity,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveMetasailData = async (data) => {
   let errorMessage = '';
   let raceMetadatas, esBodies;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.MetasailRace) {
-      const now = Date.now();
-      const raceStartTime = +race.start;
-      const raceEndTime = +race.stop;
-      const isUnfinished =
-        raceStartTime > now ||
-        raceEndTime > now ||
-        raceEndTime < 0 ||
-        typeof race.stop === 'undefined';
+  if (!data?.MetasailRace) {
+    return;
+  }
 
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.MetasailRace = finishedRaces;
+  const finishedRaces = [];
+  for (const race of data.MetasailRace) {
+    const now = Date.now();
+    const raceStartTime = +race.start;
+    const raceEndTime = +race.stop;
+    const isUnfinished =
+      raceStartTime > now ||
+      raceEndTime > now ||
+      raceEndTime < 0 ||
+      typeof race.stop === 'undefined';
 
-    if (data.MetasailRace?.length) {
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnits = await mapMetasailToSyrf(
-          data,
-          raceMetadatas,
-        );
-        await elasticsearch.updateEventAndIndexRaces(
-          esBodies,
-          savedCompetitionUnits,
-        );
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.MetasailRace = finishedRaces;
+
+  if (data.MetasailRace?.length) {
+    try {
+      ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      const savedCompetitionUnits = await mapMetasailToSyrf(
+        data,
+        raceMetadatas,
+      );
+      await elasticsearch.updateEventAndIndexRaces(
+        esBodies,
+        savedCompetitionUnits,
+      );
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
@@ -100,13 +102,9 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   };
   if (+race.stop > 0) {
     body.approx_end_time_ms = +race.stop;
-  } else {
-    if (startTimeMs > Date.now()) {
-      body.status = competitionUnitStatus.ONGOING;
-    } else {
-      body.status = competitionUnitStatus.SCHEDULED;
-    }
   }
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

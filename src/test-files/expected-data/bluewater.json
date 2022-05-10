@@ -1,0 +1,318 @@
+{
+  "CalendarEvent": {
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Australia",
+    "city": "Queenscliff",
+    "source": "BLUEWATER",
+    "openGraphImage": "mockLocation",
+    "status": "COMPLETED",
+    "approximateStartTime": 1617305400000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 2,
+    "startMonth": 4,
+    "startYear": 2021,
+    "approximateEndTime": 1617760800000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 7,
+    "endMonth": 4,
+    "endYear": 2021
+  },
+  "CompetitionUnit": {
+    "name": "2021 ORCV Melbourne to Port Fairy Race",
+    "startTime": 1617305400000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [144.66759995402717, -38.27398501835957],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [142.25368991389263, -38.3802450426812],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[144.914001, -38.035055], [144.955695, -38.035055], [144.955695, -38.007426], [144.914001, -38.007426], [144.914001, -38.035055]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "endTime": 1617760800000,
+    "openGraphImage": "mockLocation",
+    "country": "Australia",
+    "city": "Queenscliff",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "605b1b069dbcc81862098de5",
+    "scrapedUrl": "https://race.bluewatertracks.com/2021-orcv-melbourne-to-port-fairy-race",
+    "handicap": ["AMS", "PHS"],
+    "approximateStart": 1617305400000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+    "id": "4bcb53b4-058f-4c2b-a41c-5b607730765e",
+    "publicName": "ALIEN",
+    "globalId": "R880",
+    "vesselId": "5631641c671f0c130e6f09b6",
+    "model": "Lidgard 36",
+    "lengthInMeters": "10.9",
+    "widthInMeters": "3.5",
+    "draftInMeters": "2.5",
+    "handicap": {
+        "AMS": "0.894",
+        "PHS": "0.867"
+    },
+    "source": "BLUEWATER"
+  }, {
+    "id": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+    "publicName": "FOXY LADY",
+    "globalId": "B126",
+    "vesselId": "6035c44f11b48d1038952a10",
+    "model": "X 382 Cruiser",
+    "lengthInMeters": "11.5",
+    "widthInMeters": "3.7",
+    "draftInMeters": "2.1",
+    "handicap": {},
+    "source": "BLUEWATER"
+  }],
+  "VesselParticipants": [{
+    "vesselId": "4bcb53b4-058f-4c2b-a41c-5b607730765e",
+    "handicap": {
+        "AMS": "0.894",
+        "PHS": "0.867"
+    }
+  }, {
+    "vesselId": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+    "handicap": {}
+  }],
+  "Participants": [
+    [
+      {
+        "id": "83483370-a007-4eea-a613-4cf9505b78ac",
+        "publicName": "Perks, Geoff",
+        "invitationStatus": "SELF_REGISTERED"
+      }, {
+        "id": "28bddbeb-ccf8-4e8e-b1c5-ad062cb22eab",
+        "publicName": "Perks, Katherine",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ],
+    [
+      {
+        "id": "3a2f9249-084b-4d95-b639-fcc7d1336d6c",
+        "publicName": "Boyle, Brendan",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ]
+  ],
+  "Course": {
+    "name": "2021 ORCV Melbourne to Port Fairy Race",
+    "courseSequencedGeometries": [{
+      "geometryType": "LineString",
+      "properties": {
+        "name": "Start Line"
+      },
+      "coordinates": [[144.66552, -38.27238], [144.66968, -38.27559]],
+      "order": 0,
+      "points": [{
+          "position": [144.66552, -38.27238]
+        }, {
+          "position": [144.66968, -38.27559]
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 1"
+      },
+      "coordinates": [[144.6673, -38.27385]],
+      "order": 1,
+      "points": [{
+          "position": [144.6673, -38.27385],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 2"
+      },
+      "coordinates": [[144.66083, -38.27748]],
+      "order": 2,
+      "points": [{
+          "position": [144.66083, -38.27748],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 3"
+      },
+      "coordinates": [[144.64799, -38.28112]],
+      "order": 3,
+      "points": [{
+          "position": [144.64799, -38.28112],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 4"
+      },
+      "coordinates": [[144.61862, -38.30334]],
+      "order": 4,
+      "points": [{
+          "position": [144.61862, -38.30334],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 5"
+      },
+      "coordinates": [[143.53991, -38.90318]],
+      "order": 5,
+      "points": [{
+          "position": [143.53991, -38.90318],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 6"
+      },
+      "coordinates": [[142.26086, -38.37936]],
+      "order": 6,
+      "points": [{
+          "position": [142.26086, -38.37936],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "Point",
+      "properties": {
+        "name": "Course Point 7"
+      },
+      "coordinates": [[142.25383, -38.38031]],
+      "order": 7,
+      "points": [{
+          "position": [142.25383, -38.38031],
+          "markTrackerId": null
+        }
+      ]
+    }, {
+      "geometryType": "LineString",
+      "properties": {
+        "name": "Finish Line"
+      },
+      "coordinates": [[142.25052, -38.37828], [142.25686, -38.38221]],
+      "order": 8,
+      "points": [{
+          "position": [142.25052, -38.37828]
+        }, {
+          "position": [142.25686, -38.38221]
+        }
+      ]
+    }]
+  },
+  "ElasticSearchBody": {
+    "id": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+    "name": "2021 ORCV Melbourne to Port Fairy Race",
+    "source": "BLUEWATER",
+    "url": "https://race.bluewatertracks.com/2021-orcv-melbourne-to-port-fairy-race",
+    "start_country": "Australia",
+    "start_city": "Queenscliff",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 1,
+    "approx_start_time_ms": 1617305400000,
+    "approx_end_time_ms": 1617760800000,
+    "approx_duration_ms": 455400000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [144.66759995402717, -38.27398501835957],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [143.46152981769563, -38.33330022086693],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [142.25368991389263, -38.3802450426812],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[144.914001, -38.035055], [144.955695, -38.035055], [144.955695, -38.007426], [144.914001, -38.007426], [144.914001, -38.035055]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 11.245724900990242,
+    "approx_distance_km": 210.89211324270755,
+    "num_boats": 1,
+    "avg_time_between_positions": 450000,
+    "boat_models": ["Lidgard 36", "X 382 Cruiser"],
+    "boat_identifiers": ["1", "R880", "B126"],
+    "boat_names": ["ALIEN", "FOXY LADY"],
+    "handicap_rules": [],
+    "unstructured_text": ["Alien was built in Hobart in 1996 and with southern ocean racing in mind. Under her former owner, Mike Welsh, Alien competed successfully in the Sydney Hobart, coming second in its division in 1999, before being modified for bay racing. Justin Brenan purchased ALIEN 2008 and, with ocean racing in mind, restored the designer’s original stability by adding 250 kg additional ballast.", "I I love to sail. I have been involved in boats for thirty years. Looking forward to the King Iland race."]
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "74314800-9ccb-4f52-a37f-82e01b2afe80",
+    "name": "2021 ORCV Melbourne to Port Fairy Race",
+    "source": "BLUEWATER",
+    "url": "https://race.bluewatertracks.com/2021-orcv-melbourne-to-port-fairy-race",
+    "start_country": "Australia",
+    "start_city": "Queenscliff",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 1,
+    "approx_start_time_ms": 1617305400000,
+    "approx_end_time_ms": 1617760800000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [144.66759995402717, -38.27398501835957]
+    },
+    "is_unfinished": true,
+    "scraped_original_id": "605b1b069dbcc81862098de5"
+  }
+}

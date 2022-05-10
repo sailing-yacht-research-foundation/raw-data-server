@@ -2,7 +2,7 @@ const uuid = require('uuid');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/course');
 const competitionUnitDataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
 const { createMapScreenshot } = require('../../utils/createMapScreenshot');
-const { uploadMapScreenshot } = require('../../services/s3Util');
+const { uploadMapScreenshot } = require('../../utils/s3Util');
 
 const setGeometryId = (geometries) => {
   if (Array.isArray(geometries)) {

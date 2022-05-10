@@ -2,59 +2,62 @@ const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeGeoracing');
 const mapAndSave = require('./mappingsToSyrfDB/mapGeoracingToSyrf');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
   createTurfPoint,
   getCountryAndCity,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveGeoracingData = async (data) => {
   let errorMessage = '';
   let raceMetadatas, esBodies;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.GeoracingRace) {
-      const now = Date.now();
+  if (!data?.GeoracingRace) {
+    return;
+  }
 
-      const raceStartTime = new Date(race.start_time).getTime();
-      const raceEndTime = new Date(race.end_time).getTime();
+  const finishedRaces = [];
+  for (const race of data.GeoracingRace) {
+    const now = Date.now();
 
-      const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
+    const raceStartTime = new Date(race.start_time).getTime();
+    const raceEndTime = new Date(race.end_time).getTime();
 
-    data.GeoracingRace = finishedRaces;
-    if (data.GeoracingRace.length > 0) {
+    const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
-        await elasticsearch.updateEventAndIndexRaces(
-          esBodies,
-          savedCompetitionUnits,
-        );
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+
+  data.GeoracingRace = finishedRaces;
+  if (data.GeoracingRace.length > 0) {
+    try {
+      ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      const savedCompetitionUnits = await mapAndSave(data, raceMetadatas);
+      await elasticsearch.updateEventAndIndexRaces(
+        esBodies,
+        savedCompetitionUnits,
+      );
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
@@ -94,6 +97,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

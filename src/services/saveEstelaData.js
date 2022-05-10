@@ -2,55 +2,58 @@ const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeEstela');
 const mapAndSave = require('./mappingsToSyrfDB/mapEstelaToSyrf');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveEstelaData = async (data) => {
   let errorMessage = '';
   let raceMetadata, esBody;
 
-  if (process.env.NODE_ENV !== 'test') {
-    try {
-      const finishedRaces = [];
-      for (const race of data.EstelaRace) {
-        const now = Date.now();
-        const raceStartTime = race.start_timestamp * 1000;
-        const raceEndTime = race.end_timestamp * 1000;
-        const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
-        if (isUnfinished) {
-          console.log(
-            `Future race detected for race original id ${race.original_id}`,
-          );
-          try {
-            // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-            await _indexUnfinishedRaceToES(race);
-          } catch (err) {
-            console.log(
-              `Failed indexing unfinished race original id ${race.original_id}`,
-              err,
-            );
-            errorMessage = databaseErrorHandler(err);
-          }
-        } else {
-          finishedRaces.push(race);
-        }
-      }
-      data.EstelaRace = finishedRaces;
+  if (!data?.EstelaRace) {
+    return;
+  }
 
-      if (data.EstelaRace?.length) {
-        ({ raceMetadata, esBody } = await normalizeRace(data));
-        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
-        await elasticsearch.updateEventAndIndexRaces(
-          [esBody],
-          [savedCompetitionUnit],
+  try {
+    const finishedRaces = [];
+    for (const race of data.EstelaRace) {
+      const now = Date.now();
+      const raceStartTime = race.start_timestamp * 1000;
+      const raceEndTime = race.end_timestamp * 1000;
+      const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
+      if (isUnfinished) {
+        console.log(
+          `Future race detected for race original id ${race.original_id}`,
         );
+        try {
+          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+          await _indexUnfinishedRaceToES(race);
+        } catch (err) {
+          console.log(
+            `Failed indexing unfinished race original id ${race.original_id}`,
+            err,
+          );
+          errorMessage = databaseErrorHandler(err);
+        }
+      } else {
+        finishedRaces.push(race);
       }
-    } catch (err) {
-      console.log(err);
-      errorMessage = databaseErrorHandler(err);
     }
+    data.EstelaRace = finishedRaces;
+
+    if (data.EstelaRace?.length) {
+      ({ raceMetadata, esBody } = await normalizeRace(data));
+      const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+      await elasticsearch.updateEventAndIndexRaces(
+        [esBody],
+        [savedCompetitionUnit],
+      );
+    }
+  } catch (err) {
+    console.log(err);
+    errorMessage = databaseErrorHandler(err);
   }
 
   if (!errorMessage) {
@@ -81,6 +84,8 @@ const _indexUnfinishedRaceToES = async (race) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

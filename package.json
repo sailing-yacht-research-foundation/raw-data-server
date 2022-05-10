@@ -1,13 +1,13 @@
 {
   "name": "raw-data-server",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Server that will be used to transform data to parquet format and perform bulk saving into Permanent Storage",
   "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
     "dev": "nodemon -L src/main.js",
     "lint": "eslint --max-warnings 0 \"src/**/*.js\"",
-    "test": "jest --coverage --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
     "db:migrate": "node scripts/migrate",
     "db:seed": "sequelize db:seed:all",
     "db:syrf:sync": "node src/syrf-schema/sync",
@@ -62,6 +62,7 @@
     "jest": "^27.2.5",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
+    "sequelize-mock": "^0.10.2",
     "supertest": "^6.1.3"
   }
 }

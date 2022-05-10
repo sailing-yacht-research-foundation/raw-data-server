@@ -1,0 +1,187 @@
+{
+  "CalendarEvent": {
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Spain",
+    "city": "Palamós",
+    "source": "ESTELA",
+    "openGraphImage": "mockLocation",
+    "status": "COMPLETED",
+    "approximateStartTime": 1618136700000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 12,
+    "startMonth": 4,
+    "startYear": 2021,
+    "approximateEndTime": 1618142804000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 12,
+    "endMonth": 4,
+    "endYear": 2021
+  },
+  "CompetitionUnit": {
+    "name": "Regata Diumenge 11-04-2021",
+    "startTime": 1618136700000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [3.1180188, 41.8491494],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [3.1174105, 41.848840499999994],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[3.117395, 41.848831], [3.117426, 41.848831], [3.117426, 41.84885], [3.117395, 41.84885], [3.117395, 41.848831]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "endTime": 1618142804000,
+    "openGraphImage": "mockLocation",
+    "country": "Spain",
+    "city": "Palamós",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "6985",
+    "scrapedUrl": "https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021",
+    "approximateStart": 1618136700000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+    "id": "958072bf-e1a3-48f4-8cf3-08bd62e1e677",
+    "publicName": "AG Sailing",
+    "globalId": "",
+    "vesselId": "jbqgw",
+    "model": "",
+    "source": "ESTELA"
+  }],
+  "VesselParticipants": [{
+    "vesselId": "958072bf-e1a3-48f4-8cf3-08bd62e1e677",
+    "isCommittee": false
+  }],
+  "Participants": [
+    [{
+      "id": "4d9b15aa-8969-4c81-939b-2e1da3567a00",
+      "publicName": "Jusca",
+      "invitationStatus": "SELF_REGISTERED"
+    }, {
+      "id": "3f92c157-950c-433c-b098-464084e54dba",
+      "publicName": "Jordiet",
+      "invitationStatus": "SELF_REGISTERED"
+    }]
+  ],
+  "Course": {
+    "name": "Regata Diumenge 11-04-2021",
+    "competitionUnitId": null,
+    "courseSequencedGeometries": [{
+      "geometryType": "LineString",
+      "properties": {
+        "name": "SAL - A"
+      },
+      "coordinates": [["3.10012307949", "41.830860454"], ["3.10111443833", "41.83044307944"]],
+      "order": "0",
+      "points": [{
+        "position": ["3.10012307949", "41.830860454"]
+      }, {
+        "position": ["3.10111443833", "41.83044307944"]
+      }]
+    }]
+  },
+  "ElasticSearchBody": {
+    "id": "f6373964-9496-46ba-b907-fa90f8c6fb62",
+    "name": "Regata Diumenge 11-04-2021",
+    "source": "ESTELA",
+    "url": "https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021",
+    "start_country": "Spain",
+    "start_city": "Palamós",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 11,
+    "approx_start_time_ms": 1618136700000,
+    "approx_end_time_ms": 1618142804000,
+    "approx_duration_ms": 6104000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [3.1180188, 41.8491494],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [3.117714649265677, 41.84899495040119],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [3.1174105, 41.848840499999994],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[3.117395, 41.848831], [3.117426, 41.848831], [3.117426, 41.84885], [3.117395, 41.84885], [3.117395, 41.848831]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 0.00000543700957756119,
+    "approx_distance_km": 0.060979379901067624,
+    "num_boats": 1,
+    "avg_time_between_positions": 500,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["AG Sailing"],
+    "handicap_rules": [],
+    "unstructured_text": []
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "f6373964-9496-46ba-b907-fa90f8c6fb62",
+    "name": "Regata Diumenge 11-04-2021",
+    "source": "ESTELA",
+    "url": "https://www.estela.co/en/tracking-race/6985/regata-diumenge-11-04-2021",
+    "start_country": "Spain",
+    "start_city": "Palamós",
+    "start_year": 2021,
+    "start_month": 4,
+    "start_day": 11,
+    "approx_start_time_ms": 1618136700000,
+    "approx_end_time_ms": 1618142804000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [3.1180188, 41.8491494]
+    },
+    "is_unfinished": true,
+    "scraped_original_id": "6985"
+  }
+}

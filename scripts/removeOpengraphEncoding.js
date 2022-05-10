@@ -1,6 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
-const s3Util = require('../src/services/s3Util');
+const s3Util = require('../src/utils/s3Util');
 const logFailureFileName = 'OpenGraphCopyFailure.json';
 
 /**

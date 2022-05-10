@@ -1,9 +1,9 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeTackTracker');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const mapTackTrackerToSyrf = require('../services/mappingsToSyrfDB/mapTackTrackerToSyrf');
-const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
@@ -11,7 +11,7 @@ const {
   createTurfPoint,
   findCenter,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveTackTrackerData = async (data) => {
   let errorMessage = '';
@@ -106,11 +106,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
 
-  if (startTimeMs > Date.now()) {
-    body.status = competitionUnitStatus.ONGOING;
-  } else {
-    body.status = competitionUnitStatus.SCHEDULED;
-  }
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

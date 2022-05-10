@@ -1,56 +1,82 @@
-const axios = require('axios');
-const db = require('../../models');
-const normalizeObj = require('../normalization/normalizeBluewater');
-const normalizeSpy = jest
-  .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve({ id: '123' }));
+const { format, addDays } = require('date-fns');
+const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
+const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
+const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
+const vesselParticipantDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
+const participantDAL = require('../../syrf-schema/dataAccess/v1/participant');
+const markTrackerDAL = require('../../syrf-schema/dataAccess/v1/markTracker');
+const courseDAL = require('../../syrf-schema/dataAccess/v1/course');
+const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
+const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
+const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
+const utils = require('../../syrf-schema/utils/utils');
+const { competitionUnitStatus } = require('../../syrf-schema/enums');
+const elasticsearch = require('../../utils/elasticsearch');
+
+const { SOURCE } = require('../../constants');
 const saveBluewaterData = require('../saveBluewaterData');
 const jsonData = require('../../test-files/bluewater.json');
+const expectedJsonData = require('../../test-files/expected-data/bluewater.json');
 
 describe('Storing bluewater data to DB', () => {
-  let createRace,
-    createBoat,
-    createBoatHandicap,
-    createBoatSocialMedia,
-    createCrew,
-    createCrewSocialMedia,
-    createMap,
-    createPosition,
-    createAnnouncement,
-    axiosPostSpy;
+  let calendarEventUpsertSpy,
+    vesselParticipantGroupUpsertSpy,
+    vesselGetByVesselIdAndSourceSpy,
+    vesselBulkCreateSpy,
+    vesselParticipantBulkCreateSpy,
+    vesselParticipantAddParticipantSpy,
+    participantBulkCreateSpy,
+    markTrackerUpsertSpy,
+    courseUpsertSpy,
+    courseBulkInsertPointsSpy,
+    competitionUnitUpsertSpy,
+    vesselParticipantEventBulkCreateSpy,
+    scrapedSuccessfulUrlCreateSpy,
+    commitSpy,
+    elasticSearchUpdateSpy;
 
   beforeAll(async () => {
-    await db.sequelize.sync();
-    createRace = jest.spyOn(db.bluewaterRace, 'bulkCreate');
-    createBoat = jest.spyOn(db.bluewaterBoat, 'bulkCreate');
-    createBoatHandicap = jest.spyOn(db.bluewaterBoatHandicap, 'bulkCreate');
-    createBoatSocialMedia = jest.spyOn(
-      db.bluewaterBoatSocialMedia,
+    calendarEventUpsertSpy = jest.spyOn(calendarEventDAL, 'upsert');
+    vesselParticipantGroupUpsertSpy = jest.spyOn(
+      vesselParticipantGroupDAL,
+      'upsert',
+    );
+    vesselGetByVesselIdAndSourceSpy = jest.spyOn(
+      vesselDAL,
+      'getByVesselIdAndSource',
+    );
+    vesselBulkCreateSpy = jest.spyOn(vesselDAL, 'bulkCreate');
+    vesselParticipantBulkCreateSpy = jest.spyOn(
+      vesselParticipantDAL,
       'bulkCreate',
     );
-    createCrew = jest.spyOn(db.bluewaterCrew, 'bulkCreate');
-    createCrewSocialMedia = jest.spyOn(
-      db.bluewaterCrewSocialMedia,
+    vesselParticipantAddParticipantSpy = jest.spyOn(
+      vesselParticipantDAL,
+      'addParticipant',
+    );
+    participantBulkCreateSpy = jest.spyOn(participantDAL, 'bulkCreate');
+    markTrackerUpsertSpy = jest.spyOn(markTrackerDAL, 'upsert');
+    courseUpsertSpy = jest.spyOn(courseDAL, 'upsert');
+    courseBulkInsertPointsSpy = jest.spyOn(courseDAL, 'bulkInsertPoints');
+    competitionUnitUpsertSpy = jest.spyOn(competitionUnitDAL, 'upsert');
+    vesselParticipantEventBulkCreateSpy = jest.spyOn(
+      vesselParticipantEventDAL,
       'bulkCreate',
     );
-    createMap = jest.spyOn(db.bluewaterMap, 'bulkCreate');
-    createPosition = jest.spyOn(db.bluewaterPosition, 'bulkCreate');
-    createAnnouncement = jest.spyOn(db.bluewaterAnnouncement, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    scrapedSuccessfulUrlCreateSpy = jest.spyOn(
+      scrapedSuccessfulUrlDAL,
+      'create',
+    );
+    commitSpy = jest.fn().mockResolvedValue();
+    jest
+      .spyOn(utils, 'createTransaction')
+      .mockResolvedValue({ commit: commitSpy, rollback: jest.fn() });
+    elasticSearchUpdateSpy = jest.spyOn(
+      elasticsearch,
+      'updateEventAndIndexRaces',
+    );
   });
   afterAll(async () => {
-    await db.bluewaterRace.destroy({ truncate: true });
-    await db.bluewaterBoat.destroy({ truncate: true });
-    await db.bluewaterBoatHandicap.destroy({ truncate: true });
-    await db.bluewaterBoatSocialMedia.destroy({ truncate: true });
-    await db.bluewaterCrew.destroy({ truncate: true });
-    await db.bluewaterCrewSocialMedia.destroy({ truncate: true });
-    await db.bluewaterMap.destroy({ truncate: true });
-    await db.bluewaterPosition.destroy({ truncate: true });
-    await db.bluewaterAnnouncement.destroy({ truncate: true });
-    await db.bluewaterSuccessfulUrl.destroy({ truncate: true });
-    await db.bluewaterFailedUrl.destroy({ truncate: true });
-    await db.sequelize.close();
     jest.restoreAllMocks();
   });
   afterEach(() => {
@@ -58,58 +84,129 @@ describe('Storing bluewater data to DB', () => {
   });
 
   it('should not save anything when json data is empty', async () => {
-    await saveBluewaterData({});
-    expect(createRace).toHaveBeenCalledTimes(0);
-    expect(createBoat).toHaveBeenCalledTimes(0);
-    expect(createBoatHandicap).toHaveBeenCalledTimes(0);
-    expect(createBoatSocialMedia).toHaveBeenCalledTimes(0);
-    expect(createCrew).toHaveBeenCalledTimes(0);
-    expect(createCrewSocialMedia).toHaveBeenCalledTimes(0);
-    expect(createMap).toHaveBeenCalledTimes(0);
-    expect(createPosition).toHaveBeenCalledTimes(0);
-    expect(createAnnouncement).toHaveBeenCalledTimes(0);
-    expect(normalizeSpy).toHaveBeenCalledTimes(0);
-    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
+    await saveBluewaterData();
+
+    expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
   });
+
   it('should save data correctly', async () => {
     await saveBluewaterData(jsonData);
-    expect(createRace).toHaveBeenCalledWith(
-      jsonData.BluewaterRace,
+
+    const race = jsonData.BluewaterRace[0];
+    expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
+      undefined,
+      expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );
-    expect(createBoat).toHaveBeenCalledWith(
-      jsonData.BluewaterBoat,
+    expect(vesselParticipantGroupUpsertSpy).toHaveBeenCalledTimes(1);
+    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(1);
+    expect(vesselBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.Vessels,
       expect.anything(),
     );
-    expect(createBoatHandicap).toHaveBeenCalledWith(
-      jsonData.BluewaterBoatHandicap,
+    expect(vesselParticipantBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.VesselParticipants,
       expect.anything(),
     );
-    expect(createBoatSocialMedia).toHaveBeenCalledWith(
-      jsonData.BluewaterBoatSocialMedia,
+    expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipants.length,
+    );
+    expect(participantBulkCreateSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipants.length,
+    );
+    expectedJsonData.Participants.forEach((p) => {
+      expect(participantBulkCreateSpy).toHaveBeenCalledWith(
+        p,
+        expect.anything(),
+      );
+    });
+    expect(markTrackerUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(courseBulkInsertPointsSpy).toHaveBeenCalledTimes(1);
+    expect(courseUpsertSpy).toHaveBeenCalledWith(
+      null,
+      expect.objectContaining({
+        ...expectedJsonData.Course,
+        courseSequencedGeometries:
+          expectedJsonData.Course.courseSequencedGeometries.map((g) =>
+            expect.objectContaining(g),
+          ),
+      }),
       expect.anything(),
     );
-    expect(createCrew).toHaveBeenCalledWith(
-      jsonData.BluewaterCrew,
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledWith(
+      race.id,
+      expect.objectContaining(expectedJsonData.CompetitionUnit),
       expect.anything(),
     );
-    expect(createCrewSocialMedia).toHaveBeenCalledWith(
-      jsonData.BluewaterCrewSocialMedia,
+    expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledTimes(0);
+    expect(scrapedSuccessfulUrlCreateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: race.slug,
+        originalId: race.original_id,
+        source: SOURCE.BLUEWATER,
+      }),
       expect.anything(),
     );
-    expect(createMap).toHaveBeenCalledWith(
-      jsonData.BluewaterMap,
-      expect.anything(),
+    expect(commitSpy).toHaveBeenCalled();
+    expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
+      [expect.objectContaining(expectedJsonData.ElasticSearchBody)],
+      [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
-    expect(createPosition).toHaveBeenCalledWith(
-      jsonData.BluewaterPosition,
-      expect.anything(),
-    );
-    expect(createAnnouncement).toHaveBeenCalledWith(
-      jsonData.BluewaterAnnouncement,
-      expect.anything(),
-    );
-    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+  });
+
+  describe('when saving an unfinished race', () => {
+    let futureDate, elasticSearchIndexSpy;
+    beforeEach(() => {
+      const now = new Date();
+      futureDate = addDays(now, 1);
+      elasticSearchIndexSpy = jest.spyOn(elasticsearch, 'indexRace');
+    });
+    it('should only call elastic search to index and do not save in db when start time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.BluewaterRace[0].start_time = format(
+        futureDate,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS",
+      );
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.start_year = futureDate.getUTCFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getUTCMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getUTCDate();
+      expectedElasticsearchBody.approx_start_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.SCHEDULED;
+
+      await saveBluewaterData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
+
+    it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.BluewaterRace[0].track_time_finish = format(
+        futureDate,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS",
+      );
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.ONGOING;
+
+      await saveBluewaterData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
   });
 });

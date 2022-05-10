@@ -1,6 +1,6 @@
 const turf = require('@turf/turf');
 const uuid = require('uuid');
-const uploadUtil = require('../services/uploadUtil');
+const uploadUtil = require('./uploadUtil');
 const { createMapScreenshot } = require('./createMapScreenshot');
 const cities = require('all-the-cities');
 const KDBush = require('kdbush');

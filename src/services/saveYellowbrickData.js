@@ -1,10 +1,11 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeYellowbrick');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const mapYellowBrickToSyrf = require('../services/mappingsToSyrfDB/mapYellowBrickToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
 
 const saveYellowbrickData = async (data) => {
@@ -93,6 +94,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.race_code.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int
   };
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

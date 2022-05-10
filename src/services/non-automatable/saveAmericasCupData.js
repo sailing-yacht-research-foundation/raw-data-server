@@ -1,6 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const { format, utcToZonedTime } = require('date-fns-tz');
-const { s3 } = require('../uploadUtil');
+const { s3 } = require('../../utils/uploadUtil');
 const fs = require('fs');
 const path = require('path');
 const temp = require('temp').track();
@@ -18,7 +18,7 @@ const {
 } = require('../normalization/non-automatable/normalizeAmericascup');
 const mapAndSave = require('../mappingsToSyrfDB/mapAmericasCupToSyrf');
 const { getExistingData } = require('../scrapedDataResult');
-const { triggerWeatherSlicer } = require('../weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../../utils/weatherSlicerUtil');
 
 const saveAmericasCupData = async (bucketName, fileName, year) => {
   const XML_DIR_NAME = 'history';

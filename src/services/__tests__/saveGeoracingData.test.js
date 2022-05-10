@@ -1,132 +1,224 @@
-const axios = require('axios');
-const db = require('../../models');
-const normalizeObj = require('../normalization/normalizeGeoracing');
-const normalizeSpy = jest
-  .spyOn(normalizeObj, 'normalizeRace')
-  .mockImplementation(() => Promise.resolve([{ id: '123' }]));
+const { format, addDays } = require('date-fns');
+const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
+const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
+const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
+const vesselParticipantDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
+const participantDAL = require('../../syrf-schema/dataAccess/v1/participant');
+const markTrackerDAL = require('../../syrf-schema/dataAccess/v1/markTracker');
+const courseDAL = require('../../syrf-schema/dataAccess/v1/course');
+const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
+const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
+const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
+const utils = require('../../syrf-schema/utils/utils');
+const { competitionUnitStatus } = require('../../syrf-schema/enums');
+const elasticsearch = require('../../utils/elasticsearch');
+
+const { SOURCE } = require('../../constants');
 const saveGeoracingData = require('../saveGeoracingData');
 const jsonData = require('../../test-files/georacing.json');
+const expectedJsonData = require('../../test-files/expected-data/georacing.json');
 
 describe('Storing georacing data to DB', () => {
-  let createActor,
-    createCourse,
-    createCE,
-    createCO,
-    createEvent,
-    createGroundPlace,
-    createLine,
-    createPosition,
-    createRace,
-    createSplittime,
-    createSO,
-    createWeather,
-    axiosPostSpy;
+  let calendarEventUpsertSpy,
+    vesselParticipantGroupUpsertSpy,
+    vesselGetByVesselIdAndSourceSpy,
+    vesselBulkCreateSpy,
+    vesselParticipantBulkCreateSpy,
+    vesselParticipantAddParticipantSpy,
+    participantBulkCreateSpy,
+    markTrackerUpsertSpy,
+    courseUpsertSpy,
+    courseBulkInsertPointsSpy,
+    competitionUnitUpsertSpy,
+    vesselParticipantEventBulkCreateSpy,
+    scrapedSuccessfulUrlCreateSpy,
+    commitSpy,
+    elasticSearchUpdateSpy;
 
   beforeAll(async () => {
-    await db.sequelize.sync();
-    createActor = jest.spyOn(db.georacingActor, 'bulkCreate');
-    createCourse = jest.spyOn(db.georacingCourse, 'bulkCreate');
-    createCE = jest.spyOn(db.georacingCourseElement, 'bulkCreate');
-    createCO = jest.spyOn(db.georacingCourseObject, 'bulkCreate');
-    createEvent = jest.spyOn(db.georacingEvent, 'bulkCreate');
-    createGroundPlace = jest.spyOn(db.georacingGroundPlace, 'bulkCreate');
-    createLine = jest.spyOn(db.georacingLine, 'bulkCreate');
-    createPosition = jest.spyOn(db.georacingPosition, 'bulkCreate');
-    createRace = jest.spyOn(db.georacingRace, 'bulkCreate');
-    createSplittime = jest.spyOn(db.georacingSplittime, 'bulkCreate');
-    createSO = jest.spyOn(db.georacingSplittimeObject, 'bulkCreate');
-    createWeather = jest.spyOn(db.georacingWeather, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    calendarEventUpsertSpy = jest.spyOn(calendarEventDAL, 'upsert');
+    vesselParticipantGroupUpsertSpy = jest.spyOn(
+      vesselParticipantGroupDAL,
+      'upsert',
+    );
+    vesselGetByVesselIdAndSourceSpy = jest.spyOn(
+      vesselDAL,
+      'getByVesselIdAndSource',
+    );
+    vesselBulkCreateSpy = jest.spyOn(vesselDAL, 'bulkCreate');
+    vesselParticipantBulkCreateSpy = jest.spyOn(
+      vesselParticipantDAL,
+      'bulkCreate',
+    );
+    vesselParticipantAddParticipantSpy = jest.spyOn(
+      vesselParticipantDAL,
+      'addParticipant',
+    );
+    participantBulkCreateSpy = jest.spyOn(participantDAL, 'bulkCreate');
+    markTrackerUpsertSpy = jest.spyOn(markTrackerDAL, 'upsert');
+    courseUpsertSpy = jest.spyOn(courseDAL, 'upsert');
+    courseBulkInsertPointsSpy = jest.spyOn(courseDAL, 'bulkInsertPoints');
+    competitionUnitUpsertSpy = jest.spyOn(competitionUnitDAL, 'upsert');
+    vesselParticipantEventBulkCreateSpy = jest.spyOn(
+      vesselParticipantEventDAL,
+      'bulkCreate',
+    );
+    scrapedSuccessfulUrlCreateSpy = jest.spyOn(
+      scrapedSuccessfulUrlDAL,
+      'create',
+    );
+    commitSpy = jest.fn().mockResolvedValue();
+    jest
+      .spyOn(utils, 'createTransaction')
+      .mockResolvedValue({ commit: commitSpy, rollback: jest.fn() });
+    elasticSearchUpdateSpy = jest.spyOn(
+      elasticsearch,
+      'updateEventAndIndexRaces',
+    );
   });
   afterAll(async () => {
-    await db.georacingEvent.destroy({ truncate: true });
-    await db.georacingRace.destroy({ truncate: true });
-    await db.georacingActor.destroy({ truncate: true });
-    await db.georacingWeather.destroy({ truncate: true });
-    await db.georacingCourse.destroy({ truncate: true });
-    await db.georacingCourseElement.destroy({ truncate: true });
-    await db.georacingCourseObject.destroy({ truncate: true });
-    await db.georacingGroundPlace.destroy({ truncate: true });
-    await db.georacingLine.destroy({ truncate: true });
-    await db.georacingPosition.destroy({ truncate: true });
-    await db.georacingSplittime.destroy({ truncate: true });
-    await db.georacingSplittimeObject.destroy({ truncate: true });
-    await db.georacingFailedUrl.destroy({ truncate: true });
-    await db.georacingSuccessfulUrl.destroy({ truncate: true });
-    await db.sequelize.close();
+    jest.restoreAllMocks();
   });
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should not save anything when empty data', async () => {
-    await saveGeoracingData({});
-    expect(createActor).toHaveBeenCalledTimes(0);
-    expect(createCourse).toHaveBeenCalledTimes(0);
-    expect(createCE).toHaveBeenCalledTimes(0);
-    expect(createCO).toHaveBeenCalledTimes(0);
-    expect(createEvent).toHaveBeenCalledTimes(0);
-    expect(createGroundPlace).toHaveBeenCalledTimes(0);
-    expect(createLine).toHaveBeenCalledTimes(0);
-    expect(createPosition).toHaveBeenCalledTimes(0);
-    expect(createRace).toHaveBeenCalledTimes(0);
-    expect(createSplittime).toHaveBeenCalledTimes(0);
-    expect(createSO).toHaveBeenCalledTimes(0);
-    expect(createWeather).toHaveBeenCalledTimes(0);
-    expect(normalizeSpy).toHaveBeenCalledTimes(0);
-    expect(axiosPostSpy).toHaveBeenCalledTimes(0);
+  it('should not save anything when json data is empty', async () => {
+    await saveGeoracingData();
+    expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
   });
+
   it('should save data correctly', async () => {
     await saveGeoracingData(jsonData);
-    expect(createActor).toHaveBeenCalledWith(
-      jsonData.GeoracingActor,
+
+    const race = jsonData.GeoracingRace[0];
+    expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
+      jsonData.GeoracingEvent[0].id,
+      expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );
-    expect(createCourse).toHaveBeenCalledWith(
-      jsonData.GeoracingCourse,
+    expect(vesselParticipantGroupUpsertSpy).toHaveBeenCalledTimes(1);
+    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(0); // this will only be called if reuse boat is true
+    expect(vesselBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.Vessels,
       expect.anything(),
     );
-    expect(createCE).toHaveBeenCalledWith(
-      jsonData.GeoracingCourseElement,
+    expect(vesselParticipantBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.VesselParticipants,
       expect.anything(),
     );
-    expect(createCO).toHaveBeenCalledWith(
-      jsonData.GeoracingCourseObject,
+    expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(0);
+    expect(participantBulkCreateSpy).toHaveBeenCalledTimes(0);
+    expectedJsonData.Participants?.forEach((p) => {
+      expect(participantBulkCreateSpy).toHaveBeenCalledWith(
+        p,
+        expect.anything(),
+      );
+    });
+    expect(markTrackerUpsertSpy).toHaveBeenCalledTimes(
+      expectedJsonData.MarkTrackers.length,
+    );
+    expectedJsonData.MarkTrackers?.forEach((m) => {
+      expect(markTrackerUpsertSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining(m),
+        expect.anything(),
+      );
+    });
+    expect(courseBulkInsertPointsSpy).toHaveBeenCalledTimes(1);
+    expect(courseUpsertSpy).toHaveBeenCalledWith(
+      null,
+      expect.objectContaining({
+        ...expectedJsonData.Course,
+        courseSequencedGeometries:
+          expectedJsonData.Course.courseSequencedGeometries.map((g) =>
+            expect.objectContaining(g),
+          ),
+      }),
       expect.anything(),
     );
-    expect(createEvent).toHaveBeenCalledWith(
-      jsonData.GeoracingEvent,
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledWith(
+      race.id,
+      expect.objectContaining(expectedJsonData.CompetitionUnit),
       expect.anything(),
     );
-    expect(createGroundPlace).toHaveBeenCalledWith(
-      jsonData.GeoracingGroundPlace,
+    expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipantEvents?.length ? 1 : 0,
+    );
+    expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledWith(
+      expectedJsonData.VesselParticipantEvents.map((i) =>
+        expect.objectContaining(i),
+      ),
       expect.anything(),
     );
-    expect(createLine).toHaveBeenCalledWith(
-      jsonData.GeoracingLine,
+    expect(scrapedSuccessfulUrlCreateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: race.url,
+        originalId: race.original_id,
+        source: SOURCE.GEORACING,
+      }),
       expect.anything(),
     );
-    expect(createPosition).toHaveBeenCalledWith(
-      jsonData.GeoracingPosition,
-      expect.anything(),
+    expect(commitSpy).toHaveBeenCalled();
+    expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
+      expect.objectContaining(expectedJsonData.ElasticSearchBodies),
+      [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
-    expect(createRace).toHaveBeenCalledWith(
-      jsonData.GeoracingRace,
-      expect.anything(),
-    );
-    expect(createSplittime).toHaveBeenCalledWith(
-      jsonData.GeoracingSplittime,
-      expect.anything(),
-    );
-    expect(createSO).toHaveBeenCalledWith(
-      jsonData.GeoracingSplittimeObject,
-      expect.anything(),
-    );
-    expect(createWeather).toHaveBeenCalledWith(
-      jsonData.GeoracingWeather,
-      expect.anything(),
-    );
-    expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+  });
+
+  describe('when saving an unfinished race', () => {
+    let futureDate, elasticSearchIndexSpy;
+    beforeEach(() => {
+      const now = new Date();
+      futureDate = addDays(now, 1);
+      elasticSearchIndexSpy = jest.spyOn(elasticsearch, 'indexRace');
+    });
+    it('should only call elastic search to index and do not save in db when start time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.GeoracingRace[0].start_time = format(
+        futureDate,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS",
+      );
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.start_year = futureDate.getUTCFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getUTCMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getUTCDate();
+      expectedElasticsearchBody.approx_start_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.SCHEDULED;
+
+      await saveGeoracingData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
+
+    it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.GeoracingRace[0].end_time = format(
+        futureDate,
+        "yyyy-MM-dd'T'HH:mm:ss.SSS",
+      );
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.ONGOING;
+
+      await saveGeoracingData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
   });
 });

@@ -28,7 +28,9 @@ describe('Storing TackTracker data to DB', () => {
     createMark = jest.spyOn(db.tackTrackerMark, 'bulkCreate');
     createPosition = jest.spyOn(db.tackTrackerPosition, 'bulkCreate');
     createStart = jest.spyOn(db.tackTrackerStart, 'bulkCreate');
-    axiosPostSpy = jest.spyOn(axios, 'post').mockImplementation(() => Promise.resolve());
+    axiosPostSpy = jest
+      .spyOn(axios, 'post')
+      .mockImplementation(() => Promise.resolve());
   });
   afterAll(async () => {
     await db.tackTrackerRegatta.destroy({ truncate: true });
@@ -66,7 +68,11 @@ describe('Storing TackTracker data to DB', () => {
   it('should save data correctly', async () => {
     await saveTackTrackerData(jsonData);
     expect(createRegatta).toHaveBeenCalledWith(
-      [Object.assign({}, jsonData.TackTrackerRegatta[0], { TackTrackerRaces: jsonData.TackTrackerRace })],
+      [
+        Object.assign({}, jsonData.TackTrackerRegatta[0], {
+          TackTrackerRaces: jsonData.TackTrackerRace,
+        }),
+      ],
       expect.anything(),
     );
     expect(createBoat).toHaveBeenCalledWith(
@@ -94,6 +100,8 @@ describe('Storing TackTracker data to DB', () => {
       expect.anything(),
     );
     expect(normalizeSpy).toHaveBeenCalledWith(jsonData, expect.anything());
-    expect(axiosPostSpy).toHaveBeenCalledTimes(process.env.GEO_DATA_SLICER ? 1 : 0);
+    expect(axiosPostSpy).toHaveBeenCalledTimes(
+      process.env.GEO_DATA_SLICER ? 1 : 0,
+    );
   });
 });

@@ -1,16 +1,16 @@
 const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeRaceQs');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const mapRaceQsToSyrf = require('../services/mappingsToSyrfDB/mapRaceQsToSyrf');
-const { competitionUnitStatus } = require('../syrf-schema/enums');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
   createTurfPoint,
   getCountryAndCity,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveRaceQsData = async (data) => {
   let errorMessage = '';
@@ -102,13 +102,9 @@ const _indexUnfinishedRaceToES = async (race, data) => {
 
   if (endTimeMs) {
     body.approx_end_time_ms = endTimeMs;
-  } else {
-    if (startTimeMs > Date.now()) {
-      body.status = competitionUnitStatus.ONGOING;
-    } else {
-      body.status = competitionUnitStatus.SCHEDULED;
-    }
   }
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;

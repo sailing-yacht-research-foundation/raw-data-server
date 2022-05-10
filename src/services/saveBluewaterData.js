@@ -2,62 +2,63 @@ const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { normalizeRace } = require('./normalization/normalizeBluewater');
 const mapAndSave = require('./mappingsToSyrfDB/mapBluewaterToSyrf');
-const { triggerWeatherSlicer } = require('./weatherSlicerUtil');
-const { competitionUnitStatus } = require('../syrf-schema/enums');
+const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
+const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   createTurfPoint,
   findCenter,
   getCountryAndCity,
 } = require('../utils/gisUtils');
-const { getTrackerLogoUrl } = require('./s3Util');
+const { getTrackerLogoUrl } = require('../utils/s3Util');
 
 const saveBluewaterData = async (data) => {
   let errorMessage = '';
   let raceMetadata, esBody;
 
-  // temporary add of test env to avoid accidentally saving on maindb until its mocked
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.BluewaterRace) {
-      const now = Date.now();
-      const raceStartTimeMs = new Date(race.start_time).getTime();
-      const raceEndTimeMs = new Date(race.track_time_finish).getTime();
-      const isUnfinished =
-        raceStartTimeMs > now ||
-        (raceStartTimeMs && !race.track_time_finish) ||
-        raceEndTimeMs > now;
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.BluewaterRace = finishedRaces;
+  if (!data?.BluewaterRace) {
+    return;
+  }
 
-    if (data.BluewaterRace?.length) {
+  const finishedRaces = [];
+  for (const race of data.BluewaterRace) {
+    const now = Date.now();
+    const raceStartTimeMs = new Date(race.start_time).getTime();
+    const raceEndTimeMs = new Date(race.track_time_finish).getTime();
+    const isUnfinished =
+      raceStartTimeMs > now ||
+      (raceStartTimeMs && !race.track_time_finish) ||
+      raceEndTimeMs > now;
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadata, esBody } = await normalizeRace(data));
-        const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
-        await elasticsearch.updateEventAndIndexRaces(
-          [esBody],
-          [savedCompetitionUnit],
-        );
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.BluewaterRace = finishedRaces;
+
+  if (data.BluewaterRace?.length) {
+    try {
+      ({ raceMetadata, esBody } = await normalizeRace(data));
+      const savedCompetitionUnit = await mapAndSave(data, raceMetadata);
+      await elasticsearch.updateEventAndIndexRaces(
+        [esBody],
+        [savedCompetitionUnit],
+      );
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 
@@ -107,13 +108,9 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   };
   if (race.track_time_finish && !isNaN(endTime)) {
     body.approx_end_time_ms = endTime;
-  } else {
-    if (startTime > Date.now()) {
-      body.status = competitionUnitStatus.ONGOING;
-    } else {
-      body.status = competitionUnitStatus.SCHEDULED;
-    }
   }
+
+  body.status = getUnfinishedRaceStatus(startDate);
 
   if (startPoint) {
     body.approx_start_point = startPoint.geometry;
