@@ -1,0 +1,875 @@
+{
+  "CalendarEvent": {
+    "name": "BYC Wednesday Twilight",
+    "externalUrl": "42805-unknown-regatta",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "United States",
+    "city": "Newport",
+    "source": "RACEQS",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": "42805",
+    "status": "COMPLETED",
+    "approximateStartTime": 1409175300000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 28,
+    "startMonth": 8,
+    "startYear": 2014,
+    "approximateEndTime": 1409194800000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 28,
+    "endMonth": 8,
+    "endYear": 2014,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [-71.33552044569066, 41.50812221575484]
+    }
+  },
+  "CompetitionUnits": [{
+    "name": "BYC Wednesday Twilight - Cruising Class - 17:35:00",
+    "startTime": 1409175300000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-71.33552044569066, 41.50812221575484],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-71.33548276012552, 41.50815496946044],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "endTime": 1409194800000,
+    "openGraphImage": "mockLocation",
+    "country": "United States",
+    "city": "Newport",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "raceqs-start-42805-26373",
+    "scrapedUrl": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "handicap": ["One Design"],
+    "approximateStart": 1409175300000,
+    "approximateStart_zone": "Etc/UTC"
+  }, {
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "startTime": 1409177460000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-70.72577214223506, 41.67420682554304],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "endTime": 1409194800000,
+    "openGraphImage": "mockLocation",
+    "country": "United States",
+    "city": "Marion",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "raceqs-start-42805-26219",
+    "scrapedUrl": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "handicap": ["One Design"],
+    "approximateStart": 1409177460000,
+    "approximateStart_zone": "Etc/UTC"
+  }, {
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "startTime": 1409177460000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-71.07956181838078, 41.586195413196116],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "endTime": 1409194800000,
+    "openGraphImage": "mockLocation",
+    "country": "United States",
+    "city": "Marion",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "raceqs-start-42805-26220",
+    "scrapedUrl": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "handicap": ["One Design"],
+    "approximateStart": 1409177460000,
+    "approximateStart_zone": "Etc/UTC"
+  }, {
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "startTime": 1409177460000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-70.72577214223506, 41.67420682554304],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "endTime": 1409194800000,
+    "openGraphImage": "mockLocation",
+    "country": "United States",
+    "city": "Marion",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "raceqs-start-42805-26221",
+    "scrapedUrl": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "handicap": ["One Design"],
+    "approximateStart": 1409177460000,
+    "approximateStart_zone": "Etc/UTC"
+  }],
+  "Vessels": [
+    [{
+      "id": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "publicName": "denali",
+      "vesselId": "12507",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "publicName": "16",
+      "vesselId": "17533",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "publicName": "18",
+      "vesselId": "21636",
+      "handicap": {},
+      "source": "RACEQS"
+    }],
+    [{
+      "id": "9c82c359-88b4-47df-ad6c-b4858e4203c0",
+      "publicName": "Defiant ",
+      "vesselId": "12395",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "publicName": "denali",
+      "vesselId": "12507",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "626dc56c-069a-4bb6-9399-56baa675a19e",
+      "publicName": "jeroboam",
+      "vesselId": "17077",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "publicName": "16",
+      "vesselId": "17533",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "publicName": "18",
+      "vesselId": "21636",
+      "handicap": {},
+      "source": "RACEQS"
+    }],
+    [{
+      "id": "9c82c359-88b4-47df-ad6c-b4858e4203c0",
+      "publicName": "Defiant ",
+      "vesselId": "12395",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "publicName": "denali",
+      "vesselId": "12507",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "626dc56c-069a-4bb6-9399-56baa675a19e",
+      "publicName": "jeroboam",
+      "vesselId": "17077",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "publicName": "16",
+      "vesselId": "17533",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "publicName": "18",
+      "vesselId": "21636",
+      "handicap": {},
+      "source": "RACEQS"
+    }],
+    [{
+      "id": "9c82c359-88b4-47df-ad6c-b4858e4203c0",
+      "publicName": "Defiant ",
+      "vesselId": "12395",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "publicName": "denali",
+      "vesselId": "12507",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "626dc56c-069a-4bb6-9399-56baa675a19e",
+      "publicName": "jeroboam",
+      "vesselId": "17077",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "publicName": "16",
+      "vesselId": "17533",
+      "handicap": {},
+      "source": "RACEQS"
+    }, {
+      "id": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "publicName": "18",
+      "vesselId": "21636",
+      "handicap": {},
+      "source": "RACEQS"
+    }]
+  ],
+  "VesselParticipants": [
+    [{
+      "vesselId": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "handicap": {}
+    }, {
+      "vesselId": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "handicap": {}
+    }, {
+      "vesselId": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "handicap": {}
+    }],
+    [{
+      "vesselId": "9c82c359-88b4-47df-ad6c-b4858e4203c0",
+      "handicap": {}
+    }, {
+      "vesselId": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "handicap": {}
+    }, {
+      "vesselId": "626dc56c-069a-4bb6-9399-56baa675a19e",
+      "handicap": {}
+    }, {
+      "vesselId": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "handicap": {}
+    }, {
+      "vesselId": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "handicap": {}
+    }],
+    [{
+      "vesselId": "9c82c359-88b4-47df-ad6c-b4858e4203c0",
+      "handicap": {}
+    }, {
+      "vesselId": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "handicap": {}
+    }, {
+      "vesselId": "626dc56c-069a-4bb6-9399-56baa675a19e",
+      "handicap": {}
+    }, {
+      "vesselId": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "handicap": {}
+    }, {
+      "vesselId": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "handicap": {}
+    }],
+    [{
+      "vesselId": "9c82c359-88b4-47df-ad6c-b4858e4203c0",
+      "handicap": {}
+    }, {
+      "vesselId": "a58fd2bf-6b81-4398-803a-9c4bbb1a1f50",
+      "handicap": {}
+    }, {
+      "vesselId": "626dc56c-069a-4bb6-9399-56baa675a19e",
+      "handicap": {}
+    }, {
+      "vesselId": "ee6ae351-898c-4e71-8618-9bae1a066a3c",
+      "handicap": {}
+    }, {
+      "vesselId": "29b58aa0-bba1-4d08-a7b9-aae8c08915ca",
+      "handicap": {}
+    }]
+  ],
+  "Participants": [],
+  "Courses": [{
+    "name": "BYC Wednesday Twilight - Cruising Class - 17:35:00",
+    "competitionUnitId": null,
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Start 1",
+          "type": "start"
+        },
+        "coordinates": [["-71.33552044569066", "41.50812221575484"], ["-71.33421561536632", "41.5079160801951"]],
+        "order": 0,
+        "points": [{
+            "position": ["-71.33552044569066", "41.50812221575484"]
+          }, {
+            "position": ["-71.33421561536632", "41.5079160801951"]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Mark 10"
+        },
+        "coordinates": [["-71.33685588144931", "41.504280228569"]],
+        "order": 1,
+        "points": [{
+            "position": ["-71.33685588144931", "41.504280228569"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "17"
+        },
+        "coordinates": [["-71.33534956581728", "41.52965790005316"]],
+        "order": 2,
+        "points": [{
+            "position": ["-71.33534956581728", "41.52965790005316"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "14"
+        },
+        "coordinates": [["-71.33434287792412", "41.5166798492873"]],
+        "order": 4,
+        "points": [{
+            "position": ["-71.33434287792412", "41.5166798492873"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Finish 1",
+          "type": "finish"
+        },
+        "coordinates": [["-71.33548276012552", "41.50815496946044"], ["-71.33420614936404", "41.50795304315805"]],
+        "order": 5,
+        "points": [{
+            "position": ["-71.33548276012552", "41.50815496946044"]
+          }, {
+            "position": ["-71.33420614936404", "41.50795304315805"]
+          }
+        ]
+      }
+    ]
+  }, {
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "competitionUnitId": null,
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Start 1",
+          "type": "start"
+        },
+        "coordinates": [["-70.72757227912844", "41.675885973005066"], ["-70.72572992861208", "41.67421513436974"]],
+        "order": 0,
+        "points": [{
+            "position": ["-70.72757227912844", "41.675885973005066"]
+          }, {
+            "position": ["-70.72572992861208", "41.67421513436974"]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Mark 1"
+        },
+        "coordinates": [["-70.7400499078108", "41.653547481965205"]],
+        "order": 1,
+        "points": [{
+            "position": ["-70.7400499078108", "41.653547481965205"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Mark 2"
+        },
+        "coordinates": [["-70.7123697553678", "41.64996727201055"]],
+        "order": 2,
+        "points": [{
+            "position": ["-70.7123697553678", "41.64996727201055"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Finish 1",
+          "type": "finish"
+        },
+        "coordinates": [["-70.72577214223506", "41.67420682554304"], ["-70.72759296923952", "41.675864257695686"]],
+        "order": 3,
+        "points": [{
+            "position": ["-70.72577214223506", "41.67420682554304"]
+          }, {
+            "position": ["-70.72759296923952", "41.675864257695686"]
+          }
+        ]
+      }
+    ]
+  }, {
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "competitionUnitId": null,
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Start 1",
+          "type": "start"
+        },
+        "coordinates": [["-70.72757227912844", "41.675885973005066"], ["-70.72572992861208", "41.67421513436974"]],
+        "order": 0,
+        "points": [{
+            "position": ["-70.72757227912844", "41.675885973005066"]
+          }, {
+            "position": ["-70.72572992861208", "41.67421513436974"]
+          }
+        ]
+      }
+    ]
+  }, {
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "competitionUnitId": null,
+    "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Start 1",
+          "type": "start"
+        },
+        "coordinates": [["-70.72757227912844", "41.675885973005066"], ["-70.72572992861208", "41.67421513436974"]],
+        "order": 0,
+        "points": [{
+            "position": ["-70.72757227912844", "41.675885973005066"]
+          }, {
+            "position": ["-70.72572992861208", "41.67421513436974"]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Mark 1"
+        },
+        "coordinates": [["-70.7400499078108", "41.653547481965205"]],
+        "order": 1,
+        "points": [{
+            "position": ["-70.7400499078108", "41.653547481965205"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Mark 2"
+        },
+        "coordinates": [["-70.7123697553678", "41.64996727201055"]],
+        "order": 2,
+        "points": [{
+            "position": ["-70.7123697553678", "41.64996727201055"],
+            "markTrackerId": null
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Finish 1",
+          "type": "finish"
+        },
+        "coordinates": [["-70.72577214223506", "41.67420682554304"], ["-70.72759296923952", "41.675864257695686"]],
+        "order": 3,
+        "points": [{
+            "position": ["-70.72577214223506", "41.67420682554304"]
+          }, {
+            "position": ["-70.72759296923952", "41.675864257695686"]
+          }
+        ]
+      }
+    ]
+  }],
+  "MarkTrackers": [],
+  "ElasticSearchBodies": [{
+    "id": "02ba88f8-8be3-418d-b233-1669e4c99e9a",
+    "name": "BYC Wednesday Twilight - Cruising Class - 17:35:00",
+    "event": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "event_name": "BYC Wednesday Twilight",
+    "source": "RACEQS",
+    "url": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "start_country": "United States",
+    "start_city": "Newport",
+    "start_year": 2014,
+    "start_month": 8,
+    "start_day": 27,
+    "approx_start_time_ms": 1409175300000,
+    "approx_end_time_ms": 1409194800000,
+    "approx_duration_ms": 19500000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-71.33552044569066, 41.50812221575484],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [-71.33550160291286, 41.50813859260918],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [-71.33548276012552, 41.50815496946044],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 885.4047875472532,
+    "approx_distance_km": 0.004807493851491461,
+    "num_boats": 5,
+    "avg_time_between_positions": 1600,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["16", "18", "denali"],
+    "handicap_rules": ["One Design"],
+    "unstructured_text": []
+  }, {
+    "id": "444c4b18-4c0f-48b3-b518-d62af61ef659",
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "event": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "event_name": "BYC Wednesday Twilight",
+    "source": "RACEQS",
+    "url": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "start_country": "United States",
+    "start_city": "Marion",
+    "start_year": 2014,
+    "start_month": 8,
+    "start_day": 27,
+    "approx_start_time_ms": 1409177460000,
+    "approx_end_time_ms": 1409194800000,
+    "approx_duration_ms": 17340000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [-70.72667219894109, 41.67504640278511],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [-70.72577214223506, 41.67420682554304],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 885.4047875472532,
+    "approx_distance_km": 0.23919638407351348,
+    "num_boats": 5,
+    "avg_time_between_positions": 1600,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["16", "18", "Defiant", "denali", "jeroboam"],
+    "handicap_rules": ["One Design"],
+    "unstructured_text": []
+  }, {
+    "id": "b48ad91b-feba-4dda-9704-5e631da36dcb",
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "event": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "event_name": "BYC Wednesday Twilight",
+    "source": "RACEQS",
+    "url": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "start_country": "United States",
+    "start_city": "Marion",
+    "start_year": 2014,
+    "start_month": 8,
+    "start_day": 27,
+    "approx_start_time_ms": 1409177460000,
+    "approx_end_time_ms": 1409194800000,
+    "approx_duration_ms": 17340000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [-70.90368948349311, 41.63117491009466],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [-71.07956181838078, 41.586195413196116],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 885.4047875472532,
+    "approx_distance_km": 30.907600703386315,
+    "num_boats": 5,
+    "avg_time_between_positions": 1600,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["16", "18", "Defiant", "denali", "jeroboam"],
+    "handicap_rules": ["One Design"],
+    "unstructured_text": []
+  }, {
+    "id": "67171412-7b02-41ec-8e34-f8f036bf466c",
+    "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
+    "event": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
+    "event_name": "BYC Wednesday Twilight",
+    "source": "RACEQS",
+    "url": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "start_country": "United States",
+    "start_city": "Marion",
+    "start_year": 2014,
+    "start_month": 8,
+    "start_day": 27,
+    "approx_start_time_ms": 1409177460000,
+    "approx_end_time_ms": 1409194800000,
+    "approx_duration_ms": 17340000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [-70.72667219894109, 41.67504640278511],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [-70.72577214223506, 41.67420682554304],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[-71.340849, 41.520487], [-70.726434, 41.520487], [-70.726434, 41.675991], [-71.340849, 41.675991], [-71.340849, 41.520487]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 885.4047875472532,
+    "approx_distance_km": 0.23919638407351348,
+    "num_boats": 5,
+    "avg_time_between_positions": 1600,
+    "boat_models": [],
+    "boat_identifiers": [],
+    "boat_names": ["16", "18", "Defiant", "denali", "jeroboam"],
+    "handicap_rules": ["One Design"],
+    "unstructured_text": []
+  }],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "de421d2e-626d-46b5-afd2-9bd94f7e1960",
+    "name": "BYC Wednesday Twilight",
+    "event_name": "BYC Wednesday Twilight",
+    "source": "RACEQS",
+    "url": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
+    "start_year": 2014,
+    "start_month": 8,
+    "start_day": 27,
+    "approx_start_time_ms": 1409175000000,
+    "is_unfinished": true,
+    "scraped_original_id": "42805",
+    "approx_end_time_ms": 1409194800000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [-70.72757227912844, 41.675885973005066]
+    },
+    "start_country": "United States",
+    "start_city": "Marion"
+  }
+}
