@@ -4,6 +4,7 @@ const { normalizeRace } = require('./normalization/normalizeRaceQs');
 const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const mapRaceQsToSyrf = require('../services/mappingsToSyrfDB/mapRaceQsToSyrf');
+const { registerFailure } = require('../services/scrapedDataResult');
 const elasticsearch = require('../utils/elasticsearch');
 const {
   generateMetadataName,
@@ -50,10 +51,24 @@ const saveRaceQsData = async (data) => {
     try {
       ({ raceMetadatas, esBodies } = await normalizeRace(data));
       const savedCompetitionUnits = await mapRaceQsToSyrf(data, raceMetadatas);
-      await elasticsearch.updateEventAndIndexRaces(
-        esBodies,
-        savedCompetitionUnits,
-      );
+      if (savedCompetitionUnits.length) {
+        await elasticsearch.updateEventAndIndexRaces(
+          esBodies,
+          savedCompetitionUnits,
+        );
+      } else {
+        console.log(
+          'No valid race, division or start, registering as failed urls',
+          data.RaceQsEvent.map((e) => e.url),
+        );
+        for (const race of data.RaceQsEvent) {
+          await registerFailure(
+            SOURCE.RACEQS,
+            race.url,
+            'Error: No valid race, division or start',
+          );
+        }
+      }
     } catch (err) {
       console.log(err);
       errorMessage = databaseErrorHandler(err);
