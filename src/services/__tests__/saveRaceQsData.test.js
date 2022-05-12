@@ -9,6 +9,7 @@ const courseDAL = require('../../syrf-schema/dataAccess/v1/course');
 const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
 const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
 const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
+const syrfFailedUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedFailedUrl');
 const utils = require('../../syrf-schema/utils/utils');
 const { competitionUnitStatus } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
@@ -33,6 +34,7 @@ describe('Storing raceqs data to DB', () => {
     competitionUnitUpsertSpy,
     vesselParticipantEventBulkCreateSpy,
     scrapedSuccessfulUrlCreateSpy,
+    syrfFailedUrlDALCreateSpy,
     commitSpy,
     elasticSearchUpdateSpy;
 
@@ -68,6 +70,7 @@ describe('Storing raceqs data to DB', () => {
       scrapedSuccessfulUrlDAL,
       'create',
     );
+    syrfFailedUrlDALCreateSpy = jest.spyOn(syrfFailedUrlDAL, 'create');
     commitSpy = jest.fn().mockResolvedValue();
     jest
       .spyOn(utils, 'createTransaction')
@@ -88,6 +91,29 @@ describe('Storing raceqs data to DB', () => {
     await saveRaceQsData();
     expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
     expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should not save and not call elastic search index if boat positions are not within the start time range', async () => {
+    const invalidRaceJsonData = JSON.parse(JSON.stringify(jsonData));
+    // Set all the boats' start time after all the RaceQsStart.from which makes it invalid
+    invalidRaceJsonData.RaceQsParticipant.forEach((p) => {
+      p.start = '2014-08-29T17:13:21.542-04:00';
+    });
+
+    await saveRaceQsData(invalidRaceJsonData);
+
+    expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+    expect(elasticSearchUpdateSpy).toHaveBeenCalledTimes(0);
+    expect(syrfFailedUrlDALCreateSpy).toHaveBeenCalledTimes(1);
+    invalidRaceJsonData.RaceQsEvent.forEach((r) => {
+      expect(syrfFailedUrlDALCreateSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          source: SOURCE.RACEQS,
+          url: r.url,
+        }),
+      );
+    });
   });
 
   it('should save data correctly', async () => {
