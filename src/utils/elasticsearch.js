@@ -28,10 +28,12 @@ exports.updateEventAndIndexRaces = async (
 ) => {
   for (const esBody of esBodies) {
     const updatedCU = competitionUnits?.find((cu) => cu.id === esBody.id);
-    if (updatedCU?.calendarEventId) {
-      esBody.event = updatedCU.calendarEventId;
+    if (updatedCU) {
+      if (updatedCU.calendarEventId) {
+        esBody.event = updatedCU.calendarEventId;
+      }
+      await exports.indexRace(esBody.id, esBody);
     }
-    await exports.indexRace(esBody.id, esBody);
   }
 };
 

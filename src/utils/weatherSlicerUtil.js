@@ -19,7 +19,10 @@ const triggerWeatherSlicer = async (raceMetadata) => {
       try {
         await axios.post(`${slicerHost}/api/v1/`, reqBody);
       } catch (err) {
-        console.log(err);
+        console.log(
+          `Failed in triggering weather slicer for race id ${raceMetadata.id}`,
+          err.message,
+        );
       }
     });
   }
