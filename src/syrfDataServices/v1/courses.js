@@ -93,7 +93,6 @@ exports.generateOGImage = async (idList, centerPoint) => {
 exports.upsert = async (
   id,
   {
-    competitionUnitId = null,
     courseSequencedGeometries,
     courseUnsequencedUntimedGeometry,
     courseUnsequencedTimedGeometry,
@@ -105,7 +104,6 @@ exports.upsert = async (
   const now = Date.now();
   const courseToSave = {
     name,
-    competitionUnitId,
     calendarEventId,
     createdAt: now,
     updatedAt: now,

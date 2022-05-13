@@ -87,7 +87,6 @@
   ],
   "Course": {
     "name": "Regata Diumenge 11-04-2021",
-    "competitionUnitId": null,
     "courseSequencedGeometries": [{
       "geometryType": "LineString",
       "properties": {

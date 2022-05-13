@@ -17,44 +17,46 @@ const saveTackTrackerData = async (data) => {
   let errorMessage = '';
   let raceMetadatas, esBodies;
 
-  if (process.env.NODE_ENV !== 'test') {
-    const finishedRaces = [];
-    for (const race of data.TackTrackerRace) {
-      const now = Date.now();
-      const raceStartTime = new Date(Date.parse(race.start)).getTime();
-      const isUnfinished = raceStartTime >= now || race.state !== 'Complete';
-      if (isUnfinished) {
-        console.log(
-          `Future race detected for race original id ${race.original_id}`,
-        );
-        try {
-          // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
-          await _indexUnfinishedRaceToES(race, data);
-        } catch (err) {
-          console.log(
-            `Failed indexing unfinished race original id ${race.original_id}`,
-            err,
-          );
-        }
-      } else {
-        finishedRaces.push(race);
-      }
-    }
-    data.TackTrackerRace = finishedRaces;
-    if (data.TackTrackerRace.length > 0) {
+  if (!data?.TackTrackerRace) {
+    return;
+  }
+
+  const finishedRaces = [];
+  for (const race of data.TackTrackerRace) {
+    const now = Date.now();
+    const raceStartTime = new Date(Date.parse(race.start)).getTime();
+    const isUnfinished = raceStartTime >= now || race.state !== 'Complete';
+    if (isUnfinished) {
+      console.log(
+        `Future race detected for race original id ${race.original_id}`,
+      );
       try {
-        ({ raceMetadatas, esBodies } = await normalizeRace(data));
-        const savedCompetitionUnit = await mapTackTrackerToSyrf(
-          data,
-          raceMetadatas?.[0],
-        );
-        await elasticsearch.updateEventAndIndexRaces(esBodies, [
-          savedCompetitionUnit,
-        ]);
+        // The deletion of previous elastic search is on a different endpoint and will be triggered by the tracker-scraper
+        await _indexUnfinishedRaceToES(race, data);
       } catch (err) {
-        console.log(err);
-        errorMessage = databaseErrorHandler(err);
+        console.log(
+          `Failed indexing unfinished race original id ${race.original_id}`,
+          err,
+        );
       }
+    } else {
+      finishedRaces.push(race);
+    }
+  }
+  data.TackTrackerRace = finishedRaces;
+  if (data.TackTrackerRace.length > 0) {
+    try {
+      ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      const savedCompetitionUnit = await mapTackTrackerToSyrf(
+        data,
+        raceMetadatas?.[0],
+      );
+      await elasticsearch.updateEventAndIndexRaces(esBodies, [
+        savedCompetitionUnit,
+      ]);
+    } catch (err) {
+      console.log(err);
+      errorMessage = databaseErrorHandler(err);
     }
   }
 

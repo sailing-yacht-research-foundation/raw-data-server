@@ -1,112 +1,171 @@
 {
-    "TackTrackerRace": [{
-            "id": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "original_id": "1439711445",
-            "url": "https://tacktracker.com/cloud/regattas/show/1331607597/1",
-            "regatta": "5e37e7f6-88ff-43b5-b649-168f21108a31",
-            "regatta_original_id": "1331607597",
-            "start": "2018-11-11T10:00:00Z",
-            "state": "Complete",
-            "name": "Race 1",
-            "type": "YachtRace",
-            "span": "17820",
-            "course": "\"A B A B\"",
-            "event_notes": "{\"Notes\":{}}",
-            "upload_params": "{\"cid\":\"0\",\"locked\":\"1\",\"private\":\"1\",\"raceid\":\"1439711445\",\"rgid\":\"1331607597\",\"seq\":\"1\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Race 1\",\"Comment\":{},\"Message\":{}}"
-        }
-    ],
-    "TackTrackerBoat": [{
-            "id": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "details": "Circolo Velico Raven",
-            "color": "Yellow",
-            "unknown_1": "",
-            "unknown_2": "",
-            "unknown_3": "1",
-            "unknown_4": "SmallMono",
-            "unknown_5": "1,0,1,0,1,1,1",
-            "unknown_6": "1,0,1,0,1,1,1",
-            "name": "Corto Maltese"
-        }
-    ],
-    "TackTrackerDefault": [{
-            "id": "b7509a5d-fefc-45fb-b071-4184d70eea12",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "lon": "12.28249000",
-            "lat": "44.48176000",
-            "color": "Yellow",
-            "trim": "5"
-        }
-    ],
-    "TackTrackerFinish": [{
-            "id": "f8b535eb-563c-472e-a891-0f4944a9862a",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "finish_mark_name": "FinishBoat",
-            "finish_mark_lat": "44.48776024",
-            "finish_mark_lon": "12.29436510",
-            "finish_mark_type": "FinishBoat",
-            "finish_pin_name": "FinishPin",
-            "finish_pin_lat": "44.48784188",
-            "finish_pin_lon": "12.29196137",
-            "finish_pin_type": "FinishPin"
-        }
-    ],
-    "TackTrackerMark": [{
-            "id": "85e3bb33-e35a-4057-8455-5a40dbd8e7cc",
-            "name": "\"A\"",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "lon": "12.30993213",
-            "lat": "44.48873987",
-            "type": "Rounding"
-        }, {
-            "id": "2e56efe7-8378-4e59-ba21-488fa8ed4fe2",
-            "name": "\"B\"",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "lon": "12.29436510",
-            "lat": "44.48882151",
-            "type": "Rounding"
-        }
-    ],
-    "TackTrackerPosition": [{
-            "id": "792d5ef3-c74c-4354-a558-daffac5dc3e6",
-            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "time": "2018-11-11T14:32:32Z",
-            "lat": "044.456067",
-            "lon": "0012.28346"
-        }, {
-            "id": "5ab3a220-4c23-4ec3-b722-db7eab336d31",
-            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "time": "2018-11-11T14:32:37Z",
-            "lat": "044.470051",
-            "lon": "0012.31523"
-        }, {
-            "id": "226e41ee-36bf-4fa2-9367-774cd977537b",
-            "boat": "2f8578e3-2b4c-4f2a-ad0d-8646a063001f",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "time": "2018-11-11T14:32:44Z",
-            "lat": "044.470216",
-            "lon": "0012.31525"
-        }
-    ],
-    "TackTrackerStart": [{
-            "id": "dfa7b146-d30f-4636-967d-570ab6528971",
-            "race": "5e8f3a43-fc01-43c7-90df-b52261502cfe",
-            "start_mark_name": "StartBoat",
-            "start_mark_lat": "44.48789943",
-            "start_mark_lon": "12.29441088",
-            "start_mark_type": "StartBoat",
-            "start_pin_name": "StartPin",
-            "start_pin_lat": "44.48969297",
-            "start_pin_lon": "12.29421744",
-            "start_pin_type": "StartPin"
-        }
-    ],
-    "TackTrackerRegatta": [{
-            "id": "5e37e7f6-88ff-43b5-b649-168f21108a31",
-            "url": "https://tacktracker.com/cloud/regattas/show/1331607597",
-            "original_id": "1331607597"
-        }
-    ]
+  "TackTrackerRace": [{
+      "id": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "original_id": "1730790368",
+      "url": "https://tacktracker.com/cloud/regattas/show/1785638190/45",
+      "regatta": "51d72551-4df8-4e42-9877-73f027707a8f",
+      "regatta_original_id": "1785638190",
+      "start": "2015-07-12T13:20:16Z",
+      "state": "Complete",
+      "name": "Flight 45 Finals",
+      "type": "YachtRace",
+      "finish_at_start": "1",
+      "span": "3360",
+      "course": "\"1 2 C1\"",
+      "event_notes": "{\"Notes\":{}}",
+      "course_notes": "{\"Leg\":\"0\",\"Notes\":{}}",
+      "upload_params": "{\"cid\":\"991054707\",\"locked\":\"1\",\"private\":\"0\",\"raceid\":\"1730790368\",\"rgid\":\"1785638190\",\"seq\":\"45\",\"replace\":\"0\",\"state\":\"ONLINE\",\"RaceName\":\"Flight 45 Finals\",\"Comment\":{},\"Message\":{}}"
+    }
+  ],
+  "TackTrackerBoat": [{
+      "id": "19bbe1b1-be19-498d-ab16-afbaefaf3d22",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "",
+      "color": "GreenYellow",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "CourseMark",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "StartBoat"
+    }, {
+      "id": "6332f6c3-61f5-45a3-8866-0bed8a496e6b",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "",
+      "color": "Orange",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "CourseMark",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "2"
+    }, {
+      "id": "cc0034c0-e3a6-4f3c-b13b-37005c58f10b",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "",
+      "color": "Peru",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "CourseMark",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "StartPin"
+    }, {
+      "id": "9c2e6bdd-149d-40fb-9cf5-649d6ad681a8",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "DEN TEAM Ulrikkeholm",
+      "color": "Blue",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "SmallMono",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "2 DIN Ulrikkeholm"
+    }, {
+      "id": "f5ddd407-94aa-43eb-b092-1509de7d645e",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "",
+      "color": "CornflowerBlue",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "CourseMark",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "1"
+    }, {
+      "id": "e84337f9-9803-406d-8a78-16eb616f2f79",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "DEN matchraceteam.dk",
+      "color": "Yellow",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "SmallMono",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "2 JB1 Meldgaard"
+    }, {
+      "id": "fcdb1b2a-834f-4944-bb50-af81a3a52f47",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "details": "",
+      "color": "Blue",
+      "unknown_1": "",
+      "unknown_2": "",
+      "unknown_3": "1",
+      "unknown_4": "CourseMark",
+      "unknown_5": "1,0,1,0,1,1,1",
+      "unknown_6": "1,0,1,0,1,1,1",
+      "name": "C1"
+    }
+  ],
+  "TackTrackerDefault": [{
+      "id": "16c86e3b-0b5d-4c2d-9690-6586e3e2b617",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "lon": "9.73038600",
+      "lat": "55.49232500",
+      "color": "Yellow",
+      "trim": "5"
+    }
+  ],
+  "TackTrackerFinish": [{
+      "id": "2c1c1a73-327d-4990-89e0-025e05fd43d9",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "finish_mark_name": "FinishBoat",
+      "finish_mark_lat": "55.49232500",
+      "finish_mark_lon": "9.73038600",
+      "finish_mark_type": "FinishBoat",
+      "finish_pin_name": "FinishPin",
+      "finish_pin_lat": "55.49232500",
+      "finish_pin_lon": "9.73038600",
+      "finish_pin_type": "FinishPin"
+    }
+  ],
+  "TackTrackerMark": [{
+      "id": "d058e3e5-c53a-47ea-87e4-5a8d452d9dcd",
+      "name": "\"1\"",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "lon": "9.71795991",
+      "lat": "55.49042121",
+      "type": "Rounding"
+    }, {
+      "id": "b4e4fe39-bb60-4325-be73-b03a0a4009c0",
+      "name": "\"2\"",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "lon": "9.73038600",
+      "lat": "55.49232500",
+      "type": "Rounding"
+    }, {
+      "id": "aee02a45-93dd-4a79-acf3-b657551860c9",
+      "name": "\"C1\"",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "lon": "9.73038600",
+      "lat": "55.49232500",
+      "type": "Rounding"
+    }
+  ],
+  "TackTrackerPosition": [{"id":"9f522fc6-bf00-420f-9681-48c24fd838db","boat":"19bbe1b1-be19-498d-ab16-afbaefaf3d22","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:13Z","lat":"55.48929800","lon":"9.72749100"},{"id":"bddb1760-e4f7-44d7-8ed5-361ab6404b2c","boat":"19bbe1b1-be19-498d-ab16-afbaefaf3d22","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:18Z","lat":"55.48929800","lon":"9.72749100"},{"id":"dfdb0058-3f65-4320-80ac-4f7453065f40","boat":"19bbe1b1-be19-498d-ab16-afbaefaf3d22","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:23Z","lat":"55.48929800","lon":"9.72749100"},{"id":"731df7a4-f39b-4e6d-aef1-66824da4bf85","boat":"19bbe1b1-be19-498d-ab16-afbaefaf3d22","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:28Z","lat":"55.48929800","lon":"9.72749100"},{"id":"5a626fdd-e93f-4419-a99a-d3e76618d8f9","boat":"19bbe1b1-be19-498d-ab16-afbaefaf3d22","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:33Z","lat":"55.48929800","lon":"9.72749100"},{"id":"d3cf1688-b1d4-4194-80c6-8067af4d760e","boat":"6332f6c3-61f5-45a3-8866-0bed8a496e6b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:13Z","lat":"55.48908300","lon":"9.72668800"},{"id":"a2c65612-e428-41ab-a8ba-af8de87fa5af","boat":"6332f6c3-61f5-45a3-8866-0bed8a496e6b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:18Z","lat":"55.48908300","lon":"9.72668800"},{"id":"4ef0f06f-4558-47bb-bc01-acca1a882fcf","boat":"6332f6c3-61f5-45a3-8866-0bed8a496e6b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:23Z","lat":"55.48908300","lon":"9.72668800"},{"id":"ff1b76ad-22fb-443e-a4fd-5cb3a3cfda8f","boat":"6332f6c3-61f5-45a3-8866-0bed8a496e6b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:28Z","lat":"55.48908300","lon":"9.72668800"},{"id":"ec1fad92-c081-4569-aaef-7c3ab823117f","boat":"6332f6c3-61f5-45a3-8866-0bed8a496e6b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:33Z","lat":"55.48908300","lon":"9.72668800"},{"id":"13767389-792a-4b84-a48a-0040975a3981","boat":"cc0034c0-e3a6-4f3c-b13b-37005c58f10b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:15Z","lat":"55.48864300","lon":"9.72688000"},{"id":"35557543-7e51-4361-b25a-59315d311ac3","boat":"cc0034c0-e3a6-4f3c-b13b-37005c58f10b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:20Z","lat":"55.48864300","lon":"9.72688000"},{"id":"4e36893a-c721-42db-83af-8244ead4b637","boat":"cc0034c0-e3a6-4f3c-b13b-37005c58f10b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:25Z","lat":"55.48864300","lon":"9.72688000"},{"id":"192cdb94-fb67-4b82-a680-2eb4c0051b91","boat":"cc0034c0-e3a6-4f3c-b13b-37005c58f10b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:30Z","lat":"55.48864300","lon":"9.72688000"},{"id":"7c20f1d6-34d1-4e84-ba27-60f8d9a94a92","boat":"cc0034c0-e3a6-4f3c-b13b-37005c58f10b","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:35Z","lat":"55.48864300","lon":"9.72688000"},{"id":"38491236-eb22-442a-bc0e-b94665e6d215","boat":"9c2e6bdd-149d-40fb-9cf5-649d6ad681a8","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:17Z","lat":"55.48835000","lon":"9.72687300"},{"id":"39f5f19b-eb1c-43d9-814b-17fe6a71f072","boat":"9c2e6bdd-149d-40fb-9cf5-649d6ad681a8","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:22Z","lat":"55.48843600","lon":"9.72690300"},{"id":"041f2c17-d0a3-4918-b138-7cc8519f7138","boat":"9c2e6bdd-149d-40fb-9cf5-649d6ad681a8","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:27Z","lat":"55.48850300","lon":"9.72699100"},{"id":"41f504c2-f679-474b-b371-9863f212ebdb","boat":"9c2e6bdd-149d-40fb-9cf5-649d6ad681a8","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:32Z","lat":"55.48856800","lon":"9.72714000"},{"id":"1f0e4565-8686-4b1b-8837-a6aedd972deb","boat":"9c2e6bdd-149d-40fb-9cf5-649d6ad681a8","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:37Z","lat":"55.48865800","lon":"9.72718100"},{"id":"25bed38a-0370-496c-a1c9-3af88e312ce8","boat":"f5ddd407-94aa-43eb-b092-1509de7d645e","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:15:19Z","lat":"55.48989800","lon":"9.71811800"},{"id":"730030d4-7bf5-4ab1-824d-a0fe25ba8ccb","boat":"f5ddd407-94aa-43eb-b092-1509de7d645e","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:15:23Z","lat":"55.48989800","lon":"9.71811800"},{"id":"1e3bce4c-73d0-449f-9357-47cefc6ed018","boat":"f5ddd407-94aa-43eb-b092-1509de7d645e","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:15:28Z","lat":"55.48989800","lon":"9.71811800"},{"id":"90b99fb5-ee20-4f27-b9ce-baa9f856e11e","boat":"f5ddd407-94aa-43eb-b092-1509de7d645e","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:15:33Z","lat":"55.48989800","lon":"9.71811800"},{"id":"9e150326-cca6-412b-821e-1d9d9d555e5e","boat":"f5ddd407-94aa-43eb-b092-1509de7d645e","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:15:38Z","lat":"55.48989800","lon":"9.71811800"},{"id":"c0ce27f7-dc80-4af6-acb9-fcc966cb320e","boat":"e84337f9-9803-406d-8a78-16eb616f2f79","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:17Z","lat":"55.48974500","lon":"9.72712800"},{"id":"92ef3b9e-2005-43fd-ab33-23258059cf95","boat":"e84337f9-9803-406d-8a78-16eb616f2f79","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:22Z","lat":"55.48971600","lon":"9.72721300"},{"id":"ec82362a-dd48-4a8e-9340-cd30e355ee06","boat":"e84337f9-9803-406d-8a78-16eb616f2f79","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:27Z","lat":"55.48967100","lon":"9.72727800"},{"id":"13c35bfa-5359-4978-9df4-483df0b92269","boat":"e84337f9-9803-406d-8a78-16eb616f2f79","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:32Z","lat":"55.48961600","lon":"9.72728000"},{"id":"a9861ece-a9c3-4ecc-a592-c19d002bb005","boat":"e84337f9-9803-406d-8a78-16eb616f2f79","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:16:37Z","lat":"55.48959600","lon":"9.72717100"},{"id":"174007c2-3d39-4835-8130-a84066ff6189","boat":"fcdb1b2a-834f-4944-bb50-af81a3a52f47","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:30:07Z","lat":"55.48859300","lon":"9.71770300"},{"id":"ed446c17-bfe1-44e4-8bf0-357bff7d32cc","boat":"fcdb1b2a-834f-4944-bb50-af81a3a52f47","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:30:12Z","lat":"55.48859300","lon":"9.71770300"},{"id":"192bb7f8-fba3-4de9-ab94-a8b1549b526a","boat":"fcdb1b2a-834f-4944-bb50-af81a3a52f47","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:30:17Z","lat":"55.48859300","lon":"9.71770300"},{"id":"ee51199b-b694-463c-a562-c6aa897788e5","boat":"fcdb1b2a-834f-4944-bb50-af81a3a52f47","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:30:22Z","lat":"55.48859300","lon":"9.71770300"},{"id":"65ffbc76-96f4-4f36-879f-a783a1202195","boat":"fcdb1b2a-834f-4944-bb50-af81a3a52f47","race":"42e3acfa-6a02-4891-b0bf-65dfb12bbf52","time":"2015-07-12T13:30:27Z","lat":"55.48859300","lon":"9.71770300"}],
+  "TackTrackerStart": [{
+      "id": "7509aeb2-444d-40dd-a135-43a786efa0d8",
+      "race": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "start_mark_name": "StartBoat",
+      "start_mark_lat": "55.49232500",
+      "start_mark_lon": "9.73038600",
+      "start_mark_type": "StartBoat",
+      "start_pin_name": "StartPin",
+      "start_pin_lat": "55.48857744",
+      "start_pin_lon": "9.72734047",
+      "start_pin_type": "StartPin"
+    }
+  ],
+  "TackTrackerRegatta": [{
+      "id": "51d72551-4df8-4e42-9877-73f027707a8f",
+      "url": "https://tacktracker.com/cloud/regattas/show/1785638190",
+      "original_id": "1785638190"
+    }
+  ]
 }

@@ -114,7 +114,6 @@
   "Participants": [],
   "Course": {
     "name": "Course 1",
-    "competitionUnitId": null,
     "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",

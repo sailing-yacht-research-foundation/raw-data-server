@@ -190,13 +190,13 @@ const _mapSequencedGeometries = (
     );
     const newMark = createGeometryLine(
       {
-        lat: startMarkFirstPosition?.lat || start.start_mark_lat,
-        lon: startMarkFirstPosition?.lon || start.start_mark_lon,
+        lat: +start.start_mark_lat || +startMarkFirstPosition?.lat,
+        lon: +start.start_mark_lon || +startMarkFirstPosition?.lon,
         markTrackerId: startMarkTracker?.id,
       },
       {
-        lat: startPinTrackerPosition?.lat || start.start_pin_lat,
-        lon: startPinTrackerPosition?.lon || start.start_pin_lon,
+        lat: +start.start_pin_lat || +startPinTrackerPosition?.lat,
+        lon: +start.start_pin_lon || +startPinTrackerPosition?.lon,
         markTrackerId: startPinTracker?.id,
       },
       { name: startMarkName },
@@ -223,8 +223,8 @@ const _mapSequencedGeometries = (
         markTrackerPositions,
       );
       const newMark = createGeometryPoint({
-        lat: markTrackerFirstPosition?.lat || mark.lat,
-        lon: markTrackerFirstPosition?.lon || mark.lon,
+        lat: +mark.lat || +markTrackerFirstPosition?.lat,
+        lon: +mark.lon || +markTrackerFirstPosition?.lon,
         properties: {
           name: mark.name,
           type: mark.type,
