@@ -1,0 +1,465 @@
+{
+  "CalendarEvent": {
+    "name": "RYS Bicentennial International Regatta",
+    "externalUrl": "https://www.tractrac.com/event-page/event_20150724_RYSBicente/596",
+    "locationName": "\"Cowes",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "United Kingdom",
+    "city": "Cowes",
+    "source": "TRACTRAC",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": "5fcd1e10-0e04-0133-4949-60a44ce903c3",
+    "status": "COMPLETED",
+    "approximateStartTime": 1437706800000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 24,
+    "startMonth": 7,
+    "startYear": 2015,
+    "approximateEndTime": 1438380000000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 1,
+    "endMonth": 8,
+    "endYear": 2015,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [-1.3026186819866743, 50.772236101883756]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "Race 5",
+    "startTime": 1438227900000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [-1.3026186819866743, 50.772236101883756],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [-1.3025915891711028, 50.77225371946823],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[-1.304792, 50.771751], [-1.300841, 50.771751], [-1.300841, 50.7727999], [-1.304792, 50.7727999], [-1.304792, 50.771751]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95",
+    "endTime": 1438233058000,
+    "openGraphImage": "mockLocation",
+    "country": "United Kingdom",
+    "city": "Cowes",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "2549a9a0-111a-0133-2744-60a44ce903c3",
+    "scrapedUrl": "https://live.tractrac.com/viewer/index.html?target=https://em.event.tractrac.com/events/5fcd1e10-0e04-0133-4949-60a44ce903c3/races/2549a9a0-111a-0133-2744-60a44ce903c3.json",
+    "approximateStart": 1438227900000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "2ce1be8b-b515-441c-8a53-2cd7c278e0b4",
+      "publicName": "Ranger",
+      "vesselId": "00c2cda0-1418-0133-9b5e-60a44ce903c3",
+      "model": "class",
+      "handicap": {
+        "handicap": 1,
+        "handicap_distance": 0,
+        "handicap_tot": 1
+      },
+      "source": "TRACTRAC"
+    }, {
+      "id": "b74d62e6-4953-4880-bef7-59374a8d5668",
+      "publicName": "Velsheda",
+      "vesselId": "ef3647c0-1417-0133-9b5c-60a44ce903c3",
+      "model": "class",
+      "handicap": {
+        "handicap": 1,
+        "handicap_distance": 0,
+        "handicap_tot": 1
+      },
+      "source": "TRACTRAC"
+    }, {
+      "id": "c392e414-4c5e-4be5-b22f-ea83b348ae8d",
+      "publicName": "Lionheart",
+      "vesselId": "f885c220-1417-0133-9b5d-60a44ce903c3",
+      "model": "class",
+      "handicap": {
+        "handicap": 1,
+        "handicap_distance": 0,
+        "handicap_tot": 1
+      },
+      "source": "TRACTRAC"
+    }
+  ],
+  "VesselParticipants": [{
+      "vesselId": "2ce1be8b-b515-441c-8a53-2cd7c278e0b4",
+      "handicap": {
+        "handicap": 1,
+        "handicap_distance": 0,
+        "handicap_tot": 1
+      }
+    }, {
+      "vesselId": "b74d62e6-4953-4880-bef7-59374a8d5668",
+      "handicap": {
+        "handicap": 1,
+        "handicap_distance": 0,
+        "handicap_tot": 1
+      }
+    }, {
+      "vesselId": "c392e414-4c5e-4be5-b22f-ea83b348ae8d",
+      "handicap": {
+        "handicap": 1,
+        "handicap_distance": 0,
+        "handicap_tot": 1
+      }
+    }
+  ],
+  "Participants": [],
+  "Course": {
+    "name": "RYS Bicentennial International Regatta - Race 5",
+    "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "RYS Start"
+        },
+        "coordinates": [[-1.300911, 50.766676], [-1.305418, 50.786743]],
+        "order": 1,
+        "points": [{
+            "position": [-1.300911, 50.766676]
+          }, {
+            "position": [-1.305418, 50.786743]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "South East Ryde Middle"
+        },
+        "coordinates": [[-1.201667, 50.7655]],
+        "order": 2,
+        "points": [{
+            "position": [-1.201667, 50.7655]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Browndown"
+        },
+        "coordinates": [[-1.1825, 50.776167]],
+        "order": 3,
+        "points": [{
+            "position": [-1.1825, 50.776167]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "East Bramble"
+        },
+        "coordinates": [[-1.227333, 50.787167]],
+        "order": 4,
+        "points": [{
+            "position": [-1.227333, 50.787167]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Browndown"
+        },
+        "coordinates": [[-1.1825, 50.776167]],
+        "order": 5,
+        "points": [{
+            "position": [-1.1825, 50.776167]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "East Bramble"
+        },
+        "coordinates": [[-1.227333, 50.787167]],
+        "order": 6,
+        "points": [{
+            "position": [-1.227333, 50.787167]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "RYS Start"
+        },
+        "coordinates": [[-1.300911, 50.766676], [-1.305418, 50.786743]],
+        "order": 7,
+        "points": [{
+            "position": [-1.300911, 50.766676]
+          }, {
+            "position": [-1.305418, 50.786743]
+          }
+        ]
+      }
+    ]
+  },
+  "MarkTrackers": [{
+      "name": "RYS Start",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "RYS Start",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "South East Ryde Middle",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "Browndown",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "East Bramble",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "Browndown",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "East Bramble",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "RYS Start",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }, {
+      "name": "RYS Start",
+      "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95"
+    }
+  ],
+  "VesselParticipantEvents": [{
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "000b5db6-765a-4042-9b0e-828ea00f6360",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1438256700000
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "58067873-2de7-4513-9210-676c254df0a0",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438258241675
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "8accb8fb-56a6-4e7a-82c0-2a3bf6ed84f3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438258577371
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "d45bdc38-9244-4db2-85a7-53db5e9bb156",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438259304504
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "8accb8fb-56a6-4e7a-82c0-2a3bf6ed84f3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438260119729
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "d45bdc38-9244-4db2-85a7-53db5e9bb156",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438260874375
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "000b5db6-765a-4042-9b0e-828ea00f6360",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1438261749751
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "000b5db6-765a-4042-9b0e-828ea00f6360",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1438256700000
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "58067873-2de7-4513-9210-676c254df0a0",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438258208818
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "8accb8fb-56a6-4e7a-82c0-2a3bf6ed84f3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438258536222
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "d45bdc38-9244-4db2-85a7-53db5e9bb156",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438259244868
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "8accb8fb-56a6-4e7a-82c0-2a3bf6ed84f3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438260069526
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "d45bdc38-9244-4db2-85a7-53db5e9bb156",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438260792510
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "000b5db6-765a-4042-9b0e-828ea00f6360",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1438261664438
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "000b5db6-765a-4042-9b0e-828ea00f6360",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1438256700000
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "58067873-2de7-4513-9210-676c254df0a0",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438258266024
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "8accb8fb-56a6-4e7a-82c0-2a3bf6ed84f3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438258595764
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "d45bdc38-9244-4db2-85a7-53db5e9bb156",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438259346505
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "8accb8fb-56a6-4e7a-82c0-2a3bf6ed84f3",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438260139660
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "d45bdc38-9244-4db2-85a7-53db5e9bb156",
+      "eventType": "VesselPointRounding",
+      "eventTime": 1438260886671
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "markId": "000b5db6-765a-4042-9b0e-828ea00f6360",
+      "eventType": "VesselLineInsideCrossing",
+      "eventTime": 1438261779125
+    }
+  ],
+  "CompetitionResults": [{
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "finishTime": 1438551353000,
+      "time": 294653000,
+      "rank": 1
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "finishTime": 1438551353000,
+      "time": 294653000,
+      "rank": 2
+    }, {
+      "competitionUnitId": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "finishTime": 1438551353000,
+      "time": 294653000,
+      "rank": 3
+    }
+  ],
+  "ElasticSearchBodies": [{
+      "id": "bc14af9d-ef89-4ae9-ab91-435691320142",
+      "name": "RYS Bicentennial International Regatta - Race 5",
+      "event": "07edc559-ad9b-4b59-a46f-c62ceed4cc95",
+      "event_name": "RYS Bicentennial International Regatta",
+      "source": "TRACTRAC",
+      "url": "https://live.tractrac.com/viewer/index.html?target=https://em.event.tractrac.com/events/5fcd1e10-0e04-0133-4949-60a44ce903c3/races/2549a9a0-111a-0133-2744-60a44ce903c3.json",
+      "start_country": "United Kingdom",
+      "start_city": "Cowes",
+      "start_year": 2015,
+      "start_month": 7,
+      "start_day": 30,
+      "approx_start_time_ms": 1438227900000,
+      "approx_end_time_ms": 1438233058000,
+      "approx_duration_ms": 5158000,
+      "approx_start_point": {
+        "type": "Point",
+        "coordinates": [-1.3026186819866743, 50.772236101883756],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_mid_point": {
+        "type": "Point",
+        "coordinates": [-1.302605135581439, 50.77224491067679],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_end_point": {
+        "type": "Point",
+        "coordinates": [-1.3025915891711028, 50.77225371946823],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "bounding_box": {
+        "type": "Polygon",
+        "coordinates": [[[-1.304792, 50.771751], [-1.300841, 50.771751], [-1.300841, 50.7727999], [-1.304792, 50.7727999], [-1.304792, 50.771751]]],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_area_sq_km": 0.03247717843059731,
+      "approx_distance_km": 0.0027326409431313856,
+      "num_boats": 3,
+      "avg_time_between_positions": 2400,
+      "boat_models": [],
+      "boat_identifiers": ["6a6e9d50-0e04-0133-4950-60a44ce903c3"],
+      "boat_names": ["Ranger", "Velsheda", "Lionheart"],
+      "handicap_rules": [],
+      "unstructured_text": []
+    }
+  ],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "bc14af9d-ef89-4ae9-ab91-435691320142",
+    "name": "RYS Bicentennial International Regatta - Race 5",
+    "event_name": "RYS Bicentennial International Regatta",
+    "source": "TRACTRAC",
+    "url": "https://live.tractrac.com/viewer/index.html?target=https://em.event.tractrac.com/events/5fcd1e10-0e04-0133-4949-60a44ce903c3/races/2549a9a0-111a-0133-2744-60a44ce903c3.json",
+    "start_year": 2015,
+    "start_month": 7,
+    "start_day": 30,
+    "approx_start_time_ms": 1438227600000,
+    "approx_end_time_ms": 1438233058000,
+    "is_unfinished": true,
+    "scraped_original_id": "2549a9a0-111a-0133-2744-60a44ce903c3",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [0, -1.297562768555]
+    },
+    "start_country": "Equatorial Guinea",
+    "start_city": "San Antonio de Palé"
+  }
+}
