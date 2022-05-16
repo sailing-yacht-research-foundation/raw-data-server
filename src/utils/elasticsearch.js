@@ -155,6 +155,7 @@ exports.getUnfinishedRacesBySource = async (source) => {
       ],
       from: 0,
       size,
+      sort: ['_score', { approx_start_time_ms: 'DESC' }],
       query: {
         bool: {
           must: [
