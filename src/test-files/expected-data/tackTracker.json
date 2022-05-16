@@ -1,0 +1,275 @@
+{
+  "CalendarEvent": {
+    "externalUrl": "https://tacktracker.com/cloud/regattas/show/1785638190",
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Denmark",
+    "city": "Middelfart",
+    "source": "TACKTRACKER",
+    "openGraphImage": "mockLocation",
+    "scrapedOriginalId": "1785638190",
+    "status": "COMPLETED",
+    "approximateStartTime": 1436707216000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 13,
+    "startMonth": 7,
+    "startYear": 2015,
+    "approximateEndTime": 1436706997000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 13,
+    "endMonth": 7,
+    "endYear": 2015,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [9.728863162566494, 55.490451229446926]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "Flight 45 Finals",
+    "startTime": 1436707216000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [9.728863162566494, 55.490451229446926],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [9.730385999999998, 55.492325],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[9.726873, 55.48835], [9.72728, 55.48835], [9.72728, 55.489745], [9.726873, 55.489745], [9.726873, 55.48835]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f",
+    "endTime": 1436706997000,
+    "openGraphImage": "mockLocation",
+    "country": "Denmark",
+    "city": "Middelfart",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "1730790368",
+    "scrapedUrl": "https://tacktracker.com/cloud/regattas/show/1785638190/45",
+    "approximateStart": 1436707216000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+    "id": "9c2e6bdd-149d-40fb-9cf5-649d6ad681a8",
+    "publicName": "2 DIN Ulrikkeholm",
+    "vesselId": "9c2e6bdd-149d-40fb-9cf5-649d6ad681a8",
+    "model": "SmallMono",
+    "source": "TACKTRACKER"
+  }, {
+    "id": "e84337f9-9803-406d-8a78-16eb616f2f79",
+    "publicName": "2 JB1 Meldgaard",
+    "vesselId": "e84337f9-9803-406d-8a78-16eb616f2f79",
+    "model": "SmallMono",
+    "source": "TACKTRACKER"
+  }],
+  "VesselParticipants": [{
+    "vesselId": "9c2e6bdd-149d-40fb-9cf5-649d6ad681a8",
+    "isCommittee": false
+  }, {
+    "vesselId": "e84337f9-9803-406d-8a78-16eb616f2f79",
+    "isCommittee": false
+  }],
+  "Participants": [],
+  "Course": {
+    "name": "Flight 45 Finals",
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "StartBoat"
+        },
+        "coordinates": [[9.730386, 55.492325], [9.72734047, 55.48857744]],
+        "order": 1,
+        "points": [{
+            "position": [9.730386, 55.492325],
+            "markTrackerId": "19bbe1b1-be19-498d-ab16-afbaefaf3d22"
+          }, {
+            "position": [9.72734047, 55.48857744],
+            "markTrackerId": "cc0034c0-e3a6-4f3c-b13b-37005c58f10b"
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "\"1\"",
+          "type": "Rounding"
+        },
+        "coordinates": [[9.71795991, 55.49042121]],
+        "order": 2,
+        "points": [{
+            "position": [9.71795991, 55.49042121],
+            "markTrackerId": "f5ddd407-94aa-43eb-b092-1509de7d645e"
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "\"2\"",
+          "type": "Rounding"
+        },
+        "coordinates": [[9.730386, 55.492325]],
+        "order": 3,
+        "points": [{
+            "position": [9.730386, 55.492325],
+            "markTrackerId": "6332f6c3-61f5-45a3-8866-0bed8a496e6b"
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "\"C1\"",
+          "type": "Rounding"
+        },
+        "coordinates": [[9.730386, 55.492325]],
+        "order": 4,
+        "points": [{
+            "position": [9.730386, 55.492325],
+            "markTrackerId": "fcdb1b2a-834f-4944-bb50-af81a3a52f47"
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "FinishBoat"
+        },
+        "coordinates": [[9.730386, 55.492325], [9.730386, 55.492325]],
+        "order": 5,
+        "points": [{
+          "position": [9.730386, 55.492325]
+        }, {
+          "position": [9.730386, 55.492325]
+          }
+        ]
+      }
+    ]
+  },
+  "MarkTrackers": [{
+    "name": "StartBoat",
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f"
+  }, {
+    "name": "2",
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f"
+  }, {
+    "name": "StartPin",
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f"
+  }, {
+    "name": "1",
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f"
+  }, {
+    "name": "C1",
+    "calendarEventId": "51d72551-4df8-4e42-9877-73f027707a8f"
+  }],
+  "VesselParticipantEvents": [],
+  "CompetitionResults": [],
+  "ElasticSearchBodies": [{
+      "id": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+      "name": "Flight 45 Finals",
+      "event": "51d72551-4df8-4e42-9877-73f027707a8f",
+      "event_name": null,
+      "source": "TACKTRACKER",
+      "url": "https://tacktracker.com/cloud/regattas/show/1785638190/45",
+      "start_country": "Denmark",
+      "start_city": "Middelfart",
+      "start_year": 2015,
+      "start_month": 7,
+      "start_day": 12,
+      "approx_start_time_ms": 1436707216000,
+      "approx_end_time_ms": 1436706997000,
+      "approx_duration_ms": -219000,
+      "approx_start_point": {
+        "type": "Point",
+        "coordinates": [9.728863162566494, 55.490451229446926],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_mid_point": {
+        "type": "Point",
+        "coordinates": [9.729624563173465, 55.49138811708539],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_end_point": {
+        "type": "Point",
+        "coordinates": [9.730385999999998, 55.492325],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "bounding_box": {
+        "type": "Polygon",
+        "coordinates": [[[9.726873, 55.48835], [9.72728, 55.48835], [9.72728, 55.489745], [9.726873, 55.489745], [9.726873, 55.48835]]],
+        "crs": {
+          "type": "name",
+          "properties": {
+            "name": "EPSG:4326"
+          }
+        }
+      },
+      "approx_area_sq_km": 0.0039862068750367765,
+      "approx_distance_km": 0.2293780871069479,
+      "num_boats": 2,
+      "avg_time_between_positions": 4000,
+      "boat_models": [],
+      "boat_identifiers": [],
+      "boat_names": ["2 DIN Ulrikkeholm", "2 JB1 Meldgaard"],
+      "handicap_rules": [],
+      "unstructured_text": []
+    }
+  ],
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "42e3acfa-6a02-4891-b0bf-65dfb12bbf52",
+    "name": "Flight 45 Finals",
+    "source": "TACKTRACKER",
+    "url": "https://tacktracker.com/cloud/regattas/show/1785638190/45",
+    "start_year": 2015,
+    "start_month": 7,
+    "start_day": 12,
+    "approx_start_time_ms": 1436707216000,
+    "is_unfinished": true,
+    "scraped_original_id": "1730790368",
+    "status": "ONGOING",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [9.728863162566494, 55.490451229446926]
+    },
+    "start_country": "Denmark",
+    "start_city": "Middelfart"
+  }
+}

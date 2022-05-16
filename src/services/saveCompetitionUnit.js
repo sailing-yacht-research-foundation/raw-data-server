@@ -417,12 +417,15 @@ const saveCompetitionUnit = async ({
     );
     await mainDatabaseTransaction.rollback();
 
-    await failedUrlDataAccess.create({
-      url: race.scrapedUrl || race.url || url,
-      error: err.toString(),
-      source,
-      createdAt: Date.now(),
-    });
+    if (err.toString().indexOf('Operation timeout') < 0) {
+      // Only register if not timeout so it can be retried
+      await failedUrlDataAccess.create({
+        url: race.scrapedUrl || race.url || url,
+        error: err.toString(),
+        source,
+        createdAt: Date.now(),
+      });
+    }
   }
 };
 

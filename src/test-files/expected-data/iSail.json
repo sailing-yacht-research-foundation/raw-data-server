@@ -112,7 +112,6 @@
   "Participants": [],
   "Course": {
     "name": "SuperKaagCup - Race 1",
-    "competitionUnitId": null,
     "calendarEventId": "b982813a-e1e2-446c-8117-76fcbe9ac9db",
     "courseSequencedGeometries": [{
         "geometryType": "Point",

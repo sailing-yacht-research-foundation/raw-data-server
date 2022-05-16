@@ -47,7 +47,7 @@ exports.reverseGeoCode = async ({ lon, lat }) => {
       return !!cityName;
     });
   } catch (error) {
-    console.trace(error);
+    console.log(error);
   }
 
   return {
