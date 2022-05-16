@@ -389,7 +389,6 @@
   "Participants": [],
   "Courses": [{
     "name": "BYC Wednesday Twilight - Cruising Class - 17:35:00",
-    "competitionUnitId": null,
     "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",
@@ -459,7 +458,6 @@
     ]
   }, {
     "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
-    "competitionUnitId": null,
     "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",
@@ -517,7 +515,6 @@
     ]
   }, {
     "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
-    "competitionUnitId": null,
     "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",
@@ -537,7 +534,6 @@
     ]
   }, {
     "name": "BYC Wednesday Twilight - Cruising Class - 18:11:00",
-    "competitionUnitId": null,
     "calendarEventId": "d57307fa-ea00-45e9-82dc-aa24ab9f08f6",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",

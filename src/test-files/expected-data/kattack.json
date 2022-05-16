@@ -103,7 +103,6 @@
   "Participants": [],
   "Course": {
     "name": "2018 Regatta al Sol - Racing",
-    "competitionUnitId": null,
     "courseSequencedGeometries": [{
         "geometryType": "Point",
         "properties": {

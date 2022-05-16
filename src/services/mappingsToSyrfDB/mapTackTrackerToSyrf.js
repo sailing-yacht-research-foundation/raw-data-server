@@ -188,22 +188,32 @@ const _mapSequencedGeometries = (
       startPinTracker?.id,
       markTrackerPositions,
     );
-    const newMark = createGeometryLine(
-      {
-        lat: startMarkFirstPosition?.lat || start.start_mark_lat,
-        lon: startMarkFirstPosition?.lon || start.start_mark_lon,
-        markTrackerId: startMarkTracker?.id,
-      },
-      {
-        lat: startPinTrackerPosition?.lat || start.start_pin_lat,
-        lon: startPinTrackerPosition?.lon || start.start_pin_lon,
-        markTrackerId: startPinTracker?.id,
-      },
-      { name: startMarkName },
-    );
-    newMark.order = order;
-    courseSequencedGeometries.push(newMark);
-    order++;
+    const lat1 = start.start_mark_lat ?? startMarkFirstPosition?.lat;
+    const lon1 = start.start_mark_lon ?? startMarkFirstPosition?.lon;
+    const lat2 = start.start_pin_lat ?? startPinTrackerPosition?.lat;
+    const lon2 = start.start_pin_lon ?? startPinTrackerPosition?.lon;
+    const isPoint1Valid =
+      lat1 !== null && lon1 != null && !isNaN(lat1) && !isNaN(lon1);
+    const isPoint2Valid =
+      lat2 !== null && lon2 != null && !isNaN(lat2) && !isNaN(lon2);
+    if (isPoint1Valid && isPoint2Valid) {
+      const newMark = createGeometryLine(
+        {
+          lat: +lat1,
+          lon: +lon1,
+          markTrackerId: startMarkTracker?.id,
+        },
+        {
+          lat: +lat2,
+          lon: +lon2,
+          markTrackerId: startPinTracker?.id,
+        },
+        { name: startMarkName },
+      );
+      newMark.order = order;
+      courseSequencedGeometries.push(newMark);
+      order++;
+    }
   }
   tackTrackerMark = tackTrackerMark.filter((t) => t.lat && t.lon);
   for (const markIndex in tackTrackerMark) {
@@ -222,18 +232,22 @@ const _mapSequencedGeometries = (
         markTracker?.id,
         markTrackerPositions,
       );
-      const newMark = createGeometryPoint({
-        lat: markTrackerFirstPosition?.lat || mark.lat,
-        lon: markTrackerFirstPosition?.lon || mark.lon,
-        properties: {
-          name: mark.name,
-          type: mark.type,
-        },
-        markTrackerId: markTracker?.id,
-      });
-      newMark.order = order;
-      courseSequencedGeometries.push(newMark);
-      order++;
+      const lat = mark.lat ?? markTrackerFirstPosition?.lat;
+      const lon = mark.lon ?? markTrackerFirstPosition?.lon;
+      if (lat !== null && lon != null && !isNaN(lat) && !isNaN(lon)) {
+        const newMark = createGeometryPoint({
+          lat: +lat,
+          lon: +lon,
+          properties: {
+            name: mark.name,
+            type: mark.type,
+          },
+          markTrackerId: markTracker?.id,
+        });
+        newMark.order = order;
+        courseSequencedGeometries.push(newMark);
+        order++;
+      }
     } else if (mark.type === 'GateMark' || mark.type === 'GateMarkCenter') {
       /*
         we will always have 3 gate mark here
@@ -288,22 +302,32 @@ const _mapSequencedGeometries = (
           secondTracker?.id,
           markTrackerPositions,
         );
-        const line = createGeometryLine(
-          {
-            lat: firstTrackerPosition?.lat || gates[0].lat,
-            lon: firstTrackerPosition?.lon || gates[0].lon,
-            markTrackerId: firstTracker?.id,
-          },
-          {
-            lat: secondTrackerPosition?.lat || gates[1].lat,
-            lon: secondTrackerPosition?.lon || gates[1].lon,
-            markTrackerId: secondTracker?.id,
-          },
-          { name: mark.name },
-        );
-        gates.forEach((t) => (t.used = true));
-        line.order = order;
-        courseSequencedGeometries.push(line);
+        const lat1 = firstTrackerPosition?.lat ?? gates[0].lat;
+        const lon1 = firstTrackerPosition?.lon ?? gates[0].lon;
+        const lat2 = secondTrackerPosition?.lat ?? gates[1].lat;
+        const lon2 = secondTrackerPosition?.lon ?? gates[1].lon;
+        const isPoint1Valid =
+          lat1 !== null && lon1 != null && !isNaN(lat1) && !isNaN(lon1);
+        const isPoint2Valid =
+          lat2 !== null && lon2 != null && !isNaN(lat2) && !isNaN(lon2);
+        if (isPoint1Valid && isPoint2Valid) {
+          const line = createGeometryLine(
+            {
+              lat: +lat1,
+              lon: +lon1,
+              markTrackerId: firstTracker?.id,
+            },
+            {
+              lat: +lat2,
+              lon: +lon2,
+              markTrackerId: secondTracker?.id,
+            },
+            { name: mark.name },
+          );
+          gates.forEach((t) => (t.used = true));
+          line.order = order;
+          courseSequencedGeometries.push(line);
+        }
       }
       order++;
     }
@@ -325,22 +349,32 @@ const _mapSequencedGeometries = (
       finishPinTracker?.id,
       markTrackerPositions,
     );
-    const newMark = createGeometryLine(
-      {
-        lat: finishMarkTrackerPosition?.lat || finish.finish_mark_lat,
-        lon: finishMarkTrackerPosition?.lon || finish.finish_mark_lon,
-        markTrackerId: finishMarkTracker?.id,
-      },
-      {
-        lat: finishPinTrackerPosition?.lat || finish.finish_pin_lat,
-        lon: finishPinTrackerPosition?.lon || finish.finish_pin_lon,
-        markTrackerId: finishPinTracker?.id,
-      },
-      { name: finish.finish_mark_name },
-    );
-    newMark.order = order;
-    courseSequencedGeometries.push(newMark);
-    order++;
+    const lat1 = finish.finish_mark_lat ?? finishMarkTrackerPosition?.lat;
+    const lon1 = finish.finish_mark_lon ?? finishMarkTrackerPosition?.lon;
+    const lat2 = finish.finish_pin_lat ?? finishPinTrackerPosition?.lat;
+    const lon2 = finish.finish_pin_lon ?? finishPinTrackerPosition?.lon;
+    const isPoint1Valid =
+      lat1 !== null && lon1 != null && !isNaN(lat1) && !isNaN(lon1);
+    const isPoint2Valid =
+      lat2 !== null && lon2 != null && !isNaN(lat2) && !isNaN(lon2);
+    if (isPoint1Valid && isPoint2Valid) {
+      const newMark = createGeometryLine(
+        {
+          lat: +lat1,
+          lon: +lon1,
+          markTrackerId: finishMarkTracker?.id,
+        },
+        {
+          lat: +lat2,
+          lon: +lon2,
+          markTrackerId: finishPinTracker?.id,
+        },
+        { name: finish.finish_mark_name },
+      );
+      newMark.order = order;
+      courseSequencedGeometries.push(newMark);
+      order++;
+    }
   }
 
   return courseSequencedGeometries;

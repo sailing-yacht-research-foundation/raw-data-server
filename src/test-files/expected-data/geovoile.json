@@ -108,7 +108,6 @@
   ],
   "Course": {
     "name": "Solitaire du Figaro 2021",
-    "competitionUnitId": null,
     "courseSequencedGeometries": [{
         "geometryType": "Point",
         "properties": {

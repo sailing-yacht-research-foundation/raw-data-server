@@ -123,7 +123,6 @@
   "Participants": [],
   "Course": {
     "name": "M32 EUROPEAN CHAMPIONSHIP AND EUROPEAN SERIES 5  M32 (MARSTROM 32) R 8 (race id: 12574)",
-    "competitionUnitId": null,
     "calendarEventId": "86884f1e-421e-4cba-ba3a-34005b237597",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",

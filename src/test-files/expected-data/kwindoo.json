@@ -134,7 +134,6 @@
   ],
   "Course": {
     "name": "M32 Series Europe - Event #4 Aarhus - Race 4",
-    "competitionUnitId": null,
     "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1",
     "courseSequencedGeometries": [{
         "geometryType": "LineString",
