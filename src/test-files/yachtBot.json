@@ -1,145 +1,116 @@
 {
-  "YachtBotRace": [
-    {
-      "id": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "original_id": "362",
-      "name": "Rolex Day 2 - Race 4",
-      "start_time": "1347990204000",
-      "end_time": "1347994055000",
-      "manual_wind": "",
-      "course_direction": "",
-      "url": "http://www.yacht-bot.com/races/362"
+  "YachtBotRace": [{
+      "id": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "original_id": 14546,
+      "name": "PMYC MR - 08 June 2018 - RR 01 - Flight 04",
+      "start_time": 1528456979000,
+      "end_time": 1528458480000,
+      "url": "https://www.yacht-bot.com/races/14546"
     }
   ],
-  "YachtBotBuoy": [
-    {
-      "id": "936ed1f2-304e-4bf2-8ae9-2ac9694147be",
-      "original_id": "DC-DK-AAGC",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "name": "Committee Boat",
-      "buoy_type": "committee",
-      "connected_buoy": "ce542274-1cbc-4920-aa07-f4de3a6caf06",
-      "connected_buoy_original_id": "DC-DK-AAGD",
-      "metas": ""
-    },
-    {
-      "id": "ce542274-1cbc-4920-aa07-f4de3a6caf06",
-      "original_id": "DC-DK-AAGD",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "name": "PIN",
+  "YachtBotYacht": [{
+      "id": "3036e4da-4732-492b-bdc4-908d17df9780",
+      "original_id": "HA-JF-ADEE",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Piasevoli",
+      "boat_number": "03",
+      "crew": "{\"type\":\"array\",\"person\":[{\"person_name\":{\"static_value\":\"Jane\"}},{\"person_name\":{\"static_value\":\"Sue\"}}]}",
+      "country": "{}",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]},\"cog\":{\"1\":[240,244,246,249,251],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]},\"sog\":{\"1\":[7,8,8,8,8],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]}}",
+      "original_object_id": "4"
+    }, {
+      "id": "56798235-793e-4e68-becf-529524ab0062",
+      "original_id": "HA-JF-ADEC",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Harasimowicz",
+      "boat_number": "06",
+      "crew": "{}",
+      "country": "\"New Zealand\"",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"cog\":{\"1\":[226,178,131,67,58],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"sog\":{\"1\":[6,4,4,5,6],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]}}",
+      "original_object_id": "7"
+    }, {
+      "id": "d47d7a50-5779-4dc0-a81c-c972daeb320f",
+      "original_id": "HA-JF-ADDM",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Kurbanovic",
+      "boat_number": "04",
+      "crew": "{\"type\":\"array\",\"person\":[{\"person_name\":{\"static_value\":\"Bob\"}},{\"person_name\":{\"static_value\":\"Joe\"}}]}",
+      "country": "{}",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"cog\":{\"1\":[168,171,189,276,282],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"sog\":{\"1\":[2,2,1,4,5],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]}}",
+      "original_object_id": "8"
+    }, {
+      "id": "2231021a-bd77-4f14-9561-85fa418e6402",
+      "original_id": "HA-JF-ADDK",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Sylvain",
+      "boat_number": "01",
+      "crew": "{}",
+      "country": "{}",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"cog\":{\"1\":[92,91,91,89,83],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"sog\":{\"1\":[4,4,4,4,4],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]}}",
+      "original_object_id": "19"
+    }
+  ],
+  "YachtBotBuoy": [{
+      "id": "3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb",
+      "original_id": "HA-JF-ADEF",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Pin end",
       "buoy_type": "pin",
-      "connected_buoy": "936ed1f2-304e-4bf2-8ae9-2ac9694147be",
-      "connected_buoy_original_id": "DC-DK-AAGC",
-      "metas": ""
-    },
-    {
-      "id": "3bbe1e57-2263-43df-8706-8398e9a01e63",
-      "original_id": "DC-DK-AAGE",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "name": "WM",
+      "connected_buoy": "10683a09-9822-4d41-88af-26003575678e",
+      "connected_buoy_original_id": "HA-JF-ADED",
+      "original_object_id": "9",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"cog\":{\"1\":[211,174,71,128,212],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"sog\":{\"1\":[0,0,0,1,1],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]}}"
+    }, {
+      "id": "10683a09-9822-4d41-88af-26003575678e",
+      "original_id": "HA-JF-ADED",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Committee",
+      "buoy_type": "committee",
+      "connected_buoy": "3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb",
+      "connected_buoy_original_id": "HA-JF-ADEF",
+      "original_object_id": "11",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]},\"gpsQualitySatCount\":{\"1\":[9,10,10,10,10],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]},\"cog\":{\"1\":[37,37,37,37,37],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]},\"sog\":{\"1\":[0,0,0,0,0],\"t\":[1528456980000,1528456983000,1528456986000,1528456989000,1528456992000]}}"
+    }, {
+      "id": "1d7167ca-f804-4d99-bf74-c9d945651e31",
+      "original_id": "HA-JF-ADEG",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Leeward Mark",
+      "buoy_type": "leeward",
+      "connected_buoy": null,
+      "connected_buoy_original_id": null,
+      "original_object_id": "12",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"cog\":{\"1\":[82,82,82,82,82],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]},\"sog\":{\"1\":[0,0,0,0,0],\"t\":[1528456981000,1528456984000,1528456987000,1528456990000,1528456993000]}}"
+    }, {
+      "id": "f53db88e-8552-4c98-95c5-ba63677bda40",
+      "original_id": "HA-JF-ADDJ",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Windward Mark",
+      "buoy_type": "windward",
+      "connected_buoy": null,
+      "connected_buoy_original_id": null,
+      "original_object_id": "13",
+      "metas": "{\"gpsQuality\":{\"1\":[1,1,1,1,1],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"gpsQualitySatCount\":{\"1\":[10,10,10,10,10],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"cog\":{\"1\":[41,41,41,150,47],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]},\"sog\":{\"1\":[0,0,0,1,0],\"t\":[1528456979000,1528456982000,1528456985000,1528456988000,1528456991000]}}"
+    }, {
+      "id": "fbe43710-7110-41f6-98de-a77be854129c",
+      "original_id": "HA-JF-ADEA",
+      "race": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+      "race_original_id": 14546,
+      "name": "Change mark",
       "buoy_type": "generic",
       "connected_buoy": null,
-      "connected_buoy_original_id": "",
-      "metas": ""
+      "connected_buoy_original_id": null,
+      "original_object_id": "14",
+      "metas": null
     }
   ],
-  "YachtBotYacht": [
-    {
-      "id": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
-      "original_id": "DC-DK-AAEA",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "name": "Asterix UNO",
-      "boat_number": "",
-      "crew": "{\"type\":\"array\"}",
-      "country": "",
-      "metas": "TRUNCATED"
-    },
-    {
-      "id": "42e39d8c-4ac7-42b0-bec2-5f14cb7386dd",
-      "original_id": "DC-DK-AAEC",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "name": "Barking Mad",
-      "boat_number": "",
-      "crew": "{\"type\":\"array\"}",
-      "country": "",
-      "metas": "TRUNCATED"
-    }
-  ],
-  "YachtBotPosition": [
-    {
-      "id": "7a619026-8469-47a0-bb82-14da86706064",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "yacht_or_buoy": "yacht",
-      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
-      "yacht_original_id": "DC-DK-AAEA",
-      "buoy": null,
-      "buoy_original_id": null,
-      "time": "1347990204000",
-      "lat": "41.8541743333333",
-      "lon": "-87.5495515",
-      "gps_quality": null
-    },
-    {
-      "id": "65b37dd6-00d4-4ce6-ba4f-223f08a64e94",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "yacht_or_buoy": "yacht",
-      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
-      "yacht_original_id": "DC-DK-AAEA",
-      "buoy": null,
-      "buoy_original_id": null,
-      "time": "1347990204500",
-      "lat": "41.8541715",
-      "lon": "-87.5495773333333",
-      "gps_quality": null
-    },
-    {
-      "id": "f6d4eba3-53fa-4b64-ab86-51fa304ba42c",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "yacht_or_buoy": "yacht",
-      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
-      "yacht_original_id": "DC-DK-AAEA",
-      "buoy": null,
-      "buoy_original_id": null,
-      "time": "1347990205000",
-      "lat": "41.8541715",
-      "lon": "-87.5496023333333",
-      "gps_quality": null
-    },
-    {
-      "id": "5d616159-aedb-45f4-b088-705f8b3fc53e",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "yacht_or_buoy": "yacht",
-      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
-      "yacht_original_id": "DC-DK-AAEA",
-      "buoy": null,
-      "buoy_original_id": null,
-      "time": "1347990205500",
-      "lat": "41.8541706666667",
-      "lon": "-87.5496271666667",
-      "gps_quality": null
-    },
-    {
-      "id": "09347576-bb10-4c85-a9de-3761290c307d",
-      "race": "2f052217-bd51-4428-b772-5a0ca8659c77",
-      "race_original_id": "362",
-      "yacht_or_buoy": "yacht",
-      "yacht": "c1077122-6d9f-49f8-8a4f-1ac2ed2018ec",
-      "yacht_original_id": "DC-DK-AAEA",
-      "buoy": null,
-      "buoy_original_id": null,
-      "time": "1347990206000",
-      "lat": "41.8541708333333",
-      "lon": "-87.5496521666667",
-      "gps_quality": null
-    }
-  ]
+  "YachtBotMark": [],
+  "YachtBotPosition": [{"id":"0f09c176-87dc-4909-840a-bfd3948a00f8","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456980000,"lon":18.678845,"lat":42.432781,"gps_quality":null,"yacht_original_id":"HA-JF-ADEE","yacht":"3036e4da-4732-492b-bdc4-908d17df9780","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"f35e6449-1c51-4574-bf42-a0111f289b61","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456983000,"lon":18.67877,"lat":42.432751,"gps_quality":null,"yacht_original_id":"HA-JF-ADEE","yacht":"3036e4da-4732-492b-bdc4-908d17df9780","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"c449bb86-31bd-421d-8dcd-44f7554eeeab","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456986000,"lon":18.67869,"lat":42.432725,"gps_quality":null,"yacht_original_id":"HA-JF-ADEE","yacht":"3036e4da-4732-492b-bdc4-908d17df9780","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"b713d9b6-2d06-4462-8168-7d6e477f9dad","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456989000,"lon":18.678608,"lat":42.432695,"gps_quality":null,"yacht_original_id":"HA-JF-ADEE","yacht":"3036e4da-4732-492b-bdc4-908d17df9780","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"65737aa8-9e22-40e5-8541-f9000d7374a8","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456992000,"lon":18.6785229,"lat":42.43267,"gps_quality":null,"yacht_original_id":"HA-JF-ADEE","yacht":"3036e4da-4732-492b-bdc4-908d17df9780","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"23bd7e8f-bccf-4442-9c1c-5d166da90de6","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456979000,"lon":18.680491,"lat":42.433025,"gps_quality":null,"yacht_original_id":"HA-JF-ADEC","yacht":"56798235-793e-4e68-becf-529524ab0062","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"6c8e7e08-c546-452b-a7eb-c598b1163aac","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456982000,"lon":18.680483,"lat":42.432968,"gps_quality":null,"yacht_original_id":"HA-JF-ADEC","yacht":"56798235-793e-4e68-becf-529524ab0062","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"50d25f23-7e89-4896-88df-3b34b4c2092d","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456985000,"lon":18.680516,"lat":42.432951,"gps_quality":null,"yacht_original_id":"HA-JF-ADEC","yacht":"56798235-793e-4e68-becf-529524ab0062","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"036911bd-f512-4de6-8b97-87d1fe2ef326","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456988000,"lon":18.680563,"lat":42.432961,"gps_quality":null,"yacht_original_id":"HA-JF-ADEC","yacht":"56798235-793e-4e68-becf-529524ab0062","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"76aec5f9-3949-4aed-a0cd-e561daa905dd","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456991000,"lon":18.680615,"lat":42.432988,"gps_quality":null,"yacht_original_id":"HA-JF-ADEC","yacht":"56798235-793e-4e68-becf-529524ab0062","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"240f27f7-e352-4dbd-bb7c-69c036bf316d","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456981000,"lon":18.678425,"lat":42.432816,"gps_quality":null,"yacht_original_id":"HA-JF-ADDM","yacht":"d47d7a50-5779-4dc0-a81c-c972daeb320f","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"71b0eacd-3131-4398-9d63-faa08148d94c","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456984000,"lon":18.678425,"lat":42.4328,"gps_quality":null,"yacht_original_id":"HA-JF-ADDM","yacht":"d47d7a50-5779-4dc0-a81c-c972daeb320f","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"58d1ed28-fb12-4287-9198-5680e31e0608","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456987000,"lon":18.678405,"lat":42.4327759,"gps_quality":null,"yacht_original_id":"HA-JF-ADDM","yacht":"d47d7a50-5779-4dc0-a81c-c972daeb320f","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"53c1952c-7fa7-4a1f-8f99-566a5b3b2a6c","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456990000,"lon":18.678368,"lat":42.432778,"gps_quality":null,"yacht_original_id":"HA-JF-ADDM","yacht":"d47d7a50-5779-4dc0-a81c-c972daeb320f","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"11098cd2-81dc-40a8-b286-6602e56396ea","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456993000,"lon":18.678318,"lat":42.43277,"gps_quality":null,"yacht_original_id":"HA-JF-ADDM","yacht":"d47d7a50-5779-4dc0-a81c-c972daeb320f","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"5df882d1-ae52-4517-93fe-e9ef2f9a981b","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456979000,"lon":18.680396,"lat":42.432998,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb","buoy_original_id":"HA-JF-ADEF","yacht_or_buoy":"buoy"},{"id":"70c3b034-8850-49cf-9ee7-fe9fe99bf819","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456982000,"lon":18.680398,"lat":42.433,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb","buoy_original_id":"HA-JF-ADEF","yacht_or_buoy":"buoy"},{"id":"abd05512-ef08-42c5-845a-722ad3c825ac","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456985000,"lon":18.680398,"lat":42.433003,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb","buoy_original_id":"HA-JF-ADEF","yacht_or_buoy":"buoy"},{"id":"9c31a432-892f-402a-87b6-8304e30437cd","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456988000,"lon":18.680395,"lat":42.433001,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb","buoy_original_id":"HA-JF-ADEF","yacht_or_buoy":"buoy"},{"id":"55cf0e04-9cbf-4665-a9b3-220858231c80","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456991000,"lon":18.680388,"lat":42.432996,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"3d9a1a5a-83ea-4fcc-8ac6-fb0dccc36acb","buoy_original_id":"HA-JF-ADEF","yacht_or_buoy":"buoy"},{"id":"540d5018-884e-4fd2-988c-bbedf4432626","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456980000,"lon":18.679081,"lat":42.433016,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"10683a09-9822-4d41-88af-26003575678e","buoy_original_id":"HA-JF-ADED","yacht_or_buoy":"buoy"},{"id":"2eb10e95-15e2-4440-9fb9-8e38f6896d7d","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456986000,"lon":18.679081,"lat":42.433023,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"10683a09-9822-4d41-88af-26003575678e","buoy_original_id":"HA-JF-ADED","yacht_or_buoy":"buoy"},{"id":"ccf32ce3-2b7a-4bc0-939e-9e0c9ce392fb","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456989000,"lon":18.67908,"lat":42.433025,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"10683a09-9822-4d41-88af-26003575678e","buoy_original_id":"HA-JF-ADED","yacht_or_buoy":"buoy"},{"id":"f77c56c9-eea9-45c4-ab19-a6803a6f0ab0","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456998000,"lon":18.67908,"lat":42.433031,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"10683a09-9822-4d41-88af-26003575678e","buoy_original_id":"HA-JF-ADED","yacht_or_buoy":"buoy"},{"id":"35139cb6-6dc3-4592-8199-f248e51c5952","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528457001000,"lon":18.679078,"lat":42.433031,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"10683a09-9822-4d41-88af-26003575678e","buoy_original_id":"HA-JF-ADED","yacht_or_buoy":"buoy"},{"id":"f10ad273-a926-48cb-9e2b-0893974ec19b","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456981000,"lon":18.679618,"lat":42.4326859,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"1d7167ca-f804-4d99-bf74-c9d945651e31","buoy_original_id":"HA-JF-ADEG","yacht_or_buoy":"buoy"},{"id":"d3d7b28a-f381-4408-b8b0-296162b7953e","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456984000,"lon":18.67962,"lat":42.4326859,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"1d7167ca-f804-4d99-bf74-c9d945651e31","buoy_original_id":"HA-JF-ADEG","yacht_or_buoy":"buoy"},{"id":"9868cdab-5459-4c71-b80b-c4b356a1ac34","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456987000,"lon":18.679621,"lat":42.432688,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"1d7167ca-f804-4d99-bf74-c9d945651e31","buoy_original_id":"HA-JF-ADEG","yacht_or_buoy":"buoy"},{"id":"80da9414-b196-4416-bee8-50b17008515a","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456996000,"lon":18.679621,"lat":42.432693,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"1d7167ca-f804-4d99-bf74-c9d945651e31","buoy_original_id":"HA-JF-ADEG","yacht_or_buoy":"buoy"},{"id":"6c8ccf95-0af1-4f2e-aeb0-e2cff67e60bc","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456999000,"lon":18.679623,"lat":42.432696,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"1d7167ca-f804-4d99-bf74-c9d945651e31","buoy_original_id":"HA-JF-ADEG","yacht_or_buoy":"buoy"},{"id":"9d77bf0d-25bb-4620-b2dc-f03c2f189178","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456979000,"lon":18.680181,"lat":42.4295929,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"f53db88e-8552-4c98-95c5-ba63677bda40","buoy_original_id":"HA-JF-ADDJ","yacht_or_buoy":"buoy"},{"id":"9de855cc-66e5-44d2-ae9e-3ef0018f8e5f","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456982000,"lon":18.680181,"lat":42.429591,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"f53db88e-8552-4c98-95c5-ba63677bda40","buoy_original_id":"HA-JF-ADDJ","yacht_or_buoy":"buoy"},{"id":"c971ed5a-342a-4070-afc5-6d209046c65a","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456988000,"lon":18.68018,"lat":42.429591,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"f53db88e-8552-4c98-95c5-ba63677bda40","buoy_original_id":"HA-JF-ADDJ","yacht_or_buoy":"buoy"},{"id":"80d6aca9-e329-4f8a-98fb-63a86d78c093","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456991000,"lon":18.680183,"lat":42.4296,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"f53db88e-8552-4c98-95c5-ba63677bda40","buoy_original_id":"HA-JF-ADDJ","yacht_or_buoy":"buoy"},{"id":"c6226b15-8d98-40cf-8742-cfe0d6f1da55","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456994000,"lon":18.680185,"lat":42.429605,"gps_quality":null,"yacht_original_id":null,"yacht":null,"buoy":"f53db88e-8552-4c98-95c5-ba63677bda40","buoy_original_id":"HA-JF-ADDJ","yacht_or_buoy":"buoy"},{"id":"ea38f3db-3f9e-46b4-a310-b1686aa3d565","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456981000,"lon":18.68026,"lat":42.43334,"gps_quality":null,"yacht_original_id":"HA-JF-ADDK","yacht":"2231021a-bd77-4f14-9561-85fa418e6402","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"52a75159-c373-4aaf-8f92-fcb988db9a45","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456987000,"lon":18.68035,"lat":42.43334,"gps_quality":null,"yacht_original_id":"HA-JF-ADDK","yacht":"2231021a-bd77-4f14-9561-85fa418e6402","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"ffb73d3b-fecb-47de-96c2-28625dbd81ec","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456990000,"lon":18.680395,"lat":42.433341,"gps_quality":null,"yacht_original_id":"HA-JF-ADDK","yacht":"2231021a-bd77-4f14-9561-85fa418e6402","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"b85414e1-bf54-473c-bb01-41d0348437c3","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456993000,"lon":18.6804409,"lat":42.433346,"gps_quality":null,"yacht_original_id":"HA-JF-ADDK","yacht":"2231021a-bd77-4f14-9561-85fa418e6402","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"},{"id":"314ac734-4aec-4c96-b157-3c62a3379ade","race":"e0fb3769-f23e-4409-accf-b5a2c022fba2","race_original_id":14546,"time":1528456996000,"lon":18.680491,"lat":42.433351,"gps_quality":null,"yacht_original_id":"HA-JF-ADDK","yacht":"2231021a-bd77-4f14-9561-85fa418e6402","buoy":null,"buoy_original_id":null,"yacht_or_buoy":"yacht"}]
 }
