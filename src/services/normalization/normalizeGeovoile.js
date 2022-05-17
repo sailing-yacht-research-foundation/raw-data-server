@@ -10,12 +10,7 @@ const {
 } = require('../../utils/gisUtils');
 const { SOURCE } = require('../../constants');
 
-const normalizeGeovoile = async ({
-  geovoileRace,
-  boats,
-  sailors,
-  positions,
-}) => {
+const normalizeRace = async ({ geovoileRace, boats, sailors, positions }) => {
   const GEOVOILE_SOURCE = SOURCE.GEOVOILE;
   const race = geovoileRace;
   const allPositions = positions;
@@ -92,4 +87,4 @@ const normalizeGeovoile = async ({
   );
 };
 
-exports.normalizeGeovoile = normalizeGeovoile;
+exports.normalizeRace = normalizeRace;
