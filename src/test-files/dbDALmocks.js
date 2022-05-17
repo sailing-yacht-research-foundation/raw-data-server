@@ -11,43 +11,57 @@ jest.mock('../syrf-schema/utils/utils', () => {
 // DAL Mocks
 jest.mock('../syrf-schema/dataAccess/v1/calendarEvent', () => {
   return {
-    upsert: jest.fn((id, data) =>
-      Promise.resolve(Object.assign({}, data, id ? { id } : {})),
+    upsert: jest.fn((id, data) => {
+      console.log('Calendar Event', JSON.stringify(data));
+      return Promise.resolve(Object.assign({}, data, id ? { id } : {}))
+    }
     ),
     getByScrapedOriginalIdAndSource: jest.fn(() => Promise.resolve()),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantGroup', () => {
   return {
-    upsert: jest.fn((id, data) =>
-      Promise.resolve(Object.assign({}, data, id ? { id } : {})),
+    upsert: jest.fn((id, data) => {
+      console.log('Vessel Participant Group', JSON.stringify(data));
+      return Promise.resolve(Object.assign({}, data, id ? { id } : {}))
+    }
     ),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vessel', () => {
   return {
-    bulkCreate: jest.fn((data) => Promise.resolve(data)),
+    bulkCreate: jest.fn((data) =>  {
+      console.log('Vessel', JSON.stringify(data));
+      return Promise.resolve(data)
+    }),
     getByVesselIdAndSource: jest.fn().mockResolvedValue(null),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vesselParticipant', () => {
   const uuid = require('uuid');
   return {
-    bulkCreate: jest.fn((data) =>
-      Promise.resolve(data.map((d) => ({ id: uuid.v4(), ...d }))),
+    bulkCreate: jest.fn((data) => {
+      console.log('Vessel Participant', JSON.stringify(data));
+      return Promise.resolve(data.map((d) => ({ id: uuid.v4(), ...d })))
+    }
     ),
     addParticipant: jest.fn((data) => Promise.resolve(data)),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/participant', () => {
   return {
-    bulkCreate: jest.fn((data) => Promise.resolve(data)),
+    bulkCreate: jest.fn((data) =>  {
+      console.log('Participant', JSON.stringify(data));
+      return Promise.resolve(data)
+    }),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/markTracker', () => {
   return {
-    upsert: jest.fn((id, data) =>
-      Promise.resolve(Object.assign({}, data, id ? { id } : {})),
+    upsert: jest.fn((id, data) => {
+      console.log('Mark Trackers', JSON.stringify(data));
+      return Promise.resolve(Object.assign({}, data, id ? { id } : {}))
+    }
     ),
   };
 });
@@ -55,21 +69,28 @@ jest.mock('../syrf-schema/dataAccess/v1/course', () => {
   return {
     clearPoints: jest.fn(() => Promise.resolve(null)),
     bulkInsertPoints: jest.fn((data) => Promise.resolve(data)),
-    upsert: jest.fn((id, data) =>
-      Promise.resolve(Object.assign({}, data, id ? { id } : {})),
+    upsert: jest.fn((id, data) => {
+      console.log('Course', JSON.stringify(data));
+      return Promise.resolve(Object.assign({}, data, id ? { id } : {}))
+    }
     ),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/competitionUnit', () => {
   return {
-    upsert: jest.fn((id, data) =>
-      Promise.resolve(Object.assign({}, data, id ? { id } : {})),
+    upsert: jest.fn((id, data) => {
+      console.log('Competition Unit', JSON.stringify(data));
+      return Promise.resolve(Object.assign({}, data, id ? { id } : {}))
+    }
     ),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantEvent', () => {
   return {
-    bulkCreate: jest.fn((data) => Promise.resolve(data)),
+    bulkCreate: jest.fn((data) => {
+      console.log('Vessel Participant Event', JSON.stringify(data));
+      return Promise.resolve(data)
+    }),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/vesselParticipantTrackJson', () => {
@@ -84,7 +105,10 @@ jest.mock('../syrf-schema/dataAccess/v1/competitionPointTrackJson', () => {
 });
 jest.mock('../syrf-schema/dataAccess/v1/competitionResult', () => {
   return {
-    bulkCreate: jest.fn((data) => Promise.resolve(data)),
+    bulkCreate: jest.fn((data) => {
+      console.log('Competition Result', JSON.stringify(data));
+      return Promise.resolve(data)
+    }),
   };
 });
 jest.mock('../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl', () => {
