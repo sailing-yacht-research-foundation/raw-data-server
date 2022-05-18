@@ -4,7 +4,7 @@
     "isPrivate": false,
     "isOpen": false,
     "country": "Monaco",
-    "city": "Fontvieille",
+    "city": "Monaco",
     "source": "GEORACING",
     "openGraphImage": "mockLocation",
     "scrapedOriginalId": 100356,
@@ -68,7 +68,7 @@
     "endTime": 1481380759000,
     "openGraphImage": "mockLocation",
     "country": "Monaco",
-    "city": "Fontvieille",
+    "city": "Monaco",
     "status": "COMPLETED",
     "scrapedOriginalId": 93491,
     "scrapedUrl": "https://player.georacing.com/?event=100356&race=93491",
@@ -316,7 +316,7 @@
     "source": "GEORACING",
     "url": "https://player.georacing.com/?event=100356&race=93491",
     "start_country": "Monaco",
-    "start_city": "Fontvieille",
+    "start_city": "Monaco",
     "start_year": 2016,
     "start_month": 12,
     "start_day": 10,
@@ -392,6 +392,6 @@
         "coordinates": [7.4343967437744, 43.727873063745]
     },
     "start_country": "Monaco",
-    "start_city": "La Condamine"
+    "start_city": "Monaco"
   }
 }

@@ -18,8 +18,8 @@
     "startYear": 2015,
     "approximateEndTime": 1438380000000,
     "approximateEndTime_zone": "Etc/UTC",
-    "endDay": 1,
-    "endMonth": 8,
+    "endDay": 31,
+    "endMonth": 7,
     "endYear": 2015,
     "location": {
       "crs": {
@@ -457,9 +457,9 @@
     "scraped_original_id": "2549a9a0-111a-0133-2744-60a44ce903c3",
     "approx_start_point": {
       "type": "Point",
-      "coordinates": [0, -1.297562768555]
+      "coordinates": [-1.302258, 50.771839]
     },
-    "start_country": "Equatorial Guinea",
-    "start_city": "San Antonio de Palé"
+    "start_country": "United Kingdom",
+    "start_city": "Cowes"
   }
 }
