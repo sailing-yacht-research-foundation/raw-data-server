@@ -27,10 +27,10 @@ exports.upsert = async (
   return result;
 };
 
-exports.addParticipant = async ({
-  vesselParticipantId,
-  participantIds = [],
-}, transaction) => {
+exports.addParticipant = async (
+  { vesselParticipantId, participantIds = [] },
+  transaction,
+) => {
   const result = await dataAccess.addParticipant(
     vesselParticipantId,
     participantIds,

@@ -12,6 +12,7 @@ jest.mock('./src/utils/createMapScreenshot');
 jest.mock('./src/utils/elasticsearch');
 jest.mock('./src/utils/weatherSlicerUtil');
 console.time = () => {}; // Disable console time since it generates too many logs
+jest.setTimeout(15000);
 afterAll(() => {
   jest.restoreAllMocks();
 });
