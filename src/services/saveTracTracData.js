@@ -23,8 +23,8 @@ const saveTracTracData = async (data) => {
   const finishedRaces = [];
   for (const race of data.TracTracRace) {
     const now = Date.now();
-    const raceStartTime = new Date(race.tracking_start).getTime();
-    const raceEndTime = new Date(race.tracking_stop).getTime();
+    const raceStartTime = new Date(`${race.tracking_start} +0`).getTime();
+    const raceEndTime = new Date(`${race.tracking_stop} +0`).getTime();
     const isUnfinished = raceStartTime > now || raceEndTime > now; // also use startTime in case end time is undefined
     if (isUnfinished) {
       console.log(
@@ -71,7 +71,14 @@ const saveTracTracData = async (data) => {
 
 const _indexUnfinishedRaceToES = async (race, data) => {
   const event = data.TracTracEvent?.[0];
-  const startDate = new Date(race.tracking_start);
+  let startDate;
+  const raceStart = new Date(`${race.race_start} +0`);
+  if (race.race_start && !isNaN(raceStart)) {
+    startDate = raceStart;
+  } else {
+    startDate = new Date(`${race.tracking_start} +0`);
+  }
+
   const startTimeMs = startDate.getTime();
   const name = generateMetadataName(event?.name, race.name, startTimeMs);
   let startPoint;
@@ -94,7 +101,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
     start_month: startDate.getUTCMonth() + 1,
     start_day: startDate.getUTCDate(),
     approx_start_time_ms: startTimeMs,
-    approx_end_time_ms: new Date(race.tracking_stop).getTime(),
+    approx_end_time_ms: new Date(`${race.tracking_stop} +0`).getTime(),
     open_graph_image: getTrackerLogoUrl(SOURCE.TRACTRAC), // use tracker logo for unfinished races
     is_unfinished: true, // only attribute for unfinished races
     scraped_original_id: race.original_id.toString(), // Used to check if race has been indexed in es. Convert to string for other scraper uses uid instead of int

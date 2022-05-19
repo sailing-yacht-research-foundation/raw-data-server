@@ -34,7 +34,7 @@
   },
   "CompetitionUnit": {
     "name": "Race 5",
-    "startTime": 1438227900000,
+    "startTime": 1438256700000,
     "approximateStartLocation": {
       "type": "Point",
       "coordinates": [-1.3026186819866743, 50.772236101883756],
@@ -67,14 +67,14 @@
       }
     },
     "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95",
-    "endTime": 1438233058000,
+    "endTime": 1438261858000,
     "openGraphImage": "mockLocation",
     "country": "United Kingdom",
     "city": "Cowes",
     "status": "COMPLETED",
     "scrapedOriginalId": "2549a9a0-111a-0133-2744-60a44ce903c3",
     "scrapedUrl": "https://live.tractrac.com/viewer/index.html?target=https://em.event.tractrac.com/events/5fcd1e10-0e04-0133-4949-60a44ce903c3/races/2549a9a0-111a-0133-2744-60a44ce903c3.json",
-    "approximateStart": 1438227900000,
+    "approximateStart": 1438256700000,
     "approximateStart_zone": "Etc/UTC"
   },
   "Vessels": [{
@@ -388,8 +388,8 @@
       "start_year": 2015,
       "start_month": 7,
       "start_day": 30,
-      "approx_start_time_ms": 1438227900000,
-      "approx_end_time_ms": 1438233058000,
+      "approx_start_time_ms": 1438256700000,
+      "approx_end_time_ms": 1438261858000,
       "approx_duration_ms": 5158000,
       "approx_start_point": {
         "type": "Point",
@@ -451,8 +451,8 @@
     "start_year": 2015,
     "start_month": 7,
     "start_day": 30,
-    "approx_start_time_ms": 1438227600000,
-    "approx_end_time_ms": 1438233058000,
+    "approx_start_time_ms": 1438256700000,
+    "approx_end_time_ms": 1438261858000,
     "is_unfinished": true,
     "scraped_original_id": "2549a9a0-111a-0133-2744-60a44ce903c3",
     "approx_start_point": {
