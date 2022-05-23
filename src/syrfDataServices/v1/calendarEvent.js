@@ -60,13 +60,14 @@ exports.upsert = async (
     eventToSave.approximateStartTime = approximateStartTime;
     eventToSave.approximateStartTime_zone = approximateStartTime_zone;
     eventToSave.approximateStartTime_utc = zonedTimeToUtc(
-      startDateObj,
+      approximateStartTime,
       approximateStartTime_zone,
     );
-    eventToSave.startDay = eventToSave.approximateStartTime_utc.getDate();
+    eventToSave.startDay = eventToSave.approximateStartTime_utc.getUTCDate();
     eventToSave.startMonth =
-      eventToSave.approximateStartTime_utc.getMonth() + 1;
-    eventToSave.startYear = eventToSave.approximateStartTime_utc.getFullYear();
+      eventToSave.approximateStartTime_utc.getUTCMonth() + 1;
+    eventToSave.startYear =
+      eventToSave.approximateStartTime_utc.getUTCFullYear();
   } else {
     eventToSave.approximateStartTime = null;
     eventToSave.startDay = null;
@@ -78,12 +79,12 @@ exports.upsert = async (
     eventToSave.approximateEndTime = approximateEndTime;
     eventToSave.approximateEndTime_zone = approximateEndTime_zone;
     eventToSave.approximateEndTime_utc = zonedTimeToUtc(
-      endDateObj,
+      approximateEndTime,
       approximateEndTime_zone,
     );
-    eventToSave.endDay = eventToSave.approximateEndTime_utc.getDate();
-    eventToSave.endMonth = eventToSave.approximateEndTime_utc.getMonth() + 1;
-    eventToSave.endYear = eventToSave.approximateEndTime_utc.getFullYear();
+    eventToSave.endDay = eventToSave.approximateEndTime_utc.getUTCDate();
+    eventToSave.endMonth = eventToSave.approximateEndTime_utc.getUTCMonth() + 1;
+    eventToSave.endYear = eventToSave.approximateEndTime_utc.getUTCFullYear();
   } else {
     eventToSave.approximateEndTime = null;
     eventToSave.approximateEndTime_zone = null;

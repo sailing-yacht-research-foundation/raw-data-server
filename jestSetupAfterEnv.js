@@ -11,6 +11,14 @@ jest.mock('aws-sdk', () => {
 jest.mock('./src/utils/createMapScreenshot');
 jest.mock('./src/utils/elasticsearch');
 jest.mock('./src/utils/weatherSlicerUtil');
+jest.mock('./src/utils/world',
+  () => {
+    return {
+      "world": {
+        "features": []
+      }
+    }
+  });
 console.time = () => {}; // Disable console time since it generates too many logs
 jest.setTimeout(15000);
 afterAll(() => {

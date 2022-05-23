@@ -1,4 +1,5 @@
 const { format, addDays } = require('date-fns');
+const { utcToZonedTime } = require('date-fns-tz');
 const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
 const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
 const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
@@ -177,7 +178,7 @@ describe('Storing tractrac data to DB', () => {
     );
     expect(commitSpy).toHaveBeenCalled();
     expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
-      expect.objectContaining(expectedJsonData.ElasticSearchBodies),
+      expectedJsonData.ElasticSearchBodies.map((esb) => expect.objectContaining(esb)),
       [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
   });
@@ -191,16 +192,21 @@ describe('Storing tractrac data to DB', () => {
     });
     it('should only call elastic search to index and do not save in db when start time is in the future', async () => {
       const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
-      unfinishedJsonData.TracTracRace[0].tracking_start = format(
-        futureDate,
+      const race = unfinishedJsonData.TracTracRace[0];
+      race.tracking_start = format(
+        utcToZonedTime(
+          futureDate,
+          'Etc/UTC',
+        ),
         'yyyy-MM-dd HH:mm:ss',
       );
+      race.race_start = race.tracking_start;
       const expectedElasticsearchBody = JSON.parse(
         JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
       );
-      expectedElasticsearchBody.start_year = futureDate.getFullYear();
-      expectedElasticsearchBody.start_month = futureDate.getMonth() + 1;
-      expectedElasticsearchBody.start_day = futureDate.getDate();
+      expectedElasticsearchBody.start_year = futureDate.getUTCFullYear();
+      expectedElasticsearchBody.start_month = futureDate.getUTCMonth() + 1;
+      expectedElasticsearchBody.start_day = futureDate.getUTCDate();
       const futureTime = futureDate.getTime();
       expectedElasticsearchBody.approx_start_time_ms =
         Math.floor(futureTime / 1000) * 1000; // Round to seconds as the tracking_start format is in seconds only
@@ -219,7 +225,10 @@ describe('Storing tractrac data to DB', () => {
     it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
       const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
       unfinishedJsonData.TracTracRace[0].tracking_stop = format(
-        futureDate,
+        utcToZonedTime(
+          futureDate,
+          'Etc/UTC',
+        ),
         'yyyy-MM-dd HH:mm:ss',
       );
       const expectedElasticsearchBody = JSON.parse(

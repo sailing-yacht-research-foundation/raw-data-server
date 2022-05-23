@@ -59,7 +59,7 @@ const scraperTestMappings = [
   },
   {
     filename: 'normalizeTackTracker',
-    testData: 'tacktracker.json',
+    testData: 'tackTracker.json',
     raceTable: 'TackTrackerRace',
     source: 'TACKTRACKER',
   },
@@ -71,7 +71,7 @@ const scraperTestMappings = [
   },
   {
     filename: 'normalizeYachtBot',
-    testData: 'yachtbot.json',
+    testData: 'yachtBot.json',
     raceTable: 'YachtBotRace',
     source: 'YACHTBOT',
   },
