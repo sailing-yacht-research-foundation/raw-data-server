@@ -32,14 +32,22 @@ const normalizeRace = async ({
   const event = TracTracEvent?.[0];
   for (const race of TracTracRace) {
     const id = race.id;
-    let startTime = new Date(race.tracking_start).getTime();
-    let endTime = new Date(race.tracking_stop).getTime();
-    if (race.race_start && !isNaN(new Date(race.race_start))) {
-      startTime = new Date(race.race_start).getTime();
+    let startTime;
+    let endTime;
+    const raceStart = new Date(`${race.race_start} +0`);
+    const raceEnd = new Date(`${race.race_end} +0`);
+    if (race.race_start && !isNaN(raceStart)) {
+      startTime = raceStart.getTime();
+    } else {
+      startTime = new Date(`${race.tracking_start} +0`).getTime();
     }
-    if (race.race_end && !isNaN(new Date(race.race_end))) {
-      endTime = new Date(race.race_end).getTime();
+
+    if (race.race_end && !isNaN(raceEnd)) {
+      endTime = raceEnd.getTime();
+    } else {
+      endTime = new Date(`${race.tracking_stop} +0`).getTime();
     }
+
     const url = race.url;
     const handicapRules =
       race.race_handicap && race.race_handicap !== 'NONE'

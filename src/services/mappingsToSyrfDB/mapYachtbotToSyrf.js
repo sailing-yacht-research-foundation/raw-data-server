@@ -78,19 +78,23 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap, boatMetaDataMap) => {
     };
 
     _mapMetadata(boatMetaDataMap, b);
-    const crew = JSON.parse(b.crew);
-    const crews = [];
-    if (crew.person?.length) {
-      crews.push(
-        ...crew.person.map((t) => {
-          return {
-            publicName: t?.person_name?.static_value || '',
-            id: uuidv4(),
-          };
-        }),
-      );
+    try {
+      const crew = JSON.parse(b.crew);
+      const crews = [];
+      if (crew.person?.length) {
+        crews.push(
+          ...crew.person.map((t) => {
+            return {
+              publicName: t?.person_name?.static_value || '',
+              id: uuidv4(),
+            };
+          }),
+        );
+      }
+      vessel.crews = crews;
+    } catch (err) {
+      console.log('Invalid crew object. Skipping crews.');
     }
-    vessel.crews = crews;
     vessel.handicap = {};
     return vessel;
   });

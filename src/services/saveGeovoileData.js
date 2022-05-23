@@ -2,7 +2,7 @@ const { SOURCE } = require('../constants');
 const databaseErrorHandler = require('../utils/databaseErrorHandler');
 const { triggerWeatherSlicer } = require('../utils/weatherSlicerUtil');
 const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
-const { normalizeGeovoile } = require('./normalization/normalizeGeovoile');
+const { normalizeRace } = require('./normalization/normalizeGeovoile');
 const mapGeovoileToSyrf = require('./mappingsToSyrfDB/mapGeovoileToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
 const { getTrackerLogoUrl } = require('../utils/s3Util');
@@ -35,7 +35,7 @@ const saveGeovoileData = async (data) => {
         );
       }
     } else {
-      ({ raceMetadata, esBody } = await normalizeGeovoile(data));
+      ({ raceMetadata, esBody } = await normalizeRace(data));
       const savedCompetitionUnit = await mapGeovoileToSyrf(data, raceMetadata);
       await elasticsearch.updateEventAndIndexRaces(
         [esBody],

@@ -20,7 +20,6 @@ exports.reverseGeoCode = async ({ lon, lat }) => {
     if (results.length <= 0) {
       throw new Error('Location Not Found');
     }
-    let { address_components: addressComponent } = results[0];
     // In Indonesia, administrative_area_level_2 is the city
     // In Sweden, postal_town is the city.
     // In Hongkong, administrative_area_level_1 is the city
@@ -30,21 +29,29 @@ exports.reverseGeoCode = async ({ lon, lat }) => {
       'postal_town',
       'administrative_area_level_1',
     ];
-    addressComponent.forEach((component) => {
-      let { types, short_name: shortName, long_name: longName } = component;
-      if (types.includes('country')) {
-        countryName = longName;
-        countryCode = shortName;
-      }
-      if (types.includes('administrative_area_level_1')) {
-        stateName = longName;
-      }
-    });
 
-    cityPriority.some((type) => {
-      const city = addressComponent.find((ac) => ac.types.includes(type));
-      cityName = city?.long_name || '';
-      return !!cityName;
+    results.some((result) => {
+      let { address_components: addressComponent } = result;
+      addressComponent.forEach((component) => {
+        let { types, short_name: shortName, long_name: longName } = component;
+        if (!countryName && types.includes('country')) {
+          countryName = longName;
+          countryCode = shortName;
+        }
+        if (!stateName && types.includes('administrative_area_level_1')) {
+          stateName = longName;
+        }
+      });
+
+      if (!cityName) {
+        cityPriority.some((type) => {
+          const city = addressComponent.find((ac) => ac.types.includes(type));
+          cityName = city?.long_name || '';
+          return !!cityName;
+        });
+      }
+
+      return countryName && stateName && cityName;
     });
   } catch (error) {
     console.log(error);

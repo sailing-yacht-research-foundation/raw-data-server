@@ -17,12 +17,6 @@ services:
       DB_RAW_DATA_USER: user
       DB_RAW_DATA_PASSWORD: password
       DB_RAW_DATA_NAME: rawdata
-      MQ_HOST: rabbit-mq
-      MQ_PORT: 61613
-      MQ_USER: guest
-      MQ_PASSWORD: guest
-      MQ_TOPIC: /topic/rawdata.topic
-      MQ_TIMEOUT: 2700000
       MAPBOX_API_KEY: ${MAPBOX_API_KEY}
       MAPBOX_ID: ${MAPBOX_ID}
       OPEN_GRAPH_BUCKET_NAME: ${OPEN_GRAPH_BUCKET_NAME}

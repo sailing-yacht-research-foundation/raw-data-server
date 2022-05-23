@@ -1,0 +1,428 @@
+{
+  "CalendarEvent": {
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "France",
+    "city": "Rogliano",
+    "source": "YELLOWBRICK",
+    "openGraphImage": "mockLocation",
+    "status": "COMPLETED",
+    "approximateStartTime": 1651825845000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 6,
+    "startMonth": 5,
+    "startYear": 2022,
+    "approximateEndTime": 1651939200000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 7,
+    "endMonth": 5,
+    "endYear": 2022,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [9.461664548, 42.960552452]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "Class 40 B",
+    "startTime": 1651825845000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [9.461664548, 42.960552452],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [5.333068989665946, 43.281762997067254],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[5.3317, 43.2854], [5.3644, 43.2854], [5.3644, 43.2975], [5.3317, 43.2975], [5.3317, 43.2854]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "endTime": 1651939200000,
+    "openGraphImage": "mockLocation",
+    "country": "France",
+    "city": "Rogliano",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "corsicamed2022_32",
+    "scrapedUrl": "https://yb.tl/corsicamed2022_32",
+    "handicap": ["LEVEL", "TCF3"],
+    "approximateStart": 1651825845000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "2e704011-71d5-409a-a090-407e72b2d04a",
+      "publicName": "FULLSAVE",
+      "globalId": "FRA148",
+      "vesselId": "1",
+      "model": "CLASS40",
+      "handicap": {
+        "tcf1": 1,
+        "tcf2": 1,
+        "tcf3": 1
+      },
+      "source": "YELLOWBRICK"
+    }, {
+      "id": "120a57ee-ea2b-415b-9c40-9462cae1163f",
+      "publicName": "HBF REFOREST'ACTION",
+      "globalId": "FRA142",
+      "vesselId": "2",
+      "model": "CLASS40",
+      "handicap": {
+        "tcf1": 1,
+        "tcf2": 1,
+        "tcf3": 1
+      },
+      "source": "YELLOWBRICK"
+    }, {
+      "id": "a1b304fc-0dd6-4cb9-8d5b-70723da44c81",
+      "publicName": "PRENDRE LA MER, AGIR POUR LA FORET",
+      "globalId": "FRA89",
+      "vesselId": "3",
+      "model": "CLASS40",
+      "handicap": {
+        "tcf1": 1,
+        "tcf2": 1,
+        "tcf3": 1
+      },
+      "source": "YELLOWBRICK"
+    }
+  ],
+  "VesselParticipants": [{
+      "vesselId": "2e704011-71d5-409a-a090-407e72b2d04a",
+      "handicap": {
+        "tcf3": 1
+      }
+    }, {
+      "vesselId": "120a57ee-ea2b-415b-9c40-9462cae1163f",
+      "handicap": {
+        "tcf3": 1
+      }
+    }, {
+      "vesselId": "a1b304fc-0dd6-4cb9-8d5b-70723da44c81",
+      "handicap": {
+        "tcf3": 1
+      }
+    }
+  ],
+  "Participants": [
+    [{
+        "publicName": "MIKE COHEN",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ],
+    [{
+        "publicName": "KITO DE PAVANT",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ],
+    [{
+        "publicName": "MATHIEU CLAVEAU",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ]
+  ],
+  "Course": {
+    "name": "Class 40 B",
+    "courseSequencedGeometries": [{
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[9.461664548, 42.960552452]],
+        "order": 1,
+        "points": [{
+            "position": [9.461664548, 42.960552452]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[9.475400488701323, 42.98334924899436]],
+        "order": 2,
+        "points": [{
+            "position": [9.475400488701323, 42.98334924899436]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[9.421850408904104, 43.01746525510745]],
+        "order": 3,
+        "points": [{
+            "position": [9.421850408904104, 43.01746525510745]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[9.332778265494115, 43.015564914554744]],
+        "order": 4,
+        "points": [{
+            "position": [9.332778265494115, 43.015564914554744]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[8.305959562013232, 43.00858950080087]],
+        "order": 5,
+        "points": [{
+            "position": [8.305959562013232, 43.00858950080087]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[7.27952737155668, 42.99243832591991]],
+        "order": 6,
+        "points": [{
+            "position": [7.27952737155668, 42.99243832591991]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Cap D'Arm Gate"
+        },
+        "coordinates": [[6.253787479183139, 42.96712139241779]],
+        "order": 7,
+        "points": [{
+            "position": [6.253787479183139, 42.96712139241779]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[6.204082472246628, 42.967377974703204]],
+        "order": 8,
+        "points": [{
+            "position": [6.204082472246628, 42.967377974703204]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[5.820092149, 43.015665393]],
+        "order": 9,
+        "points": [{
+            "position": [5.820092149, 43.015665393]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[5.363021542269251, 43.16084236970214]],
+        "order": 10,
+        "points": [{
+            "position": [5.363021542269251, 43.16084236970214]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {},
+        "coordinates": [[5.297913579, 43.212172743]],
+        "order": 11,
+        "points": [{
+            "position": [5.297913579, 43.212172743]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Finish"
+        },
+        "coordinates": [[5.333068989665946, 43.281762997067254]],
+        "order": 12,
+        "points": [{
+            "position": [5.333068989665946, 43.281762997067254]
+          }
+        ]
+      }, {
+        "geometryType": "Polygon",
+        "properties": {
+          "name": "Zone Obstacle Malmousque"
+        },
+        "coordinates": [[5.34646, 43.28378], [5.35318, 43.27889], [5.34346, 43.27706], [5.34646, 43.28378]],
+        "order": 13,
+        "points": [{
+            "position": [5.34646, 43.28378]
+          }, {
+            "position": [5.35318, 43.27889]
+          }, {
+            "position": [5.34346, 43.27706]
+          }, {
+            "position": [5.34646, 43.28378]
+          }
+        ]
+      }, {
+        "geometryType": "Polygon",
+        "properties": {
+          "name": "Ile du Planier"
+        },
+        "coordinates": [[5.24144, 43.20052], [5.23902, 43.19354], [5.21851, 43.19191], [5.22915, 43.20261]],
+        "order": 14,
+        "points": [{
+            "position": [5.24144, 43.20052]
+          }, {
+            "position": [5.23902, 43.19354]
+          }, {
+            "position": [5.21851, 43.19191]
+          }, {
+            "position": [5.22915, 43.20261]
+          }
+        ]
+      }, {
+        "geometryType": "Polygon",
+        "properties": {
+          "name": "DST Nord Corse"
+        },
+        "coordinates": [[9.56133, 43.03333], [9.66667, 43.03333], [9.72, 42.9], [9.58833, 42.9]],
+        "order": 15,
+        "points": [{
+            "position": [9.56133, 43.03333]
+          }, {
+            "position": [9.66667, 43.03333]
+          }, {
+            "position": [9.72, 42.9]
+          }, {
+            "position": [9.58833, 42.9]
+          }
+        ]
+      }, {
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Cap d'Armes Gate"
+        },
+        "coordinates": [[6.2063, 42.98335], [6.20833, 42.73]],
+        "order": 16,
+        "points": [{
+            "position": [6.2063, 42.98335]
+          }, {
+            "position": [6.20833, 42.73]
+          }
+        ]
+      }
+    ]
+  },
+  "CompetitionResults": [{
+      "competitionUnitId": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
+      "finishTime": 1651930379000,
+      "time": 102779000,
+      "rank": 1
+    }, {
+      "competitionUnitId": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
+      "finishTime": 1651934254000,
+      "time": 106654000,
+      "rank": 2
+    }, {
+      "competitionUnitId": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
+      "finishTime": 0,
+      "time": 0,
+      "rank": 3
+    }
+  ],
+  "ElasticSearchBody": {
+    "id": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
+    "name": "Class 40 B",
+    "source": "YELLOWBRICK",
+    "url": "https://yb.tl/corsicamed2022_32",
+    "start_country": "France",
+    "start_city": "Rogliano",
+    "start_year": 2022,
+    "start_month": 5,
+    "start_day": 6,
+    "approx_start_time_ms": 1651825845000,
+    "approx_end_time_ms": 1651939200000,
+    "approx_duration_ms": 113355000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [9.461664548, 42.960552452],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [7.402787968766466, 43.139715571291696],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [5.333068989665946, 43.281762997067254],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[5.3317, 43.2854], [5.3644, 43.2854], [5.3644, 43.2975], [5.3317, 43.2975], [5.3317, 43.2854]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 3.568883750566313,
+    "approx_distance_km": 336.94958521298423,
+    "num_boats": 3,
+    "avg_time_between_positions": 240000,
+    "boat_models": ["CLASS40"],
+    "boat_identifiers": ["FRA148", "FRA142", "FRA89"],
+    "boat_names": ["FULLSAVE", "HBF REFOREST'ACTION", "PRENDRE LA MER, AGIR POUR LA FORET"],
+    "handicap_rules": ["LEVEL", "TCF3"],
+    "unstructured_text": []
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
+    "name": "Class 40 B",
+    "source": "YELLOWBRICK",
+    "url": "https://yb.tl/corsicamed2022_32",
+    "start_year": 2022,
+    "start_month": 5,
+    "start_day": 6,
+    "approx_start_time_ms": 1651825845000,
+    "approx_end_time_ms": 1651939200000,
+    "is_unfinished": true,
+    "scraped_original_id": "corsicamed2022_32",
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [9.461664548, 42.960552452]
+    },
+    "start_country": "France",
+    "start_city": "Rogliano"
+  }
+}

@@ -1,0 +1,278 @@
+{
+  "CalendarEvent": {
+    "isPrivate": false,
+    "isOpen": false,
+    "country": "Montenegro",
+    "city": "Tivat",
+    "source": "YACHTBOT",
+    "openGraphImage": "mockLocation",
+    "status": "COMPLETED",
+    "approximateStartTime": 1528456979000,
+    "approximateStartTime_zone": "Etc/UTC",
+    "startDay": 8,
+    "startMonth": 6,
+    "startYear": 2018,
+    "approximateEndTime": 1528458480000,
+    "approximateEndTime_zone": "Etc/UTC",
+    "endDay": 8,
+    "endMonth": 6,
+    "endYear": 2018,
+    "location": {
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      },
+      "type": "Point",
+      "coordinates": [18.679646834927897, 42.43300021775855]
+    }
+  },
+  "CompetitionUnit": {
+    "name": "PMYC MR - 08 June 2018 - RR 01 - Flight 04",
+    "startTime": 1528456979000,
+    "approximateStartLocation": {
+      "type": "Point",
+      "coordinates": [18.679646834927897, 42.43300021775855],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approximateEndLocation": {
+      "type": "Point",
+      "coordinates": [18.67966129046186, 42.43298207509461],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "isCompleted": true,
+    "boundingBox": {
+      "type": "Polygon",
+      "coordinates": [[[18.678318, 42.429591], [18.680615, 42.429591], [18.680615, 42.433351], [18.678318, 42.433351], [18.678318, 42.429591]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "endTime": 1528458480000,
+    "openGraphImage": "mockLocation",
+    "country": "Montenegro",
+    "city": "Tivat",
+    "status": "COMPLETED",
+    "scrapedOriginalId": "14546",
+    "scrapedUrl": "https://www.yacht-bot.com/races/14546",
+    "approximateStart": 1528456979000,
+    "approximateStart_zone": "Etc/UTC"
+  },
+  "Vessels": [{
+      "id": "3036e4da-4732-492b-bdc4-908d17df9780",
+      "publicName": "Piasevoli",
+      "vesselId": "HA-JF-ADEE-4",
+      "lengthInMeters": null,
+      "widthInMeters": null,
+      "draftInMeters": null,
+      "handicap": {},
+      "source": "YACHTBOT"
+    }, {
+      "id": "56798235-793e-4e68-becf-529524ab0062",
+      "publicName": "Harasimowicz",
+      "vesselId": "HA-JF-ADEC-7",
+      "lengthInMeters": null,
+      "widthInMeters": null,
+      "draftInMeters": null,
+      "handicap": {},
+      "source": "YACHTBOT"
+    }, {
+      "id": "d47d7a50-5779-4dc0-a81c-c972daeb320f",
+      "publicName": "Kurbanovic",
+      "vesselId": "HA-JF-ADDM-8",
+      "lengthInMeters": null,
+      "widthInMeters": null,
+      "draftInMeters": null,
+      "handicap": {},
+      "source": "YACHTBOT"
+    }, {
+      "id": "2231021a-bd77-4f14-9561-85fa418e6402",
+      "publicName": "Sylvain",
+      "vesselId": "HA-JF-ADDK-19",
+      "lengthInMeters": null,
+      "widthInMeters": null,
+      "draftInMeters": null,
+      "handicap": {},
+      "source": "YACHTBOT"
+    }
+  ],
+  "VesselParticipants": [{
+      "vesselId": "3036e4da-4732-492b-bdc4-908d17df9780",
+      "handicap": {}
+    }, {
+      "vesselId": "56798235-793e-4e68-becf-529524ab0062",
+      "handicap": {}
+    }, {
+      "vesselId": "d47d7a50-5779-4dc0-a81c-c972daeb320f",
+      "handicap": {}
+    }, {
+      "vesselId": "2231021a-bd77-4f14-9561-85fa418e6402",
+      "handicap": {}
+    }
+  ],
+  "Participants": [
+    [
+      {
+        "publicName": "Jane",
+        "invitationStatus": "SELF_REGISTERED"
+      }, {
+        "publicName": "Sue",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ],
+    [],
+    [
+      {
+        "publicName": "Bob",
+        "invitationStatus": "SELF_REGISTERED"
+      }, {
+        "publicName": "Joe",
+        "invitationStatus": "SELF_REGISTERED"
+      }
+    ]
+  ],
+  "Course": {
+    "name": "PMYC MR - 08 June 2018 - RR 01 - Flight 04",
+    "courseSequencedGeometries": [{
+        "geometryType": "LineString",
+        "properties": {
+          "name": "Pin end"
+        },
+        "coordinates": [[18.680396, 42.432998], [18.679081, 42.433016]],
+        "order": 1,
+        "points": [{
+            "position": [18.680396, 42.432998]
+          }, {
+            "position": [18.679081, 42.433016]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Leeward Mark"
+        },
+        "coordinates": [[18.679618, 42.4326859]],
+        "order": 2,
+        "points": [{
+            "position": [18.679618, 42.4326859]
+          }
+        ]
+      }, {
+        "geometryType": "Point",
+        "properties": {
+          "name": "Windward Mark"
+        },
+        "coordinates": [[18.680181, 42.4295929]],
+        "order": 3,
+        "points": [{
+            "position": [18.680181, 42.4295929]
+          }
+        ]
+      }
+    ]
+  },
+  "MarkTrackers": [{
+      "name": "Pin end"
+    }, {
+      "name": "Committee"
+    }, {
+      "name": "Leeward Mark"
+    }, {
+      "name": "Windward Mark"
+    }, {
+      "name": "Change mark"
+    }
+  ],
+  "ElasticSearchBody": {
+    "id": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+    "name": "PMYC MR - 08 June 2018 - RR 01 - Flight 04",
+    "event": null,
+    "event_name": null,
+    "source": "YACHTBOT",
+    "url": "https://www.yacht-bot.com/races/14546",
+    "start_country": "Montenegro",
+    "start_city": "Tivat",
+    "start_year": 2018,
+    "start_month": 6,
+    "start_day": 8,
+    "approx_start_time_ms": 1528456979000,
+    "approx_end_time_ms": 1528458480000,
+    "approx_duration_ms": 1501000,
+    "approx_start_point": {
+      "type": "Point",
+      "coordinates": [18.679646834927897, 42.43300021775855],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_mid_point": {
+      "type": "Point",
+      "coordinates": [18.67965406269592, 42.43299114642681],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_end_point": {
+      "type": "Point",
+      "coordinates": [18.67966129046186, 42.43298207509461],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "bounding_box": {
+      "type": "Polygon",
+      "coordinates": [[[18.678318, 42.429591], [18.680615, 42.429591], [18.680615, 42.433351], [18.678318, 42.433351], [18.678318, 42.429591]]],
+      "crs": {
+        "type": "name",
+        "properties": {
+          "name": "EPSG:4326"
+        }
+      }
+    },
+    "approx_area_sq_km": 0.07899462745815995,
+    "approx_distance_km": 0.0023403515094456845,
+    "num_boats": 4,
+    "avg_time_between_positions": 2400,
+    "boat_models": [],
+    "boat_identifiers": ["03", "06", "04", "01"],
+    "boat_names": [],
+    "handicap_rules": [],
+    "unstructured_text": []
+  },
+  "ElasticSearchBodyUnfinishedRace": {
+    "id": "e0fb3769-f23e-4409-accf-b5a2c022fba2",
+    "name": "PMYC MR - 08 June 2018 - RR 01 - Flight 04",
+    "source": "YACHTBOT",
+    "url": "https://www.yacht-bot.com/races/14546",
+    "start_year": 2018,
+    "start_month": 6,
+    "start_day": 8,
+    "approx_start_time_ms": 1528456979000,
+    "approx_end_time_ms": 1528458480000,
+    "is_unfinished": true,
+    "scraped_original_id": "14546"
+  }
+}

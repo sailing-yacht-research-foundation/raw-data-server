@@ -60,7 +60,7 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
           windDirection: positionData.windDirection,
         },
       );
-      const track = vesselTrack.getSimplifiedTrack();
+      const track = await vesselTrack.getSimplifiedTrack();
       expect(track).toEqual({
         geometry: {
           coordinates: [],
@@ -96,7 +96,7 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
           windDirection,
         });
       });
-      const track = vesselTrack.getSimplifiedTrack();
+      const track = await vesselTrack.getSimplifiedTrack();
       expect(track).toEqual({
         geometry: {
           coordinates: [
@@ -140,7 +140,7 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
         });
       });
 
-      const track = vesselTrack.getSimplifiedTrack();
+      const track = await vesselTrack.getSimplifiedTrack();
       expect(track).toEqual({
         geometry: {
           coordinates: positionData.map((row) => {
@@ -161,7 +161,7 @@ describe('VesselParticipantTrack - Class to hold track data of a vessel', () => 
       for (let i = 0; i < positionCount; i++) {
         vesselTrack.addNewPosition([1, i], timestamp + i * 1000, { cog: 0 });
       }
-      const result = vesselTrack.createGeoJsonTrack({
+      const result = await vesselTrack.createGeoJsonTrack({
         competitionUnitId: 'competition1',
       });
       expect(result).toEqual(

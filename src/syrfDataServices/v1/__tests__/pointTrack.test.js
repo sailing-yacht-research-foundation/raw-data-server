@@ -4,7 +4,6 @@ const { geometryType } = require('../../../syrf-schema/enums');
 describe('PointTrack - Class to hold track data of a course point', () => {
   let track;
   const pointId = 'point1';
-  const initialPosition = [0, 0];
   beforeEach(() => {
     jest.clearAllMocks();
     track = new PointTrack(pointId);
