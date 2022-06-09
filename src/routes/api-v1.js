@@ -138,8 +138,8 @@ router.post(
           break;
       }
     } catch (err) {
-      // TODO: Handle error better
       console.error('error: ', err);
+      res.status(500).json({ message: 'Internal error occured' });
     }
   },
 );

@@ -36,6 +36,8 @@ jobs:
 
       - run: yarn install --frozen-lockfile
 
+      - run: yarn lint
+
       - run: yarn test
         env:
           GOOGLE_MAP_API_KEY: ${{ secrets.GOOGLE_MAP_API_KEY }}
