@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          # cache: 'yarn'  # Temporary remove cache since node 16.15.1 is causing caching issues
 
       - run: yarn install --frozen-lockfile
 
