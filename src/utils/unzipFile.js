@@ -124,8 +124,8 @@ async function unzipFileFromRequest(req) {
     });
     return { jsonData };
   } catch (e) {
-    console.log('error on unzipFileFromRequest');
-    console.log(e);
+    console.log('error on unzipFileFromRequest', e);
+    throw e;
   } finally {
     fs.unlink(unzippedJsonPath, (err) => {
       if (err) {

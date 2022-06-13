@@ -178,7 +178,9 @@ describe('Storing tractrac data to DB', () => {
     );
     expect(commitSpy).toHaveBeenCalled();
     expect(elasticSearchUpdateSpy).toHaveBeenCalledWith(
-      expectedJsonData.ElasticSearchBodies.map((esb) => expect.objectContaining(esb)),
+      expectedJsonData.ElasticSearchBodies.map((esb) =>
+        expect.objectContaining(esb),
+      ),
       [expect.objectContaining(expectedJsonData.CompetitionUnit)],
     );
   });
@@ -194,10 +196,7 @@ describe('Storing tractrac data to DB', () => {
       const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
       const race = unfinishedJsonData.TracTracRace[0];
       race.tracking_start = format(
-        utcToZonedTime(
-          futureDate,
-          'Etc/UTC',
-        ),
+        utcToZonedTime(futureDate, 'Etc/UTC'),
         'yyyy-MM-dd HH:mm:ss',
       );
       race.race_start = race.tracking_start;
@@ -225,10 +224,7 @@ describe('Storing tractrac data to DB', () => {
     it('should only call elastic search to index and do not save in db when start time has passed but end time is in the future', async () => {
       const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
       unfinishedJsonData.TracTracRace[0].tracking_stop = format(
-        utcToZonedTime(
-          futureDate,
-          'Etc/UTC',
-        ),
+        utcToZonedTime(futureDate, 'Etc/UTC'),
         'yyyy-MM-dd HH:mm:ss',
       );
       const expectedElasticsearchBody = JSON.parse(
