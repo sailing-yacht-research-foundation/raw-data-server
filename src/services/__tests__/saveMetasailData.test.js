@@ -211,5 +211,31 @@ describe('Storing metasail data to DB', () => {
         expect.objectContaining(expectedElasticsearchBody),
       );
     });
+
+    it.only('should only call elastic search to index and do not save in db even when there are no buoys or gates', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.MetasailRace[0].stop = futureDate.getTime();
+      delete unfinishedJsonData.MetasailBuoy;
+      const expectedElasticSearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      delete expectedElasticSearchBody.start_country;
+      delete expectedElasticSearchBody.start_city;
+      delete expectedElasticSearchBody.approx_start_point;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedElasticSearchBody),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.ONGOING;
+
+      await saveMetasailData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
   });
 });
