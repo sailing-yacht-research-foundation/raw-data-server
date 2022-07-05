@@ -19,6 +19,17 @@ const saveTackTrackerData = require('../saveTackTrackerData');
 const jsonData = require('../../test-files/tackTracker.json');
 const expectedJsonData = require('../../test-files/expected-data/tackTracker.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/tackTracker.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing TackTracker data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

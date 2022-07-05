@@ -47,7 +47,7 @@ const saveCompetitionUnit = async ({
     open_graph_image: openGraphImage,
   } = raceMetadata;
   const mainDatabaseTransaction = await createTransaction();
-
+  console.log('saveCompetitionUnit start');
   try {
     if (typeof approxStartTimeMs === 'string') {
       approxStartTimeMs = parseFloat(approxStartTimeMs);
@@ -226,6 +226,8 @@ const saveCompetitionUnit = async ({
 
     console.log(`Create new Competition Unit`);
     // Save competition unit information
+    console.log('country', country);
+    console.log('city', city);
     const newCompetitionUnit = await competitionUnit.upsert(
       raceId,
       {

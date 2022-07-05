@@ -3,32 +3,28 @@ version: '3.4'
 services:
   raw-data-server:
     image: raw-data-server
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
     environment:
-      NODE_ENV: production
       PORT: 3000
       AWS_S3_ACCESS_KEY_ID: ${AWS_S3_ACCESS_KEY_ID}
       AWS_S3_SECRET_ACCESS_KEY: ${AWS_S3_SECRET_ACCESS_KEY}
       AWS_S3_BUCKET: ${AWS_S3_BUCKET}
-      DB_RAW_DATA_HOST: rds-db
-      DB_RAW_DATA_PORT: 5432
-      DB_RAW_DATA_USER: user
-      DB_RAW_DATA_PASSWORD: password
-      DB_RAW_DATA_NAME: rawdata
+      DB_HOST: rds-db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_NAME: sources
       MAPBOX_API_KEY: ${MAPBOX_API_KEY}
       MAPBOX_ID: ${MAPBOX_ID}
       OPEN_GRAPH_BUCKET_NAME: ${OPEN_GRAPH_BUCKET_NAME}
     ports:
       - 3000:3000
-    volumes:
-      - .:/usr/src/app
     depends_on:
       - rds-db
-      - rabbit-mq
-    command:
-      ['./wait-for-it.sh', '-t', '120', 'rds-db:5432', '--', 'npm', 'start']
+    command: ['yarn', 'start']
   rds-db:
     image: postgis/postgis
     restart: always
@@ -43,21 +39,5 @@ services:
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
       - rds-db:/var/lib/rds
-  rabbit-mq:
-    image: rabbitmq:3.7-management
-    build:
-      context: ./rabbit
-      dockerfile: ./Dockerfile
-    volumes:
-      - ./rabbit/definitions.json:/etc/rabbitmq/definitions.json
-      - ./rabbit/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
-    ports:
-      - 5672:5672
-      - 15672:15672
-      - 61613:61613
-    expose:
-      - 5672
-      - 15672
-      - 61613
 volumes:
   rds-db:

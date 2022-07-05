@@ -39,13 +39,17 @@ The environment vars with the prefix = DB_ is the connection to main database se
 
 ## syrf-schema database migration (local)
 To migrate the database you have to follow these steps.
-1. Create a database in your local postgres sql. For example main 
+1. Create a database in your local postgres sql. For example main
 2. In postgre admin, right click on Create Script and run `CREATE EXTENSION postgis;` to enable postgis for this database.
 3. Update the .env with DB_NAME = main
-4. Run `npm run db:syrf:sync` to update the database
+4. Run `yarn run db:syrf:sync` to update the database
 
 ## Deployment
 
+### Automatic
+Raw data server is automatically deployed when merging/pushing to develop and main branch using github actions. These are configured on .github/workflows dev_backend.yml and prod_backend.yml respectively. You can also use dev-test branch to deploy to dev environment without committing changes to the develop branch.
+
+### Manual
 Raw data server use dockerized terraform to create instances on the AWS. It's recommended to use aws-vault to generate the temporary credentials using the environment variables.
 
 - Run `aws-vault exec [profile] --duration=12h -- CMD.EXE` (Omit the `-- CMD.EXE` if not using windows).
@@ -73,11 +77,11 @@ You can simply run the shell script deploy.sh:
 
 If this is the first time run, you will need to run terraform init and apply (commands below)
 
-### Terraform Configurations
+#### Terraform Configurations
 
 AWS requires to use an MFA to perform IAM operation with an assume-role, please add MFA device to the Security Credentials of the access key, and add the serial into the local aws config on the profile.
 
-### Terraform Commands
+#### Terraform Commands
 
 - To initialize terraform container, run `docker-compose -f deployment/docker-compose.yml run --rm terraform init`
 - To validate terraform configurations, run `docker-compose -f deployment/docker-compose.yml run --rm terraform validate`
@@ -86,7 +90,7 @@ AWS requires to use an MFA to perform IAM operation with an assume-role, please 
 - To apply the terraform configurations, run `docker-compose -f deployment/docker-compose.yml run --rm terraform apply`
 - To destroy the instances createdd by terraform, run `docker-compose -f deployment/docker-compose.yml run --rm terraform destroy`
 
-### Terraform Known Issues
+#### Terraform Known Issues
 
 - A change in the backend configuration has been detected, which may require migrating existing state.
   If you have run terraform previously before backend setup with s3 is implemented, you need to remove all the state and lock files from your local deployment folder, or run init with -migrate-state option
@@ -98,7 +102,7 @@ AWS requires to use an MFA to perform IAM operation with an assume-role, please 
 
 - Run `docker-compose up -d`
 - Run `docker-compose down` to terminate
-- Run `docker-compose -f docker-compose.yml run raw-data-server npm run test` to run tests
+- Run `docker-compose -f docker-compose.yml run raw-data-server yarn run test` to run tests
 
 If you have run docker previously using older version of the app, database structure changes might affect the tests results. Please remove the database volume before proceeding by executing commands below:
 

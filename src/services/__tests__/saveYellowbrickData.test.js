@@ -18,6 +18,17 @@ const saveYellowbrickData = require('../saveYellowbrickData');
 const jsonData = require('../../test-files/yellowbrick.json');
 const expectedJsonData = require('../../test-files/expected-data/yellowbrick.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/yellowbrick.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing yellowbrick data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

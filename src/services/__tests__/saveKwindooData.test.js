@@ -18,6 +18,17 @@ const saveKwindooData = require('../saveKwindooData');
 const jsonData = require('../../test-files/kwindoo.json');
 const expectedJsonData = require('../../test-files/expected-data/kwindoo.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/kwindoo.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing kwindoo data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

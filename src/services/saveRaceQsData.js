@@ -49,7 +49,9 @@ const saveRaceQsData = async (data) => {
 
   if (data.RaceQsEvent.length) {
     try {
+      // console.log('normalize raceqs')
       ({ raceMetadatas, esBodies } = await normalizeRace(data));
+      // console.log('map raceqs')
       const savedCompetitionUnits = await mapRaceQsToSyrf(data, raceMetadatas);
       if (savedCompetitionUnits?.length) {
         await elasticsearch.updateEventAndIndexRaces(

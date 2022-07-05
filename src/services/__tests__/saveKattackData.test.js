@@ -18,6 +18,17 @@ const saveKattackData = require('../saveKattackData');
 const jsonData = require('../../test-files/kattack.json');
 const expectedJsonData = require('../../test-files/expected-data/kattack.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/kattack.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing kattack data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

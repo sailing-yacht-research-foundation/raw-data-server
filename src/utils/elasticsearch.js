@@ -27,7 +27,7 @@ exports.updateEventAndIndexRaces = async (
   competitionUnits = [],
 ) => {
   for (const esBody of esBodies) {
-    const updatedCU = competitionUnits?.find((cu) => cu.id === esBody.id);
+    const updatedCU = competitionUnits?.find((cu) => cu?.id === esBody.id);
     if (updatedCU) {
       if (updatedCU.calendarEventId) {
         esBody.event = updatedCU.calendarEventId;

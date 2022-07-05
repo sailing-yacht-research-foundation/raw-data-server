@@ -19,6 +19,17 @@ const saveGeovoileData = require('../saveGeovoileData');
 const jsonData = require('../../test-files/geovoile.json');
 const expectedJsonData = require('../../test-files/expected-data/geovoile.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/geovoile.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing geovoile data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,
