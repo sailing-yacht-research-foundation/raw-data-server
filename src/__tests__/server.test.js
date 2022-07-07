@@ -1,3 +1,4 @@
+jest.useRealTimers();
 const supertest = require('supertest');
 const path = require('path');
 

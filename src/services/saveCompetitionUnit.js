@@ -47,7 +47,6 @@ const saveCompetitionUnit = async ({
     open_graph_image: openGraphImage,
   } = raceMetadata;
   const mainDatabaseTransaction = await createTransaction();
-
   try {
     if (typeof approxStartTimeMs === 'string') {
       approxStartTimeMs = parseFloat(approxStartTimeMs);

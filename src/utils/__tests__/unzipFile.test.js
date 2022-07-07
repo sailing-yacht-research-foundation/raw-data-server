@@ -1,3 +1,4 @@
+jest.useRealTimers();
 const { PassThrough } = require('stream');
 const extract = require('extract-zip');
 const fs = require('fs');

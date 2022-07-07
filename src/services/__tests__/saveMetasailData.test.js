@@ -18,6 +18,17 @@ const saveMetasailData = require('../saveMetasailData');
 const jsonData = require('../../test-files/metasail.json');
 const expectedJsonData = require('../../test-files/expected-data/metasail.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/metasail.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing metasail data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

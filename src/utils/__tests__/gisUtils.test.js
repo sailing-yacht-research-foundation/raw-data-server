@@ -25,8 +25,18 @@ const {
   createGeometryPosition,
   createGeometryLine,
 } = require('../gisUtils');
-const { reverseGeoCode } = require('../../syrfDataServices/v1/googleAPI');
 const { geometryType } = require('../../syrf-schema/enums');
+
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  return {
+    reverseGeoCode: jest.fn().mockReturnValue({
+      countryCode: 'NG',
+      countryName: 'Nigeria',
+      stateName: 'Gombe',
+      cityName: 'Tumu',
+    }),
+  };
+});
 
 describe('gis_utils.js', () => {
   it('when getLonFromTurfPoint is called should return lon from turf point', () => {
@@ -390,6 +400,8 @@ describe('gis_utils.js', () => {
     const url = 'https://someurl.com';
     const startTimeMs = new Date().getTime() - 7 * 24 * 3600 * 1000;
     const endTimeMs = startTimeMs + 2 * 24 * 3600 * 1000;
+    const startCountry = 'Nigeria';
+    const startCity = 'Tumu';
     const startDate = new Date(startTimeMs);
     const startYear = startDate.getUTCFullYear();
     const startMonth = startDate.getUTCMonth() + 1;
@@ -428,11 +440,6 @@ describe('gis_utils.js', () => {
         name: 'EPSG:4326',
       },
     };
-    const { countryName: startCountry, cityName: startCity } =
-      await reverseGeoCode({
-        lon: startPoint.geometry.coordinates[0],
-        lat: startPoint.geometry.coordinates[1],
-      });
     const positionsLength = 100;
     const positions = [];
     let runningDiffCount = 0;

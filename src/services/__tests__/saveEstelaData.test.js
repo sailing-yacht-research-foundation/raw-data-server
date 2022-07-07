@@ -18,6 +18,17 @@ const saveEstelaData = require('../saveEstelaData');
 const jsonData = require('../../test-files/estela.json');
 const expectedJsonData = require('../../test-files/expected-data/estela.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/estela.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing estela data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

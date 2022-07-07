@@ -1,3 +1,4 @@
+jest.useFakeTimers();
 require('./src/test-files/dbDALmocks');
 jest.mock('aws-sdk', () => {
   const mockS3Instance = {
@@ -19,6 +20,14 @@ jest.mock('./src/utils/world',
       }
     }
   });
+jest.mock('./src/syrfDataServices/v1/googleAPI', () => {
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      "countryName": '',
+      "cityName": '',
+    }),
+  };
+});
 console.time = () => {}; // Disable console time since it generates too many logs
 jest.setTimeout(15000);
 afterAll(() => {

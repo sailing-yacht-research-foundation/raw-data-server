@@ -19,6 +19,17 @@ const saveISailData = require('../saveISailData');
 const jsonData = require('../../test-files/iSail.json');
 const expectedJsonData = require('../../test-files/expected-data/iSail.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/iSail.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing iSail data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,
