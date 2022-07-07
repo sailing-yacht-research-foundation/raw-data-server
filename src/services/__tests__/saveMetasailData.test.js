@@ -18,6 +18,17 @@ const saveMetasailData = require('../saveMetasailData');
 const jsonData = require('../../test-files/metasail.json');
 const expectedJsonData = require('../../test-files/expected-data/metasail.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/metasail.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing metasail data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,
@@ -198,6 +209,32 @@ describe('Storing metasail data to DB', () => {
       unfinishedJsonData.MetasailRace[0].stop = futureDate.getTime();
       const expectedElasticsearchBody = JSON.parse(
         JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
+      expectedElasticsearchBody.status = competitionUnitStatus.ONGOING;
+
+      await saveMetasailData(unfinishedJsonData);
+
+      expect(calendarEventUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(competitionUnitUpsertSpy).toHaveBeenCalledTimes(0);
+      expect(elasticSearchIndexSpy).toHaveBeenCalledWith(
+        expectedElasticsearchBody.id,
+        expect.objectContaining(expectedElasticsearchBody),
+      );
+    });
+
+    it.only('should only call elastic search to index and do not save in db even when there are no buoys or gates', async () => {
+      const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
+      unfinishedJsonData.MetasailRace[0].stop = futureDate.getTime();
+      delete unfinishedJsonData.MetasailBuoy;
+      const expectedElasticSearchBody = JSON.parse(
+        JSON.stringify(expectedJsonData.ElasticSearchBodyUnfinishedRace),
+      );
+      delete expectedElasticSearchBody.start_country;
+      delete expectedElasticSearchBody.start_city;
+      delete expectedElasticSearchBody.approx_start_point;
+      const expectedElasticsearchBody = JSON.parse(
+        JSON.stringify(expectedElasticSearchBody),
       );
       expectedElasticsearchBody.approx_end_time_ms = futureDate.getTime();
       expectedElasticsearchBody.status = competitionUnitStatus.ONGOING;

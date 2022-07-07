@@ -80,7 +80,7 @@ const _indexUnfinishedRaceToES = async (race, data) => {
   const startTimeMs = +race.start;
   const startDate = new Date(startTimeMs);
   const name = generateMetadataName(event?.name, race.name, startTimeMs);
-  const buoy = data.MetasailBuoy[0];
+  const buoy = data.MetasailBuoy?.[0];
   let startPoint;
   if (buoy?.lat && buoy?.lon) {
     startPoint = createTurfPoint(buoy.lat, buoy.lon);

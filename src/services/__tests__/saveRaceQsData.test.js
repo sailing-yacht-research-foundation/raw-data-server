@@ -20,6 +20,17 @@ const saveRaceQsData = require('../saveRaceQsData');
 const jsonData = require('../../test-files/raceQs.json');
 const expectedJsonData = require('../../test-files/expected-data/raceQs.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/raceQs.json');
+  return {
+    reverseGeoCode: jest.fn().mockReturnValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing raceqs data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

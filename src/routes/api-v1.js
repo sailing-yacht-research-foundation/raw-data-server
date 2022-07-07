@@ -17,19 +17,9 @@ const saveRaceQsData = require('../services/saveRaceQsData');
 const saveMetasailData = require('../services/saveMetasailData');
 const saveEstelaData = require('../services/saveEstelaData');
 const saveTackTrackerData = require('../services/saveTackTrackerData');
-const {
-  downloadAndProcessFiles,
-} = require('../services/non-automatable/saveAmericasCup2021Data');
-const saveSwiftsureData = require('../services/non-automatable/saveSwiftsureData');
-const saveAmericasCupData = require('../services/non-automatable/saveAmericasCupData');
-const saveSapData = require('../services/non-automatable/saveSapData');
-const saveRegadata = require('../services/non-automatable/saveRegadata/saveRegadata');
-const updateYachtBotData = require('../services/non-automatable/updateYachtBotData');
-const updateModernGeovoiledata = require('../services/non-automatable/updateModernGeovoiledata');
+const saveGeovoileData = require('../services/saveGeovoileData');
 const { TRACKER_MAP } = require('../constants');
 const { unzipFileFromRequest } = require('../utils/unzipFile');
-const saveGeovoileData = require('../services/saveGeovoileData');
-const saveOldGeovoileData = require('../services/non-automatable/saveOldGeovoileData');
 const {
   getExistingData,
   registerFailure,
@@ -130,9 +120,6 @@ router.post(
         case isScraperExist(jsonData, TRACKER_MAP.tacktracker):
           saveTackTrackerData(jsonData);
           break;
-        case isScraperExist(jsonData, TRACKER_MAP.swiftsure):
-          saveSwiftsureData(jsonData);
-          break;
         case isScraperExist(jsonData, TRACKER_MAP.geovoile):
           saveGeovoileData(jsonData);
           break;
@@ -175,138 +162,6 @@ router.post('/register-failed-url', validateTrackerSource, async (req, res) => {
     res.status(500).json({ message: errMsg });
     return;
   }
-});
-
-router.post('/americas-cup-2021', async (req, res) => {
-  if (!req.body.bucketName) {
-    res.status(400).json({ message: 'Must specify bucketName' });
-    return;
-  }
-  try {
-    downloadAndProcessFiles(req.body.bucketName);
-  } catch (err) {
-    console.log(err);
-  }
-
-  res.json({
-    message: `Successfully started processing of files`,
-  });
-});
-
-router.post('/americas-cup', async function (req, res) {
-  if (!req.body.bucketName || !req.body.fileName || !req.body.year) {
-    res
-      .status(400)
-      .json({ message: 'Must specify bucketName, fileName and year in body' });
-    return;
-  }
-  try {
-    saveAmericasCupData(
-      req.body.bucketName,
-      req.body.fileName,
-      req.body.year.toString(),
-    );
-  } catch (err) {
-    console.error(err);
-  }
-
-  res.json({
-    message: `Successfully started processing of files`,
-  });
-});
-
-router.post('/sap', async function (req, res) {
-  if (!req.body.bucketName && !req.body.fileName) {
-    res
-      .status(400)
-      .json({ message: 'Must specify bucketName and fileName in body' });
-    return;
-  }
-  try {
-    saveSapData(req.body.bucketName, req.body.fileName);
-  } catch (err) {
-    console.log(err);
-  }
-
-  res.json({
-    message: `Successfully started processing of files`,
-  });
-});
-
-router.post('/regadata', async function (req, res) {
-  if (!req.body.bucketName && !req.body.fileName) {
-    res
-      .status(400)
-      .json({ message: 'Must specify bucketName and fileName in body' });
-    return;
-  }
-  try {
-    saveRegadata(req.body.bucketName, req.body.fileName);
-  } catch (err) {
-    console.log(err);
-  }
-
-  res.json({
-    message: `Successfully started processing of files`,
-  });
-});
-
-router.post('/yacht-bot', upload.single('raw_data'), async function (req, res) {
-  if (!req.file) {
-    res.status(400).json({
-      message: 'No File Uploaded',
-    });
-    return;
-  }
-  res.json({
-    message: `File successfully uploaded`,
-  });
-  try {
-    const { jsonData } = await unzipFileFromRequest(req);
-    await updateYachtBotData(jsonData);
-  } catch (err) {
-    console.error('error: ', err);
-  }
-});
-
-router.post(
-  '/modern-geovoile',
-  upload.single('raw_data'),
-  async function (req, res) {
-    if (!req.file) {
-      res.status(400).json({
-        message: 'No File Uploaded',
-      });
-      return;
-    }
-    res.json({
-      message: `File successfully uploaded`,
-    });
-    try {
-      const { jsonData } = await unzipFileFromRequest(req);
-      await updateModernGeovoiledata(jsonData);
-    } catch (err) {
-      console.error('error: ', err);
-    }
-  },
-);
-
-router.post('/old-geovoile', async function (req, res) {
-  if (!req.body.bucketName && !req.body.fileName) {
-    res
-      .status(400)
-      .json({ message: 'Must specify bucketName and fileName in body' });
-    return;
-  }
-  try {
-    saveOldGeovoileData(req.body.bucketName, req.body.fileName);
-  } catch (err) {
-    console.log(err);
-  }
-
-  res.json({
-    message: `Successfully started processing of files`,
-  });
 });
 
 /*

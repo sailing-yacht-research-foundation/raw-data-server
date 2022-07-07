@@ -5,7 +5,7 @@
     "isPrivate": false,
     "isOpen": false,
     "country": "United States",
-    "city": "Newport",
+    "city": "Marion",
     "source": "RACEQS",
     "openGraphImage": "mockLocation",
     "scrapedOriginalId": "42805",
@@ -28,7 +28,7 @@
         }
       },
       "type": "Point",
-      "coordinates": [-71.33552044569066, 41.50812221575484]
+      "coordinates": [-70.743369, 41.668562]
     }
   },
   "CompetitionUnits": [{
@@ -36,7 +36,7 @@
     "startTime": 1409175300000,
     "approximateStartLocation": {
       "type": "Point",
-      "coordinates": [-71.33552044569066, 41.50812221575484],
+      "coordinates": [-70.743369, 41.668562],
       "crs": {
         "type": "name",
         "properties": {
@@ -69,7 +69,7 @@
     "endTime": 1409194800000,
     "openGraphImage": "mockLocation",
     "country": "United States",
-    "city": "Newport",
+    "city": "Marion",
     "status": "COMPLETED",
     "scrapedOriginalId": "raceqs-start-42805-26373",
     "scrapedUrl": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
@@ -396,12 +396,12 @@
           "name": "Start 1",
           "type": "start"
         },
-        "coordinates": [["-71.33552044569066", "41.50812221575484"], ["-71.33421561536632", "41.5079160801951"]],
+        "coordinates": [["-70.743369", "41.668562"], ["-70.743383", "41.668562"]],
         "order": 0,
         "points": [{
-            "position": ["-71.33552044569066", "41.50812221575484"]
+            "position": ["-70.743369", "41.668562"]
           }, {
-            "position": ["-71.33421561536632", "41.5079160801951"]
+            "position": ["-70.743383", "41.668562"]
           }
         ]
       }, {
@@ -599,7 +599,7 @@
     "source": "RACEQS",
     "url": "https://raceqs.com/tv-beta/tv.htm#eventId=42805",
     "start_country": "United States",
-    "start_city": "Newport",
+    "start_city": "Marion",
     "start_year": 2014,
     "start_month": 8,
     "start_day": 27,
@@ -608,7 +608,7 @@
     "approx_duration_ms": 19500000,
     "approx_start_point": {
       "type": "Point",
-      "coordinates": [-71.33552044569066, 41.50812221575484],
+      "coordinates": [-70.743369, 41.668562],
       "crs": {
         "type": "name",
         "properties": {
@@ -618,7 +618,7 @@
     },
     "approx_mid_point": {
       "type": "Point",
-      "coordinates": [-71.33550160291286, 41.50813859260918],
+      "coordinates": [-71.03979367674292, 41.58873822126375],
       "crs": {
         "type": "name",
         "properties": {
@@ -647,7 +647,7 @@
       }
     },
     "approx_area_sq_km": 885.4047875472532,
-    "approx_distance_km": 0.004807493851491461,
+    "approx_distance_km": 52.37458726095659,
     "num_boats": 5,
     "avg_time_between_positions": 1600,
     "boat_models": [],

@@ -84,6 +84,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       } else if (division.original_id) {
         raceOriginalId = `${RACEQS.DIVISION_PREFIX}${division?.event_original_id}-${division?.original_id}`;
       }
+      console.log('saveCompetition raceqs');
       const cu = await saveCompetitionUnit({
         event,
         race: {

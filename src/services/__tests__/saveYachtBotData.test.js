@@ -18,6 +18,17 @@ const saveYachtBotData = require('../saveYachtBotData');
 const jsonData = require('../../test-files/yachtBot.json');
 const expectedJsonData = require('../../test-files/expected-data/yachtBot.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/yachtBot.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing yachtbot data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,

@@ -20,6 +20,17 @@ const saveTracTracData = require('../saveTracTracData');
 const jsonData = require('../../test-files/tractrac.json');
 const expectedJsonData = require('../../test-files/expected-data/tractrac.json');
 
+jest.mock('../../syrfDataServices/v1/googleAPI', () => {
+  const {
+    CalendarEvent,
+  } = require('../../test-files/expected-data/tractrac.json');
+  return {
+    reverseGeoCode: jest.fn().mockResolvedValue({
+      countryName: CalendarEvent.country,
+      cityName: CalendarEvent.city,
+    }),
+  };
+});
 describe('Storing tractrac data to DB', () => {
   let calendarEventUpsertSpy,
     vesselParticipantGroupUpsertSpy,
