@@ -29,8 +29,9 @@ const mapAndSave = async (data, raceMetadatas) => {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
-      approxStartTimeMs: new Date(e.start_timestamp)?.getTime(),
-      approxEndTimeMs: new Date(e.end_timestamp)?.getTime(),
+      approxStartTimeMs: new Date(e.first_start_time + '+0')?.getTime(),
+      approxEndTimeMs: new Date(e.last_end_time + '+0')?.getTime(),
+      url: `https://www.kwindoo.com/tracking/${e.original_id}-${e.name_slug}`,
     };
   })[0];
 
@@ -63,7 +64,6 @@ const mapAndSave = async (data, raceMetadatas) => {
       original_id: race.original_id,
       name: race.name,
       url: race.url,
-      scrapedUrl: event.url,
     };
     const cu = await saveCompetitionUnit({
       event,
