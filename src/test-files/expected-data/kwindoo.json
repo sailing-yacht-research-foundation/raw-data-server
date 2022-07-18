@@ -1,6 +1,7 @@
 {
   "CalendarEvent": {
     "name": "M32 Series Europe - Event #4 Aarhus",
+    "externalUrl": "https://www.kwindoo.com/tracking/1765-m32-series-europe-event-4-aarhus",
     "isPrivate": false,
     "isOpen": false,
     "country": "Denmark",
@@ -9,14 +10,14 @@
     "openGraphImage": "mockLocation",
     "scrapedOriginalId": 1765,
     "status": "COMPLETED",
-    "approximateStartTime": 1530192757000,
+    "approximateStartTime": 1530188138000,
     "approximateStartTime_zone": "Etc/UTC",
     "startDay": 28,
     "startMonth": 6,
     "startYear": 2018,
-    "approximateEndTime": 1530194275000,
+    "approximateEndTime": 1530365984000,
     "approximateEndTime_zone": "Etc/UTC",
-    "endDay": 28,
+    "endDay": 30,
     "endMonth": 6,
     "endYear": 2018,
     "location": {

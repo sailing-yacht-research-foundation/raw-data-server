@@ -46,7 +46,7 @@ const _mapBoats = (boats, sailors, boatIdToOriginalIdMap) => {
     boatIdToOriginalIdMap[b.original_id] = b.id;
     const vessel = {
       id: b.id,
-      publicName: b.name,
+      publicName: b.name || b.short_name,
       vesselId: b.original_id,
       isCommittee: false,
     };

@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const temp = require('temp');
+const path = require('path');
+const os = require('os');
 
 const { BadRequestError } = require('../errors');
 const validateSecret = require('../middlewares/validateSecret');
@@ -33,11 +34,8 @@ var router = express.Router();
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    temp.mkdir('jsonfile', function (err, dirPath) {
-      if (!err) {
-        cb(null, dirPath);
-      }
-    });
+    const tmpDir = path.resolve(os.tmpdir());
+    cb(null, tmpDir);
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now());
