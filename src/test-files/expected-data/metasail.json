@@ -80,30 +80,35 @@
       "id": "de5d1e8d-5008-4b3f-8877-5a96d4484c64",
       "publicName": "Inga",
       "globalId": "SWE 44",
+      "sailNumber": "SWE 44",
       "vesselId": "7|H0979|SWE 44",
       "source": "METASAIL"
     }, {
       "id": "a60baa91-d9dc-47f6-8827-17180d82e037",
       "publicName": "Leeloo",
       "globalId": "NED 82",
+      "sailNumber": "NED 82",
       "vesselId": "8|H0248|NED 82",
       "source": "METASAIL"
     }, {
       "id": "177cd1ad-ce93-4b82-afc4-8482b390a547",
       "publicName": "Vikings",
       "globalId": "SWE 68",
+      "sailNumber": "SWE 68",
       "vesselId": "9|H0280|SWE 68",
       "source": "METASAIL"
     }, {
       "id": "ebc0b859-70b1-4b06-9a88-ea89bd46e777",
       "publicName": "Vitamina Rapida",
       "globalId": "ITA 22",
+      "sailNumber": "ITA 22",
       "vesselId": "10|H0368|ITA 22",
       "source": "METASAIL"
     }, {
       "id": "7b8cffec-f831-4841-96bc-37cc36c24506",
       "publicName": "Vitamina Veloce",
       "globalId": "ITA 04",
+      "sailNumber": "ITA 04",
       "vesselId": "11|H0357|ITA 04",
       "source": "METASAIL"
     }

@@ -65,7 +65,8 @@
   "Vessels": [{
     "id": "958072bf-e1a3-48f4-8cf3-08bd62e1e677",
     "publicName": "AG Sailing",
-    "globalId": "",
+    "globalId": "11",
+    "sailNumber": "11",
     "vesselId": "jbqgw",
     "model": "",
     "source": "ESTELA"
@@ -159,7 +160,7 @@
     "num_boats": 1,
     "avg_time_between_positions": 500,
     "boat_models": [],
-    "boat_identifiers": [],
+    "boat_identifiers": ["11"],
     "boat_names": ["AG Sailing"],
     "handicap_rules": [],
     "unstructured_text": []

@@ -60,10 +60,8 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
       publicName: b.name,
       vesselId: b.original_id?.toString(),
       globalId: b.sail,
+      sailNumber: b.sail,
       model: b.model,
-      lengthInMeters: null,
-      widthInMeters: null,
-      draftInMeters: null,
     };
 
     const crews = [];

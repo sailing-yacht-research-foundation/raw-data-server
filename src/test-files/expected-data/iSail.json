@@ -81,6 +81,7 @@
       "id": "348afb19-6af4-4f16-b3b0-65ea2b11a0c0",
       "publicName": "Bruno en Tijn",
       "globalId": "1174",
+      "sailNumber": "1174",
       "vesselId": 6398,
       "model": "RS Feva",
       "source": "ISAIL"
@@ -88,6 +89,7 @@
       "id": "54ae1995-d034-4349-9d96-033a988ea170",
       "publicName": "Wietske en Tjalle",
       "globalId": "421",
+      "sailNumber": "421",
       "vesselId": 6400,
       "model": "RS Feva",
       "source": "ISAIL"
@@ -95,6 +97,7 @@
       "id": "3fed9650-4b5d-4ca6-aaa0-456ecf15caeb",
       "publicName": "Sebastiaan en Borg",
       "globalId": "4309",
+      "sailNumber": "4309",
       "vesselId": 6399,
       "model": "RS Feva",
       "source": "ISAIL"
