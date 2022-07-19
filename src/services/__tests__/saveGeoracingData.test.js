@@ -119,8 +119,12 @@ describe('Storing georacing data to DB', () => {
       expectedJsonData.VesselParticipants,
       expect.anything(),
     );
-    expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(0);
-    expect(participantBulkCreateSpy).toHaveBeenCalledTimes(0);
+    expect(vesselParticipantAddParticipantSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipants.length,
+    );
+    expect(participantBulkCreateSpy).toHaveBeenCalledTimes(
+      expectedJsonData.VesselParticipants.length,
+    );
     expectedJsonData.Participants?.forEach((p) => {
       expect(participantBulkCreateSpy).toHaveBeenCalledWith(
         p,

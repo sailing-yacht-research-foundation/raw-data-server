@@ -70,6 +70,7 @@ const saveCompetitionUnit = async ({
       event?.id,
       {
         name: event?.name,
+        description: event?.description,
         locationName: event?.locationName,
         externalUrl: event?.url,
         approximateStartTime:
@@ -133,10 +134,14 @@ const saveCompetitionUnit = async ({
         sailNumber: boat.sailNumber,
         vesselId: boat.vesselId,
         model: boat.model,
+        mmsi: boat.mmsi,
         lengthInMeters: boat.lengthInMeters,
         widthInMeters: boat.widthInMeters,
         draftInMeters: boat.draftInMeters,
         handicap: boat.handicap,
+        hullsCount: boat.hullsCount,
+        hullColorAboveWaterline: boat.hullColorAboveWaterline,
+        hullColorBelowWaterline: boat.hullColorBelowWaterline,
         source,
       });
 
@@ -148,6 +153,7 @@ const saveCompetitionUnit = async ({
         vesselId: boat.id,
         vesselParticipantGroupId: vesselGroup.id,
         handicap: boatHandicap,
+        sailNumber: boat.sailNumber,
         isCommittee: boat.isCommittee,
       });
       if (boat.crews) {
@@ -230,6 +236,7 @@ const saveCompetitionUnit = async ({
       raceId,
       {
         name: race.name || name,
+        description: race.description,
         approximateStartLocation: approxStartPoint,
         approximateEndLocation: approxEndPoint,
         startTime: approxStartTimeMs,

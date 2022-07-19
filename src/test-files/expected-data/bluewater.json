@@ -20,6 +20,7 @@
   },
   "CompetitionUnit": {
     "name": "2021 ORCV Melbourne to Port Fairy Race",
+    "description": "Ocean Racing Club Victoria\nwww.orcv.org.au",
     "startTime": 1617305400000,
     "approximateStartLocation": {
       "type": "Point",
@@ -70,9 +71,11 @@
     "sailNumber": "R880",
     "vesselId": "5631641c671f0c130e6f09b6",
     "model": "Lidgard 36",
+    "mmsi": "1",
     "lengthInMeters": "10.9",
     "widthInMeters": "3.5",
     "draftInMeters": "2.5",
+    "hullsCount": 1,
     "handicap": {
         "AMS": "0.894",
         "PHS": "0.867"
@@ -85,20 +88,24 @@
     "sailNumber": "B126",
     "vesselId": "6035c44f11b48d1038952a10",
     "model": "X 382 Cruiser",
+    "mmsi": "",
     "lengthInMeters": "11.5",
     "widthInMeters": "3.7",
     "draftInMeters": "2.1",
+    "hullsCount": 1,
     "handicap": {},
     "source": "BLUEWATER"
   }],
   "VesselParticipants": [{
     "vesselId": "4bcb53b4-058f-4c2b-a41c-5b607730765e",
+    "sailNumber": "R880",
     "handicap": {
         "AMS": "0.894",
         "PHS": "0.867"
     }
   }, {
     "vesselId": "a5cc48c6-d6e8-44da-847e-72604196ddf9",
+    "sailNumber": "B126",
     "handicap": {}
   }],
   "Participants": [

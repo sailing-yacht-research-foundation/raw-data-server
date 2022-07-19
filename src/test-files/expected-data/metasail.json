@@ -114,15 +114,20 @@
     }
   ],
   "VesselParticipants": [{
-      "vesselId": "de5d1e8d-5008-4b3f-8877-5a96d4484c64"
+      "vesselId": "de5d1e8d-5008-4b3f-8877-5a96d4484c64",
+      "sailNumber": "SWE 44"
     }, {
-      "vesselId": "a60baa91-d9dc-47f6-8827-17180d82e037"
+      "vesselId": "a60baa91-d9dc-47f6-8827-17180d82e037",
+      "sailNumber": "NED 82"
     }, {
-      "vesselId": "177cd1ad-ce93-4b82-afc4-8482b390a547"
+      "vesselId": "177cd1ad-ce93-4b82-afc4-8482b390a547",
+      "sailNumber": "SWE 68"
     }, {
-      "vesselId": "ebc0b859-70b1-4b06-9a88-ea89bd46e777"
+      "vesselId": "ebc0b859-70b1-4b06-9a88-ea89bd46e777",
+      "sailNumber": "ITA 22"
     }, {
-      "vesselId": "7b8cffec-f831-4841-96bc-37cc36c24506"
+      "vesselId": "7b8cffec-f831-4841-96bc-37cc36c24506",
+      "sailNumber": "ITA 04"
     }
   ],
   "Participants": [],
