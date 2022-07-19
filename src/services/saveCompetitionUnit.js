@@ -130,6 +130,7 @@ const saveCompetitionUnit = async ({
         id: boat.id,
         publicName: boat.name || boat.publicName,
         globalId: boat.globalId,
+        sailNumber: boat.sailNumber,
         vesselId: boat.vesselId,
         model: boat.model,
         lengthInMeters: boat.lengthInMeters,
@@ -336,16 +337,7 @@ const saveCompetitionUnit = async ({
       tracker?.addNewPosition(
         [+position.lon, +position.lat],
         +position.timestamp,
-        {
-          altitude: position.altitude,
-          cog: position.cog,
-          sog: position.sog,
-          twa: position.twa,
-          windSpeed: position.windSpeed,
-          windDirection: position.windDirection,
-          vmc: position.vmc,
-          vmg: position.vmg,
-        },
+        position,
       );
     }
 

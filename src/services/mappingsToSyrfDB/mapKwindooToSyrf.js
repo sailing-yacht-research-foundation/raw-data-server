@@ -93,6 +93,7 @@ const _mapBoats = (boats) => {
       id: b.id,
       publicName: b.boat_name || crewName,
       globalId: b.sail_number,
+      sailNumber: b.sail_number,
       vesselId: b.original_id,
       model: b.boat_type_alias,
       handicap: b.handycap ? { handicap: b.handycap } : null,
@@ -119,7 +120,7 @@ const _mapPositions = (positions) => {
         timestamp: +p.t * 1000,
         lon: +p.lon,
         lat: +p.lat,
-        cog: p.b,
+        heading: p.b,
         sog: p.s,
         vesselId: p.boat,
       };

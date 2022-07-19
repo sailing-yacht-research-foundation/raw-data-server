@@ -49,6 +49,7 @@ const _mapBoats = (boats, crews, boatIdToOriginalIdMap) => {
       id: b.id,
       publicName: b.name,
       globalId: b.number,
+      sailNumber: b.number,
       vesselId: b.original_id,
       model: b.model,
       isCommittee: b.committee?.toString() === '1',

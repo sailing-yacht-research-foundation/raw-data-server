@@ -146,6 +146,7 @@ const _mapBoats = (boats) => {
       id: b.id,
       publicName: b.name,
       globalId: b.sail_no,
+      sailNumber: b.sail_no,
       vesselId: b.original_id,
       model: b.class_name,
     };
@@ -158,7 +159,7 @@ const _mapPositions = (positions) => {
     timestamp: p.time,
     lon: p.lon,
     lat: p.lat,
-    cog: p.heading,
+    heading: p.heading,
     sog: p.speed,
     vesselId: p.participant,
   }));

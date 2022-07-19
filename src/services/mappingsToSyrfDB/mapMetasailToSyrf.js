@@ -87,6 +87,7 @@ const _mapBoats = (boats = [], race) => {
         id: b.id,
         publicName: b.name,
         globalId: b.sail_number,
+        sailNumber: b.sail_number,
         vesselId: `${b.original_id}|${b.serial}|${b.sail_number}`,
         model: b.class_name,
       };
@@ -106,7 +107,7 @@ const _mapPositions = (metasailPosition, race) => {
       return {
         ...t,
         vesselId: t.boat,
-        cog: t.orientation,
+        heading: t.orientation,
         sog: t.speed,
         windDirection: t.wind_direction,
         timestamp: +t.time * 1000,

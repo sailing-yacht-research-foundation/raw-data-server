@@ -130,7 +130,7 @@ const _mapPositions = (positions) => {
       race_original_id: t.race_original_id,
       vesselId: t.competitor,
       boat_original_id: t.competitor_original_id,
-      cog: t.direction,
+      heading: t.direction,
       sog: t.speed,
     };
   });

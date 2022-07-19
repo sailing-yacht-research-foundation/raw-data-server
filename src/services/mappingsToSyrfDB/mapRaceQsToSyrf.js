@@ -163,7 +163,7 @@ const _mapPositions = (positions) => {
         timestamp: +pos.time * 100,
         vesselId: pos.participant,
         boat_original_id: pos.participant_original_id.toString(),
-        cog: pos.heading,
+        heading: pos.heading,
         windSpeed: pos.wind_speed ? Number.parseFloat(pos.wind_speed) : null,
         windDirection: pos.wind_angle
           ? Number.parseFloat(pos.wind_angle)

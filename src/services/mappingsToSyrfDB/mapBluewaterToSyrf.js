@@ -76,6 +76,7 @@ const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
       id: b.id,
       publicName: b.name,
       globalId: b.sail_no,
+      sailNumber: b.sail_no,
       vesselId: b.original_id,
       model: b.design,
       lengthInMeters: b.length,
