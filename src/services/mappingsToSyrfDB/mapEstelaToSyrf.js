@@ -30,7 +30,13 @@ const mapAndSave = async (data, raceMetadata) => {
   );
 
   return await saveCompetitionUnit({
-    race: data.EstelaRace[0],
+    race: data.EstelaRace.map((r) => {
+      const club = data.EstelaClub?.find((c) => c.id === r.club);
+      return {
+        ...r,
+        description: [club?.name, club?.website].filter(Boolean).join('\n'),
+      };
+    })[0],
     boats: inputBoats,
     positions: inputPositions,
     raceMetadata,
@@ -52,6 +58,7 @@ const _mapBoats = (boats, crews, boatIdToOriginalIdMap) => {
       sailNumber: b.number,
       vesselId: b.original_id,
       model: b.model,
+      mmsi: b.mmsi,
       isCommittee: b.committee?.toString() === '1',
     };
 

@@ -107,14 +107,17 @@
   ],
   "VesselParticipants": [{
       "vesselId": "8f757096-bda8-4fac-b63a-d251e4b3958c",
+      "sailNumber": "",
       "handicap": null,
       "isCommittee": false
     }, {
       "vesselId": "10b32c6d-c36e-467a-8aed-cc5820bd564d",
+      "sailNumber": 22,
       "handicap": null,
       "isCommittee": false
     }, {
       "vesselId": "649e772d-bb72-4f1c-8ea6-bc436b12b778",
+      "sailNumber": null,
       "handicap": null,
       "isCommittee": false
     }

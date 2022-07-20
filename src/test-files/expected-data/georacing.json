@@ -1,6 +1,7 @@
 {
   "CalendarEvent": {
     "name": "Monaco Sportsboat Winter Series (Act II)",
+    "description": "Baie de Quiberon",
     "isPrivate": false,
     "isOpen": false,
     "country": "Monaco",
@@ -32,6 +33,7 @@
   },
   "CompetitionUnit": {
     "name": "GC 32. Race 3",
+    "description": "Monaco",
     "startTime": 1481379480000,
     "approximateStartLocation": {
       "type": "Point",
@@ -84,7 +86,10 @@
       "vesselId": 10074772,
       "model": "GC32",
       "lengthInMeters": 10,
-      "source": "GEORACING"
+      "source": "GEORACING",
+      "handicap": {
+        "rating": 0.8785
+      }
     }, {
       "id": "53218728-01e0-4ea0-88e3-3e65c141cf80",
       "publicName": "MALZIA",
@@ -93,7 +98,10 @@
       "vesselId": 10074773,
       "model": "GC32",
       "lengthInMeters": 10,
-      "source": "GEORACING"
+      "source": "GEORACING",
+      "handicap": {
+        "rating": 0.8415
+      }
     }, {
       "id": "59ae4459-1e99-480f-a200-47de6fa44328",
       "publicName": "REAL TEAM",
@@ -102,19 +110,59 @@
       "vesselId": 10074774,
       "model": "GC32",
       "lengthInMeters": 10,
-      "source": "GEORACING"
+      "source": "GEORACING",
+      "handicap": {
+        "rating": 0.8021
+      }
     }
   ],
   "VesselParticipants": [
     {
-      "vesselId": "7abac60b-a3a9-419f-9060-e1b472f955dc"
+      "vesselId": "7abac60b-a3a9-419f-9060-e1b472f955dc",
+      "sailNumber": 1,
+      "isCommittee": false,
+      "handicap": {
+        "rating": 0.8785
+      }
     }, {
-      "vesselId": "53218728-01e0-4ea0-88e3-3e65c141cf80"
+      "vesselId": "53218728-01e0-4ea0-88e3-3e65c141cf80",
+      "sailNumber": 27,
+      "isCommittee": false,
+      "handicap": {
+        "rating": 0.8415
+      }
     }, {
-      "vesselId": "59ae4459-1e99-480f-a200-47de6fa44328"
+      "vesselId": "59ae4459-1e99-480f-a200-47de6fa44328",
+      "sailNumber": 99,
+      "isCommittee": false,
+      "handicap": {
+        "rating": 0.8021
+      }
     }
   ],
-  "Participants": [],
+  "Participants": [
+    [
+      {
+        "publicName": "Loick Peyron",
+        "invitationStatus": "SELF_REGISTERED",
+        "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+      }
+    ],
+    [
+      {
+        "publicName": "Christian Wahl (so'com)",
+        "invitationStatus": "SELF_REGISTERED",
+        "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+      }
+    ],
+    [
+      {
+        "publicName": "Jérôme Clerc",
+        "invitationStatus": "SELF_REGISTERED",
+        "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792"
+      }
+    ]
+  ],
   "Course": {
     "name": "Course 1",
     "calendarEventId": "376d3f4d-05ca-4ce2-85a6-2977bba13792",

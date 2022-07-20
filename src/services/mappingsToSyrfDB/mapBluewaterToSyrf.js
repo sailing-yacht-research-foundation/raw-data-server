@@ -46,6 +46,9 @@ const mapAndSave = async (data, raceMetadata) => {
       ...r,
       url: r.referral_url,
       scrapedUrl: r.slug,
+      description: [r.account_name, r.account_website]
+        .filter(Boolean)
+        .join('\n'),
     }))[0],
     boats: inputBoats,
     positions: inputPositions,
@@ -72,6 +75,20 @@ const mapAndSave = async (data, raceMetadata) => {
 const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
   return boats?.map((b) => {
     boatIdToOriginalIdMap[b.original_id] = b.id;
+    let hullsCount;
+    switch (b.type) {
+      case 'monohull':
+        hullsCount = 1;
+        break;
+      case 'catamaran':
+        hullsCount = 2;
+        break;
+      case 'trimaran':
+        hullsCount = 3;
+        break;
+      default:
+        hullsCount = null;
+    }
     const vessel = {
       id: b.id,
       publicName: b.name,
@@ -79,9 +96,11 @@ const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
       sailNumber: b.sail_no,
       vesselId: b.original_id,
       model: b.design,
+      mmsi: b.mmsi,
       lengthInMeters: b.length,
       widthInMeters: b.width,
       draftInMeters: b.draft,
+      hullsCount,
     };
     if (b.units === 'feet') {
       vessel.lengthInMeters =

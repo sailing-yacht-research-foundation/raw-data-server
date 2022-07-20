@@ -103,13 +103,17 @@
     }
   ],
   "VesselParticipants": [{
-      "vesselId": "3036e4da-4732-492b-bdc4-908d17df9780"
+      "vesselId": "3036e4da-4732-492b-bdc4-908d17df9780",
+      "sailNumber": "03"
     }, {
-      "vesselId": "56798235-793e-4e68-becf-529524ab0062"
+      "vesselId": "56798235-793e-4e68-becf-529524ab0062",
+      "sailNumber": "06"
     }, {
-      "vesselId": "d47d7a50-5779-4dc0-a81c-c972daeb320f"
+      "vesselId": "d47d7a50-5779-4dc0-a81c-c972daeb320f",
+      "sailNumber": "04"
     }, {
-      "vesselId": "2231021a-bd77-4f14-9561-85fa418e6402"
+      "vesselId": "2231021a-bd77-4f14-9561-85fa418e6402",
+      "sailNumber": "01"
     }
   ],
   "Participants": [

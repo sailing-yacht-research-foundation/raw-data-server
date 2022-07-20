@@ -116,16 +116,19 @@
   ],
   "VesselParticipants": [{
       "vesselId": "2e704011-71d5-409a-a090-407e72b2d04a",
+      "sailNumber": "FRA148",
       "handicap": {
         "tcf3": 1
       }
     }, {
       "vesselId": "120a57ee-ea2b-415b-9c40-9462cae1163f",
+      "sailNumber": "FRA142",
       "handicap": {
         "tcf3": 1
       }
     }, {
       "vesselId": "a1b304fc-0dd6-4cb9-8d5b-70723da44c81",
+      "sailNumber": "FRA89",
       "handicap": {
         "tcf3": 1
       }
