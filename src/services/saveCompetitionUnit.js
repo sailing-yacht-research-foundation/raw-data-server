@@ -142,6 +142,8 @@ const saveCompetitionUnit = async ({
         hullsCount: boat.hullsCount,
         hullColorAboveWaterline: boat.hullColorAboveWaterline,
         hullColorBelowWaterline: boat.hullColorBelowWaterline,
+        homeport: boat.homeport,
+        onboardEmail: boat.onboardEmail,
         source,
       });
 

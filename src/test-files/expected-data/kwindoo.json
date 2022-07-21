@@ -1,6 +1,7 @@
 {
   "CalendarEvent": {
     "name": "M32 Series Europe - Event #4 Aarhus",
+    "description": "49er, All classes, ORC",
     "externalUrl": "https://www.kwindoo.com/tracking/1765-m32-series-europe-event-4-aarhus",
     "isPrivate": false,
     "isOpen": false,
@@ -33,6 +34,7 @@
   },
   "CompetitionUnit": {
     "name": "Race 4",
+    "description": "All classes",
     "startTime": 1530192757000,
     "approximateStartLocation": {
       "type": "Point",
@@ -73,18 +75,22 @@
     "status": "COMPLETED",
     "scrapedOriginalId": 4750,
     "scrapedUrl": "https://www.kwindoo.com/tracking/1765-m32-series-europe-event-4-aarhus?race_id=4750",
+    "handicap": ["ORC"],
     "approximateStart": 1530192757000,
     "approximateStart_zone": "Etc/UTC"
   },
   "Vessels": [{
       "id": "8f757096-bda8-4fac-b63a-d251e4b3958c",
       "publicName": "Vitamina",
-      "globalId": "",
-      "sailNumber": "",
+      "globalId": 123,
+      "sailNumber": 123,
       "vesselId": 19693,
       "model": "catamaran",
       "handicap": null,
-      "source": "KWINDOO"
+      "source": "KWINDOO",
+      "onboardEmail":  "blulagoon78@gmail.com",
+      "homeport": "ycrmp",
+      "hullsCount": 2
     }, {
       "id": "10b32c6d-c36e-467a-8aed-cc5820bd564d",
       "publicName": "GAC Pindar",
@@ -93,21 +99,27 @@
       "vesselId": 22684,
       "model": "m32",
       "handicap": null,
-      "source": "KWINDOO"
+      "source": "KWINDOO",
+      "onboardEmail":  "ian@williamssailracing.com",
+      "homeport": "Royal Lymington  YC",
+      "hullsCount": 2
     }, {
       "id": "649e772d-bb72-4f1c-8ea6-bc436b12b778",
       "publicName": "Warrer Racing",
-      "globalId": null,
-      "sailNumber": null,
+      "globalId": 456,
+      "sailNumber": 456,
       "vesselId": 23314,
       "model": "catamaran",
       "handicap": null,
-      "source": "KWINDOO"
+      "source": "KWINDOO",
+      "onboardEmail":  "jonaswarrer@mac.com",
+      "homeport": null,
+      "hullsCount": 2
     }
   ],
   "VesselParticipants": [{
       "vesselId": "8f757096-bda8-4fac-b63a-d251e4b3958c",
-      "sailNumber": "",
+      "sailNumber": 123,
       "handicap": null,
       "isCommittee": false
     }, {
@@ -117,14 +129,14 @@
       "isCommittee": false
     }, {
       "vesselId": "649e772d-bb72-4f1c-8ea6-bc436b12b778",
-      "sailNumber": null,
+      "sailNumber": 456,
       "handicap": null,
       "isCommittee": false
     }
   ],
   "Participants": [
     [{
-      "publicName": "diego battisti",
+      "publicName": "Andrea Lacorte",
       "invitationStatus": "SELF_REGISTERED",
       "calendarEventId": "743c7233-6aa7-4739-bd03-61260b6133f1"
     }],
@@ -320,10 +332,10 @@
     "approx_distance_km": 0.03427839491515123,
     "num_boats": 3,
     "avg_time_between_positions": 6000,
-    "boat_models": [],
+    "boat_models": ["49er"],
     "boat_identifiers": [],
     "boat_names": ["Vitamina", "GAC Pindar", "Warrer Racing"],
-    "handicap_rules": [],
+    "handicap_rules": ["ORC"],
     "unstructured_text": []
   }],
   "ElasticSearchBodyUnfinishedRace": {

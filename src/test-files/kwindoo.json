@@ -55,7 +55,7 @@
       "last_name": "battisti",
       "email": "blulagoon78@gmail.com",
       "boat_name": "Vitamina",
-      "sail_number": "",
+      "sail_number": 123,
       "race_number": null,
       "handycap": "",
       "helmsman": "Andrea Lacorte",
@@ -102,7 +102,7 @@
       "handycap": null,
       "helmsman": "Jonas Warrer",
       "owner_name": null,
-      "registry_number": null,
+      "registry_number": 456,
       "not_racer": 0,
       "homeport": null,
       "boat_type_name": "Default catamaran",
@@ -221,12 +221,29 @@
   "KwindooMIA": [],
   "KwindooPOI": [],
   "KwindooPosition": [{"id":"3dd99951-1d80-46ff-864c-0a73478e4b6b","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"8f757096-bda8-4fac-b63a-d251e4b3958c","boat_original_id":"19693","i":90065797,"u":19693,"t":1530192763,"lat":"56.16903190","lon":"10.22997600","b":107.462,"a":10,"d":3050,"s":0,"y":72},{"id":"d12017f3-90c5-4aa3-9286-800333182021","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"8f757096-bda8-4fac-b63a-d251e4b3958c","boat_original_id":"19693","i":90065800,"u":19693,"t":1530192768,"lat":"56.16902540","lon":"10.23001280","b":107.567,"a":10,"d":2929,"s":0,"y":72},{"id":"3fa22c31-818c-44a5-ac66-497c5d6bf302","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"8f757096-bda8-4fac-b63a-d251e4b3958c","boat_original_id":"19693","i":90065803,"u":19693,"t":1530192773,"lat":"56.16899770","lon":"10.23013360","b":112.343,"a":10,"d":2922,"s":2.31225,"y":72},{"id":"ef9af6fa-0c14-47e0-9b98-66f22533eae1","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"8f757096-bda8-4fac-b63a-d251e4b3958c","boat_original_id":"19693","i":90065806,"u":19693,"t":1530192783,"lat":"56.16893360","lon":"10.23044510","b":110.246,"a":10,"d":2904,"s":3.72601,"y":72},{"id":"b433707f-1a87-4f1b-be5b-5e166e13ab13","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"8f757096-bda8-4fac-b63a-d251e4b3958c","boat_original_id":"19693","i":90065809,"u":19693,"t":1530192793,"lat":"56.16887410","lon":"10.23084980","b":104.763,"a":10,"d":2882,"s":4.35535,"y":72},{"id":"6088688a-b5e3-4e52-b45b-fa012e18d771","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"10b32c6d-c36e-467a-8aed-cc5820bd564d","boat_original_id":"22684","i":90065773,"u":22684,"t":1530192757,"lat":"56.16977441","lon":"10.23195229","b":21.4185,"a":4.96009,"d":2918,"s":0.818179,"y":66},{"id":"34dc69bc-f440-4679-80d5-92fc0fbeaafb","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"10b32c6d-c36e-467a-8aed-cc5820bd564d","boat_original_id":"22684","i":90065776,"u":22684,"t":1530192763,"lat":"56.16978774","lon":"10.23195480","b":5.98909,"a":4.07669,"d":2799,"s":0.120876,"y":66},{"id":"2857fd23-74ec-451a-92e9-a69210383382","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"10b32c6d-c36e-467a-8aed-cc5820bd564d","boat_original_id":"22684","i":90065779,"u":22684,"t":1530192768,"lat":"56.16979521","lon":"10.23196668","b":41.5491,"a":4.61116,"d":2798,"s":0.661559,"y":66},{"id":"d4c7d479-86cf-4c71-b7dc-009df5009232","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"10b32c6d-c36e-467a-8aed-cc5820bd564d","boat_original_id":"22684","i":90065782,"u":22684,"t":1530192771,"lat":"56.16980277","lon":"10.23198191","b":48.2743,"a":4.5,"d":2797,"s":0.667916,"y":66},{"id":"30334227-2904-4a1c-961a-9917836c1251","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"10b32c6d-c36e-467a-8aed-cc5820bd564d","boat_original_id":"22684","i":90065785,"u":22684,"t":1530192776,"lat":"56.16981607","lon":"10.23199789","b":33.7733,"a":4.52662,"d":2796,"s":0.720246,"y":66},{"id":"fc285c0a-8c25-452a-9823-460e10a3ccc5","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"649e772d-bb72-4f1c-8ea6-bc436b12b778","boat_original_id":"23314","i":90065821,"u":23314,"t":1530192761,"lat":"56.16854133","lon":"10.23040037","b":123.19,"a":5.5,"d":3038,"s":3.69878,"y":51},{"id":"53f521a1-f803-4ae5-b89e-770c4a1446d8","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"649e772d-bb72-4f1c-8ea6-bc436b12b778","boat_original_id":"23314","i":90065824,"u":23314,"t":1530192766,"lat":"56.16851182","lon":"10.23054724","b":109.843,"a":5.5,"d":2911,"s":3.99197,"y":51},{"id":"073af354-26e4-4858-bf46-c677e22b9c34","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"649e772d-bb72-4f1c-8ea6-bc436b12b778","boat_original_id":"23314","i":90065827,"u":23314,"t":1530192769,"lat":"56.16849162","lon":"10.23063774","b":111.849,"a":5.5,"d":2907,"s":3.37528,"y":51},{"id":"60efe261-423c-4cbd-a7df-741a23955e70","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"649e772d-bb72-4f1c-8ea6-bc436b12b778","boat_original_id":"23314","i":90065830,"u":23314,"t":1530192775,"lat":"56.16845306","lon":"10.23081350","b":111.507,"a":5.5,"d":2898,"s":3.99306,"y":51},{"id":"9de7e167-5778-44df-9ba1-9ae547919429","regatta":"743c7233-6aa7-4739-bd03-61260b6133f1","regatta_original_id":1765,"race":"ae6af6e8-dac5-4139-951f-3ff0039556d6","race_original_id":4750,"boat":"649e772d-bb72-4f1c-8ea6-bc436b12b778","boat_original_id":"23314","i":90065833,"u":23314,"t":1530192780,"lat":"56.16838324","lon":"10.23097880","b":127.183,"a":5.5,"d":2891,"s":3.15532,"y":51}],
-  "KwindooRunningGroup": [{
+  "KwindooRunningGroup": [
+    {
+      "id": "95c2b3aa-4953-4abd-9146-ca9398e1aaf5",
+      "original_id": 5600,
+      "regatta": "743c7233-6aa7-4739-bd03-61260b6133f1",
+      "regatta_original_id": 1765,
+      "name": "49er",
+      "description": ""
+    },
+    {
       "id": "9e92897c-68ee-4def-8bbd-35e9d379d62d",
       "original_id": 283,
       "regatta": "743c7233-6aa7-4739-bd03-61260b6133f1",
       "regatta_original_id": 1765,
       "name": "All classes",
+      "description": ""
+    },
+    {
+      "id": "19dacf32-d167-443a-9de5-ca4602c6b2fe",
+      "original_id": 4670,
+      "regatta": "743c7233-6aa7-4739-bd03-61260b6133f1",
+      "regatta_original_id": 1765,
+      "name": "ORC",
       "description": ""
     }
   ],

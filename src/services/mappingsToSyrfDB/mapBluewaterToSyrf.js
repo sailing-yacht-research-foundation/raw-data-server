@@ -4,6 +4,7 @@ const {
   createGeometryPoint,
   createGeometryLine,
 } = require('../../utils/gisUtils');
+const { getHullsCount } = require('../../utils/utils');
 
 const mapAndSave = async (data, raceMetadata) => {
   if (
@@ -75,20 +76,6 @@ const mapAndSave = async (data, raceMetadata) => {
 const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
   return boats?.map((b) => {
     boatIdToOriginalIdMap[b.original_id] = b.id;
-    let hullsCount;
-    switch (b.type) {
-      case 'monohull':
-        hullsCount = 1;
-        break;
-      case 'catamaran':
-        hullsCount = 2;
-        break;
-      case 'trimaran':
-        hullsCount = 3;
-        break;
-      default:
-        hullsCount = null;
-    }
     const vessel = {
       id: b.id,
       publicName: b.name,
@@ -100,7 +87,7 @@ const _mapBoats = (boats, crews, raceHandicaps, boatIdToOriginalIdMap) => {
       lengthInMeters: b.length,
       widthInMeters: b.width,
       draftInMeters: b.draft,
-      hullsCount,
+      hullsCount: getHullsCount(b.type),
     };
     if (b.units === 'feet') {
       vessel.lengthInMeters =

@@ -29,6 +29,7 @@ const mapGeovoileToSyrf = async (data, raceMetadata) => {
   const rankings = _mapRankings(data.boats, data.geovoileRace);
 
   return await saveCompetitionUnit({
+    event: data.geovoileEvent,
     race: data.geovoileRace,
     boats: inputBoats,
     positions: inputPositions,
@@ -36,6 +37,7 @@ const mapGeovoileToSyrf = async (data, raceMetadata) => {
     courseSequencedGeometries,
     rankings,
     reuse: {
+      event: true,
       boats: true,
     },
   });
@@ -49,6 +51,9 @@ const _mapBoats = (boats, sailors, boatIdToOriginalIdMap) => {
       publicName: b.name || b.short_name,
       vesselId: b.original_id,
       isCommittee: false,
+      hullsCount: b.hulls,
+      hullColorAboveWaterline: b.hullColor,
+      hullColorBelowWaterline: b.hullColors?.filter(Boolean).join(','),
     };
 
     // Boat Crew
@@ -56,7 +61,9 @@ const _mapBoats = (boats, sailors, boatIdToOriginalIdMap) => {
       ?.filter((c) => c.boat_id === b.id)
       .map((c) => ({
         id: c.id,
-        publicName: c.short_name,
+        publicName:
+          [c.first_name, c.last_name].filter(Boolean).join(' ').trim() ||
+          c.short_name?.trim(),
       }));
 
     return vessel;
