@@ -1,6 +1,7 @@
 {
   "CalendarEvent": {
     "name": "SuperKaagCup",
+    "description": "KWV De Kaag",
     "externalUrl": "http://app.i-sail.com/eventDetails/344",
     "locationName": "De Kaag",
     "isPrivate": false,

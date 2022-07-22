@@ -31,6 +31,7 @@ const mapAndSave = async (data, raceMetadatas) => {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
+      description: e.club?.trim(),
       url: e.url,
       locationName: e.location,
       approxStartTimeMs: starTimeObj.getTime(),
