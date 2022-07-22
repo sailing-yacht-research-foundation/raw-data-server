@@ -6,7 +6,7 @@ describe('utils.js', () => {
       expect(utils.getHullsCount('monohull')).toBe(1);
     });
     it('should return 2 if type is catamaran', () => {
-      expect(utils.getHullsCount('catamaran')).toBe(2);
+      expect(utils.getHullsCount('Catamaran')).toBe(2);
     });
     it('should return 3 if type is trimaran', () => {
       expect(utils.getHullsCount('trimaran')).toBe(3);

@@ -1,6 +1,6 @@
 exports.getHullsCount = (type) => {
   let hullsCount;
-  switch (type) {
+  switch (type?.toLowerCase()) {
     case 'monohull':
       hullsCount = 1;
       break;
