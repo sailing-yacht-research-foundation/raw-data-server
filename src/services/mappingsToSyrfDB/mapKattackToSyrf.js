@@ -79,7 +79,7 @@ const _mapPositions = (positions, deviceMarks) => {
       timestamp: p.time,
       lon: p.lon,
       lat: p.lat,
-      cog: p.heading_deg,
+      heading: p.heading_deg,
       sog: p.speed_kts,
       vesselId: p.device,
     };

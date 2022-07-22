@@ -9,8 +9,6 @@ const JSONStream = require('JSONStream');
 const temp = require('temp');
 
 async function gunzipFile(sourceStream, destinationStream) {
-  //   const fileContents = fs.createReadStream(sourcePath);
-  //   const writeStream = fs.createWriteStream(destinationPath);
   return new Promise((resolve, reject) => {
     const errorHandler = (err) => {
       destinationStream.destroy();
@@ -76,15 +74,24 @@ async function unzipFileFromRequest(req) {
   try {
     if (req.file.mimetype === 'application/gzip') {
       console.log('Got gzip file');
-      unzippedJsonPath = (await temp.open('georacing')).path;
-      const sourceStream = fs.createReadStream(req.file.path);
-      const writeStream = fs.createWriteStream(unzippedJsonPath);
-      await gunzipFile(sourceStream, writeStream);
-      fs.unlink(req.file.path, (err) => {
-        if (err) {
-          console.log('error deleting: ', err);
-        }
-      });
+      const tempRes = await temp.openSync('rds-uploaded-json');
+      unzippedJsonPath = tempRes.path;
+      try {
+        const sourceStream = fs.createReadStream(req.file.path);
+        const writeStream = fs.createWriteStream(unzippedJsonPath);
+        await gunzipFile(sourceStream, writeStream);
+      } finally {
+        fs.close(tempRes.fd, (err) => {
+          if (err) {
+            console.log('error closing file: ', err);
+          }
+        });
+        fs.unlink(req.file.path, (err) => {
+          if (err) {
+            console.log('error deleting: ', err);
+          }
+        });
+      }
     }
 
     const jsonData = {};

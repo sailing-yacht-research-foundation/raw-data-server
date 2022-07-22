@@ -70,6 +70,7 @@ const saveCompetitionUnit = async ({
       event?.id,
       {
         name: event?.name,
+        description: event?.description,
         locationName: event?.locationName,
         externalUrl: event?.url,
         approximateStartTime:
@@ -130,12 +131,19 @@ const saveCompetitionUnit = async ({
         id: boat.id,
         publicName: boat.name || boat.publicName,
         globalId: boat.globalId,
+        sailNumber: boat.sailNumber,
         vesselId: boat.vesselId,
         model: boat.model,
+        mmsi: boat.mmsi,
         lengthInMeters: boat.lengthInMeters,
         widthInMeters: boat.widthInMeters,
         draftInMeters: boat.draftInMeters,
         handicap: boat.handicap,
+        hullsCount: boat.hullsCount,
+        hullColorAboveWaterline: boat.hullColorAboveWaterline,
+        hullColorBelowWaterline: boat.hullColorBelowWaterline,
+        homeport: boat.homeport,
+        onboardEmail: boat.onboardEmail,
         source,
       });
 
@@ -147,6 +155,7 @@ const saveCompetitionUnit = async ({
         vesselId: boat.id,
         vesselParticipantGroupId: vesselGroup.id,
         handicap: boatHandicap,
+        sailNumber: boat.sailNumber,
         isCommittee: boat.isCommittee,
       });
       if (boat.crews) {
@@ -229,6 +238,7 @@ const saveCompetitionUnit = async ({
       raceId,
       {
         name: race.name || name,
+        description: race.description,
         approximateStartLocation: approxStartPoint,
         approximateEndLocation: approxEndPoint,
         startTime: approxStartTimeMs,
@@ -336,16 +346,7 @@ const saveCompetitionUnit = async ({
       tracker?.addNewPosition(
         [+position.lon, +position.lat],
         +position.timestamp,
-        {
-          altitude: position.altitude,
-          cog: position.cog,
-          sog: position.sog,
-          twa: position.twa,
-          windSpeed: position.windSpeed,
-          windDirection: position.windDirection,
-          vmc: position.vmc,
-          vmg: position.vmg,
-        },
+        position,
       );
     }
 

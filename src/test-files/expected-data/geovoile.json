@@ -1,5 +1,8 @@
 {
   "CalendarEvent": {
+    "name": "Solitaire du Figaro 2021",
+    "externalUrl": "http://lasolitaire.geovoile.com/2021/tracker/",
+    "scrapedOriginalId": "http://lasolitaire.geovoile.com/2021/tracker/",
     "isPrivate": false,
     "isOpen": false,
     "country": "France",
@@ -29,7 +32,7 @@
     }
   },
   "CompetitionUnit": {
-    "name": "Solitaire du Figaro 2021",
+    "name": "Solitaire du Figaro 2021 - Leg 4",
     "startTime": 1631448000000,
     "approximateStartLocation": {
       "type": "Point",
@@ -77,12 +80,19 @@
       "id": "daaeb5fb-4b7f-478a-bd97-1fc5e025c7d1",
       "publicName": "Breizh Cola",
       "vesselId": "44",
-      "source": "GEOVOILE"
-    }, {
+      "source": "GEOVOILE",
+      "hullsCount": 1,
+      "hullColorAboveWaterline": "000000",
+      "hullColorBelowWaterline": "000000,A6D44C"
+    },
+    {
       "id": "55693906-43b4-431e-ba4f-0995d4433dde",
       "publicName": "Ageas - Team Baie de Saint Brieuc",
       "vesselId": "14",
-      "source": "GEOVOILE"
+      "source": "GEOVOILE",
+      "hullsCount": 1,
+      "hullColorAboveWaterline": "FFFFFF",
+      "hullColorBelowWaterline": "FFFFFF,00C7FC,00C7FC"
     }
   ],
   "VesselParticipants": [
@@ -97,17 +107,19 @@
   "Participants": [
     [{
       "id": "bd0cbe8b-b129-4f91-b5d2-59e3e6eee948",
-      "publicName": "G.Mahé",
-      "invitationStatus": "SELF_REGISTERED"
+      "publicName": "Gildas Mahé",
+      "invitationStatus": "SELF_REGISTERED",
+      "calendarEventId": "06bb35f0-d867-4468-952c-04deccb39752"
     }],
     [{
       "id": "bc90f993-0b7e-4083-8e6e-e13bdf494d68",
-      "publicName": "M.Garnier",
-      "invitationStatus": "SELF_REGISTERED"
+      "publicName": "Maël Garnier",
+      "invitationStatus": "SELF_REGISTERED",
+      "calendarEventId": "06bb35f0-d867-4468-952c-04deccb39752"
     }]
   ],
   "Course": {
-    "name": "Solitaire du Figaro 2021",
+    "name": "Solitaire du Figaro 2021 - Leg 4",
     "courseSequencedGeometries": [{
         "geometryType": "Point",
         "properties": {
@@ -210,7 +222,7 @@
   ],
   "ElasticSearchBody": {
     "id": "295c5217-6677-4bb7-827c-fb1a55ccfb09",
-    "name": "Solitaire du Figaro 2021",
+    "name": "Solitaire du Figaro 2021 - Leg 4",
     "event": null,
     "event_name": null,
     "source": "GEOVOILE",
@@ -275,7 +287,7 @@
   },
   "ElasticSearchBodyUnfinishedRace": {
     "id": "295c5217-6677-4bb7-827c-fb1a55ccfb09",
-    "name": "Solitaire du Figaro 2021",
+    "name": "Solitaire du Figaro 2021 - Leg 4",
     "source": "GEOVOILE",
     "url": "http://lasolitaire.geovoile.com/2021/tracker/",
     "start_year": 2021,

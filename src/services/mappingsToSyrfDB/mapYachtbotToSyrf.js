@@ -69,12 +69,10 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap, boatMetaDataMap) => {
     const vessel = {
       id: b.id,
       publicName: b.name,
+      globalId: b.boat_number,
+      sailNumber: b.boat_number,
       vesselId: `${b.original_id?.toString()}-${b.original_object_id}`,
-      globalId: b.sail,
       model: b.model,
-      lengthInMeters: null,
-      widthInMeters: null,
-      draftInMeters: null,
     };
 
     _mapMetadata(boatMetaDataMap, b);
@@ -95,7 +93,6 @@ const _mapBoats = (yachtBotYacht, boatIdToOriginalIdMap, boatMetaDataMap) => {
     } catch (err) {
       console.log('Invalid crew object. Skipping crews.');
     }
-    vessel.handicap = {};
     return vessel;
   });
 };
@@ -119,8 +116,8 @@ const _mapPositions = (yachtBotPosition, boatMetaDataMap) => {
       cog: metadata?.cog?.[t.time],
       sog: metadata?.sog?.[t.time],
       twa: metadata?.twa?.[t.time],
-      windSpeed: metadata?.awa?.[t.time],
-      windDirection: metadata?.aws?.[t.time],
+      windSpeed: metadata?.tws?.[t.time],
+      heading: metadata?.hdg?.[t.time],
     };
   });
 };
@@ -260,6 +257,7 @@ const _mapSequencedGeometries = (
           lon,
           properties: {
             name: currentBuoy.name?.trim(),
+            type: currentBuoy.buoy_type,
           },
           markTrackerId: currentBuoy.markTrackerId,
         }),
@@ -298,6 +296,7 @@ const _mapSequencedGeometries = (
         },
         {
           name: currentBuoy.name?.trim(),
+          type: currentBuoy.buoy_type,
         },
       ),
       order: order,

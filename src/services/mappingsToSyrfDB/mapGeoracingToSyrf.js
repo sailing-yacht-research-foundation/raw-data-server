@@ -14,6 +14,7 @@ const mapAndSave = async (data, raceMetadatas) => {
       id: e.id,
       original_id: e.original_id,
       name: e.name || e.short_name,
+      description: e.short_description || e.description_en || e.description_fr,
       approxStartTimeMs: new Date(e.start_time)?.getTime(),
       approxEndTimeMs: new Date(e.end_time)?.getTime(),
     };
@@ -93,7 +94,8 @@ const mapAndSave = async (data, raceMetadatas) => {
     const inputRace = {
       id: race.id,
       original_id: race.original_id,
-      name: race.name,
+      name: race.name || race.short_name,
+      description: race.short_description,
       url: race.url,
       scrapedUrl: event.url,
     };
@@ -121,16 +123,43 @@ const mapAndSave = async (data, raceMetadatas) => {
 };
 
 const _mapBoats = (boats) => {
-  return boats
-    ?.map((b) => ({
-      id: b.id,
-      publicName: b.name,
-      globalId: b.start_number,
-      vesselId: b.original_id,
-      model: b.model,
-      lengthInMeters: b.size,
-    }))
-    .filter((b) => !b.name); // Exclude boats without name. They are not in the race
+  return (
+    boats?.reduce((acc, b) => {
+      if (!b.name) {
+        // Exclude boats without name. They are not in the race
+        return acc;
+      }
+      const vessel = {
+        id: b.id,
+        publicName: b.name,
+        globalId: b.start_number,
+        sailNumber: b.start_number,
+        vesselId: b.original_id,
+        model: b.model,
+        lengthInMeters: b.size,
+        isCommittee: b.type === 'tracked_object',
+      };
+
+      // Boat Crew
+      const crewName = (b.members || b.team)?.trim();
+      if (crewName) {
+        vessel.crews = [
+          {
+            publicName: crewName,
+          },
+        ];
+      }
+
+      // Handicap
+      if (b.rating) {
+        vessel.handicap = {
+          rating: b.rating,
+        };
+      }
+      acc.push(vessel);
+      return acc;
+    }, []) || []
+  );
 };
 
 const _mapPositions = (positions) => {
@@ -142,7 +171,7 @@ const _mapPositions = (positions) => {
           lon: p.lon,
           lat: p.lat,
           altitude: p.al,
-          cog: p.h,
+          heading: p.h,
           sog: p.s,
           vesselId: p.trackable_id,
         };

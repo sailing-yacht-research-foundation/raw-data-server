@@ -15,7 +15,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: password
-      DB_NAME: sources
+      DB_NAME: syrfbackend
       MAPBOX_API_KEY: ${MAPBOX_API_KEY}
       MAPBOX_ID: ${MAPBOX_ID}
       OPEN_GRAPH_BUCKET_NAME: ${OPEN_GRAPH_BUCKET_NAME}

@@ -1,4 +1,10 @@
 {
+  "geovoileEvent": {
+    "id": "06bb35f0-d867-4468-952c-04deccb39752",
+    "original_id": "http://lasolitaire.geovoile.com/2021/tracker/",
+    "name": "Solitaire du Figaro 2021",
+    "url": "http://lasolitaire.geovoile.com/2021/tracker/"
+  },
   "geovoileRace": {
     "legNum": 4,
     "numLegs": 4,
@@ -7,7 +13,7 @@
     "startTime": 1631448000,
     "endTime": 1632042102,
     "eventState": "FINISH",
-    "name": "Solitaire du Figaro 2021",
+    "name": "Solitaire du Figaro 2021 - Leg 4",
     "isGame": false,
     "url": "http://lasolitaire.geovoile.com/2021/tracker/",
     "scrapedUrl": "http://lasolitaire.geovoile.com/2021/tracker/",

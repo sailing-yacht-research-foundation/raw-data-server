@@ -31,6 +31,7 @@ const mapAndSave = async (data, raceMetadatas) => {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
+      description: e.club?.trim(),
       url: e.url,
       locationName: e.location,
       approxStartTimeMs: starTimeObj.getTime(),
@@ -146,6 +147,7 @@ const _mapBoats = (boats) => {
       id: b.id,
       publicName: b.name,
       globalId: b.sail_no,
+      sailNumber: b.sail_no,
       vesselId: b.original_id,
       model: b.class_name,
     };
@@ -158,7 +160,7 @@ const _mapPositions = (positions) => {
     timestamp: p.time,
     lon: p.lon,
     lat: p.lat,
-    cog: p.heading,
+    heading: p.heading,
     sog: p.speed,
     vesselId: p.participant,
   }));

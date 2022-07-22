@@ -110,7 +110,7 @@ describe('Storing geovoile data to DB', () => {
     await saveGeovoileData(jsonData);
     const race = jsonData.geovoileRace;
     expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
-      undefined,
+      jsonData.geovoileEvent.id,
       expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );

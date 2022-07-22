@@ -3,6 +3,7 @@ const {
   createGeometryPoint,
   createGeometryLine,
 } = require('../../utils/gisUtils');
+const { getHullsCount } = require('../../utils/utils');
 
 const mapAndSave = async (data, raceMetadatas) => {
   if (
@@ -25,12 +26,20 @@ const mapAndSave = async (data, raceMetadatas) => {
   console.log('Saving to main database');
   // event
   const event = data.KwindooRegatta.map((e) => {
+    const eventDescription = data.KwindooRunningGroup?.reduce((acc, rg) => {
+      if (rg.regatta === e.id && rg.name.trim()) {
+        acc.push(rg.name.trim());
+      }
+      return acc;
+    }, [])?.join(', ');
     return {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
-      approxStartTimeMs: new Date(e.start_timestamp)?.getTime(),
-      approxEndTimeMs: new Date(e.end_timestamp)?.getTime(),
+      description: eventDescription,
+      approxStartTimeMs: new Date(e.first_start_time + '+0')?.getTime(),
+      approxEndTimeMs: new Date(e.last_end_time + '+0')?.getTime(),
+      url: `https://www.kwindoo.com/tracking/${e.original_id}-${e.name_slug}`,
     };
   })[0];
 
@@ -58,12 +67,25 @@ const mapAndSave = async (data, raceMetadatas) => {
       data.KwindooMarker?.filter((w) => w.race === race.id),
     );
 
+    let raceDescription;
+    try {
+      const raceRunningGroupIds = JSON.parse(race.running_group_ids);
+      raceDescription = data.KwindooRunningGroup?.reduce((acc, rg) => {
+        if (raceRunningGroupIds.includes(rg.original_id) && rg.name.trim()) {
+          acc.push(rg.name.trim());
+        }
+        return acc;
+      }, [])?.join(', ');
+    } catch (e) {
+      console.log('Invalid race running group ids', e);
+    }
+
     const inputRace = {
       id: race.id,
       original_id: race.original_id,
       name: race.name,
+      description: raceDescription,
       url: race.url,
-      scrapedUrl: event.url,
     };
     const cu = await saveCompetitionUnit({
       event,
@@ -76,6 +98,18 @@ const mapAndSave = async (data, raceMetadatas) => {
         event: true,
         boat: true,
       },
+      competitionUnitData: {
+        handicap: data.KwindooRunningGroup
+          ? [
+              ...data.KwindooRunningGroup.reduce((acc, h) => {
+                if (['ORC', 'PHRF'].includes(h.name)) {
+                  acc.add(h.name);
+                }
+                return acc;
+              }, new Set()),
+            ]
+          : null,
+      },
     });
     savedCompetitionUnits.push(cu);
   }
@@ -84,22 +118,27 @@ const mapAndSave = async (data, raceMetadatas) => {
 
 const _mapBoats = (boats) => {
   return boats?.map((b) => {
-    const crewName = [b.first_name, b.last_name]
+    const fullName = [b.first_name, b.last_name]
       .filter(Boolean)
       .join(' ')
       .trim();
 
     const vessel = {
       id: b.id,
-      publicName: b.boat_name || crewName,
-      globalId: b.sail_number,
+      publicName: b.boat_name || fullName || b.helmsman,
+      globalId: b.sail_number || b.registry_number,
+      sailNumber: b.sail_number || b.registry_number,
       vesselId: b.original_id,
       model: b.boat_type_alias,
       handicap: b.handycap ? { handicap: b.handycap } : null,
       isCommittee: b.not_racer?.toString() === '1',
+      onboardEmail: b.email,
+      homeport: b.homeport,
+      hullsCount: getHullsCount(b.boat_type_alias),
     };
 
     // Boat Crew
+    const crewName = b.helmsman || fullName;
     if (crewName) {
       vessel.crews = [
         {
@@ -119,7 +158,7 @@ const _mapPositions = (positions) => {
         timestamp: +p.t * 1000,
         lon: +p.lon,
         lat: +p.lat,
-        cog: p.b,
+        heading: p.b,
         sog: p.s,
         vesselId: p.boat,
       };

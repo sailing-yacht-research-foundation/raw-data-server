@@ -20,6 +20,7 @@
   },
   "CompetitionUnit": {
     "name": "Regata Diumenge 11-04-2021",
+    "description": "Club de Vela Sant Antoni\nhttps://www.pativelabarcelona.com",
     "startTime": 1618136700000,
     "approximateStartLocation": {
       "type": "Point",
@@ -65,13 +66,16 @@
   "Vessels": [{
     "id": "958072bf-e1a3-48f4-8cf3-08bd62e1e677",
     "publicName": "AG Sailing",
-    "globalId": "",
+    "globalId": "11",
+    "sailNumber": "11",
+    "mmsi": "5",
     "vesselId": "jbqgw",
     "model": "",
     "source": "ESTELA"
   }],
   "VesselParticipants": [{
     "vesselId": "958072bf-e1a3-48f4-8cf3-08bd62e1e677",
+    "sailNumber": "11",
     "isCommittee": false
   }],
   "Participants": [
@@ -159,7 +163,7 @@
     "num_boats": 1,
     "avg_time_between_positions": 500,
     "boat_models": [],
-    "boat_identifiers": [],
+    "boat_identifiers": ["5", "11"],
     "boat_names": ["AG Sailing"],
     "handicap_rules": [],
     "unstructured_text": []
