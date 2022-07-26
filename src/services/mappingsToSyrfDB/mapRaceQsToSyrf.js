@@ -24,6 +24,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
       id: e.id,
       original_id: e.original_id.toString(),
       name: e.name,
+      description: e.contactor_name?.trim(),
       url: e.url,
     };
   })[0];
@@ -93,6 +94,7 @@ const mapRaceQsToSyrf = async (data, raceMetadatas) => {
           url: raceQsEvent.url,
           scrapedUrl: raceQsEvent.url,
           name: raceName,
+          description: start?.type,
         },
         boats: inputBoats,
         positions,
@@ -211,7 +213,13 @@ const _mapSequencedGeometries = (
         ...gisUtils.createGeometryPoint({
           lat: waypoint.lat,
           lon: waypoint.lon,
-          properties: { name: waypoint.name },
+          properties: Object.assign(
+            {
+              name: waypoint.name,
+              type: waypoint.type,
+            },
+            waypoint.boat_model ? { boatModel: waypoint.boat_model } : {},
+          ),
         }),
         order: route.sqk,
       });
@@ -223,10 +231,13 @@ const _mapSequencedGeometries = (
             lon: waypoint.lon,
           },
           { lat: waypoint.lat2, lon: waypoint.lon2 },
-          {
-            name: waypoint.name,
-            type: waypoint.type?.toLowerCase(),
-          },
+          Object.assign(
+            {
+              name: waypoint.name,
+              type: waypoint.type,
+            },
+            waypoint.boat_model ? { boatModel: waypoint.boat_model } : {},
+          ),
         ),
         order: route.sqk,
       });

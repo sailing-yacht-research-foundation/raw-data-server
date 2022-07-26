@@ -139,6 +139,7 @@ const saveCompetitionUnit = async ({
         widthInMeters: boat.widthInMeters,
         draftInMeters: boat.draftInMeters,
         handicap: boat.handicap,
+        deckColor: boat.deckColor,
         hullsCount: boat.hullsCount,
         hullColorAboveWaterline: boat.hullColorAboveWaterline,
         hullColorBelowWaterline: boat.hullColorBelowWaterline,
