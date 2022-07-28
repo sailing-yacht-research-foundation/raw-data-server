@@ -61,6 +61,10 @@ const mapTackTrackerToSyrf = async (data, raceMetadata) => {
       id: race.id,
       original_id: race.original_id,
       name: race.name,
+      description: [race.type, race.course, race.event_notes, race.course_notes]
+        .filter(Boolean)
+        .join('\n')
+        .substr(0, 1000),
       url: race.url,
       scrapedUrl: race.url,
     },
@@ -89,6 +93,7 @@ const _mapBoats = (boats) => {
       vesselId: b.id,
       model: b.unknown_4,
       isCommittee: b.unknown_4 === 'Spectator',
+      deckColor: b.color,
     };
     inputBoats.push(vessel);
   }

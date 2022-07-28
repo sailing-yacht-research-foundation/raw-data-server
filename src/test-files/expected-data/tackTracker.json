@@ -32,6 +32,7 @@
   },
   "CompetitionUnit": {
     "name": "Flight 45 Finals",
+    "description": "YachtRace\n\"1 2 C1\"\n{\"Notes\":{}}\n{\"Leg\":\"0\",\"Notes\":{}}",
     "startTime": 1436707216000,
     "approximateStartLocation": {
       "type": "Point",
@@ -80,13 +81,15 @@
     "publicName": "2 DIN Ulrikkeholm",
     "vesselId": "9c2e6bdd-149d-40fb-9cf5-649d6ad681a8",
     "model": "SmallMono",
-    "source": "TACKTRACKER"
+    "source": "TACKTRACKER",
+    "deckColor": "Blue"
   }, {
     "id": "e84337f9-9803-406d-8a78-16eb616f2f79",
     "publicName": "2 JB1 Meldgaard",
     "vesselId": "e84337f9-9803-406d-8a78-16eb616f2f79",
     "model": "SmallMono",
-    "source": "TACKTRACKER"
+    "source": "TACKTRACKER",
+    "deckColor": "Yellow"
   }],
   "VesselParticipants": [{
     "vesselId": "9c2e6bdd-149d-40fb-9cf5-649d6ad681a8",

@@ -17,6 +17,9 @@ const mapMetasailToSyrf = async (data, raceMetadatas) => {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
+      description: [e.category_text, e.external_website]
+        .filter(Boolean)
+        .join('\n'),
       url: e.url,
       approxStartTimeMs: e.start * 1000,
       approxEndTimeMs: e.end * 1000,
