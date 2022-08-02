@@ -3,6 +3,11 @@ const syrfDb = require('../src/syrf-schema');
 const { SOURCE } = require('../src/constants');
 const elasticsearch = require('../src/utils/elasticsearch');
 
+/**
+ * This script updates elastic search event ids so it is the same as in the DB.
+ * The script also deletes dangling races in elastic search not existing in DB.
+ *
+ */
 (async () => {
   const failedIds = [];
   // Sources that reuses event ids
