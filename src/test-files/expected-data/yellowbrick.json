@@ -30,6 +30,7 @@
   },
   "CompetitionUnit": {
     "name": "Class 40 B",
+    "description": "Please refer to official website for results!\n#CorsicaMed2022 #corsicamed2022_32\n[\"CorsicaMedOverall\",\"CorsicaMed22\",\"CorsicaMed2022_3\",\"CorsicaMed2022_1\",\"CorsicaMed2022_A\",\"CorsicaMed2022_12\",\"CorsicaMed2022_32\",\"CorsicaMed2022_B\"]",
     "startTime": 1651825845000,
     "approximateStartLocation": {
       "type": "Point",
@@ -78,7 +79,7 @@
       "publicName": "FULLSAVE",
       "globalId": "FRA148",
       "sailNumber": "FRA148",
-      "vesselId": "1",
+      "vesselId": "FULLSAVE|FRA148",
       "model": "CLASS40",
       "handicap": {
         "tcf1": 1,
@@ -91,7 +92,7 @@
       "publicName": "HBF REFOREST'ACTION",
       "globalId": "FRA142",
       "sailNumber": "FRA142",
-      "vesselId": "2",
+      "vesselId": "HBF REFOREST'ACTION|FRA142",
       "model": "CLASS40",
       "handicap": {
         "tcf1": 1,
@@ -104,7 +105,7 @@
       "publicName": "PRENDRE LA MER, AGIR POUR LA FORET",
       "globalId": "FRA89",
       "sailNumber": "FRA89",
-      "vesselId": "3",
+      "vesselId": "PRENDRE LA MER, AGIR POUR LA FORET|FRA89",
       "model": "CLASS40",
       "handicap": {
         "tcf1": 1,

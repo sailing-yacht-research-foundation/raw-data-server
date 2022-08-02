@@ -21,7 +21,7 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
       original_id: e.original_id,
       name: e.name,
       url: e.web_url,
-      locationName: e.city,
+      locationName: [e.city, e.country].filter(Boolean).join(', '),
       approxStartTimeMs: starTimeObj.getTime(),
       approxEndTimeMs: stopTimeObj.getTime(),
     };
@@ -102,10 +102,11 @@ const _mapBoats = (boats, boatIdToOriginalIdMap) => {
     boatIdToOriginalIdMap[b.original_id] = b.id;
     const vessel = {
       id: b.id,
-      publicName: b.name,
+      publicName: b.name || b.short_name,
       vesselId: b.original_id,
       model: b.class_name,
       handicap: {},
+      isCommittee: b.non_competing?.toString() === '1',
     };
 
     for (const key of Object.keys(b)) {

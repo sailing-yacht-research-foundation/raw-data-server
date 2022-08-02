@@ -29,6 +29,9 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     race: {
       original_id: race.race_code,
       name: race.title,
+      description: [race.motd?.trim(), race.hashtag?.trim(), race.associated]
+        .filter(Boolean)
+        .join('\n'),
       url: race.url,
     },
     boats: inputBoats,
@@ -37,6 +40,9 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     courseSequencedGeometries,
     rankings,
     handicapMap,
+    reuse: {
+      boats: true,
+    },
     competitionUnitData: {
       handicap: data.YellowbrickTag
         ? [
@@ -57,8 +63,9 @@ const _mapBoats = (yellowbrickTeam, boatIdToOriginalIdMap) => {
     boatIdToOriginalIdMap[b.original_id] = b.id;
     const vessel = {
       id: b.id,
-      publicName: b.name,
-      vesselId: b.original_id?.toString(),
+      publicName: b.name?.trim(),
+      vesselId:
+        [b.name?.trim(), b.sail?.trim()].join('|') || b.original_id?.toString(),
       globalId: b.sail,
       sailNumber: b.sail,
       model: b.model,

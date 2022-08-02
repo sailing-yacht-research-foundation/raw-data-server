@@ -109,7 +109,7 @@ describe('Storing yellowbrick data to DB', () => {
       expect.anything(),
     );
     expect(vesselParticipantGroupUpsertSpy).toHaveBeenCalledTimes(1);
-    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(0);
+    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(1);
     expect(vesselBulkCreateSpy).toHaveBeenCalledWith(
       expectedJsonData.Vessels.map((v) => expect.objectContaining(v)),
       expect.anything(),
