@@ -11,6 +11,7 @@ const {
 } = require('../../utils/gisUtils');
 
 const normalizeRace = async ({
+  YellowbrickEvent,
   YellowbrickRace,
   YellowbrickPosition,
   YellowbrickCourseNode,
@@ -25,6 +26,7 @@ const normalizeRace = async ({
     throw new Error('No race or positions so skipping.');
   }
   const YELLOWBRICK_SOURCE = 'YELLOWBRICK';
+  const event = YellowbrickEvent?.[0];
   const race = YellowbrickRace[0];
   const allPositions = YellowbrickPosition;
   const nodes = YellowbrickCourseNode;
@@ -95,8 +97,8 @@ const normalizeRace = async ({
   return await createRace(
     id,
     name,
-    null, // event name
-    null, // event id
+    event?.name,
+    event?.id,
     YELLOWBRICK_SOURCE,
     url,
     startTime,

@@ -1,4 +1,10 @@
 {
+  "YellowbrickEvent": [{
+    "id": "9679c8d9-6218-4dc3-af31-d51b379d4a72",
+    "name": "Corsica Med 2022",
+    "description": "This annual transatlantic rally starting each November in Las Palmas de Gran Canaria, has now become the most popular way to cross the Atlantic. The largest transocean sailing event in the world, every year the ARC brings together over 200 yachts from all over the world. The Caribbean destination is Rodney Bay in Saint Lucia, one of the most beautiful islands in the Lesser Antilles. The 2700 nautical mile passage on the NE tradewind route takes on average between 14 and 21 days.",
+    "original_id": "2254"
+  }],
   "YellowbrickRace": [{
       "id": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
       "tz": "CEST",

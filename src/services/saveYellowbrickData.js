@@ -6,7 +6,11 @@ const { getUnfinishedRaceStatus } = require('../utils/competitionUnitUtil');
 const mapYellowBrickToSyrf = require('../services/mappingsToSyrfDB/mapYellowBrickToSyrf');
 const elasticsearch = require('../utils/elasticsearch');
 const { getTrackerLogoUrl } = require('../utils/s3Util');
-const { createTurfPoint, getCountryAndCity } = require('../utils/gisUtils');
+const {
+  generateMetadataName,
+  createTurfPoint,
+  getCountryAndCity,
+} = require('../utils/gisUtils');
 
 const saveYellowbrickData = async (data) => {
   let errorMessage = '';
@@ -66,8 +70,10 @@ const saveYellowbrickData = async (data) => {
 };
 
 const _indexUnfinishedRaceToES = async (race, data) => {
+  const event = data.YellowbrickEvent?.[0];
   const startTimeMs = race.start * 1000;
   const startDate = new Date(startTimeMs);
+  const name = generateMetadataName(event?.name, race.title, startTimeMs);
   const startCourseNode = data.YellowbrickCourseNode?.find(
     (n) => n.order?.toString() === '1',
   );
@@ -84,7 +90,8 @@ const _indexUnfinishedRaceToES = async (race, data) => {
 
   const body = {
     id: race.id,
-    name: race.title,
+    name,
+    event_name: event?.name,
     source: SOURCE.YELLOWBRICK,
     url: race.url,
     start_year: startDate.getUTCFullYear(),
