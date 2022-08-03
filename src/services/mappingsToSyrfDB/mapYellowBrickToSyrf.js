@@ -24,14 +24,25 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     data.YellowbrickLeaderboardTeam,
   );
 
+  const event = data.YellowbrickEvent?.[0];
+
   const race = data.YellowbrickRace[0];
+  let raceDescription = [
+    race.motd?.trim(),
+    race.hashtag?.trim(),
+    race.associated,
+  ]
+    .filter(Boolean)
+    .join('\n');
+  if (!raceDescription || raceDescription === '[]') {
+    raceDescription = event?.description;
+  }
   return await saveCompetitionUnit({
+    event,
     race: {
       original_id: race.race_code,
       name: race.title,
-      description: [race.motd?.trim(), race.hashtag?.trim(), race.associated]
-        .filter(Boolean)
-        .join('\n'),
+      description: raceDescription,
       url: race.url,
     },
     boats: inputBoats,
@@ -41,6 +52,7 @@ const mapYellowBrickToSyrf = async (data, raceMetadata) => {
     rankings,
     handicapMap,
     reuse: {
+      events: true,
       boats: true,
     },
     competitionUnitData: {

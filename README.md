@@ -29,8 +29,6 @@ Server that will be used to transform data to parquet format and perform bulk sa
 | AWS_S3_SECRET_ACCESS_KEY | string | N/A     | AWS Secret Key for the associated access key             |
 | AWS_S3_BUCKET            | string | N/A     | AWS S3 bucket name                                       |
 
-- Run `scripts/initdb.sql` to install test database. This is unnecessary if `docker-compose up` is executed.
-
 ## Init the submodules (syrf-schema)
 1. Initialize git submodule by running `git submodule init` and `git submodule update`. We will clone the syrf-schema (schema of main database into src/syrf-schema)
 2. Adding configuration for main database from .env.example. We will have 2 databases in raw-data-server.

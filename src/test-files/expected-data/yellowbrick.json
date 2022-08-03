@@ -1,11 +1,14 @@
 {
   "CalendarEvent": {
+    "name": "Corsica Med 2022",
+    "description": "This annual transatlantic rally starting each November in Las Palmas de Gran Canaria, has now become the most popular way to cross the Atlantic. The largest transocean sailing event in the world, every year the ARC brings together over 200 yachts from all over the world. The Caribbean destination is Rodney Bay in Saint Lucia, one of the most beautiful islands in the Lesser Antilles. The 2700 nautical mile passage on the NE tradewind route takes on average between 14 and 21 days.",
     "isPrivate": false,
     "isOpen": false,
     "country": "France",
     "city": "Rogliano",
     "source": "YELLOWBRICK",
     "openGraphImage": "mockLocation",
+    "scrapedOriginalId": "2254",
     "status": "COMPLETED",
     "approximateStartTime": 1651825845000,
     "approximateStartTime_zone": "Etc/UTC",
@@ -153,7 +156,7 @@
     ]
   ],
   "Course": {
-    "name": "Class 40 B",
+    "name": "Corsica Med 2022 - Class 40 B",
     "courseSequencedGeometries": [{
         "geometryType": "Point",
         "properties": {},
@@ -352,7 +355,9 @@
   ],
   "ElasticSearchBody": {
     "id": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
-    "name": "Class 40 B",
+    "name": "Corsica Med 2022 - Class 40 B",
+    "event": "9679c8d9-6218-4dc3-af31-d51b379d4a72",
+    "event_name": "Corsica Med 2022",
     "source": "YELLOWBRICK",
     "url": "https://yb.tl/corsicamed2022_32",
     "start_country": "France",
@@ -415,7 +420,8 @@
   },
   "ElasticSearchBodyUnfinishedRace": {
     "id": "a1c09583-e076-4f7b-8aaf-1385b8ec09f8",
-    "name": "Class 40 B",
+    "name": "Corsica Med 2022 - Class 40 B",
+    "event_name": "Corsica Med 2022",
     "source": "YELLOWBRICK",
     "url": "https://yb.tl/corsicamed2022_32",
     "start_year": 2022,

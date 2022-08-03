@@ -104,7 +104,7 @@ describe('Storing yellowbrick data to DB', () => {
     await saveYellowbrickData(jsonData);
     const race = jsonData.YellowbrickRace[0];
     expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
-      undefined,
+      jsonData.YellowbrickEvent[0].id,
       expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );
