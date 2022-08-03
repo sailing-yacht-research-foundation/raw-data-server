@@ -63,7 +63,7 @@
       "status_time": null,
       "first_name": null,
       "last_name": "Ranger",
-      "name": "Ranger",
+      "name": "",
       "short_name": "Ranger",
       "name_alias": null,
       "short_alias": null,
@@ -124,7 +124,7 @@
       "name_alias": null,
       "short_alias": null,
       "nationality": null,
-      "non_competing": 0,
+      "non_competing": 1,
       "handicap_tod": 0,
       "handicap_tot": 1
     }

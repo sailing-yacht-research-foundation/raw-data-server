@@ -1,6 +1,6 @@
 {
   "name": "raw-data-server",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Server that will be used to transform data to parquet format and perform bulk saving into Permanent Storage",
   "main": "src/main.js",
   "scripts": {

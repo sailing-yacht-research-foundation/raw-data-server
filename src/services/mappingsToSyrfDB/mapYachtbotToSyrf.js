@@ -116,7 +116,8 @@ const _mapPositions = (yachtBotPosition, boatMetaDataMap) => {
       cog: metadata?.cog?.[t.time],
       sog: metadata?.sog?.[t.time],
       twa: metadata?.twa?.[t.time],
-      windSpeed: metadata?.tws?.[t.time],
+      windSpeed: metadata?.aws?.[t.time],
+      windDirection: metadata?.awa?.[t.time],
       heading: metadata?.hdg?.[t.time],
     };
   });

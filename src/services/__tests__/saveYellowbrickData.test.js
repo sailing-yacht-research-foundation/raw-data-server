@@ -104,12 +104,12 @@ describe('Storing yellowbrick data to DB', () => {
     await saveYellowbrickData(jsonData);
     const race = jsonData.YellowbrickRace[0];
     expect(calendarEventUpsertSpy).toHaveBeenCalledWith(
-      undefined,
+      jsonData.YellowbrickEvent[0].id,
       expect.objectContaining(expectedJsonData.CalendarEvent),
       expect.anything(),
     );
     expect(vesselParticipantGroupUpsertSpy).toHaveBeenCalledTimes(1);
-    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(0);
+    expect(vesselGetByVesselIdAndSourceSpy).toHaveBeenCalledTimes(1);
     expect(vesselBulkCreateSpy).toHaveBeenCalledWith(
       expectedJsonData.Vessels.map((v) => expect.objectContaining(v)),
       expect.anything(),

@@ -2,7 +2,7 @@
   "CalendarEvent": {
     "name": "RYS Bicentennial International Regatta",
     "externalUrl": "https://www.tractrac.com/event-page/event_20150724_RYSBicente/596",
-    "locationName": "\"Cowes",
+    "locationName": "\"Cowes, GBR",
     "isPrivate": false,
     "isOpen": false,
     "country": "United Kingdom",
@@ -118,21 +118,24 @@
         "handicap": 1,
         "handicap_distance": 0,
         "handicap_tot": 1
-      }
+      },
+      "isCommittee": false
     }, {
       "vesselId": "b74d62e6-4953-4880-bef7-59374a8d5668",
       "handicap": {
         "handicap": 1,
         "handicap_distance": 0,
         "handicap_tot": 1
-      }
+      },
+      "isCommittee": false
     }, {
       "vesselId": "c392e414-4c5e-4be5-b22f-ea83b348ae8d",
       "handicap": {
         "handicap": 1,
         "handicap_distance": 0,
         "handicap_tot": 1
-      }
+      },
+      "isCommittee": true
     }
   ],
   "Participants": [],
