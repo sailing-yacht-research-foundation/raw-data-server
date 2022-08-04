@@ -247,6 +247,10 @@ const _mapSequencedGeometries = (
                   courseElementPoint.course_element_type === 'tracked'
                     ? courseElementPoint.id
                     : undefined,
+                properties: {
+                  name: courseElementPoint.name,
+                  model: courseElementPoint.model,
+                },
               }),
             );
           });

@@ -148,9 +148,17 @@
         "coordinates": [[18.680396, 42.432998], [18.679081, 42.433016]],
         "order": 1,
         "points": [{
-            "position": [18.680396, 42.432998]
+            "position": [18.680396, 42.432998],
+            "properties": {
+              "name": "Pin end",
+              "type": "pin"
+            }
           }, {
-            "position": [18.679081, 42.433016]
+            "position": [18.679081, 42.433016],
+            "properties": {
+              "name": "Committee",
+              "type": "committee"
+            }
           }
         ]
       }, {

@@ -150,9 +150,15 @@
         "coordinates": [[-1.300911, 50.766676], [-1.305418, 50.786743]],
         "order": 1,
         "points": [{
-            "position": [-1.300911, 50.766676]
+            "position": [-1.300911, 50.766676],
+            "properties": {
+              "name": "RYS Start"
+            }
           }, {
-            "position": [-1.305418, 50.786743]
+            "position": [-1.305418, 50.786743],
+            "properties": {
+              "name": "RYS Start"
+            }
           }
         ]
       }, {
@@ -163,7 +169,10 @@
         "coordinates": [[-1.201667, 50.7655]],
         "order": 2,
         "points": [{
-            "position": [-1.201667, 50.7655]
+            "position": [-1.201667, 50.7655],
+            "properties": {
+              "name": "South East Ryde Middle"
+            }
           }
         ]
       }, {
@@ -174,7 +183,10 @@
         "coordinates": [[-1.1825, 50.776167]],
         "order": 3,
         "points": [{
-            "position": [-1.1825, 50.776167]
+            "position": [-1.1825, 50.776167],
+            "properties": {
+              "name": "Browndown"
+            }
           }
         ]
       }, {
@@ -185,7 +197,10 @@
         "coordinates": [[-1.227333, 50.787167]],
         "order": 4,
         "points": [{
-            "position": [-1.227333, 50.787167]
+            "position": [-1.227333, 50.787167],
+            "properties": {
+              "name": "East Bramble"
+            }
           }
         ]
       }, {
@@ -196,7 +211,10 @@
         "coordinates": [[-1.1825, 50.776167]],
         "order": 5,
         "points": [{
-            "position": [-1.1825, 50.776167]
+            "position": [-1.1825, 50.776167],
+            "properties": {
+              "name": "Browndown"
+            }
           }
         ]
       }, {
@@ -207,7 +225,10 @@
         "coordinates": [[-1.227333, 50.787167]],
         "order": 6,
         "points": [{
-            "position": [-1.227333, 50.787167]
+            "position": [-1.227333, 50.787167],
+            "properties": {
+              "name": "East Bramble"
+            }
           }
         ]
       }, {
@@ -218,9 +239,15 @@
         "coordinates": [[-1.300911, 50.766676], [-1.305418, 50.786743]],
         "order": 7,
         "points": [{
-            "position": [-1.300911, 50.766676]
+            "position": [-1.300911, 50.766676],
+            "properties": {
+              "name": "RYS Start"
+            }
           }, {
-            "position": [-1.305418, 50.786743]
+            "position": [-1.305418, 50.786743],
+            "properties": {
+              "name": "RYS Start"
+            }
           }
         ]
       }
