@@ -20,13 +20,21 @@ const mapAndSave = require('../mappingsToSyrfDB/mapAmericasCupToSyrf');
 const { getExistingData } = require('../scrapedDataResult');
 const { triggerWeatherSlicer } = require('../../utils/weatherSlicerUtil');
 
-const saveAmericasCupData = async (bucketName, fileName, year) => {
+const saveAmericasCupData = async ({
+  bucketName,
+  fileName,
+  year,
+  filePath,
+}) => {
   const XML_DIR_NAME = 'history';
   const CSV_DIR_NAME = 'csv';
   try {
-    console.log(`Downloading file ${fileName} from s3`);
-    const targetDir = temp.mkdirSync('americascup_rawdata');
-    await downloadAndExtract({ s3, bucketName, fileName, targetDir });
+    let targetDir = filePath;
+    if (!targetDir) {
+      console.log(`Downloading file ${fileName} from s3`);
+      targetDir = temp.mkdirSync('americascup_rawdata');
+      await downloadAndExtract({ s3, bucketName, fileName, targetDir });
+    }
 
     const existingRacesInDB = (
       await getExistingData(SOURCE.AMERICASCUP)
