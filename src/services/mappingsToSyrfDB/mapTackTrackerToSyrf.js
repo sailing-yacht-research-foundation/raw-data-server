@@ -207,11 +207,17 @@ const _mapSequencedGeometries = (
           lat: +lat1,
           lon: +lon1,
           markTrackerId: startMarkTracker?.id,
+          properties: {
+            name: start.start_mark_name,
+          },
         },
         {
           lat: +lat2,
           lon: +lon2,
           markTrackerId: startPinTracker?.id,
+          properties: {
+            name: start.start_pin_name,
+          },
         },
         { name: startMarkName },
       );
@@ -321,11 +327,17 @@ const _mapSequencedGeometries = (
               lat: +lat1,
               lon: +lon1,
               markTrackerId: firstTracker?.id,
+              properties: {
+                name: firstTracker?.name,
+              },
             },
             {
               lat: +lat2,
               lon: +lon2,
               markTrackerId: secondTracker?.id,
+              properties: {
+                name: secondTracker?.name,
+              },
             },
             { name: mark.name },
           );
@@ -368,11 +380,17 @@ const _mapSequencedGeometries = (
           lat: +lat1,
           lon: +lon1,
           markTrackerId: finishMarkTracker?.id,
+          properties: {
+            name: finish.finish_mark_name,
+          },
         },
         {
           lat: +lat2,
           lon: +lon2,
           markTrackerId: finishPinTracker?.id,
+          properties: {
+            name: finish.finish_pin_name,
+          },
         },
         { name: finish.finish_mark_name },
       );

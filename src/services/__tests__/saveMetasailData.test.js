@@ -146,7 +146,10 @@ describe('Storing metasail data to DB', () => {
           expectedJsonData.Course.courseSequencedGeometries.map((g) =>
             expect.objectContaining({
               ...g,
-              points: g.points.map((p) => expect.objectContaining(p)),
+              points: g.points.map((p) => ({
+                ...p,
+                markTrackerId: expect.anything(),
+              })),
             }),
           ),
       }),
@@ -223,7 +226,7 @@ describe('Storing metasail data to DB', () => {
       );
     });
 
-    it.only('should only call elastic search to index and do not save in db even when there are no buoys or gates', async () => {
+    it('should only call elastic search to index and do not save in db even when there are no buoys or gates', async () => {
       const unfinishedJsonData = JSON.parse(JSON.stringify(jsonData));
       unfinishedJsonData.MetasailRace[0].stop = futureDate.getTime();
       delete unfinishedJsonData.MetasailBuoy;

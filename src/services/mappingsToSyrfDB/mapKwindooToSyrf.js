@@ -4,6 +4,7 @@ const {
   createGeometryLine,
 } = require('../../utils/gisUtils');
 const { getHullsCount } = require('../../utils/utils');
+const { boatSides } = require('../../syrf-schema/enums');
 
 const mapAndSave = async (data, raceMetadatas) => {
   if (
@@ -179,7 +180,10 @@ const _mapSequencedGeometries = (waypoints = [], markers = []) => {
             name: waypoint.primary_marker_name,
             role: waypoint.role,
             diameter: waypoint.diameter,
-            side: waypoint.pass_direction === 'left' ? 'port' : 'starboard',
+            side:
+              waypoint.pass_direction === 'left'
+                ? boatSides.PORT
+                : boatSides.STARBOARD,
             approach_radius: waypoint.primary_marker_approach_radius,
             marker_id: waypoint.primary_marker_id,
           },
@@ -195,10 +199,28 @@ const _mapSequencedGeometries = (waypoints = [], markers = []) => {
           {
             lat: waypoint.primary_marker_lat,
             lon: waypoint.primary_marker_lon,
+            properties: {
+              name: waypoint.primary_marker_name,
+              side:
+                waypoint.pass_direction === 'left'
+                  ? boatSides.PORT
+                  : boatSides.STARBOARD,
+              approach_radius: waypoint.primary_marker_approach_radius,
+              marker_id: waypoint.primary_marker_id,
+            },
           },
           {
             lat: waypoint.secondary_marker_lat,
             lon: waypoint.secondary_marker_lon,
+            properties: {
+              name: waypoint.secondary_marker_name,
+              side:
+                waypoint.pass_direction === 'left'
+                  ? boatSides.STARBOARD
+                  : boatSides.PORT,
+              approach_radius: waypoint.secondary_marker_approach_radius,
+              marker_id: waypoint.secondary_marker_id,
+            },
           },
           {
             name: [
@@ -211,13 +233,6 @@ const _mapSequencedGeometries = (waypoints = [], markers = []) => {
               .join(' - '),
             role: waypoint.role,
             diameter: waypoint.diameter,
-            side: waypoint.pass_direction === 'left' ? 'port' : 'starboard',
-            primary_marker_approach_radius:
-              waypoint.primary_marker_approach_radius,
-            secondary_marker_approach_radius:
-              waypoint.secondary_marker_approach_radius,
-            primary_marker_id: waypoint.primary_marker_id,
-            secondary_marker_id: waypoint.secondary_marker_id,
           },
         );
         geometryLine.id = waypoint.id;

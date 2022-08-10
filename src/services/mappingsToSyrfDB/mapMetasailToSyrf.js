@@ -180,11 +180,17 @@ const _mapSequencedGeometries = (
           lat: +buoy1.lat || +buoy1FirstPosition.lat,
           lon: +buoy1.lon || +buoy1FirstPosition.lon,
           markTrackerId: buoy1.markTrackerId,
+          properties: {
+            name: buoy1.name,
+          },
         },
         {
           lat: +buoy2.lat || +buoy2FirstPosition.lat,
           lon: +buoy2.lon || +buoy2FirstPosition.lon,
           markTrackerId: buoy2.markTrackerId,
+          properties: {
+            name: buoy2.name,
+          },
         },
         {
           name,

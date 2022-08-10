@@ -105,10 +105,16 @@ const _mapSequencedGeometries = (buoys) => {
             {
               lat: buoy.lat,
               lon: buoy.lon,
+              properties: {
+                name: buoy.name,
+              },
             },
             {
               lat: connectingPoint.lat,
               lon: connectingPoint.lon,
+              properties: {
+                name: connectingPoint.name,
+              },
             },
             {
               name: [...new Set([buoy.name, connectingPoint.name])]

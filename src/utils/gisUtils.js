@@ -566,34 +566,25 @@ exports.createGeometryPoint = ({
   };
 };
 
-exports.createGeometryLine = (
-  { lat: point1Lat, lon: point1lon, markTrackerId: point1TrackerId },
-  { lat: point2Lat, lon: point2Lon, markTrackerId: point2TrackerId },
-  properties = {},
-) => {
+exports.createGeometryLine = (point1, point2, properties = {}) => {
   return {
     geometryType: geometryType.LINESTRING,
     properties,
     coordinates: [
-      this.createGeometryPosition({
-        lat: point1Lat,
-        lon: point1lon,
-        markTrackerId: point1TrackerId,
-      }),
-      this.createGeometryPosition({
-        lat: point2Lat,
-        lon: point2Lon,
-        markTrackerId: point2TrackerId,
-      }),
+      this.createGeometryPosition(point1),
+      this.createGeometryPosition(point2),
     ],
   };
 };
 
-exports.createGeometryPosition = ({ lat, lon, markTrackerId }) => {
-  return {
-    position: [lon, lat],
-    markTrackerId,
-  };
+exports.createGeometryPosition = ({ lat, lon, markTrackerId, properties }) => {
+  return Object.assign(
+    {
+      position: [lon, lat],
+      markTrackerId,
+    },
+    properties ? { properties } : {},
+  );
 };
 
 /**

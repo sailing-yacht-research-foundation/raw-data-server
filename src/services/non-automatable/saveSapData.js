@@ -12,11 +12,14 @@ const {
   normalizeRace,
 } = require('../normalization/non-automatable/normalizeSap');
 
-const saveSapData = async (bucketName, fileName) => {
+const saveSapData = async ({ bucketName, fileName, filePath }) => {
   try {
-    let targetDir = temp.mkdirSync('sap_rawdata');
-    console.log(`Downloading file ${fileName} from s3`);
-    await downloadAndExtract({ s3, bucketName, fileName, targetDir });
+    let targetDir = filePath;
+    if (!targetDir) {
+      targetDir = temp.mkdirSync('sap_rawdata');
+      console.log(`Downloading file ${fileName} from s3`);
+      await downloadAndExtract({ s3, bucketName, fileName, targetDir });
+    }
     const dirName = listDirectories(targetDir)[0];
     const dirPath = path.join(targetDir, dirName);
     const allData = listDirectories(dirPath)[0];
@@ -445,6 +448,10 @@ const saveSapData = async (bucketName, fileName) => {
                 left_id: course.controlPoint?.left?.id,
                 right_id: course.controlPoint?.right?.id,
                 markId: course.controlPoint.id,
+                startLinePortMarkId:
+                  course.controlPoint?.startLine?.PORT?.markId, // new attribute on website data (not available on old files)
+                startLineStarboardMarkId:
+                  course.controlPoint?.startLine?.STARBOARD?.markId,
               });
             }
           }
