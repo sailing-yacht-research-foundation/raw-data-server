@@ -177,10 +177,18 @@
         "order": 1,
         "points": [{
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "56f454e7-eb8b-4170-90c9-bc3867d3ab59"
+            "markTrackerId": "56f454e7-eb8b-4170-90c9-bc3867d3ab59",
+            "properties": {
+              "name": "RC Start",
+              "model": "Bateau_Jury"
+            }
           }, {
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "87293d04-fd67-4cfb-a129-1a758f102b93"
+            "markTrackerId": "87293d04-fd67-4cfb-a129-1a758f102b93",
+            "properties": {
+              "name": "Start Buoy",
+              "model": "BoueeGonflable"
+            }
           }
         ]
       }, {
@@ -208,10 +216,18 @@
         "order": 3,
         "points": [{
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "dffdb192-2464-4095-bed7-4c584432572d"
+            "markTrackerId": "dffdb192-2464-4095-bed7-4c584432572d",
+            "properties": {
+              "name": "2P",
+              "model": "BoueeGonflable"
+            }
           }, {
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "2019902b-a27d-4b95-865f-4f3ac99a01a1"
+            "markTrackerId": "2019902b-a27d-4b95-865f-4f3ac99a01a1",
+            "properties": {
+              "name": "2S",
+              "model": "BoueeGonflable"
+            }
           }
         ]
       }, {
@@ -225,10 +241,18 @@
         "order": 4,
         "points": [{
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "fd78b154-f464-46d4-aee2-18d539f545a3"
+            "markTrackerId": "fd78b154-f464-46d4-aee2-18d539f545a3",
+            "properties": {
+              "name": "1P",
+              "model": "BoueeGonflable"
+            }
           }, {
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "0623d2c6-15e9-49f3-821d-c0555087ed1e"
+            "markTrackerId": "0623d2c6-15e9-49f3-821d-c0555087ed1e",
+            "properties": {
+              "name": "1S",
+              "model": "BoueeGonflable"
+            }
           }
         ]
       }, {
@@ -242,10 +266,18 @@
         "order": 5,
         "points": [{
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "f618dbbd-82cb-4010-a29b-fe5edb28d59b"
+            "markTrackerId": "f618dbbd-82cb-4010-a29b-fe5edb28d59b",
+            "properties": {
+              "name": "2P",
+              "model": "BoueeGonflable"
+            }
           }, {
             "position": [7.4343967437744, 43.727873063745],
-            "markTrackerId": "c28ae114-07b1-495e-a7d1-638ee4dd70b5"
+            "markTrackerId": "c28ae114-07b1-495e-a7d1-638ee4dd70b5",
+            "properties": {
+              "name": "2S",
+              "model": "BoueeGonflable"
+            }
           }
         ]
       }

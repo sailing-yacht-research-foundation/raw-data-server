@@ -153,7 +153,10 @@ describe('Storing tractrac data to DB', () => {
           expectedJsonData.Course.courseSequencedGeometries.map((g) =>
             expect.objectContaining({
               ...g,
-              points: g.points.map((p) => expect.objectContaining(p)),
+              points: g.points.map((p) => ({
+                ...p,
+                markTrackerId: expect.anything(),
+              })),
             }),
           ),
       }),

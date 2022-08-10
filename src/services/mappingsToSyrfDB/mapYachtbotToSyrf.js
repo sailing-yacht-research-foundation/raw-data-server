@@ -195,11 +195,25 @@ const _mapSequencedGeometries = (
       const connectedMarkLon = connectedMark.lon;
       courseSequencedGeometries.push({
         ...gisUtils.createGeometryLine(
-          { lat, lon },
-          { lat: connectedMarkLat, lon: connectedMarkLon },
+          {
+            lat,
+            lon,
+            properties: {
+              name: mark.name?.trim(),
+              type: mark.type,
+            },
+          },
+          {
+            lat: connectedMarkLat,
+            lon: connectedMarkLon,
+            properties: {
+              name: connectedMark.name?.trim(),
+              type: connectedMark.type,
+            },
+          },
           {
             name: mark.name?.trim(),
-            type: mark.buoy_type,
+            type: mark.type,
           },
         ),
         order: order,
@@ -221,15 +235,26 @@ const _mapSequencedGeometries = (
 
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
-        { lat, lon },
+        {
+          lat,
+          lon,
+          properties: {
+            name: mark.name?.trim(),
+            type: mark.type,
+          },
+        },
         {
           lat: position.lat,
           lon: position.lon,
           markTrackerId: buoy.markTrackerId,
+          properties: {
+            name: buoy.name?.trim(),
+            type: buoy.buoy_type,
+          },
         },
         {
           name: mark.name?.trim(),
-          type: mark.buoy_type,
+          type: mark.type,
         },
       ),
       order: order,
@@ -289,11 +314,23 @@ const _mapSequencedGeometries = (
 
     courseSequencedGeometries.push({
       ...gisUtils.createGeometryLine(
-        { lat, lon, markTrackerId: currentBuoy.markTrackerId },
+        {
+          lat,
+          lon,
+          markTrackerId: currentBuoy.markTrackerId,
+          properties: {
+            name: currentBuoy.name?.trim(),
+            type: currentBuoy.buoy_type,
+          },
+        },
         {
           lat: connectedMarkLat,
           lon: connectedMarkLon,
           markTrackerId: connectedBuoy.markTrackerId,
+          properties: {
+            name: connectedBuoy.name?.trim(),
+            type: connectedBuoy.buoy_type,
+          },
         },
         {
           name: currentBuoy.name?.trim(),

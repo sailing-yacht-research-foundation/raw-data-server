@@ -4,7 +4,7 @@ const {
   createGeometryPosition,
   createGeometry,
 } = require('../../utils/gisUtils');
-const { geometryType } = require('../../syrf-schema/enums');
+const { geometryType, boatSides } = require('../../syrf-schema/enums');
 
 const BOAT_TYPES = {
   Helicopter: 'Helicopter',
@@ -168,7 +168,8 @@ const _mapSequencedGeometries = (
       courseSequencedGeometries.push(newPoint);
     } else if (cmMarks.length > 1) {
       const coordinates = [];
-      for (const cmMark of cmMarks) {
+      for (let cmMarkIndex = 0; cmMarkIndex < cmMarks.length; cmMarkIndex++) {
+        const cmMark = cmMarks[cmMarkIndex];
         const markAsBoat = markAsBoats.find(
           (b) => b.original_id === cmMark.original_id,
         );
@@ -179,11 +180,29 @@ const _mapSequencedGeometries = (
           });
         }
 
+        let side;
+        if (cm.rounding) {
+          // If rounding is PS or Port it means first mark index is port side and second is starboard and vice versa if rounding is SP or Stbd
+          if (
+            (['PS', 'Port'].includes(cm.rounding) && cmMarkIndex === 0) ||
+            (['SP', 'Stbd'].includes(cm.rounding) && cmMarkIndex !== 0)
+          ) {
+            side = boatSides.PORT;
+          } else {
+            side = boatSides.STARBOARD;
+          }
+        }
         coordinates.push(
           createGeometryPosition({
             lat: +cmMark.lat,
             lon: +cmMark.lon,
             markTrackerId: markAsBoat?.id,
+            properties: Object.assign(
+              {
+                name: cmMark.name,
+              },
+              side ? { side } : {},
+            ),
           }),
         );
       }

@@ -159,19 +159,26 @@
         "properties": {
           "name": "A - B",
           "role": "start",
-          "diameter": 365.18902761126117,
-          "side": "port",
-          "primary_marker_approach_radius": 200,
-          "secondary_marker_approach_radius": 200,
-          "primary_marker_id": 22933,
-          "secondary_marker_id": 22936
+          "diameter": 365.18902761126117
         },
         "coordinates": [["10.23629176", "56.17008381"], ["10.23883450", "56.16963882"]],
         "order": 0,
         "points": [{
-            "position": ["10.23629176", "56.17008381"]
+            "position": ["10.23629176", "56.17008381"],
+            "properties": {
+              "name": "A",
+              "side": "port",
+              "approach_radius": 200,
+              "marker_id": 22933
+            }
           }, {
-            "position": ["10.23883450", "56.16963882"]
+            "position": ["10.23883450", "56.16963882"],
+            "properties": {
+              "name": "B",
+              "side": "starboard",
+              "approach_radius": 200,
+              "marker_id": 22936
+            }
           }
         ]
       }, {
@@ -186,8 +193,7 @@
         "coordinates": [["10.23752401", "56.17087631"]],
         "order": 1,
         "points": [{
-            "position": ["10.23752401", "56.17087631"],
-            "markTrackerId": null
+            "position": ["10.23752401", "56.17087631"]
           }
         ]
       }, {
@@ -195,19 +201,26 @@
         "properties": {
           "name": "D - E",
           "role": "middle",
-          "diameter": 273.77343905252144,
-          "side": "starboard",
-          "primary_marker_approach_radius": 200,
-          "secondary_marker_approach_radius": 200,
-          "primary_marker_id": 22942,
-          "secondary_marker_id": 22945
+          "diameter": 273.77343905252144
         },
         "coordinates": [["10.23522044", "56.17407467"], ["10.23406708", "56.17391043"]],
         "order": 2,
         "points": [{
-            "position": ["10.23522044", "56.17407467"]
+            "position": ["10.23522044", "56.17407467"],
+            "properties": {
+              "name": "D",
+              "side": "starboard",
+              "approach_radius": 200,
+              "marker_id": 22942
+            }
           }, {
-            "position": ["10.23406708", "56.17391043"]
+            "position": ["10.23406708", "56.17391043"],
+            "properties": {
+              "name": "E",
+              "side": "port",
+              "approach_radius": 200,
+              "marker_id": 22945
+            }
           }
         ]
       }, {
@@ -215,19 +228,26 @@
         "properties": {
           "name": "F - G",
           "role": "middle",
-          "diameter": 281.8552123402281,
-          "side": "port",
-          "primary_marker_approach_radius": 200,
-          "secondary_marker_approach_radius": 200,
-          "primary_marker_id": 22948,
-          "secondary_marker_id": 22951
+          "diameter": 281.8552123402281
         },
         "coordinates": [["10.23814672", "56.16765825"], ["10.23682612", "56.16764929"]],
         "order": 3,
         "points": [{
-            "position": ["10.23814672", "56.16765825"]
+            "position": ["10.23814672", "56.16765825"],
+            "properties": {
+              "name": "F",
+              "side": "port",
+              "approach_radius": 200,
+              "marker_id": 22948
+            }
           }, {
-            "position": ["10.23682612", "56.16764929"]
+            "position": ["10.23682612", "56.16764929"],
+            "properties": {
+              "name": "G",
+              "side": "starboard",
+              "approach_radius": 200,
+              "marker_id": 22951
+            }
           }
         ]
       }, {
@@ -235,19 +255,26 @@
         "properties": {
           "name": "D - E",
           "role": "middle",
-          "diameter": 273.77343905252144,
-          "side": "starboard",
-          "primary_marker_approach_radius": 200,
-          "secondary_marker_approach_radius": 200,
-          "primary_marker_id": 22942,
-          "secondary_marker_id": 22945
+          "diameter": 273.77343905252144
         },
         "coordinates": [["10.23522044", "56.17407467"], ["10.23406708", "56.17391043"]],
         "order": 4,
         "points": [{
-            "position": ["10.23522044", "56.17407467"]
+            "position": ["10.23522044", "56.17407467"],
+            "properties": {
+              "name": "D",
+              "side": "starboard",
+              "approach_radius": 200,
+              "marker_id": 22942
+            }
           }, {
-            "position": ["10.23406708", "56.17391043"]
+            "position": ["10.23406708", "56.17391043"],
+            "properties": {
+              "name": "E",
+              "side": "port",
+              "approach_radius": 200,
+              "marker_id": 22945
+            }
           }
         ]
       }, {
@@ -255,19 +282,26 @@
         "properties": {
           "name": "A - B",
           "role": "finish",
-          "diameter": 365.18902761126117,
-          "side": "starboard",
-          "primary_marker_approach_radius": 200,
-          "secondary_marker_approach_radius": 200,
-          "primary_marker_id": 22933,
-          "secondary_marker_id": 22936
+          "diameter": 365.18902761126117
         },
         "coordinates": [["10.23629176", "56.17008381"], ["10.23883450", "56.16963882"]],
         "order": 10000,
         "points": [{
-            "position": ["10.23629176", "56.17008381"]
+            "position": ["10.23629176", "56.17008381"],
+            "properties": {
+              "name": "A",
+              "side": "starboard",
+              "approach_radius": 200,
+              "marker_id": 22933
+            }
           }, {
-            "position": ["10.23883450", "56.16963882"]
+            "position": ["10.23883450", "56.16963882"],
+            "properties": {
+              "name": "B",
+              "side": "port",
+              "approach_radius": 200,
+              "marker_id": 22936
+            }
           }
         ]
       }

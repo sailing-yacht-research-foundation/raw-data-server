@@ -143,9 +143,15 @@
         "coordinates": [[10.83746, 45.84758], [10.83802, 45.84869]],
         "order": 1,
         "points": [{
-            "position": [10.83746, 45.84758]
+            "position": [10.83746, 45.84758],
+            "properties": {
+              "name": "Race Committtee"
+            }
           }, {
-            "position": [10.83802, 45.84869]
+            "position": [10.83802, 45.84869],
+            "properties": {
+              "name": "Start/Finish"
+            }
           }
         ]
       }, {
@@ -156,9 +162,15 @@
         "coordinates": [[10.84221, 45.86451], [10.84102, 45.86445]],
         "order": 3,
         "points": [{
-            "position": [10.84221, 45.86451]
+            "position": [10.84221, 45.86451],
+            "properties": {
+              "name": "LW1"
+            }
           }, {
-            "position": [10.84102, 45.86445]
+            "position": [10.84102, 45.86445],
+            "properties": {
+              "name": "LW2"
+            }
           }
         ]
       }, {
@@ -169,9 +181,15 @@
         "coordinates": [[10.83909, 45.84559], [10.83821, 45.84578]],
         "order": 4,
         "points": [{
-            "position": [10.83909, 45.84559]
+            "position": [10.83909, 45.84559],
+            "properties": {
+              "name": "WW1"
+            }
           }, {
-            "position": [10.83821, 45.84578]
+            "position": [10.83821, 45.84578],
+            "properties": {
+              "name": "WW2"
+            }
           }
         ]
       }, {
@@ -182,9 +200,15 @@
         "coordinates": [[10.84221, 45.86451], [10.84102, 45.86445]],
         "order": 5,
         "points": [{
-            "position": [10.84221, 45.86451]
+            "position": [10.84221, 45.86451],
+            "properties": {
+              "name": "LW1"
+            }
           }, {
-            "position": [10.84102, 45.86445]
+            "position": [10.84102, 45.86445],
+            "properties": {
+              "name": "LW2"
+            }
           }
         ]
       }, {
@@ -195,9 +219,15 @@
         "coordinates": [[10.83746, 45.84758], [10.83802, 45.84869]],
         "order": 7,
         "points": [{
-            "position": [10.83746, 45.84758]
+            "position": [10.83746, 45.84758],
+            "properties": {
+              "name": "Race Committtee"
+            }
           }, {
-            "position": [10.83802, 45.84869]
+            "position": [10.83802, 45.84869],
+            "properties": {
+              "name": "Start/Finish"
+            }
           }
         ]
       }, {

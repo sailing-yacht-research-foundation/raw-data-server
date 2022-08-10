@@ -111,10 +111,16 @@
         "order": 1,
         "points": [{
             "position": [9.730386, 55.492325],
-            "markTrackerId": "19bbe1b1-be19-498d-ab16-afbaefaf3d22"
+            "markTrackerId": "19bbe1b1-be19-498d-ab16-afbaefaf3d22",
+            "properties": {
+              "name": "StartBoat"
+            }
           }, {
             "position": [9.72734047, 55.48857744],
-            "markTrackerId": "cc0034c0-e3a6-4f3c-b13b-37005c58f10b"
+            "markTrackerId": "cc0034c0-e3a6-4f3c-b13b-37005c58f10b",
+            "properties": {
+              "name": "StartPin"
+            }
           }
         ]
       }, {
@@ -164,9 +170,15 @@
         "coordinates": [[9.730386, 55.492325], [9.730386, 55.492325]],
         "order": 5,
         "points": [{
-          "position": [9.730386, 55.492325]
+          "position": [9.730386, 55.492325],
+          "properties": {
+            "name": "FinishBoat"
+          }
         }, {
-          "position": [9.730386, 55.492325]
+          "position": [9.730386, 55.492325],
+          "properties": {
+            "name": "FinishPin"
+          }
           }
         ]
       }

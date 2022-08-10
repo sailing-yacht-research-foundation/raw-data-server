@@ -169,6 +169,9 @@ const _mapSequencedGeometries = (
           lat,
           lon,
           markTrackerId: currentControlPoint.markTrackerId,
+          properties: {
+            name: currentControlPoint.name,
+          },
         }),
       );
     }

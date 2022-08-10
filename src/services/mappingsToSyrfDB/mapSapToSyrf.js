@@ -3,7 +3,11 @@ const {
   createGeometryPoint,
   createGeometryLine,
 } = require('../../utils/gisUtils');
-const { vesselEvents, geometryType } = require('../../syrf-schema/enums');
+const {
+  vesselEvents,
+  geometryType,
+  boatSides,
+} = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
 
 const mapAndSave = async (
@@ -107,38 +111,61 @@ const _mapSequencedGeometries = (marks, courses, marksPositions) => {
 
   courses.forEach((c, index) => {
     if (c.class === 'ControlPointWithTwoMarks') {
-      const firstPos = marksPositions.find(
-        (p) => c.left_id === p.mark_original_id,
+      let portMarkId = c.startLinePortMarkId; // startLine is a new attribute on website data (not available on old files)
+      let starboardMarkId = c.startLineStarboardMarkId;
+      if (!portMarkId || !starboardMarkId) {
+        if (index === 0) {
+          // For some reason the startline always has reversed side left=starboard right=port
+          portMarkId = c.right_id;
+          starboardMarkId = c.left_id;
+        } else {
+          portMarkId = c.left_id;
+          starboardMarkId = c.right_id;
+        }
+      }
+      const portSideMarkPos = marksPositions.find(
+        (p) => portMarkId === p.mark_original_id,
       );
-      const lastPos = marksPositions.find(
-        (p) => c.right_id === p.mark_original_id,
+      const starboardSideMarkPos = marksPositions.find(
+        (p) => starboardMarkId === p.mark_original_id,
       );
 
       const line = createGeometryLine(
         {
-          lat: firstPos.lat_deg,
-          lon: firstPos.lng_deg,
-          markTrackerId: firstPos.mark_id,
+          lat: portSideMarkPos.lat_deg,
+          lon: portSideMarkPos.lng_deg,
+          markTrackerId: portSideMarkPos.mark_id,
+          properties: {
+            name: marks?.find((m) => m.id === portSideMarkPos.mark_id)?.name,
+            side: boatSides.PORT,
+            class: c.left_class,
+            type: c.left_type,
+          },
         },
         {
-          lat: lastPos.lat_deg,
-          lon: lastPos.lng_deg,
-          markTrackerId: lastPos.mark_id,
+          lat: starboardSideMarkPos.lat_deg,
+          lon: starboardSideMarkPos.lng_deg,
+          markTrackerId: starboardSideMarkPos.mark_id,
+          properties: {
+            name: marks?.find((m) => m.id === starboardSideMarkPos.mark_id)
+              ?.name,
+            side: boatSides.STARBOARD,
+            class: c.right_class,
+            type: c.right_type,
+          },
         },
         {
           name: c.course_name,
           courseObjectId: c.id,
-          portPoint: 0,
-          starboardPoint: 1,
         },
       );
 
       markTrackers.push({
-        id: firstPos.mark_id,
+        id: portSideMarkPos.mark_id,
         name: c.course_name,
       });
       markTrackers.push({
-        id: lastPos.mark_id,
+        id: starboardSideMarkPos.mark_id,
         name: c.course_name,
       });
       line.order = index;

@@ -146,7 +146,10 @@ describe('Storing kwindoo data to DB', () => {
         ...expectedJsonData.Course,
         courseSequencedGeometries:
           expectedJsonData.Course.courseSequencedGeometries.map((g) =>
-            expect.objectContaining(g),
+            expect.objectContaining({
+              ...g,
+              points: g.points.map((p) => expect.objectContaining(p)),
+            }),
           ),
       }),
       expect.anything(),
