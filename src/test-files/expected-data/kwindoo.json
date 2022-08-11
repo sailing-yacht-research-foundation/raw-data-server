@@ -167,7 +167,7 @@
             "position": ["10.23629176", "56.17008381"],
             "properties": {
               "name": "A",
-              "side": "port",
+              "side": "starboard",
               "approach_radius": 200,
               "marker_id": 22933
             }
@@ -175,7 +175,7 @@
             "position": ["10.23883450", "56.16963882"],
             "properties": {
               "name": "B",
-              "side": "starboard",
+              "side": "port",
               "approach_radius": 200,
               "marker_id": 22936
             }
@@ -290,7 +290,7 @@
             "position": ["10.23629176", "56.17008381"],
             "properties": {
               "name": "A",
-              "side": "starboard",
+              "side": "port",
               "approach_radius": 200,
               "marker_id": 22933
             }
@@ -298,7 +298,7 @@
             "position": ["10.23883450", "56.16963882"],
             "properties": {
               "name": "B",
-              "side": "port",
+              "side": "starboard",
               "approach_radius": 200,
               "marker_id": 22936
             }
