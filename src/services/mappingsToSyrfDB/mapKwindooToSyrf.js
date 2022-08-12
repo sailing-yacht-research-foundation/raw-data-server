@@ -201,10 +201,7 @@ const _mapSequencedGeometries = (waypoints = [], markers = []) => {
             lon: waypoint.primary_marker_lon,
             properties: {
               name: waypoint.primary_marker_name,
-              side:
-                waypoint.pass_direction === 'left'
-                  ? boatSides.PORT
-                  : boatSides.STARBOARD,
+              side: _getGeometryPrimaryMarkerSide(waypoint),
               approach_radius: waypoint.primary_marker_approach_radius,
               marker_id: waypoint.primary_marker_id,
             },
@@ -215,9 +212,9 @@ const _mapSequencedGeometries = (waypoints = [], markers = []) => {
             properties: {
               name: waypoint.secondary_marker_name,
               side:
-                waypoint.pass_direction === 'left'
-                  ? boatSides.STARBOARD
-                  : boatSides.PORT,
+                _getGeometryPrimaryMarkerSide(waypoint) === boatSides.STARBOARD
+                  ? boatSides.PORT
+                  : boatSides.STARBOARD,
               approach_radius: waypoint.secondary_marker_approach_radius,
               marker_id: waypoint.secondary_marker_id,
             },
@@ -264,6 +261,35 @@ const _mapSequencedGeometries = (waypoints = [], markers = []) => {
     courseSequencedGeometries.push(geometryMark);
   }
   return courseSequencedGeometries;
+};
+
+const _getGeometryPrimaryMarkerSide = (waypoint) => {
+  // This function returns the correct side of the primary marker. Should reverse the value for secondary marker
+  // The pass direction follows which side of the marker (whichever marker is on the left most when plotted on the map)
+  // For example a geometry with primary B and secondary A with pass_direction of right. This means the boat needs to pass on the right side of A
+  /*         B
+            /
+           / <=
+          /
+         A
+  */
+  // For example a geometry with primary B and secondary A with pass_direction of right. This means the boat needs to pass on the right side of B
+  /*       B
+            \
+          => \
+              \
+               A
+  */
+  const isPrimaryRef =
+    +waypoint.primary_marker_lon < +waypoint.secondary_marker_lon;
+  if (
+    (isPrimaryRef && waypoint.pass_direction === 'left') ||
+    (!isPrimaryRef && waypoint.pass_direction === 'right')
+  ) {
+    return boatSides.STARBOARD;
+  } else {
+    return boatSides.PORT;
+  }
 };
 
 module.exports = mapAndSave;
