@@ -1,6 +1,8 @@
 const { BadRequestError, AuthInvalidError } = require('../errors');
-const generateDateAuthFormat = require('../utils/generateDateAuthFormat');
-const generateSecret = require('../utils/generateSecret');
+const {
+  generateDateAuthFormat,
+  generateSecret,
+} = require('../utils/authUtils');
 
 const validateSecret = function (req, res, next) {
   let secret = req.headers['authorization'] || req.headers['Authorization'];
