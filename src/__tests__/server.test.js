@@ -3,8 +3,10 @@ const supertest = require('supertest');
 const path = require('path');
 
 const createServer = require('../server');
-const generateDateAuthFormat = require('../utils/generateDateAuthFormat');
-const generateSecret = require('../utils/generateSecret');
+const {
+  generateDateAuthFormat,
+  generateSecret,
+} = require('../utils/authUtils');
 
 jest.mock('../services/saveISailData', () => jest.fn());
 
