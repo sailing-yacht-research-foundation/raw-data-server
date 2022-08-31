@@ -7,6 +7,7 @@ module.exports = {
     '<rootDir>/src/configs',
     '<rootDir>/src/models',
   ],
+  modulePathIgnorePatterns: ['<rootDir>/src/syrf-schema/'],
   setupFiles: ['dotenv/config'],
-  setupFilesAfterEnv: ['./jestSetupAfterEnv']
+  setupFilesAfterEnv: ['./jestSetupAfterEnv'],
 };
