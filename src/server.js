@@ -8,7 +8,6 @@ const { errorHandler } = require('./errors');
 function createServer() {
   const app = express();
   app.use(express.json());
-  app.use(cors());
 
   app.use(
     express.urlencoded({
@@ -19,7 +18,7 @@ function createServer() {
     app.use(require('express-status-monitor')());
   }
 
-  app.get('/', async (req, res) => {
+  app.get('/', cors(), async (req, res) => {
     res.send('SYRF - Raw Data Server');
   });
 
