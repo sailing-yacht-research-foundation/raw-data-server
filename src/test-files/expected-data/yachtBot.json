@@ -5,7 +5,6 @@
     "country": "Montenegro",
     "city": "Tivat",
     "source": "YACHTBOT",
-    "openGraphImage": "mockLocation",
     "status": "COMPLETED",
     "approximateStartTime": 1528456979000,
     "approximateStartTime_zone": "Etc/UTC",
@@ -63,7 +62,6 @@
       }
     },
     "endTime": 1528458480000,
-    "openGraphImage": "mockLocation",
     "country": "Montenegro",
     "city": "Tivat",
     "status": "COMPLETED",

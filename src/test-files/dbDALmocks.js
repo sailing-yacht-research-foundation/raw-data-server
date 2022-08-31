@@ -10,9 +10,10 @@ jest.mock('../syrf-schema/utils/utils', () => {
 
 // DAL Mocks
 jest.mock('../syrf-schema/dataAccess/v1/calendarEvent', () => {
+  const uuid = require('uuid');
   return {
     upsert: jest.fn((id, data) =>
-      Promise.resolve(Object.assign({}, data, id ? { id } : {})),
+      Promise.resolve(Object.assign({}, data, { id: id || uuid.v4() })),
     ),
     getByScrapedOriginalIdAndSource: jest.fn(() => Promise.resolve()),
   };

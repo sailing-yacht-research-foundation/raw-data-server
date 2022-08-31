@@ -1,8 +1,5 @@
 const uuid = require('uuid');
 const dataAccess = require('../../syrf-schema/dataAccess/v1/course');
-const competitionUnitDataAccess = require('../../syrf-schema/dataAccess/v1/competitionUnit');
-const { createMapScreenshot } = require('../../utils/createMapScreenshot');
-const { uploadMapScreenshot } = require('../../utils/s3Util');
 
 const setGeometryId = (geometries) => {
   if (Array.isArray(geometries)) {
@@ -70,25 +67,6 @@ const updatePoints = async (newGeometries, oldGeometries = [], transaction) => {
   return await dataAccess.bulkInsertPoints(newPoints, transaction);
 };
 exports.updatePoints = updatePoints;
-
-exports.generateOGImage = async (idList, centerPoint) => {
-  let openGraphImage = null;
-  try {
-    const imageBuffer = await createMapScreenshot(centerPoint);
-    const response = await uploadMapScreenshot(
-      imageBuffer,
-      `competition/${uuid.v4()}.jpg`,
-    );
-    openGraphImage = response.Location;
-    await competitionUnitDataAccess.addOpenGraphImage(idList, {
-      openGraphImage,
-    });
-  } catch (error) {
-    console.error(
-      `Failed to create mapshot for competition: ${idList.join(', ')}`,
-    );
-  }
-};
 
 exports.upsert = async (
   id,

@@ -1,7 +1,4 @@
 const turf = require('@turf/turf');
-const uuid = require('uuid');
-const uploadUtil = require('./uploadUtil');
-const { createMapScreenshot } = require('./createMapScreenshot');
 const cities = require('all-the-cities');
 const KDBush = require('kdbush');
 const geokdbush = require('geokdbush');
@@ -320,25 +317,6 @@ exports.createRace = async function (
       lon: startPoint.geometry.coordinates[0],
       lat: startPoint.geometry.coordinates[1],
     });
-  let openGraphImage = null;
-  try {
-    const imageBuffer = await createMapScreenshot(
-      startPoint.geometry.coordinates,
-    );
-    const response = await uploadUtil.uploadDataToS3({
-      ACL: 'public-read',
-      Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
-      Key: `public/competition/${id}/${uuid.v4()}.jpg`,
-      Body: imageBuffer,
-      ContentType: 'image/jpeg',
-    });
-    openGraphImage = response?.Location;
-  } catch (error) {
-    // Logging only, if not successfully created, we can skip the open graph image
-    console.error(
-      `Failed to create mapshot for scraped race: ${id}, error: ${error.message}`,
-    );
-  }
 
   const startDate = new Date(startTimeMs);
 
@@ -481,7 +459,6 @@ exports.createRace = async function (
     boat_models: boatModels,
     handicap_rules: handicapRulesFiltered,
     great_circle: greatCircle,
-    open_graph_image: openGraphImage,
   };
   const boatIdentifiersFiltered = exports.filterList(boatIdentifiers);
   const boatNamesFiltered = exports.filterList(boatNames);

@@ -9,7 +9,6 @@ jest.mock('aws-sdk', () => {
   };
   return { S3: jest.fn(() => mockS3Instance) };
 });
-jest.mock('./src/utils/createMapScreenshot');
 jest.mock('./src/utils/elasticsearch');
 jest.mock('./src/utils/weatherSlicerUtil');
 jest.mock('./src/utils/world',
@@ -20,6 +19,10 @@ jest.mock('./src/utils/world',
       }
     }
   });
+
+jest.mock('./src/externalServices/redis');
+jest.mock('./src/jobs/openGraph');
+
 jest.mock('./src/syrfDataServices/v1/googleAPI', () => {
   return {
     reverseGeoCode: jest.fn().mockResolvedValue({
