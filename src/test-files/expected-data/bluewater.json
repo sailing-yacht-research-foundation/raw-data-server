@@ -5,7 +5,6 @@
     "country": "Australia",
     "city": "Queenscliff",
     "source": "BLUEWATER",
-    "openGraphImage": "mockLocation",
     "status": "COMPLETED",
     "approximateStartTime": 1617305400000,
     "approximateStartTime_zone": "Etc/UTC",
@@ -16,7 +15,17 @@
     "approximateEndTime_zone": "Etc/UTC",
     "endDay": 7,
     "endMonth": 4,
-    "endYear": 2021
+    "endYear": 2021,
+    "location": {
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "EPSG:4326"
+            }
+        },
+        "type": "Point",
+        "coordinates": [144.66759995402717, -38.27398501835957]
+    }
   },
   "CompetitionUnit": {
     "name": "2021 ORCV Melbourne to Port Fairy Race",
@@ -54,7 +63,6 @@
       }
     },
     "endTime": 1617760800000,
-    "openGraphImage": "mockLocation",
     "country": "Australia",
     "city": "Queenscliff",
     "status": "COMPLETED",

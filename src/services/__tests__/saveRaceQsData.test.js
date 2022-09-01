@@ -1,24 +1,13 @@
 const { addDays } = require('date-fns');
-const calendarEventDAL = require('../../syrf-schema/dataAccess/v1/calendarEvent');
-const vesselParticipantGroupDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantGroup');
-const vesselDAL = require('../../syrf-schema/dataAccess/v1/vessel');
-const vesselParticipantDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipant');
-const participantDAL = require('../../syrf-schema/dataAccess/v1/participant');
-const markTrackerDAL = require('../../syrf-schema/dataAccess/v1/markTracker');
-const courseDAL = require('../../syrf-schema/dataAccess/v1/course');
-const competitionUnitDAL = require('../../syrf-schema/dataAccess/v1/competitionUnit');
-const vesselParticipantEventDAL = require('../../syrf-schema/dataAccess/v1/vesselParticipantEvent');
-const scrapedSuccessfulUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedSuccessfulUrl');
-const syrfFailedUrlDAL = require('../../syrf-schema/dataAccess/v1/scrapedFailedUrl');
-const utils = require('../../syrf-schema/utils/utils');
 const { competitionUnitStatus } = require('../../syrf-schema/enums');
 const elasticsearch = require('../../utils/elasticsearch');
-const { RACEQS } = require('../../constants');
+const { SOURCE, RACEQS } = require('../../constants');
 
-const { SOURCE } = require('../../constants');
 const saveRaceQsData = require('../saveRaceQsData');
 const jsonData = require('../../test-files/raceQs.json');
 const expectedJsonData = require('../../test-files/expected-data/raceQs.json');
+const { createAndReturnSpies } = require('../../utils/testUtil');
+const ogJob = require('../../jobs/openGraph');
 
 jest.mock('../../syrfDataServices/v1/googleAPI', () => {
   const {
@@ -50,46 +39,24 @@ describe('Storing raceqs data to DB', () => {
     elasticSearchUpdateSpy;
 
   beforeAll(async () => {
-    calendarEventUpsertSpy = jest.spyOn(calendarEventDAL, 'upsert');
-    vesselParticipantGroupUpsertSpy = jest.spyOn(
-      vesselParticipantGroupDAL,
-      'upsert',
-    );
-    vesselGetByVesselIdAndSourceSpy = jest.spyOn(
-      vesselDAL,
-      'getByVesselIdAndSource',
-    );
-    vesselBulkCreateSpy = jest.spyOn(vesselDAL, 'bulkCreate');
-    vesselParticipantBulkCreateSpy = jest.spyOn(
-      vesselParticipantDAL,
-      'bulkCreate',
-    );
-    vesselParticipantAddParticipantSpy = jest.spyOn(
-      vesselParticipantDAL,
-      'addParticipant',
-    );
-    participantBulkCreateSpy = jest.spyOn(participantDAL, 'bulkCreate');
-    markTrackerUpsertSpy = jest.spyOn(markTrackerDAL, 'upsert');
-    courseUpsertSpy = jest.spyOn(courseDAL, 'upsert');
-    courseBulkInsertPointsSpy = jest.spyOn(courseDAL, 'bulkInsertPoints');
-    competitionUnitUpsertSpy = jest.spyOn(competitionUnitDAL, 'upsert');
-    vesselParticipantEventBulkCreateSpy = jest.spyOn(
-      vesselParticipantEventDAL,
-      'bulkCreate',
-    );
-    scrapedSuccessfulUrlCreateSpy = jest.spyOn(
-      scrapedSuccessfulUrlDAL,
-      'create',
-    );
-    syrfFailedUrlDALCreateSpy = jest.spyOn(syrfFailedUrlDAL, 'create');
-    commitSpy = jest.fn().mockResolvedValue();
-    jest
-      .spyOn(utils, 'createTransaction')
-      .mockResolvedValue({ commit: commitSpy, rollback: jest.fn() });
-    elasticSearchUpdateSpy = jest.spyOn(
-      elasticsearch,
-      'updateEventAndIndexRaces',
-    );
+    ({
+      calendarEventUpsertSpy,
+      vesselParticipantGroupUpsertSpy,
+      vesselGetByVesselIdAndSourceSpy,
+      vesselBulkCreateSpy,
+      vesselParticipantBulkCreateSpy,
+      vesselParticipantAddParticipantSpy,
+      participantBulkCreateSpy,
+      markTrackerUpsertSpy,
+      courseUpsertSpy,
+      courseBulkInsertPointsSpy,
+      competitionUnitUpsertSpy,
+      vesselParticipantEventBulkCreateSpy,
+      scrapedSuccessfulUrlCreateSpy,
+      syrfFailedUrlDALCreateSpy,
+      commitSpy,
+      elasticSearchUpdateSpy,
+    } = createAndReturnSpies());
   });
   afterAll(async () => {
     jest.restoreAllMocks();
@@ -209,6 +176,13 @@ describe('Storing raceqs data to DB', () => {
         }),
         expect.anything(),
       );
+      expect(ogJob.addCompetitionUnit).toHaveBeenCalledWith(
+        {
+          idList: [start.id],
+          position: expectedCompetition.approximateStartLocation.coordinates,
+        },
+        { jobId: start.id },
+      );
     });
     expect(vesselParticipantEventBulkCreateSpy).toHaveBeenCalledTimes(0);
     expect(commitSpy).toHaveBeenCalled();
@@ -219,6 +193,13 @@ describe('Storing raceqs data to DB', () => {
       expectedJsonData.CompetitionUnits.map((cu) =>
         expect.objectContaining(cu),
       ),
+    );
+    expect(ogJob.addEvent).toHaveBeenCalledWith(
+      {
+        id: expect.any(String),
+        position: expectedJsonData.CalendarEvent.location.coordinates,
+      },
+      { jobId: expect.any(String) },
     );
   });
 

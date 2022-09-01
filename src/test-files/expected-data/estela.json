@@ -5,7 +5,6 @@
     "country": "Spain",
     "city": "Palamós",
     "source": "ESTELA",
-    "openGraphImage": "mockLocation",
     "status": "COMPLETED",
     "approximateStartTime": 1618136700000,
     "approximateStartTime_zone": "Etc/UTC",
@@ -16,7 +15,17 @@
     "approximateEndTime_zone": "Etc/UTC",
     "endDay": 11,
     "endMonth": 4,
-    "endYear": 2021
+    "endYear": 2021,
+    "location": {
+        "crs": {
+            "type": "name",
+            "properties": {
+                "name": "EPSG:4326"
+            }
+        },
+        "type": "Point",
+        "coordinates": [3.1180188, 41.8491494]
+    }
   },
   "CompetitionUnit": {
     "name": "Regata Diumenge 11-04-2021",
@@ -54,7 +63,6 @@
       }
     },
     "endTime": 1618142804000,
-    "openGraphImage": "mockLocation",
     "country": "Spain",
     "city": "Palamós",
     "status": "COMPLETED",

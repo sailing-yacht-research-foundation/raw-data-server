@@ -1,5 +1,7 @@
 require('dotenv').config();
 const { startDB } = require('./syrf-schema');
+const redis = require('./externalServices/redis');
+const { registerWorkers } = require('./jobs');
 
 const createServer = require('./server');
 const port = process.env.PORT || 3000;
@@ -12,6 +14,8 @@ const port = process.env.PORT || 3000;
     console.log(
       `Main database (${process.env.DB_NAME}) connected successfully`,
     );
+    await redis.connect();
+    await registerBGWorkers();
 
     if (process.env.ENABLE_DEBUG !== 'true') {
       console.time = () => {}; // To disable console time since it generates too many logs
@@ -41,3 +45,26 @@ const port = process.env.PORT || 3000;
     console.log(error);
   }
 })();
+
+const registerBGWorkers = async () => {
+  try {
+    registerWorkers({
+      createClient: function (type, redisOpts) {
+        switch (type) {
+          case 'client':
+            return redis.getBullClient();
+          case 'subscriber':
+            return redis.getBullSubscriber();
+          case 'bclient':
+            return redis.newConnection(redisOpts);
+          default:
+            throw new Error(`Unexpected connection type: ${type}`);
+        }
+      },
+    });
+    return 'register bg job workers success';
+  } catch (err) {
+    console.error(err);
+    throw new Error(`register bg job workers failed : ${err.message}`);
+  }
+};

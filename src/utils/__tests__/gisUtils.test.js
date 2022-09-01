@@ -525,7 +525,6 @@ describe('gis_utils.js', () => {
       approx_area_sq_km: approxAreaSqKm,
       approx_distance_km: approxDistanceKm,
       num_boats: Object.keys(boatIdsToPositions).length,
-      open_graph_image: expect.any(String),
       avg_time_between_positions: avgTimeBetweenPositions,
       boat_models: boatModels,
       handicap_rules: handicapRules,

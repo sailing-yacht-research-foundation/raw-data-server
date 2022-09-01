@@ -1,5 +1,4 @@
-const uploadUtil = require('../../../utils/uploadUtil');
-const mapScreenshotUtil = require('../../../utils/createMapScreenshot');
+const gisUtil = require('../../../utils/gisUtils');
 const googleAPI = require('../../../syrfDataServices/v1/googleAPI');
 
 const scraperTestMappings = [
@@ -84,11 +83,10 @@ const scraperTestMappings = [
 ];
 
 describe('Normalization test', () => {
-  let reverseGeoCodeSpy, mapScreenshotSpy, uploadDataSpy;
+  let reverseGeoCodeSpy, createRaceSpy;
   beforeAll(async () => {
-    mapScreenshotSpy = jest.spyOn(mapScreenshotUtil, 'createMapScreenshot');
     reverseGeoCodeSpy = jest.spyOn(googleAPI, 'reverseGeoCode');
-    uploadDataSpy = jest.spyOn(uploadUtil, 'uploadDataToS3');
+    createRaceSpy = jest.spyOn(gisUtil, 'createRace');
   });
   afterEach(() => {
     jest.clearAllMocks();
@@ -97,7 +95,7 @@ describe('Normalization test', () => {
   describe.each(scraperTestMappings)(
     'when calling normalizeRace on $filename',
     ({ filename, testData, raceTable }) => {
-      it('should call mapScreenshot and upload to s3', async () => {
+      it('should call createRace from gisUtil', async () => {
         const { normalizeRace } = require(`../../normalization/${filename}`);
         const jsonData = require(`../../../test-files/${testData}`);
 
@@ -107,9 +105,8 @@ describe('Normalization test', () => {
           expectedRaceCount = races.length;
         }
         await normalizeRace(jsonData);
-        expect(mapScreenshotSpy).toHaveBeenCalledTimes(expectedRaceCount);
-        expect(uploadDataSpy).toHaveBeenCalledTimes(expectedRaceCount); // For uploading the opengraph image
         expect(reverseGeoCodeSpy).toHaveBeenCalledTimes(expectedRaceCount);
+        expect(createRaceSpy).toHaveBeenCalledTimes(expectedRaceCount);
       });
     },
   );

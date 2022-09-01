@@ -8,7 +8,6 @@
     "country": "France",
     "city": "Saint-Nazaire",
     "source": "GEOVOILE",
-    "openGraphImage": "mockLocation",
     "status": "COMPLETED",
     "approximateStartTime": 1631448000000,
     "approximateStartTime_zone": "Etc/UTC",
@@ -66,7 +65,6 @@
       }
     },
     "endTime": 1632042102000,
-    "openGraphImage": "mockLocation",
     "country": "France",
     "city": "Saint-Nazaire",
     "status": "COMPLETED",

@@ -13,6 +13,7 @@ const participant = require('../syrfDataServices/v1/participant');
 const VesselParticipantTrack = require('../syrfDataServices/v1/vesselParticipantTrack');
 const PointTrack = require('../syrfDataServices/v1/pointTrack');
 const markTracker = require('../syrfDataServices/v1/markTracker');
+const ogJob = require('../jobs/openGraph');
 
 const saveCompetitionUnit = async ({
   event,
@@ -401,7 +402,7 @@ const saveCompetitionUnit = async ({
     await successfulUrlDataAccess.create(
       {
         url: race.scrapedUrl || race.url || url,
-        originalId: race.original_id,
+        originalId: race.original_id.toString(),
         source,
         createdAt: Date.now(),
       },
@@ -410,6 +411,37 @@ const saveCompetitionUnit = async ({
 
     await mainDatabaseTransaction.commit();
     console.log(`Finish saving competition unit ${raceId} into main database`);
+
+    if (!existingEvent?.length) {
+      try {
+        ogJob.addEvent(
+          {
+            id: newCalendarEvent.id,
+            position: newCalendarEvent.location.coordinates,
+          },
+          { jobId: newCalendarEvent.id },
+        );
+      } catch (err) {
+        console.log(
+          `Adding event (with id ${newCalendarEvent.id}) opengraph job failed`,
+          err,
+        );
+      }
+    }
+    try {
+      ogJob.addCompetitionUnit(
+        {
+          idList: [newCompetitionUnit.id],
+          position: newCompetitionUnit.approximateStartLocation.coordinates,
+        },
+        { jobId: newCompetitionUnit.id },
+      );
+    } catch (err) {
+      console.log(
+        `Adding competition unit (with id ${newCompetitionUnit.id}) opengraph job failed`,
+        err,
+      );
+    }
     return newCompetitionUnit;
   } catch (err) {
     console.log(

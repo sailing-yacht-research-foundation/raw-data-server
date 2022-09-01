@@ -5,7 +5,6 @@
     "country": "United States",
     "city": "Pensacola Beach",
     "source": "KATTACK",
-    "openGraphImage": "mockLocation",
     "status": "COMPLETED",
     "approximateStartTime": 1525968000000,
     "approximateStartTime_zone": "Etc/UTC",
@@ -63,7 +62,6 @@
       }
     },
     "endTime": 1526515200000,
-    "openGraphImage": "mockLocation",
     "country": "United States",
     "city": "Pensacola Beach",
     "status": "COMPLETED",
