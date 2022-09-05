@@ -24,6 +24,8 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
       locationName: [e.city, e.country].filter(Boolean).join(', '),
       approxStartTimeMs: starTimeObj.getTime(),
       approxEndTimeMs: stopTimeObj.getTime(),
+      lat: e.lat,
+      lon: e.lon,
     };
   })[0];
 

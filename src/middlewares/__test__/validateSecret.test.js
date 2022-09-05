@@ -1,7 +1,9 @@
 const validateSecret = require('../validateSecret');
 const { BadRequestError, AuthInvalidError } = require('../../errors');
-const generateSecret = require('../../utils/generateSecret');
-const generateDateAuthFormat = require('../../utils/generateDateAuthFormat');
+const {
+  generateDateAuthFormat,
+  generateSecret,
+} = require('../../utils/authUtils');
 
 describe('Validate Secret middleware', () => {
   let mockRequest;

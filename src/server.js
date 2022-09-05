@@ -1,6 +1,8 @@
 const express = require('express');
+const cors = require('cors');
 
 const apiV1 = require('./routes/api-v1');
+const generalRoutes = require('./routes/general');
 const { errorHandler } = require('./errors');
 
 function createServer() {
@@ -16,10 +18,11 @@ function createServer() {
     app.use(require('express-status-monitor')());
   }
 
-  app.get('/', async (req, res) => {
+  app.get('/', cors(), async (req, res) => {
     res.send('SYRF - Raw Data Server');
   });
 
+  app.use('/', generalRoutes);
   app.use('/api/v1', apiV1);
   app.use(errorHandler);
   return app;

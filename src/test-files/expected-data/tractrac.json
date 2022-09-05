@@ -8,7 +8,6 @@
     "country": "United Kingdom",
     "city": "Cowes",
     "source": "TRACTRAC",
-    "openGraphImage": "mockLocation",
     "scrapedOriginalId": "5fcd1e10-0e04-0133-4949-60a44ce903c3",
     "status": "COMPLETED",
     "approximateStartTime": 1437706800000,
@@ -29,7 +28,7 @@
         }
       },
       "type": "Point",
-      "coordinates": [-1.3026186819866743, 50.772236101883756]
+      "coordinates": ["-1.302258", "50.771839"]
     }
   },
   "CompetitionUnit": {
@@ -68,7 +67,6 @@
     },
     "calendarEventId": "07edc559-ad9b-4b59-a46f-c62ceed4cc95",
     "endTime": 1438261858000,
-    "openGraphImage": "mockLocation",
     "country": "United Kingdom",
     "city": "Cowes",
     "status": "COMPLETED",

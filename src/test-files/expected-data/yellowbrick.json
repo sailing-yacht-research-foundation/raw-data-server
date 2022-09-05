@@ -7,7 +7,6 @@
     "country": "France",
     "city": "Rogliano",
     "source": "YELLOWBRICK",
-    "openGraphImage": "mockLocation",
     "scrapedOriginalId": "2254",
     "status": "COMPLETED",
     "approximateStartTime": 1651825845000,
@@ -67,7 +66,6 @@
       }
     },
     "endTime": 1651939200000,
-    "openGraphImage": "mockLocation",
     "country": "France",
     "city": "Rogliano",
     "status": "COMPLETED",
