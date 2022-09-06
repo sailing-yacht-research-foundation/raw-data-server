@@ -14,19 +14,25 @@ const mapTracTracToSyrf = async (data, raceMetadata) => {
   }
   // event
   const event = data.TracTracEvent?.map((e) => {
-    const starTimeObj = new Date(`${e.start} +0`);
-    const stopTimeObj = new Date(`${e.end} +0`);
-    return {
+    const eventMapped = {
       id: e.id,
       original_id: e.original_id,
       name: e.name,
+      description: e.description,
       url: e.web_url,
       locationName: [e.city, e.country].filter(Boolean).join(', '),
-      approxStartTimeMs: starTimeObj.getTime(),
-      approxEndTimeMs: stopTimeObj.getTime(),
       lat: e.lat,
       lon: e.lon,
     };
+    if (e.start) {
+      const starTimeObj = new Date(`${e.start} +0`);
+      eventMapped.approxStartTimeMs = starTimeObj.getTime();
+    }
+    if (e.end) {
+      const stopTimeObj = new Date(`${e.end} +0`);
+      eventMapped.approxEndTimeMs = stopTimeObj.getTime();
+    }
+    return eventMapped;
   })[0];
 
   console.log('Saving to main database');
