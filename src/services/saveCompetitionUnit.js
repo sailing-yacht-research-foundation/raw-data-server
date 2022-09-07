@@ -67,6 +67,27 @@ const saveCompetitionUnit = async ({
         event.id = existingEvent[0].id;
       }
     }
+    const existingStartTime = existingEvent?.[0]?.approximateStartTime;
+    let approximateStartTime = parseFloat(event?.approxStartTimeMs);
+    if (!approximateStartTime) {
+      // If reused, retain existing event start time if it is before the race start time since event time range is for all races within
+      if (existingStartTime && existingStartTime < approxStartTimeMs) {
+        approximateStartTime = existingStartTime;
+      } else {
+        approximateStartTime = approxStartTimeMs;
+      }
+    }
+
+    const existingEndTime = existingEvent?.[0]?.approximateEndTime;
+    let approximateEndTime = parseFloat(event?.approxEndTimeMs);
+    if (!approximateEndTime) {
+      // If reused, retain existing event end time if it is after the race end time since event time range is for all races within
+      if (existingEndTime && existingEndTime > approxEndTimeMs) {
+        approximateEndTime = existingEndTime;
+      } else {
+        approximateEndTime = approxEndTimeMs;
+      }
+    }
     const newCalendarEvent = await calendarEvent.upsert(
       event?.id,
       {
@@ -74,10 +95,8 @@ const saveCompetitionUnit = async ({
         description: event?.description,
         locationName: event?.locationName,
         externalUrl: event?.url,
-        approximateStartTime:
-          parseFloat(event?.approxStartTimeMs) || approxStartTimeMs,
-        approximateEndTime:
-          parseFloat(event?.approxEndTimeMs) || approxEndTimeMs,
+        approximateStartTime,
+        approximateEndTime,
         lat: event?.lat || lat,
         lon: event?.lon || lon,
         source,
