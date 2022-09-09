@@ -12,6 +12,9 @@ const { bullQueues } = require('../syrf-schema/enums');
 let openGraphQueue;
 
 exports.setup = (opts) => {
+  if (!process.env.REDIS_HOST) {
+    return;
+  }
   openGraphQueue = new Queue(bullQueues.openGraph, opts);
 };
 
@@ -21,15 +24,17 @@ exports.setup = (opts) => {
  * @returns
  */
 exports.addEvent = async (data, opts = {}) => {
-  if (opts.jobId) await bullScripts.remove(openGraphQueue, opts.jobId);
-  await openGraphQueue.add(
-    { ...data, type: 'event' },
-    {
-      removeOnFail: true,
-      removeOnComplete: true,
-      ...opts,
-    },
-  );
+  if (openGraphQueue) {
+    if (opts.jobId) await bullScripts.remove(openGraphQueue, opts.jobId);
+    await openGraphQueue.add(
+      { ...data, type: 'event' },
+      {
+        removeOnFail: true,
+        removeOnComplete: true,
+        ...opts,
+      },
+    );
+  }
 };
 
 /**
@@ -38,16 +43,21 @@ exports.addEvent = async (data, opts = {}) => {
  * @returns
  */
 exports.addCompetitionUnit = async (data, opts = {}) => {
-  if (opts.jobId) await bullScripts.remove(openGraphQueue, opts.jobId);
-  await openGraphQueue.add(
-    { ...data, type: 'competition-unit' },
-    {
-      removeOnFail: true,
-      removeOnComplete: true,
-      ...opts,
-    },
-  );
+  if (openGraphQueue) {
+    if (opts.jobId) await bullScripts.remove(openGraphQueue, opts.jobId);
+    await openGraphQueue.add(
+      { ...data, type: 'competition-unit' },
+      {
+        removeOnFail: true,
+        removeOnComplete: true,
+        ...opts,
+      },
+    );
+  }
 };
 
-exports.removeJob = async (jobId) =>
-  await bullScripts.remove(openGraphQueue, jobId);
+exports.removeJob = async (jobId) => {
+  if (openGraphQueue) {
+    await bullScripts.remove(openGraphQueue, jobId);
+  }
+};

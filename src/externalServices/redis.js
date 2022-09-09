@@ -20,6 +20,12 @@ if (process.env.REDIS_PASSWORD) opt.password = process.env.REDIS_PASSWORD;
 
 exports.connect = () =>
   new Promise((resolve, reject) => {
+    if (!process.env.REDIS_HOST) {
+      console.log(
+        'No redis host in environment variable. Opengraph generation will be skipped',
+      );
+      return resolve();
+    }
     bullClient = new Redis(process.env.REDIS_HOST, opt);
     bullSubscriber = new Redis(process.env.REDIS_HOST, opt);
     cacheClient = new Redis(process.env.REDIS_HOST, opt);
@@ -28,13 +34,13 @@ exports.connect = () =>
       console.log(
         'redis create connection is taking too long, skip waiting for redis connection',
       );
-      resolve();
+      return resolve();
     }, 5000);
 
     bullClient.ping((err) => {
       if (err) {
         console.log('redis connection failed', err);
-        reject(err);
+        return reject(err);
       }
 
       console.log(
@@ -43,7 +49,7 @@ exports.connect = () =>
         opt.port,
       );
       clearTimeout(timeout);
-      resolve();
+      return resolve();
     });
   });
 
