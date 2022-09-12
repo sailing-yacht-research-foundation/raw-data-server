@@ -182,6 +182,7 @@ const _mapSequencedGeometries = (
           markTrackerId: buoy1.markTrackerId,
           properties: {
             name: buoy1.name,
+            serial: buoy1.original_id,
           },
         },
         {
@@ -190,6 +191,7 @@ const _mapSequencedGeometries = (
           markTrackerId: buoy2.markTrackerId,
           properties: {
             name: buoy2.name,
+            serial: buoy2.original_id,
           },
         },
         {
@@ -212,6 +214,7 @@ const _mapSequencedGeometries = (
         lon: buoy.lon || firstPosition?.lon,
         properties: {
           name: buoy.name,
+          serial: buoy.original_id,
         },
         markTrackerId: buoy.markTrackerId,
       }),

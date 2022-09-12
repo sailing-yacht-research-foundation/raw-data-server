@@ -30,18 +30,6 @@ const getObject = async (fileName, bucketName) => {
   return object;
 };
 
-const uploadMapScreenshot = async (imageBuffer, fileName) => {
-  const params = {
-    ACL: 'public-read',
-    Bucket: process.env.OPEN_GRAPH_BUCKET_NAME,
-    Key: `public/${fileName}`,
-    Body: imageBuffer,
-    ContentType: fileName.indexOf('.png') > -1 ? 'image/png' : 'image/jpeg',
-  };
-  const response = await s3.upload(params).promise();
-  return response;
-};
-
 const uploadStreamToS3 = (bucket, key) => {
   const passThrough = new stream.PassThrough();
 
@@ -105,7 +93,6 @@ const deleteObject = async (bucket, key) => {
 module.exports = {
   listAllKeys,
   getObject,
-  uploadMapScreenshot,
   uploadStreamToS3,
   getTrackerLogoUrl,
   copyObject,
