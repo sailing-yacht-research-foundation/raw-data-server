@@ -17,5 +17,8 @@ exports.generateDateAuthFormat = (inputDate) => {
 
 exports.generateSecret = (plainText) => {
   const secretSalt = process.env.SIMPLE_AUTH_SALT;
-  return crypto.createHash('md5').update(`${secretSalt}:${plainText}:${secretSalt}`).digest('hex');
+  return crypto
+    .createHash('md5')
+    .update(`${secretSalt}:${plainText}:${secretSalt}`)
+    .digest('hex');
 };

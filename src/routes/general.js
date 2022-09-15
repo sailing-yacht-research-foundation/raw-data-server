@@ -18,7 +18,8 @@ router.get('/healthcheck', (req, res) => {
 });
 
 router.get('/status/last-races', async (req, res) => {
-  const successUrls = await successfulUrlDataAccess.getLastRacePerScrapedSource();
+  const successUrls =
+    await successfulUrlDataAccess.getLastRacePerScrapedSource();
 
   res.send({
     successUrls: successUrls.map((row) => {
@@ -32,7 +33,11 @@ router.get('/status/last-races', async (req, res) => {
 });
 
 router.get('/status/failures', async (req, res) => {
-  const failedUrls = await failedUrlDataAccess.getAllWithPaging(req.query.page, req.query.size, { excludeNoPositions: req.query.excludeNoPositions });
+  const failedUrls = await failedUrlDataAccess.getAllWithPaging(
+    req.query.page,
+    req.query.size,
+    { excludeNoPositions: req.query.excludeNoPositions },
+  );
 
   res.send({
     failedUrls: failedUrls.map((row) => {
