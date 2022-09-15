@@ -22,7 +22,7 @@ function createServer() {
     res.send('SYRF - Raw Data Server');
   });
 
-  app.use('/', generalRoutes);
+  app.use('/', cors(), generalRoutes);
   app.use('/api/v1', apiV1);
   app.use(errorHandler);
   return app;

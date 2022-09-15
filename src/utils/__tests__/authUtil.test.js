@@ -9,7 +9,8 @@ describe('Generate Date for Auth format', () => {
 
 describe('Generate secret for authentication', () => {
   test('Successfully return a secure hash from a string', () => {
+    process.env.SIMPLE_AUTH_SALT = 'd7638826-34c5-11ed-a261-0242ac120002';
     const result = generateSecret('this is a secret');
-    expect(result).toEqual('7dbbcee180ba4d456e4aa1cfbdad9c7b');
+    expect(result).toEqual('c9af9f844c95d110cefe312c8e8946ea');
   });
 });
