@@ -40,7 +40,8 @@ router.get('/status/failures', async (req, res) => {
   );
 
   res.send({
-    failedUrls: failedUrls.map((row) => {
+    count: failedUrls.count,
+    failedUrls: failedUrls.rows?.map((row) => {
       return {
         url: row.url,
         errorMessage: row.error,
