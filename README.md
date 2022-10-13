@@ -1,48 +1,36 @@
 # raw-data-server
-
-Server that will be used to transform data to parquet format and perform bulk saving into Permanent Storage
+Server that saves scraped data to database, uploads geojson tracks to s3 bucket and index to elastic search.
 
 ---
 
-- [raw-data-server](#raw-data-server)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [Deployment](#deployment)
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+  - [Automated](#automated)
+  - [Manual](#manual)
     - [Terraform Configurations](#terraform-configurations)
     - [Terraform Commands](#terraform-commands)
     - [Terraform Known Issues](#terraform-known-issues)
-  - [Usage](#usage)
-  - [API Endpoint](#api-endpoint)
+  - [Development Deployment](#development-deployment)
+- [Dockerize](#dockerize)
+- [API Endpoint](#api-endpoint)
+- [Unit Test](#unit-test)
 
-## Installation
+
+# Getting Started
 
 1. Clone this repository
-2. Run `yarn` to install dependencies
+2. Setup all the environment variables by creating a new `.env` file by copying the variables from `.env.example` file, then fill in the values.
+3. Initialize git submodule by running `git submodule init` and `git submodule update`
+4. Run `yarn install` to install dependencies
+5. Run `yarn start` to start the server
 
-## Configuration
+# Deployment
 
-- Setup all the environment variables before proceeding to the next step. Create a new `.env` file and copy the variables from `.env.example` file, then fill in the values.
-
-## Init the submodules (syrf-schema)
-1. Initialize git submodule by running `git submodule init` and `git submodule update`. We will clone the syrf-schema (schema of main database into src/syrf-schema)
-2. Adding configuration for main database from .env.example. We will have 2 databases in raw-data-server.
-3. There are 2 databases in raw-data-server. The environment vars with the prefix = DB_RAW_DATA are for the raw-data-server database. Where we save the data we scraped from various websites.
-The environment vars with the prefix = DB_ is the connection to main database server, where we will save the processed data from raw data server.
-
-## syrf-schema database migration (local)
-To migrate the database you have to follow these steps.
-1. Create a database in your local postgres sql. For example main
-2. In postgre admin, right click on Create Script and run `CREATE EXTENSION postgis;` to enable postgis for this database.
-3. Update the .env with DB_NAME = main
-4. Run `yarn run db:syrf:sync` to update the database
-
-## Deployment
-
-### Automatic
+## Automated
 Raw data server is automatically deployed when merging/pushing to develop and main branch using github actions. These are configured on .github/workflows dev_backend.yml and prod_backend.yml respectively. You can also use dev-test branch to deploy to dev environment without committing changes to the develop branch.
 
-### Manual
-Raw data server use dockerized terraform to create instances on the AWS. It's recommended to use aws-vault to generate the temporary credentials using the environment variables.
+## Manual
+(Optional) Raw data server use dockerized terraform to create instances on the AWS. It's recommended to use aws-vault to generate the temporary credentials using the environment variables.
 
 - Run `aws-vault exec [profile] --duration=12h -- CMD.EXE` (Omit the `-- CMD.EXE` if not using windows).
   This will generate `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` to the environment variables that is used by our dockerized terraform.
@@ -57,23 +45,24 @@ Or create a new .env file inside deployment folder with these variables:
 And run `docker-compose -f deployment/docker-compose.yml --env-file deployment/.env config`
 
 If you get an error message: "CannotPullContainerError: inspect image has been retried x time(s)", you will also need to push the docker image to the ECR using the push commands from the AWS console after terraform successfully created the infrastructure.
-You can simply run the shell script deploy.sh:
+You can simply run the shell script `deploy.sh`:
 
-1. Check the variable in side the deploy.sh if it is correct, change it as needed before running the script
+1. Configure AWS cli by following steps here https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+2. Check the variable in side the `deploy.sh` if it is correct, change it as needed before running the script
   AWS_ECR_REGISTRY=335855654610.dkr.ecr.us-east-1.amazonaws.com
   AWS_REGION=us-east-1
   ECR_REPO_NAME=raw-data-server
   ECR_TAG=latest
 
-2. Run script `./deploy.sh`. This will build the docker image tag it and upload to AWS ECR.
+3. Run script `./deploy.sh`. This will build the docker image tag it and upload to AWS ECR.
 
 If this is the first time run, you will need to run terraform init and apply (commands below)
 
-#### Terraform Configurations
+### Terraform Configurations
 
 AWS requires to use an MFA to perform IAM operation with an assume-role, please add MFA device to the Security Credentials of the access key, and add the serial into the local aws config on the profile.
 
-#### Terraform Commands
+### Terraform Commands
 
 - To initialize terraform container, run `docker-compose -f deployment/docker-compose.yml run --rm terraform init`
 - To validate terraform configurations, run `docker-compose -f deployment/docker-compose.yml run --rm terraform validate`
@@ -82,80 +71,13 @@ AWS requires to use an MFA to perform IAM operation with an assume-role, please 
 - To apply the terraform configurations, run `docker-compose -f deployment/docker-compose.yml run --rm terraform apply`
 - To destroy the instances createdd by terraform, run `docker-compose -f deployment/docker-compose.yml run --rm terraform destroy`
 
-#### Terraform Known Issues
+### Terraform Known Issues
 
 - A change in the backend configuration has been detected, which may require migrating existing state.
   If you have run terraform previously before backend setup with s3 is implemented, you need to remove all the state and lock files from your local deployment folder, or run init with -migrate-state option
 
 - Failed to get existing workspaces: S3 bucket does not exist.
   The s3 bucket used by terraform needs to be created before init. It's possible to create s3 bucket and dynamoDB with terraform, but needs to comment out the terraform backend block before proceeding and then uncomment after successfully applied. Or create a separate terraform config just for the s3 bucket and dynamoDB.
-
-## Usage
-
-- Run `docker-compose up -d`
-- Run `docker-compose down` to terminate
-- Run `docker-compose -f docker-compose.yml run raw-data-server yarn run test` to run tests
-
-If you have run docker previously using older version of the app, database structure changes might affect the tests results. Please remove the database volume before proceeding by executing commands below:
-
-- Run `docker-compose down`
-- List all the volume with `docker volume ls` and find raw-data-server_xxxx
-- Execute `docker volume rm [volume_name]` with the `volume_name` value replaced with the name from the step above
-
-## API Endpoint
-
-Set an `Authorization` header containing md5 hash of current date with format: yyyy MMM d, ddd
-
-- `/api/v1/upload-file`
-
-  - Method: POST
-  - Upload the raw json file or gzipped json file using multipart form data on `raw_data` field
-
-- `/api/v1/scraped-url/{tracker}?status=BOTH`
-
-  - Method: GET
-  - Query:
-    - status (optional): `BOTH` [default] | `SUCCESS` | `FAILED`
-  - Route Parameter:
-    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
-
-- `/api/v1/check-url`
-
-  - Method: POST
-  - Body (application/json):
-    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
-    - url (required if originalId is not provided): URL of the race/event
-    - originalId (required if url is not provided): Original ID of race/event
-
-- `/api/v1/register-failed-url`
-
-  - Method: POST
-  - Body (application/json):
-    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
-    - url (required): URL of the failed scraper
-    - error (required): Error detail
-
-- `/api/v1/americas-cup-2021`
-
-  - Method: POST
-  - Query:
-    - bucketName (required): Bucket name which has americas cup 2021 race jsons
-  - Trigger the saving and normalization of Americas Cup 2021 Data.
-
-- `/api/v1/americas-cup`
-
-  - Method: POST
-  - Body (application/json):
-    - bucketName (required): bucket name in s3 where the raw data will be downloaded
-    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/americasCup2013 or ./src/test-files/americasCup2016
-    - year (required): Year when the americas cup event happened
-
-- `/api/v1/regadata`
-
-  - Method: POST
-  - Body (application/gzip): For example regadata.tar.gz
-    - bucketName (required): bucket name in s3 where the raw data will be downloaded
-    - fileName (required): file name of the zip file to be downloaded and extracted. The folder structure inside the zip file needs to have a specific folder structure as seen in ./src/test-files/regadata
 
 ## Development Deployment
 - This service was deployed to AWS development environment using terraform
@@ -173,3 +95,54 @@ when you run terraform apply you will need to input the some values for the mq s
 - The credentials for the mq server are used in the terraform variable file
 - After running the terraform apply, the docker image was built and pushed to elastic container registry
 - The service can be accessed from this url - http://raw-data-server-lb-1246447046.us-east-1.elb.amazonaws.com/
+
+# Dockerize
+
+- Run `docker-compose up -d`
+- Run `docker-compose down` to terminate
+- Run `docker-compose -f docker-compose.yml run raw-data-server yarn run test` to run tests
+
+If you have run docker previously using older version of the app, database structure changes might affect the tests results. Please remove the database volume before proceeding by executing commands below:
+
+- Run `docker-compose down`
+- List all the volume with `docker volume ls` and find raw-data-server_xxxx
+- Execute `docker volume rm [volume_name]` with the `volume_name` value replaced with the name from the step above
+
+# API Endpoint
+
+Set an `Authorization` header containing md5 hash of current date with format: yyyy MMM d, ddd
+
+- POST `/api/v1/upload-file`
+  - Upload the raw json file or gzipped json file using multipart form data on `raw_data` field
+  - Body (application/json):
+    - raw-data (required): Json file compressed in gzip format that contains the scraped data to be saved
+
+- GET `/api/v1/scraped-url/:tracker?status=BOTH`
+  - Gets the list of existing urls success and/or failed with the original_id
+  - Query:
+    - status (optional): `BOTH` [default] | `SUCCESS` | `FAILED`
+  - Route Parameter:
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `GEOVOILE` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
+
+- POST `/api/v1/register-failed-url`
+  - Saves the url as failed url and the reason for failure
+  - Body (application/json):
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `GEOVOILE` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
+    - url (required): URL of the failed scraper
+    - error (required): Error detail
+
+- GET `/get-unfinished-races/:tracker`
+  - Gets a list of id and original_id of unfinished races (from elastic search)
+  - Route Parameter:
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `GEOVOILE` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
+
+- POST `/clean-unfinished-races/:tracker`
+  - Deletes all unfinished races (from elastic search) based from given source tracker
+  - Route Parameter:
+    - tracker (required): `BLUEWATER` | `ESTELA` | `GEORACING` | `GEOVOILE` | `ISAIL` | `KATTACK` | `KWINDOO` | `METASAIL` | `RACEQS` | `TACKTRACKER` | `TRACTRAC` | `YACHTBOT` | `YELLOWBRICK` | `SWIFTSURE`
+  - Body (application/json):
+    - excludedOrigIds: Array of original id to be excluded on the deletion
+
+# Unit Test
+
+To run unit test, simply run `yarn run test`. The unit tests are not testing per function but instead using sample test file per source and testing on the saveXXX file. It mocks all external services and database so it is safe to run locally anytime. It is also included to run on the CI when creating Pull Requests on github or pushing to develop and main branch
